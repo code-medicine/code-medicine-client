@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "e0ceaa2b1bebabffc00127e0de2da670",
+    "revision": "3fbaa086782c6f92ab3c1cda9859b6c1",
     "url": "/code-medicine-client/index.html"
   },
   {
-    "revision": "0816bb9e2e5336145739",
+    "revision": "c29c0b4729f432c9764b",
     "url": "/code-medicine-client/static/css/main.5ecd60fb.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/code-medicine-client/static/js/2.ce3de43d.chunk.js.LICENSE"
   },
   {
-    "revision": "0816bb9e2e5336145739",
-    "url": "/code-medicine-client/static/js/main.feb63bfe.chunk.js"
+    "revision": "c29c0b4729f432c9764b",
+    "url": "/code-medicine-client/static/js/main.6c798882.chunk.js"
   },
   {
     "revision": "072a5294b29d1f5aef41",
