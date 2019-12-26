@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "3fbaa086782c6f92ab3c1cda9859b6c1",
+    "revision": "193304f4e580198b110d3444b03a4650",
     "url": "/code-medicine-client/index.html"
   },
   {
-    "revision": "c29c0b4729f432c9764b",
+    "revision": "2f8c7c1137968ebcb5c3",
     "url": "/code-medicine-client/static/css/main.5ecd60fb.chunk.css"
   },
   {
-    "revision": "df2a617ebf67f3b05e47",
-    "url": "/code-medicine-client/static/js/2.ce3de43d.chunk.js"
+    "revision": "f3d9a3ddc66d1352113f",
+    "url": "/code-medicine-client/static/js/2.10d3abcd.chunk.js"
   },
   {
     "revision": "e928fe768baa9832b5bc57eae021f30c",
-    "url": "/code-medicine-client/static/js/2.ce3de43d.chunk.js.LICENSE"
+    "url": "/code-medicine-client/static/js/2.10d3abcd.chunk.js.LICENSE"
   },
   {
-    "revision": "c29c0b4729f432c9764b",
-    "url": "/code-medicine-client/static/js/main.6c798882.chunk.js"
+    "revision": "2f8c7c1137968ebcb5c3",
+    "url": "/code-medicine-client/static/js/main.c025b080.chunk.js"
   },
   {
     "revision": "072a5294b29d1f5aef41",

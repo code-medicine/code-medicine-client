@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/code-medicine-client/static/css/main.5ecd60fb.chunk.css",
-    "main.js": "/code-medicine-client/static/js/main.6c798882.chunk.js",
-    "main.js.map": "/code-medicine-client/static/js/main.6c798882.chunk.js.map",
+    "main.js": "/code-medicine-client/static/js/main.c025b080.chunk.js",
+    "main.js.map": "/code-medicine-client/static/js/main.c025b080.chunk.js.map",
     "runtime-main.js": "/code-medicine-client/static/js/runtime-main.4c679aa5.js",
     "runtime-main.js.map": "/code-medicine-client/static/js/runtime-main.4c679aa5.js.map",
-    "static/js/2.ce3de43d.chunk.js": "/code-medicine-client/static/js/2.ce3de43d.chunk.js",
-    "static/js/2.ce3de43d.chunk.js.map": "/code-medicine-client/static/js/2.ce3de43d.chunk.js.map",
+    "static/js/2.10d3abcd.chunk.js": "/code-medicine-client/static/js/2.10d3abcd.chunk.js",
+    "static/js/2.10d3abcd.chunk.js.map": "/code-medicine-client/static/js/2.10d3abcd.chunk.js.map",
     "index.html": "/code-medicine-client/index.html",
-    "precache-manifest.576d6da0917b1ab5b9d730045cdd1353.js": "/code-medicine-client/precache-manifest.576d6da0917b1ab5b9d730045cdd1353.js",
+    "precache-manifest.df8359c644e1fc5e36d4c0c4afd92167.js": "/code-medicine-client/precache-manifest.df8359c644e1fc5e36d4c0c4afd92167.js",
     "service-worker.js": "/code-medicine-client/service-worker.js",
     "static/css/main.5ecd60fb.chunk.css.map": "/code-medicine-client/static/css/main.5ecd60fb.chunk.css.map",
-    "static/js/2.ce3de43d.chunk.js.LICENSE": "/code-medicine-client/static/js/2.ce3de43d.chunk.js.LICENSE"
+    "static/js/2.10d3abcd.chunk.js.LICENSE": "/code-medicine-client/static/js/2.10d3abcd.chunk.js.LICENSE"
   },
   "entrypoints": [
     "static/js/runtime-main.4c679aa5.js",
-    "static/js/2.ce3de43d.chunk.js",
+    "static/js/2.10d3abcd.chunk.js",
     "static/css/main.5ecd60fb.chunk.css",
-    "static/js/main.6c798882.chunk.js"
+    "static/js/main.c025b080.chunk.js"
   ]
 }
