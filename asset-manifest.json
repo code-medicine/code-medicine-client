@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/code-medicine-client/static/css/main.5ecd60fb.chunk.css",
+    "main.js": "/code-medicine-client/static/js/main.7077e7bd.chunk.js",
+    "main.js.map": "/code-medicine-client/static/js/main.7077e7bd.chunk.js.map",
+    "runtime-main.js": "/code-medicine-client/static/js/runtime-main.4c679aa5.js",
+    "runtime-main.js.map": "/code-medicine-client/static/js/runtime-main.4c679aa5.js.map",
+    "static/js/2.ce3de43d.chunk.js": "/code-medicine-client/static/js/2.ce3de43d.chunk.js",
+    "static/js/2.ce3de43d.chunk.js.map": "/code-medicine-client/static/js/2.ce3de43d.chunk.js.map",
+    "index.html": "/code-medicine-client/index.html",
+    "precache-manifest.6d52d6c3207ea96606ff40dbaf4b60b8.js": "/code-medicine-client/precache-manifest.6d52d6c3207ea96606ff40dbaf4b60b8.js",
+    "service-worker.js": "/code-medicine-client/service-worker.js",
+    "static/css/main.5ecd60fb.chunk.css.map": "/code-medicine-client/static/css/main.5ecd60fb.chunk.css.map",
+    "static/js/2.ce3de43d.chunk.js.LICENSE": "/code-medicine-client/static/js/2.ce3de43d.chunk.js.LICENSE"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.4c679aa5.js",
+    "static/js/2.ce3de43d.chunk.js",
+    "static/css/main.5ecd60fb.chunk.css",
+    "static/js/main.7077e7bd.chunk.js"
+  ]
+}
