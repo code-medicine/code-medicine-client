@@ -5,10 +5,10 @@ class Login extends Component {
         return (
             <div className="container-fluid">
                 <div className="row">
-                    <div className="col-md-4">
+                    <div className="col-md-2 col-lg-4 col-sm-0">
 
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-8 col-lg-4 col-sm-12">
                         <div className="card mt-5">
                             <h5 className="card-header info-color white-text text-center py-4">
                                 <strong>Sign in</strong>
@@ -40,7 +40,7 @@ class Login extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-2 col-lg-4 col-sm-0">
 
                     </div>
                 </div>
