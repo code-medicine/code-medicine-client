@@ -31,11 +31,11 @@ class Login extends Component {
                                             </div>
                                         </div>
                                         <div>
-                                            <a href="">Forgot password?</a>
+                                            <a href="/login">Forgot password?</a>
                                         </div>
                                     </div>
                                     <button className="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0" type="submit">Sign in</button>
-                                    <p style={{ fontFamily: 'Roboto' }}>Not a member?<a href="" > Register</a></p>
+                                    <p style={{ fontFamily: 'Roboto' }}>Not a member?<a href="/register" > Register</a></p>
                                 </form>
                             </div>
                         </div>

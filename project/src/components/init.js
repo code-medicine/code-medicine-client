@@ -8,7 +8,7 @@ import Register from './register/register';
 class Init extends Component {
     render(){
         return(
-            <BrowserRouter basename={window.location.pathname || ''}>
+            <BrowserRouter >
                 <Route exact path={BASE_URL} component={Home} />
                 <Route exact path={LOGIN_URL} component={Login} />
                 <Route exact path={REGISTER_URL} component={Register} />

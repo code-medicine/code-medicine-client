@@ -1,7 +1,93 @@
 import React, { Component } from 'react';
+import Loader from 'react-loader-spinner';
+import Axios from 'axios';
+import { REGISTER_USER_REQUEST } from '../../shared/rest_end_points';
 
 class Register extends Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            first_name: '',
+            last_name: '',
+            email: '',
+            password: '',
+            role: '',
+            phone: '',
+            cnic: '',
+            loading_status: false,
+        }
+    }
+    on_text_field_change = (e) => {
+        switch (e.target.id){
+            case 'materialRegisterFormFirstName':
+                this.setState({first_name: e.target.value})
+                break;
+            case 'materialRegisterFormLastName':
+                this.setState({last_name: e.target.value})
+                break;
+            case 'materialRegisterFormEmail':
+                this.setState({email: e.target.value})
+                break;
+            case 'materialRegisterFormPassword':
+                this.setState({password: e.target.value})
+                break;
+            case 'materialRegisterFormPhone':
+                this.setState({phone: e.target.value})
+                break;
+            case 'materialRegisterFormCNIC':
+                this.setState({cnic: e.target.value})
+                break;
+        }
+    }
+    on_role_select = (e) => {
+        switch(e.target.id){
+            case 'patientButton':
+                this.setState({role: 'patient'})
+                break;
+            case 'adminButton':
+                this.setState({role: 'admin'})
+                break;
+            case 'doctorButton':
+                this.setState({role: 'doctor'})
+                break;
+        }
+    }
+    on_submit = () => {
+        const data = {
+            first_name: this.state.first_name,
+            last_name: this.state.last_name,
+            email: this.state.email,
+            password: this.state.password,
+            phone_number: this.state.phone,
+            cnic: this.state.cnic,
+            role: this.state.role
+        }
+        this.setState({loading_status: true})
+        Axios.post(`${REGISTER_USER_REQUEST}`,data).then(res => {
+            console.log(res);
+            this.setState({loading_status:false})
+        })
+    }
     render() {
+        if (this.state.loading_status){
+            return (
+                <div className="mt-5">
+                    <div className="d-flex justify-content-center ">
+                            <Loader
+                                type="Rings"
+                                color="#00BFFF"
+                                height={150}
+                                width={150}
+                                timeout={60000} //60 secs
+
+                            />
+                    </div>
+                    <div className="d-flex justify-content-center">
+                        <p>Loading...</p>
+                    </div>
+                </div>
+            )
+        }
         return (
             <div className="container-fluid">
                 <div className="row">
@@ -12,45 +98,64 @@ class Register extends Component {
                                 <strong>Register</strong>
                             </h5>
                             <div className="card-body px-lg-5 pt-0">
-                                <form className="text-center" style={{ color: "#757575", action: "#!" }}>
+                                <form className="text-center" style={{ color: "#757575" }}>
                                     <div className="form-row">
                                         <div className="col">
                                             <div className="md-form">
-                                                <input type="text" id="materialRegisterFormFirstName" className="form-control" />
+                                                <input type="text" id="materialRegisterFormFirstName" onChange={this.on_text_field_change} className="form-control" />
                                                 <label for="materialRegisterFormFirstName">First name</label>
                                             </div>
                                         </div>
                                         <div className="col">
-
                                             <div className="md-form">
-                                                <input type="email" id="materialRegisterFormLastName" className="form-control" />
+                                                <input type="text" id="materialRegisterFormLastName" onChange={this.on_text_field_change} className="form-control" />
                                                 <label for="materialRegisterFormLastName">Last name</label>
                                             </div>
                                         </div>
                                     </div>
 
-
                                     <div className="md-form mt-0">
-                                        <input type="email" id="materialRegisterFormEmail" className="form-control" />
+                                        <input type="email" id="materialRegisterFormEmail" onChange={this.on_text_field_change} className="form-control" />
                                         <label for="materialRegisterFormEmail">E-mail</label>
                                     </div>
 
-
                                     <div className="md-form">
-                                        <input type="password" id="materialRegisterFormPassword" className="form-control" aria-describedby="materialRegisterFormPasswordHelpBlock" />
+                                        <input type="password" id="materialRegisterFormPassword" onChange={this.on_text_field_change} className="form-control" aria-describedby="materialRegisterFormPasswordHelpBlock" />
                                         <label for="materialRegisterFormPassword">Password</label>
                                         <small id="materialRegisterFormPasswordHelpBlock" className="form-text text-muted mb-4">
-                                            At least 8 characters and atleast 1 digit and special character
-                                </small>
+                                            Atleast 8 characters with 1 special character
+                                        </small>
                                     </div>
 
-
                                     <div className="md-form">
-                                        <input type="password" id="materialRegisterFormPhone" className="form-control" aria-describedby="materialRegisterFormPhoneHelpBlock" />
+                                        <input type="password" id="materialRegisterFormPhone" onChange={this.on_text_field_change} className="form-control" aria-describedby="materialRegisterFormPhoneHelpBlock" />
                                         <label for="materialRegisterFormPhone">Phone number</label>
                                         <small id="materialRegisterFormPhoneHelpBlock" className="form-text text-muted mb-4">
-                                            For two step authentication
-                                </small>
+                                            Your active phone number
+                                        </small>
+                                    </div>
+
+                                    <div className="md-form">
+                                        <input type="password" id="materialRegisterFormCNIC" onChange={this.on_text_field_change} className="form-control" aria-describedby="materialRegisterFormPhoneCNICBlock" />
+                                        <label for="materialRegisterFormCNIC">CNIC</label>
+                                        <small id="materialRegisterFormCNICHelpBlock" className="form-text text-muted mb-4">
+                                            Your information is secured with us.
+                                        </small>
+                                    </div>
+
+                                    <div className="d-flex justify-content-between">
+                                        <button className={`btn btn-outline-${this.state.role === 'patient'? 'danger':'info'} btn-rounded my-4 waves-effect z-depth-0`} 
+                                            onClick={this.on_role_select}
+                                            id="patientButton"
+                                            type="button">Patient</button>
+                                        <button className={`btn btn-outline-${this.state.role === 'doctor'? 'danger':'info'} btn-rounded my-4 waves-effect z-depth-0`}
+                                            onClick={this.on_role_select}
+                                            id="doctorButton"
+                                            type="button">Doctor</button>
+                                        <button className={`btn btn-outline-${this.state.role === 'admin'? 'danger':'info'} btn-rounded my-4 waves-effect z-depth-0`} 
+                                            onClick={this.on_role_select}
+                                            id="adminButton"
+                                            type="button">Admin</button>
                                     </div>
 
 
@@ -60,19 +165,17 @@ class Register extends Component {
                                     </div>
 
 
-                                    <button className="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0" type="submit">Sign up</button>
+                                    <button className="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0" 
+                                        onClick={this.on_submit}
+                                        type="button">Sign up</button>
 
                                     <hr />
 
 
                                     <p>By clicking <em>Sign up</em> you agree to our
-                                        <a href="" target="_blank"> terms of service</a>
+                                        <a href="/login" target="_blank"> terms of service</a>
                                     </p>
-
-
                                 </form>
-
-
                             </div>
                         </div>
                     </div>
