@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import Loader from 'react-loader-spinner';
 import Axios from 'axios';
 import { REGISTER_USER_REQUEST } from '../../shared/rest_end_points';
-import { ToastContainer, toast } from 'react-toastify';
+import { connect } from "react-redux";
+import { notify } from '../../actions'
+
 import 'react-toastify/dist/ReactToastify.css';
 
 class Register extends Component {
@@ -19,39 +21,6 @@ class Register extends Component {
             loading_status: false,
         }
     }
-    notify = (type, title, message) => {
-        switch (type) {
-            case 'success':
-                toast.success(message, {
-                    position: toast.POSITION.TOP_RIGHT,
-                    pauseOnFocusLoss: true
-                });
-                break;
-            case 'error':
-                toast.error(message, {
-                    position: toast.POSITION.TOP_RIGHT,
-                    pauseOnFocusLoss: true
-                });
-                break;
-            case 'warning':
-                toast.warn(message, {
-                    position: toast.POSITION.TOP_RIGHT,
-                    pauseOnFocusLoss: true
-                });
-                break;
-            case 'info':
-                toast.info(message, {
-                    position: toast.POSITION.TOP_RIGHT,
-                    pauseOnFocusLoss: true
-                });
-                break;
-            default:
-                toast(message, {
-                    position: toast.POSITION.TOP_RIGHT,
-                    pauseOnFocusLoss: true
-                });
-        }
-    };
     on_text_field_change = (e) => {
         switch (e.target.id) {
             case 'materialRegisterFormFirstName':
@@ -80,12 +49,15 @@ class Register extends Component {
         switch (e.target.id) {
             case 'patientButton':
                 this.setState({ role: 'patient' })
+                this.props.notify('default', '', 'You are signing up as patient')
                 break;
             case 'adminButton':
                 this.setState({ role: 'admin' })
+                this.props.notify('info', '', 'Admin signup will require verification')
                 break;
             case 'doctorButton':
                 this.setState({ role: 'doctor' })
+                this.props.notify('info', '', 'Doctor signup will require verification')
                 break;
             default:
                 break;
@@ -102,29 +74,29 @@ class Register extends Component {
             role: this.state.role
         }
         this.setState({ loading_status: true })
-        Axios.post(`${REGISTER_USER_REQUEST}`, data).then(res => {
-            console.log(res.data);
-
-            if (res.data['status']) {
-                setTimeout(() => {
-                    this.notify('success', '', res.data['message'])
-                    this.setState({ loading_sta     tus: false })
-                }, 5000)
-            }
-            else {
-                this.notify('error', '', res.data['message'])
-                setTimeout(() => {
-                    this.setState({ loading_status: false })
-                }, 3000)
-            }
-        }).catch(err => {
-            this.notify('error', '', err.data['message'])
-            setTimeout(() => {
-                this.setState({ loading_status: false })
-            }, 3000)
-        })
+        
+        // Axios.post(`${REGISTER_USER_REQUEST}`, data).then(res => {
+        //     if (res.data['status']) {
+        //         setTimeout(() => {
+        //             this.props.notify('success', '', res.data['message'])
+        //             this.setState({ loading_status: false })
+        //         }, 5000)
+        //     }
+        //     else {
+        //         this.props.notify('error', '', res.data['message'])
+        //         setTimeout(() => {
+        //             this.setState({ loading_status: false })
+        //         }, 3000)
+        //     }
+        // }).catch(err => {
+        //     this.props.notify('error', '', err.data['message'])
+        //     setTimeout(() => {
+        //         this.setState({ loading_status: false })
+        //     }, 3000)
+        // })
     }
     render() {
+        const role_selection_button_classes = "btn-rounded btn-block my-2 waves-effect z-depth-0"
         var status = ''
         if (this.state.loading_status) {
             status = <div className="mt-5">
@@ -145,8 +117,8 @@ class Register extends Component {
         else {
             status = <div className="container-fluid">
                 <div className="row">
-                    <div className="col-md-2 col-lg-4 col-sm-0"></div>
-                    <div className="col-md-8 col-lg-4 col-sm-12">
+                    <div className="col-md-2 col-lg-3 col-sm-0"></div>
+                    <div className="col-md-8 col-lg-6 col-sm-12">
                         <div className="card mt-5">
                             <h5 className="card-header info-color white-text text-center py-4">
                                 <strong>Register</strong>
@@ -194,25 +166,35 @@ class Register extends Component {
                                         <label for="materialRegisterFormCNIC">CNIC</label>
                                         <small id="materialRegisterFormCNICHelpBlock" className="form-text text-muted mb-4">
                                             Your information is secured with us.
-                                    </small>
+                                        </small>
                                     </div>
 
-                                    <div className="d-flex justify-content-between">
-                                        <button className={`btn btn-outline-${this.state.role === 'patient' ? 'danger' : 'info'} btn-rounded my-4 waves-effect z-depth-0`}
-                                            onClick={this.on_role_select}
-                                            id="patientButton"
-                                            type="button">Patient</button>
-                                        <button className={`btn btn-outline-${this.state.role === 'doctor' ? 'danger' : 'info'} btn-rounded my-4 waves-effect z-depth-0`}
-                                            onClick={this.on_role_select}
-                                            id="doctorButton"
-                                            type="button">Doctor</button>
-                                        <button className={`btn btn-outline-${this.state.role === 'admin' ? 'danger' : 'info'} btn-rounded my-4 waves-effect z-depth-0`}
-                                            onClick={this.on_role_select}
-                                            id="adminButton"
-                                            type="button">Admin</button>
+                                    <div className="border border-info mb-2">
+                                        <small className="form-text text-muted">
+                                            Pick one role from these options
+                                        </small>
+                                        <div className="row mx-1">
+                                            <div className="col-lg-4 col-md-4 col-sm-12">
+                                                <button className={`btn btn-outline-${this.state.role === 'patient' ? 'danger' : 'info'} ${role_selection_button_classes}`}
+                                                    onClick={this.on_role_select}
+                                                    id="patientButton"
+                                                    type="button">Patient</button>
+                                            </div>
+                                            <div className="col-lg-4 col-md-4 col-sm-12">
+                                                <button className={`btn btn-outline-${this.state.role === 'doctor' ? 'danger' : 'info'} ${role_selection_button_classes}`}
+                                                    onClick={this.on_role_select}
+                                                    id="doctorButton"
+                                                    type="button">Doctor</button>
+                                            </div>
+                                            <div className="col-lg-4 col-md-4 col-sm-12">
+                                                <button className={`btn btn-outline-${this.state.role === 'admin' ? 'danger' : 'info'} ${role_selection_button_classes}`}
+                                                    onClick={this.on_role_select}
+                                                    id="adminButton"
+                                                    type="button">Admin</button>
+                                            </div>
+
+                                        </div>
                                     </div>
-
-
                                     <div className="form-check">
                                         <input type="checkbox" className="form-check-input" id="materialRegisterFormNewsletter" />
                                         <label className="form-check-label" for="materialRegisterFormNewsletter">Agree to the terms and conditions</label>
@@ -233,14 +215,14 @@ class Register extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-8 col-lg-4 col-sm-0"></div>
+                    <div className="col-md-8 col-lg-3 col-sm-0"></div>
                 </div>
 
             </div>
         }
         return (
             <div className="">
-                <ToastContainer />
+
                 {
                     status
                 }
@@ -248,4 +230,7 @@ class Register extends Component {
         );
     }
 }
-export default Register;
+function map_state_to_props(notify) {
+    return { notify }
+}
+export default connect(map_state_to_props, { notify })(Register);
