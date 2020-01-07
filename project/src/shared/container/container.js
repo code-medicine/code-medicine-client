@@ -6,11 +6,11 @@ class Container extends Component {
     render(){
         return(
             <div>
-                <Header/>
+                {this.props.header? <Header/>: ''}
                 {
                     this.props.children
                 }
-                <Footer/>
+                {this.props.header? <Footer/>: ''}
             </div>
         );
     }
