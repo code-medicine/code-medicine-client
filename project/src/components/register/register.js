@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { LOGIN_URL } from '../../shared/router_constants';
 import Container from '../../shared/container/container';
 import './register.css'
+import Modal from 'react-bootstrap4-modal';
 
 class Register extends Component {
     constructor(props) {
@@ -21,6 +22,7 @@ class Register extends Component {
             phone: '',
             cnic: '',
             loading_status: false,
+            role_select_modal_visibility: false
         }
     }
     on_text_field_change = (e) => {
@@ -69,69 +71,69 @@ class Register extends Component {
         var status = true;
         var alphabets = /^[A-Za-z]+$/;
         var numbers = /^[0-9]+$/;
-        if (data.first_name === ''){
-            this.props.notify('error','','First Name is required!');
+        if (data.first_name === '') {
+            this.props.notify('error', '', 'First Name is required!');
             status = false;
         }
-        else{
-            if (!data.first_name.match(alphabets)){
-                this.props.notify('error','',"First Name can only have alphabets!");
+        else {
+            if (!data.first_name.match(alphabets)) {
+                this.props.notify('error', '', "First Name can only have alphabets!");
                 status = false;
             }
         }
-        if (data.last_name === ''){
-            this.props.notify('error','','Last Name is required!');
+        if (data.last_name === '') {
+            this.props.notify('error', '', 'Last Name is required!');
             status = false;
         }
-        else{
-            if (!data.last_name.match(alphabets)){
-                this.props.notify('error','',"Last Name can only have alphabets!");
+        else {
+            if (!data.last_name.match(alphabets)) {
+                this.props.notify('error', '', "Last Name can only have alphabets!");
                 status = false;
             }
         }
-        if (data.email === ''){
-            this.props.notify('error','','Email is required!');
+        if (data.email === '') {
+            this.props.notify('error', '', 'Email is required!');
             status = false;
         }
-        if (data.password === ''){
-            this.props.notify('error','','Please specify a password to secure your account!')
+        if (data.password === '') {
+            this.props.notify('error', '', 'Please specify a password to secure your account!')
             status = false
         }
-        if (data.cnic === ''){
-            this.props.notify('error','','Please specify your CNIC!');
+        if (data.cnic === '') {
+            this.props.notify('error', '', 'Please specify your CNIC!');
             status = false;
         }
-        if (data.phone_number === ''){
-            this.props.notify('error','','Please specify your phone number!');
+        if (data.phone_number === '') {
+            this.props.notify('error', '', 'Please specify your phone number!');
             status = false;
         }
-        else{
-            if (!data.phone_number.match(numbers)){
-                this.props.notify('error','','Phone number is invalid!');
+        else {
+            if (!data.phone_number.match(numbers)) {
+                this.props.notify('error', '', 'Phone number is invalid!');
                 status = false;
             }
         }
-        if (data.role === ''){
-            this.props.notify('error','','Please select one of the roles!');
+        if (data.role === '') {
+            this.props.notify('error', '', 'Please select one of the roles!');
         }
         return status; // all clear. no false condition :)
     }
     __check_hard_constraints = (data) => {
         var status = true;
-        if (!data.email.includes('@')){
-            this.props.notify('error','',data.email + ' Invalid email!');
+        if (!data.email.includes('@')) {
+            this.props.notify('error', '', data.email + ' Invalid email!');
             status = false;
         }
-        if (data.password.length < 8){
-            this.props.notify('error','','Password must have atleast 8 characters!');
+        if (data.password.length < 8) {
+            this.props.notify('error', '', 'Password must have atleast 8 characters!');
             status = false
         }
-        if (data.phone_number.length < 11){
-            this.props.notify('error','','Invalid Phone number!');
+        if (data.phone_number.length < 11) {
+            this.props.notify('error', '', 'Invalid Phone number!');
             status = false
         }
         if (data.cnic.length < 13) {
-            this.props.notify('error','','Invalid CNIC number!');
+            this.props.notify('error', '', 'Invalid CNIC number!');
             status = false
         }
         return status;
@@ -146,14 +148,21 @@ class Register extends Component {
             cnic: this.state.cnic.trim(),
             role: this.state.role.trim()
         }
-        if (this.__check_soft_constraints(data) && this.__check_hard_constraints(data)){
-            return
+        if (this.__check_soft_constraints(data) && this.__check_hard_constraints(data)) {
             this.setState({ loading_status: true })
             Axios.post(`${REGISTER_USER_REQUEST}`, data).then(res => {
                 if (res.data['status']) {
                     setTimeout(() => {
                         this.props.notify('success', '', res.data['message'])
-                        this.setState({ loading_status: false })
+                        this.setState({ loading_status: false,
+                            email: '',
+                            password: '',
+                            first_name: '',
+                            last_name: '',
+                            phone_number: '',
+                            cnic: '',
+                            role: ''
+                        })
                     }, 5000)
                 }
                 else {
@@ -170,15 +179,15 @@ class Register extends Component {
                 }, 3000)
             })
         }
-        else{
-            this.props.notify('info','','Registartion unsuccessfull!');
+        else {
+            this.props.notify('info', '', 'Registartion unsuccessfull!');
         }
     }
     render() {
         const role_selection_button_classes = "btn-rounded btn-block my-2 waves-effect z-depth-0"
         var status = ''
         if (this.state.loading_status) {
-            status = <div className="mt-5">
+            status = <div className="mt-3">
                 <div className="d-flex justify-content-center ">
                     <Loader
                         type="Rings"
@@ -198,53 +207,53 @@ class Register extends Component {
                 <div className="row">
                     <div className="col-md-2 col-lg-3 col-sm-0"></div>
                     <div className="col-md-8 col-lg-6 col-sm-12">
-                        <div className="card mt-5">
+                        <div className="card mt-3">
                             <h5 className="card-header info-color white-text text-center py-4">
                                 <strong>Register</strong>
                             </h5>
                             <div className="card-body px-lg-5 pt-0">
-                                <form className="text-center" style={{ color: "#757575"}}>
+                                <form className="text-center" style={{ color: "#757575" }}>
                                     <div className="form-row">
                                         <div className="col">
                                             <div className="md-form">
-                                                <input 
-                                                    type="text" 
-                                                    id="materialRegisterFormFirstName" 
-                                                    onChange={this.on_text_field_change} 
-                                                    className="form-control" 
-                                                    value={this.state.first_name}/>
+                                                <input
+                                                    type="text"
+                                                    id="materialRegisterFormFirstName"
+                                                    onChange={this.on_text_field_change}
+                                                    className="form-control"
+                                                    value={this.state.first_name} />
                                                 <label for="materialRegisterFormFirstName">First name</label>
                                             </div>
                                         </div>
                                         <div className="col">
                                             <div className="md-form">
-                                                <input 
-                                                    type="text" 
-                                                    id="materialRegisterFormLastName" 
-                                                    onChange={this.on_text_field_change} 
-                                                    className="form-control" 
-                                                    value={this.state.last_name}/>
+                                                <input
+                                                    type="text"
+                                                    id="materialRegisterFormLastName"
+                                                    onChange={this.on_text_field_change}
+                                                    className="form-control"
+                                                    value={this.state.last_name} />
                                                 <label for="materialRegisterFormLastName">Last name</label>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="md-form mt-0">
-                                        <input 
-                                            type="email" 
-                                            id="materialRegisterFormEmail" 
-                                            onChange={this.on_text_field_change} 
+                                        <input
+                                            type="email"
+                                            id="materialRegisterFormEmail"
+                                            onChange={this.on_text_field_change}
                                             className="form-control"
                                             value={this.state.email} />
                                         <label for="materialRegisterFormEmail">E-mail</label>
                                     </div>
 
                                     <div className="md-form">
-                                        <input 
-                                            type="password" 
-                                            id="materialRegisterFormPassword" 
-                                            onChange={this.on_text_field_change} 
-                                            className="form-control" 
+                                        <input
+                                            type="password"
+                                            id="materialRegisterFormPassword"
+                                            onChange={this.on_text_field_change}
+                                            className="form-control"
                                             aria-describedby="materialRegisterFormPasswordHelpBlock"
                                             value={this.state.password} />
                                         <label for="materialRegisterFormPassword">Password</label>
@@ -254,13 +263,13 @@ class Register extends Component {
                                     </div>
 
                                     <div className="md-form">
-                                        <input 
-                                            type="number" 
-                                            id="materialRegisterFormPhone" 
-                                            onChange={this.on_text_field_change} 
-                                            className="form-control" 
-                                            aria-describedby="materialRegisterFormPhoneHelpBlock" 
-                                            value={this.state.phone_number}/>
+                                        <input
+                                            type="number"
+                                            id="materialRegisterFormPhone"
+                                            onChange={this.on_text_field_change}
+                                            className="form-control"
+                                            aria-describedby="materialRegisterFormPhoneHelpBlock"
+                                            value={this.state.phone_number} />
                                         <label for="materialRegisterFormPhone">Phone number</label>
                                         <small id="materialRegisterFormPhoneHelpBlock" className="form-text text-muted mb-4">
                                             Your active phone number
@@ -268,11 +277,11 @@ class Register extends Component {
                                     </div>
 
                                     <div className="md-form">
-                                        <input 
-                                            type="number" 
-                                            id="materialRegisterFormCNIC" 
-                                            onChange={this.on_text_field_change} 
-                                            className="form-control" 
+                                        <input
+                                            type="number"
+                                            id="materialRegisterFormCNIC"
+                                            onChange={this.on_text_field_change}
+                                            className="form-control"
                                             aria-describedby="materialRegisterFormPhoneCNICBlock"
                                             value={this.state.cnic} />
                                         <label for="materialRegisterFormCNIC">CNIC</label>
@@ -281,44 +290,44 @@ class Register extends Component {
                                         </small>
                                     </div>
 
-                                    <div className="border border-info pb-3 mb-2">
-                                        <small className="form-text text-muted">
-                                            Pick one role from these options
-                                        </small>
-                                        <div className="row mx-1">
-                                            <div className="col-lg-4 col-md-4 col-sm-12">
-                                                <button className={`btn btn-outline-${this.state.role === 'patient' ? 'danger' : 'info'} ${role_selection_button_classes}`}
-                                                    onClick={this.on_role_select}
-                                                    id="patientButton"
-                                                    type="button">Patient</button>
-                                            </div>
-                                            <div className="col-lg-4 col-md-4 col-sm-12">
-                                                <button className={`btn btn-outline-${this.state.role === 'doctor' ? 'danger' : 'info'} ${role_selection_button_classes}`}
-                                                    onClick={this.on_role_select}
-                                                    id="doctorButton"
-                                                    type="button">Doctor</button>
-                                            </div>
-                                            <div className="col-lg-4 col-md-4 col-sm-12">
-                                                <button className={`btn btn-outline-${this.state.role === 'admin' ? 'danger' : 'info'} ${role_selection_button_classes}`}
-                                                    onClick={this.on_role_select}
-                                                    id="adminButton"
-                                                    type="button">Admin</button>
-                                            </div>
+                                    <hr />
 
+                                    <div className="">
+                                        <div className="row">
+                                            <div className="col-lg-6 col-md-12 col-sm-12">
+                                                <small className="form-text text-muted text-center m-1">
+                                                    Please select a role
+                                                </small>
+                                            </div>
+                                            <div className="col-lg-6 col-md-12 col-sm-12">
+                                                <button className={`btn btn-outline-info btn-rounded btn-block waves-effect z-depth-0 m`}
+                                                    onClick={() => this.setState({
+                                                        role_select_modal_visibility:true
+                                                    })}
+                                                    type="button">
+                                                        Select Role
+                                                </button>
+                                            </div>
+                                            
                                         </div>
                                     </div>
+                                    
+                                    <hr />
+
                                     <div className="form-check">
                                         <input type="checkbox" className="form-check-input" id="materialRegisterFormNewsletter" />
-                                        <label className="form-check-label" for="materialRegisterFormNewsletter">Agree to the terms and conditions</label>
+                                        <label className="form-check-label" for="materialRegisterFormNewsletter">
+                                            Agree to the terms and conditions
+                                        </label>
                                     </div>
-
 
                                     <button className="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0"
                                         onClick={this.on_submit}
-                                        type="button">Sign up</button>
+                                        type="button">
+                                        Sign up
+                                    </button>
 
                                     <hr />
-
 
                                     <p>By clicking <em>Sign up</em> you agree to our
                                     <a href="/login" target="_blank"> terms of service</a>
@@ -337,6 +346,52 @@ class Register extends Component {
                 {
                     status
                 }
+                <Modal
+                    visible={this.state.role_select_modal_visibility}
+                    onClickBackdrop={this.modalBackdropClicked}>
+                    <div className="modal-header">
+                        <h5 className="modal-title">Select your role</h5>
+                    </div>
+                    <div className="modal-body">
+                        <div className="text-center">
+                            <div className="d-flex">
+                                <div className="p-2 flex-fill">
+                                    <button className={`btn btn-outline-${this.state.role === 'patient' ? 'danger' : 'info'} ${role_selection_button_classes}`}
+                                        onClick={this.on_role_select}
+                                        id="patientButton"
+                                        type="button">
+                                        Patient
+                                    </button>
+                                </div>
+                                <div className="p-2 flex-fill">
+                                    <button className={`btn btn-outline-${this.state.role === 'doctor' ? 'danger' : 'info'} ${role_selection_button_classes}`}
+                                        onClick={this.on_role_select}
+                                        id="doctorButton"
+                                        type="button">
+                                        Doctor
+                                    </button>
+                                </div>
+                                <div className="p-2 flex-fill">
+                                    <button className={`btn btn-outline-${this.state.role === 'admin' ? 'danger' : 'info'} ${role_selection_button_classes}`}
+                                        onClick={this.on_role_select}
+                                        id="adminButton"
+                                        type="button">
+                                        Admin
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal-footer">
+                        <button type="button" className="btn btn-primary" onClick={() => this.setState({role_select_modal_visibility: false})}>
+                            Accept
+                        </button>
+                        <button type="button" className="btn btn-outline-dark" onClick={() => this.setState({role_select_modal_visibility: false, role: ''})}>
+                            Cancel
+                        </button>
+                    </div>
+                </Modal>
             </Container>
         );
     }

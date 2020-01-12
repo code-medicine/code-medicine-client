@@ -10,7 +10,7 @@ class Container extends Component {
                 {
                     this.props.children
                 }
-                {this.props.header? <Footer/>: ''}
+                {this.props.footer? <Footer/>: ''}
             </div>
         );
     }
