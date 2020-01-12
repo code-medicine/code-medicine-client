@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import Container from '../../shared/container/container';
-import { LOGIN_URL } from '../../shared/router_constants';
+import { LOGIN_URL, BASE_URL } from '../../shared/router_constants';
 import Axios from 'axios';
 import { LOGIN_USER_REQUEST } from '../../shared/rest_end_points';
+import { connect } from "react-redux";
+import { notify } from '../../actions'
 
 class Login extends Component {
 
@@ -40,7 +42,11 @@ class Login extends Component {
         Axios.post(LOGIN_USER_REQUEST,data).then(res => {
             if (res.data['status']){
                 localStorage.setItem("user_token",res.data['token'])
-                
+                this.props.notify('success','',"successfully logged in")
+                this.props.history.push(BASE_URL)
+            }
+            else{
+                this.props.notify('error','',"unsuccessfully login credantials")
             }
         });
     }
