@@ -184,7 +184,7 @@ class Register extends Component {
         }
     }
     render() {
-        const role_selection_button_classes = "btn-rounded btn-block my-2 waves-effect z-depth-0"
+        const role_selection_button_classes = "btn-rounded my-2 waves-effect z-depth-0"
         var status = ''
         if (this.state.loading_status) {
             status = <div className="mt-3">
@@ -300,7 +300,7 @@ class Register extends Component {
                                                 </small>
                                             </div>
                                             <div className="col-lg-6 col-md-12 col-sm-12">
-                                                <button className={`btn btn-outline-info btn-rounded btn-block waves-effect z-depth-0 m`}
+                                                <button className={`btn btn-outline-info btn-block ${role_selection_button_classes}`}
                                                     onClick={() => this.setState({
                                                         role_select_modal_visibility:true
                                                     })}
@@ -321,7 +321,7 @@ class Register extends Component {
                                         </label>
                                     </div>
 
-                                    <button className="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0"
+                                    <button className={`btn btn-outline-info btn-block ${role_selection_button_classes}`}
                                         onClick={this.on_submit}
                                         type="button">
                                         Sign up
@@ -384,10 +384,10 @@ class Register extends Component {
                         </div>
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-primary" onClick={() => this.setState({role_select_modal_visibility: false})}>
+                        <button type="button" className={`btn btn-outline-info ${role_selection_button_classes}`} onClick={() => this.setState({role_select_modal_visibility: false})}>
                             Accept
                         </button>
-                        <button type="button" className="btn btn-outline-dark" onClick={() => this.setState({role_select_modal_visibility: false, role: ''})}>
+                        <button type="button" className={`btn btn-outline-dark ${role_selection_button_classes}`} onClick={() => this.setState({role_select_modal_visibility: false, role: ''})}>
                             Cancel
                         </button>
                     </div>

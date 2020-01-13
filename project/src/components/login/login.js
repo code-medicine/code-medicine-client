@@ -56,6 +56,11 @@ class Login extends Component {
                 }
             }, 5000)
             
+        }).catch(err => {
+            this.props.notify('error','', 'Server not responding! please try again later')
+            setTimeout(() => {
+                this.setState({ loading_status: false })
+            }, 3000);
         });
     }
 
