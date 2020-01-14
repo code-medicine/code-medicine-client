@@ -59,7 +59,11 @@ class Login extends Component {
         }).catch(err => {
             this.props.notify('error','', 'Server not responding! please try again later')
             setTimeout(() => {
-                this.setState({ loading_status: false })
+                this.setState({ 
+                    loading_status: false,
+                    email: '',
+                    password: ''
+                })
             }, 3000);
         });
     }
@@ -162,7 +166,7 @@ class Login extends Component {
         }
 
         return (
-            <Container header={false} footer={true}>
+            <Container container_type={'login'}>
                 {
                     view
                 }

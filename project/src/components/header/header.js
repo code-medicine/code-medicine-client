@@ -1,43 +1,128 @@
 import React, { Component } from 'react';
+import { BASE_URL } from '../../shared/router_constants';
+import Logo_light from './logo_light.png';
+import Logo_dark from './logo_dark.png';
 
 class Header extends Component {
     render() {
         return (
-            <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-                <a className="navbar-brand" href="/home">Code-medicine</a>
-                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
 
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul className="navbar-nav mr-auto">
-                        <li className="nav-item active">
-                            <a className="nav-link" href="/login">Home <span className="sr-only">(current)</span></a>
-                        </li>
+            <div className="navbar navbar-expand-md navbar-dark fixed-top">
+                <div className="navbar-brand">
+                    <a href="index.html" className="d-inline-block">
+                        <img src={Logo_light} alt="" />
+                    </a>
+                </div>
+
+                <div className="d-md-none">
+                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-mobile">
+                        <i className="icon-tree5"></i>
+                    </button>
+                    <button className="navbar-toggler sidebar-mobile-main-toggle" type="button">
+                        <i className="icon-paragraph-justify3"></i>
+                    </button>
+                </div>
+
+                <div className="collapse navbar-collapse" id="navbar-mobile">
+                    <ul className="navbar-nav">
                         <li className="nav-item">
-                            <a className="nav-link" href="/login">Link</a>
-                        </li>
-                        <li className="nav-item dropdown">
-                            <a className="nav-link dropdown-toggle" href="/login" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Dropdown
+                            <a href="#" className="navbar-nav-link sidebar-control sidebar-main-toggle d-none d-md-block">
+                                <i className="icon-paragraph-justify3"></i>
                             </a>
-                            <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a className="dropdown-item" href="/login">Signin</a>
-                                <a className="dropdown-item" href="/register">Signup</a>
-                                <div className="dropdown-divider"></div>
-                                <a className="dropdown-item" href="/login">Something else here</a>
+                        </li>
+
+                        <li className="nav-item dropdown">
+                            <a href="#" className="navbar-nav-link dropdown-toggle caret-0" data-toggle="dropdown">
+                                <i className="icon-git-compare"></i>
+                                <span className="d-md-none ml-2">Git updates</span>
+                                <span className="badge badge-pill bg-warning-400 ml-auto ml-md-0">9</span>
+                            </a>
+
+                            <div className="dropdown-menu dropdown-content wmin-md-350">
+                                <div className="dropdown-content-header">
+                                    <span className="font-weight-semibold">Git updates</span>
+                                    <a href="#" className="text-default"><i className="icon-sync"></i></a>
+                                </div>
+
+                                <div className="dropdown-content-body dropdown-scrollable">
+                                    <ul className="media-list">
+                                        <li className="media">
+                                            <div className="mr-3">
+                                                <a href="#" className="btn bg-transparent border-primary text-primary rounded-round border-2 btn-icon"><i className="icon-git-pull-request"></i></a>
+                                            </div>
+
+                                            <div className="media-body">
+                                                Drop the IE <a href="#">specific hacks</a> for temporal inputs
+										<div className="text-muted font-size-sm">4 minutes ago</div>
+                                            </div>
+                                        </li>
+
+                                        <li className="media">
+                                            <div className="mr-3">
+                                                <a href="#" className="btn bg-transparent border-warning text-warning rounded-round border-2 btn-icon"><i className="icon-git-commit"></i></a>
+                                            </div>
+
+                                            <div className="media-body">
+                                                Add full font overrides for popovers and tooltips
+										<div className="text-muted font-size-sm">36 minutes ago</div>
+                                            </div>
+                                        </li>
+
+                                        <li className="media">
+                                            <div className="mr-3">
+                                                <a href="#" className="btn bg-transparent border-info text-info rounded-round border-2 btn-icon"><i className="icon-git-branch"></i></a>
+                                            </div>
+
+                                            <div className="media-body">
+                                                <a href="#">Chris Arney</a> created a new <span className="font-weight-semibold">Design</span> branch
+										<div className="text-muted font-size-sm">2 hours ago</div>
+                                            </div>
+                                        </li>
+
+                                        <li className="media">
+                                            <div className="mr-3">
+                                                <a href="#" className="btn bg-transparent border-success text-success rounded-round border-2 btn-icon"><i className="icon-git-merge"></i></a>
+                                            </div>
+
+                                            <div className="media-body">
+                                                <a href="#">Eugene Kopyov</a> merged <span className="font-weight-semibold">Master</span> and <span className="font-weight-semibold">Dev</span> branches
+										<div className="text-muted font-size-sm">Dec 18, 18:36</div>
+                                            </div>
+                                        </li>
+
+                                        <li className="media">
+                                            <div className="mr-3">
+                                                <a href="#" className="btn bg-transparent border-primary text-primary rounded-round border-2 btn-icon"><i className="icon-git-pull-request"></i></a>
+                                            </div>
+
+                                            <div className="media-body">
+                                                Have Carousel ignore keyboard events
+										        <div className="text-muted font-size-sm">Dec 12, 05:46</div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div className="dropdown-content-footer bg-light">
+                                    <a href="#" className="text-grey mr-auto">All updates</a>
+                                    <div>
+                                        <a href="#" className="text-grey" data-popup="tooltip" title="Mark all as read"><i className="icon-radio-unchecked"></i></a>
+                                        <a href="#" className="text-grey ml-2" data-popup="tooltip" title="Bug tracker"><i className="icon-bug2"></i></a>
+                                    </div>
+                                </div>
                             </div>
                         </li>
-                        <li className="nav-item">
-                            <a className="nav-link disabled" href="/login" tabIndex="-1" aria-disabled="true">Disabled</a>
-                        </li>
                     </ul>
-                    <form className="form-inline my-2 my-lg-0">
-                        <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-                        <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </form>
+
+                    <ul className="navbar-nav">
+                        
+                        
+                    </ul>
                 </div>
-            </nav>
+            </div>
+
+
+
         );
     }
 }

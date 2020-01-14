@@ -35,7 +35,7 @@ class Home extends Component {
 
     render(){
         return(
-            <Container header={true} footer={true}>
+            <Container container_type={'home'}>
                 <button className="btn btn-primary">Hello</button>
             </Container>
         );
