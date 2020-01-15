@@ -3,6 +3,8 @@ import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
 import Left_sidebar from '../left_sidebar/left_sidebar';
 import Page_header from '../page_header/page_header';
+import { connect } from "react-redux";
+
 
 class Container extends Component {
     constructor(props){
@@ -36,7 +38,7 @@ class Container extends Component {
             page_header = true
         }
         return (
-            <Fragment>
+            <div className={`virtual-body navbar-top ${this.props.left_sidebar? 'sidebar-xs':''}`}>
                 {header? <Header /> : ''}
                 <div className="page-content">
 
@@ -54,8 +56,13 @@ class Container extends Component {
                         {footer? <Footer /> : ''}
                     </div>
                 </div>
-            </Fragment>
+            </div>
         );
     }
 }
-export default Container;
+function map_state_to_props(state) {
+    return { 
+        left_sidebar: state.left_sidebar
+     }
+}
+export default connect(map_state_to_props)(Container);

@@ -4,7 +4,7 @@ import { LOGIN_URL, BASE_URL } from '../../shared/router_constants';
 import Axios from 'axios';
 import { LOGIN_USER_REQUEST } from '../../shared/rest_end_points';
 import { connect } from "react-redux";
-import { notify } from '../../actions';
+import { notify, set_active_user } from '../../actions';
 import Loader from 'react-loader-spinner';
 
 
@@ -47,7 +47,7 @@ class Login extends Component {
             setTimeout(() => {
                 this.setState({ loading_status: false })
                 if (res.data['status']){
-                    localStorage.setItem("user_token",res.data['token'])
+                    localStorage.setItem("user",res.data['token'])
                     this.props.notify('success','', res.data['message'])
                     this.props.history.push(BASE_URL)
                 }
@@ -73,7 +73,7 @@ class Login extends Component {
 
         var view = ''
         if (this.state.loading_status){
-        view = <div className="mt-3">
+            view = <div className="mt-3">
                 <div className="d-flex justify-content-center ">
                     <Loader
                         type="Rings"
@@ -174,7 +174,10 @@ class Login extends Component {
         );
     }
 }
-function map_state_to_props(notify) {
-    return { notify }
+function map_state_to_props(state) {
+    return { 
+        notify: state.notify,
+        active_user: state.active_user,
+     }
 }
-export default connect(map_state_to_props, { notify })(Login);
+export default connect(map_state_to_props, { notify, set_active_user })(Login);

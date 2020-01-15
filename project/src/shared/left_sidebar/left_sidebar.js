@@ -1,7 +1,26 @@
 import React, { Component } from 'react';
-import { BASE_URL } from '../router_constants';
+import { BASE_URL, PROFILE } from '../router_constants';
+import { connect } from "react-redux";
+
 
 class Left_sidebar extends Component {
+
+    componentDidMount(){
+        console.log(this.props.active_user);
+    }
+
+    on_button_click = (e) => {
+        switch(e.target.id){
+            case 'dashboard_button':
+                this.props.history.push(BASE_URL);
+                break;
+            case 'profile_button':
+                this.props.history.push(PROFILE);
+                break;
+            default:
+                break;
+        }
+    }
     render() {
         return (
             < div className="sidebar sidebar-dark sidebar-main sidebar-fixed sidebar-expand-md" >
@@ -18,9 +37,6 @@ class Left_sidebar extends Component {
                     </a>
                 </div>
 
-
-
-
                 <div className="sidebar-content">
                     <div className="sidebar-user">
                         <div className="card-body">
@@ -32,9 +48,11 @@ class Left_sidebar extends Component {
                                 </div>
 
                                 <div className="media-body">
-                                    <div className="media-title font-weight-semibold">Farrukh Shahid</div>
+                                    <div className="media-title font-weight-semibold">
+                                        {this.props.active_user['first_name']} {this.props.active_user['last_name']}                                 
+                                    </div>
                                     <div className="font-size-xs opacity-50">
-                                        <i className="icon-pin font-size-sm"></i> &nbsp;Santa Ana, CA
+                                        <i className="icon-pin font-size-sm"></i> &nbsp;Islamabad, Pakistan
                                     </div>
                                 </div>
 
@@ -49,7 +67,19 @@ class Left_sidebar extends Component {
 
 
                     <div className="card card-sidebar-mobile">
-                        
+                        <ul className="nav nav-sidebar">
+                            <li className="nav-item-header">
+                                <div className="text-uppercase font-size-xs line-height-xs">
+                                    Main
+                                </div>
+                            </li>
+                            <li className="nav-item">
+                                <button className="btn btn-dark btn-block nav-link" id="dashboard_button" onClick={this.on_button_click}>Dashboard</button>
+                            </li>
+                            <li className="nav-item">
+                                <button className="btn btn-dark btn-block nav-link" id="profile_button" onClick={this.on_button_click}>Profile</button>
+                            </li>
+                        </ul>
                     </div>
 
 
@@ -60,4 +90,9 @@ class Left_sidebar extends Component {
         );
     }
 }
-export default Left_sidebar;
+function map_state_to_props(state) {
+    return { 
+        active_user: state.active_user
+    }
+}
+export default connect(map_state_to_props)(Left_sidebar);

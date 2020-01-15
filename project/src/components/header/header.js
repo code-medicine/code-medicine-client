@@ -2,8 +2,27 @@ import React, { Component } from 'react';
 import { BASE_URL } from '../../shared/router_constants';
 import Logo_light from './logo_light.png';
 import Logo_dark from './logo_dark.png';
+import { connect } from "react-redux";
+import { notify, left_sidebar_controls } from '../../actions';
 
 class Header extends Component {
+
+    constructor(props){
+        super(props);
+            this.state = {
+                
+            };
+    }
+
+    on_sidebar_control_button_click = () => {
+        if (this.props.left_sidebar === true){
+            this.props.left_sidebar_controls(false)
+        }
+        else{
+            this.props.left_sidebar_controls(true)
+        }
+    }
+
     render() {
         return (
 
@@ -18,7 +37,7 @@ class Header extends Component {
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-mobile">
                         <i className="icon-tree5"></i>
                     </button>
-                    <button className="navbar-toggler sidebar-mobile-main-toggle" type="button">
+                    <button className="navbar-toggler sidebar-mobile-main-toggle" onClick={this.on_sidebar_control_button_click} type="button">
                         <i className="icon-paragraph-justify3"></i>
                     </button>
                 </div>
@@ -26,7 +45,7 @@ class Header extends Component {
                 <div className="collapse navbar-collapse" id="navbar-mobile">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <a href="#" className="navbar-nav-link sidebar-control sidebar-main-toggle d-none d-md-block">
+                            <a onClick={this.on_sidebar_control_button_click} className="navbar-nav-link sidebar-control sidebar-main-toggle d-none d-md-block">
                                 <i className="icon-paragraph-justify3"></i>
                             </a>
                         </li>
@@ -126,4 +145,9 @@ class Header extends Component {
         );
     }
 }
-export default Header;
+function map_state_to_props(state) {
+    return { 
+        left_sidebar: state.left_sidebar
+    }
+}
+export default connect(map_state_to_props, { left_sidebar_controls })(Header);
