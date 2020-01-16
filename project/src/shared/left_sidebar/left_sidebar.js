@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BASE_URL, PROFILE } from '../router_constants';
 import { connect } from "react-redux";
-
+import { Link, withRouter } from 'react-router-dom';
 
 class Left_sidebar extends Component {
 
@@ -74,10 +74,10 @@ class Left_sidebar extends Component {
                                 </div>
                             </li>
                             <li className="nav-item">
-                                <button className="btn btn-dark btn-block nav-link" id="dashboard_button" onClick={this.on_button_click}>Dashboard</button>
+                                <Link className="nav-link" to={BASE_URL}>Dashboard</Link>
                             </li>
                             <li className="nav-item">
-                                <button className="btn btn-dark btn-block nav-link" id="profile_button" onClick={this.on_button_click}>Profile</button>
+                                <Link className="nav-link" to={PROFILE}>Profile</Link>
                             </li>
                         </ul>
                     </div>
@@ -95,4 +95,4 @@ function map_state_to_props(state) {
         active_user: state.active_user
     }
 }
-export default connect(map_state_to_props)(Left_sidebar);
+export default connect(map_state_to_props)(withRouter(Left_sidebar));
