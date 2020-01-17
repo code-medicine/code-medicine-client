@@ -9,17 +9,8 @@ class Left_sidebar extends Component {
         console.log(this.props.active_user);
     }
 
-    on_button_click = (e) => {
-        switch(e.target.id){
-            case 'dashboard_button':
-                this.props.history.push(BASE_URL);
-                break;
-            case 'profile_button':
-                this.props.history.push(PROFILE);
-                break;
-            default:
-                break;
-        }
+    on_logout_button_click = () => {
+        localStorage.clear()
     }
     render() {
         return (
@@ -27,14 +18,14 @@ class Left_sidebar extends Component {
 
 
                 <div className="sidebar-mobile-toggler text-center">
-                    <a href="#" className="sidebar-mobile-main-toggle">
+                    <Link to={BASE_URL}  className="sidebar-mobile-main-toggle">
                         <i className="icon-arrow-left8"></i>
-                    </a>
+                    </Link>
                     Menu
-                    <a href="#" className="sidebar-mobile-expand">
+                    <Link to={BASE_URL}  className="sidebar-mobile-expand">
                         <i className="icon-screen-full"></i>
                         <i className="icon-screen-normal"></i>
-                    </a>
+                    </Link>
                 </div>
 
                 <div className="sidebar-content">
@@ -42,9 +33,9 @@ class Left_sidebar extends Component {
                         <div className="card-body">
                             <div className="media">
                                 <div className="mr-3">
-                                    <a href={BASE_URL}>
+                                    <Link to={BASE_URL}>
                                         <i className="icon-user"></i>
-                                    </a>
+                                    </Link>
                                 </div>
 
                                 <div className="media-body">
@@ -57,7 +48,7 @@ class Left_sidebar extends Component {
                                 </div>
 
                                 <div className="ml-3 align-self-center">
-                                    <a href="#" className="text-white"><i className="icon-cog3"></i></a>
+                                    <Link to={BASE_URL}  className="text-white"><i className="icon-cog3"></i></Link>
                                 </div>
                             </div>
                         </div>
@@ -74,10 +65,22 @@ class Left_sidebar extends Component {
                                 </div>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to={BASE_URL}>Dashboard</Link>
+                                <Link className="nav-link" to={BASE_URL}>
+                                    <i className="icon-home4"></i>
+                                    <span className="">Dashboard</span>
+                                </Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to={PROFILE}>Profile</Link>
+                                <Link className="nav-link" to={PROFILE}>
+                                    <i className="icon-user"></i>
+                                    <span>Profile</span>
+                                </Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link" to={BASE_URL} onClick={this.on_logout_button_click}>
+                                    <i className="icon-exit3"></i>
+                                    <span>Logout</span>
+                                </Link>
                             </li>
                         </ul>
                     </div>

@@ -22,18 +22,20 @@ class Home extends Component {
     }
 
     componentDidMount(){
-        Axios.get(`${PROFILE_USER_REQUEST}?tag=${localStorage.user}`).then(res => {
-            if (!res.data['status']){
-                this.props.notify('default','',res.data['message'])
-                this.props.history.push(LOGIN_URL)
-            }
-            else{
-                this.props.notify('success','',res.data['message'])
-                console.log(res.data['payload']);
-                // -----------------todo: data received! do what ever with this data now!
-                this.props.set_active_user(res.data['payload'])
-            }
-        })
+        if (localStorage.user){
+            Axios.get(`${PROFILE_USER_REQUEST}?tag=${localStorage.user}`).then(res => {
+                if (!res.data['status']){
+                    this.props.notify('default','',res.data['message'])
+                    this.props.history.push(LOGIN_URL)
+                }
+                else{
+                    this.props.notify('success','',res.data['message'])
+                    console.log(res.data['payload']);
+                    // -----------------todo: data received! do what ever with this data now!
+                    this.props.set_active_user(res.data['payload'])
+                }
+            })
+        }
     }
 
     render(){

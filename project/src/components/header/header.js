@@ -4,6 +4,8 @@ import Logo_light from './logo_light.png';
 import Logo_dark from './logo_dark.png';
 import { connect } from "react-redux";
 import { notify, left_sidebar_controls } from '../../actions';
+import { Link, withRouter } from 'react-router-dom';
+
 
 class Header extends Component {
 
@@ -28,9 +30,9 @@ class Header extends Component {
 
             <div className="navbar navbar-expand-md navbar-dark fixed-top">
                 <div className="navbar-brand">
-                    <a href="index.html" className="d-inline-block">
+                    <Link to={BASE_URL} className="d-inline-block">
                         <img src={Logo_light} alt="" />
-                    </a>
+                    </Link>
                 </div>
 
                 <div className="d-md-none">
@@ -45,40 +47,40 @@ class Header extends Component {
                 <div className="collapse navbar-collapse" id="navbar-mobile">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <a onClick={this.on_sidebar_control_button_click} className="navbar-nav-link sidebar-control sidebar-main-toggle d-none d-md-block">
+                            <Link onClick={this.on_sidebar_control_button_click} to={"#"} className="navbar-nav-link sidebar-control sidebar-main-toggle d-none d-md-block">
                                 <i className="icon-paragraph-justify3"></i>
-                            </a>
+                            </Link>
                         </li>
 
                         <li className="nav-item dropdown">
-                            <a href="#" className="navbar-nav-link dropdown-toggle caret-0" data-toggle="dropdown">
+                            <Link to={BASE_URL} className="navbar-nav-link dropdown-toggle caret-0" data-toggle="dropdown">
                                 <i className="icon-git-compare"></i>
                                 <span className="d-md-none ml-2">Git updates</span>
                                 <span className="badge badge-pill bg-warning-400 ml-auto ml-md-0">9</span>
-                            </a>
+                            </Link>
 
                             <div className="dropdown-menu dropdown-content wmin-md-350">
                                 <div className="dropdown-content-header">
                                     <span className="font-weight-semibold">Git updates</span>
-                                    <a href="#" className="text-default"><i className="icon-sync"></i></a>
+                                    <Link to={BASE_URL} className="text-default"><i className="icon-sync"></i></Link>
                                 </div>
 
                                 <div className="dropdown-content-body dropdown-scrollable">
                                     <ul className="media-list">
                                         <li className="media">
                                             <div className="mr-3">
-                                                <a href="#" className="btn bg-transparent border-primary text-primary rounded-round border-2 btn-icon"><i className="icon-git-pull-request"></i></a>
+                                                <Link to={BASE_URL} className="btn bg-transparent border-primary text-primary rounded-round border-2 btn-icon"><i className="icon-git-pull-request"></i></Link>
                                             </div>
 
                                             <div className="media-body">
-                                                Drop the IE <a href="#">specific hacks</a> for temporal inputs
+                                                Drop the IE <Link to={BASE_URL}>specific hacks</Link> for temporal inputs
 										<div className="text-muted font-size-sm">4 minutes ago</div>
                                             </div>
                                         </li>
 
                                         <li className="media">
                                             <div className="mr-3">
-                                                <a href="#" className="btn bg-transparent border-warning text-warning rounded-round border-2 btn-icon"><i className="icon-git-commit"></i></a>
+                                                <Link to={BASE_URL} className="btn bg-transparent border-warning text-warning rounded-round border-2 btn-icon"><i className="icon-git-commit"></i></Link>
                                             </div>
 
                                             <div className="media-body">
@@ -89,29 +91,29 @@ class Header extends Component {
 
                                         <li className="media">
                                             <div className="mr-3">
-                                                <a href="#" className="btn bg-transparent border-info text-info rounded-round border-2 btn-icon"><i className="icon-git-branch"></i></a>
+                                                <Link to={BASE_URL} className="btn bg-transparent border-info text-info rounded-round border-2 btn-icon"><i className="icon-git-branch"></i></Link>
                                             </div>
 
                                             <div className="media-body">
-                                                <a href="#">Chris Arney</a> created a new <span className="font-weight-semibold">Design</span> branch
+                                                <Link to={BASE_URL}>Chris Arney</Link> created a new <span className="font-weight-semibold">Design</span> branch
 										<div className="text-muted font-size-sm">2 hours ago</div>
                                             </div>
                                         </li>
 
                                         <li className="media">
                                             <div className="mr-3">
-                                                <a href="#" className="btn bg-transparent border-success text-success rounded-round border-2 btn-icon"><i className="icon-git-merge"></i></a>
+                                                <Link to={BASE_URL} className="btn bg-transparent border-success text-success rounded-round border-2 btn-icon"><i className="icon-git-merge"></i></Link>
                                             </div>
 
                                             <div className="media-body">
-                                                <a href="#">Eugene Kopyov</a> merged <span className="font-weight-semibold">Master</span> and <span className="font-weight-semibold">Dev</span> branches
+                                                <Link to={BASE_URL}>Eugene Kopyov</Link> merged <span className="font-weight-semibold">Master</span> and <span className="font-weight-semibold">Dev</span> branches
 										<div className="text-muted font-size-sm">Dec 18, 18:36</div>
                                             </div>
                                         </li>
 
                                         <li className="media">
                                             <div className="mr-3">
-                                                <a href="#" className="btn bg-transparent border-primary text-primary rounded-round border-2 btn-icon"><i className="icon-git-pull-request"></i></a>
+                                                <Link to={BASE_URL} className="btn bg-transparent border-primary text-primary rounded-round border-2 btn-icon"><i className="icon-git-pull-request"></i></Link>
                                             </div>
 
                                             <div className="media-body">
@@ -123,10 +125,10 @@ class Header extends Component {
                                 </div>
 
                                 <div className="dropdown-content-footer bg-light">
-                                    <a href="#" className="text-grey mr-auto">All updates</a>
+                                    <Link to={BASE_URL} className="text-grey mr-auto">All updates</Link>
                                     <div>
-                                        <a href="#" className="text-grey" data-popup="tooltip" title="Mark all as read"><i className="icon-radio-unchecked"></i></a>
-                                        <a href="#" className="text-grey ml-2" data-popup="tooltip" title="Bug tracker"><i className="icon-bug2"></i></a>
+                                        <Link to={BASE_URL} className="text-grey" data-popup="tooltip" title="Mark all as read"><i className="icon-radio-unchecked"></i></Link>
+                                        <Link to={BASE_URL} className="text-grey ml-2" data-popup="tooltip" title="Bug tracker"><i className="icon-bug2"></i></Link>
                                     </div>
                                 </div>
                             </div>
@@ -150,4 +152,4 @@ function map_state_to_props(state) {
         left_sidebar: state.left_sidebar
     }
 }
-export default connect(map_state_to_props, { left_sidebar_controls })(Header);
+export default connect(map_state_to_props, { left_sidebar_controls })(withRouter(Header));
