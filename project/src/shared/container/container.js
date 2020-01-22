@@ -26,8 +26,8 @@ class Container extends Component {
             page_header = false
         }
         else if (this.state.type === 'register'){
-            header = false
-            footer = false
+            header = true
+            footer = true
             left_sidebar = false
             page_header = false
         }
@@ -48,7 +48,7 @@ class Container extends Component {
                         
                         {page_header? <Page_header /> : ''}
 
-                        <div className="content">
+                        <div className={`content ${this.state.type === 'register' || this.state.type === 'login'? 'd-flex justify-content-center align-items-center':''}`}>
                             {
                                 this.props.children
                             }

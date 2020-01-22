@@ -7,44 +7,87 @@ import { notify } from '../../actions'
 import 'react-toastify/dist/ReactToastify.css';
 import { LOGIN_URL } from '../../shared/router_constants';
 import Container from '../../shared/container/container';
+import Select from 'react-select';
 import './register.css'
 import Modal from 'react-bootstrap4-modal';
+import DateTimePicker from 'react-datetime'
+
 
 class Register extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            first_name: '',
-            last_name: '',
-            email: '',
-            password: '',
-            role: '',
-            phone: '',
-            cnic: '',
+            first_name: { value: '', label_visibility: false },
+            last_name: { value: '', label_visibility: false },
+            email: { value: '', label_visibility: false },
+            password: { value: '', label_visibility: false },
+            verify_password: { value: '', label_visibility: false },
+            gender: { value: '', label_visibility: false },
+            dob: { value: new Date(), label_visibility: false },
+            blood_group: { value: '', label_visibility: false },
+            role: { value: '', label_visibility: false },
+            phone: { value: '', label_visibility: false },
+            cnic: { value: '', label_visibility: false },
             loading_status: false,
             role_select_modal_visibility: false
         }
     }
     on_text_field_change = (e) => {
-        switch (e.target.id) {
-            case 'materialRegisterFormFirstName':
-                this.setState({ first_name: e.target.value });
+        switch(e.target.id){
+            case 'first_name_text_input':
+                if (e.target.value === '')
+                    this.setState({first_name: { value: e.target.value, label_visibility: false }})
+                else
+                    this.setState({first_name: { value: e.target.value, label_visibility: true }})
                 break;
-            case 'materialRegisterFormLastName':
-                this.setState({ last_name: e.target.value });
+            case 'last_name_text_input':
+                if (e.target.value === '')
+                    this.setState({last_name: { value: e.target.value, label_visibility: false }})
+                else
+                    this.setState({last_name: { value: e.target.value, label_visibility: true }})
                 break;
-            case 'materialRegisterFormEmail':
-                this.setState({ email: e.target.value });
+            case 'cnic_text_input':
+                if (e.target.value === '')
+                    this.setState({CNIC: { value: e.target.value, label_visibility: false }})
+                else
+                    this.setState({CNIC: { value: e.target.value, label_visibility: true }})
                 break;
-            case 'materialRegisterFormPassword':
-                this.setState({ password: e.target.value });
+            case 'phone_number_text_input':
+                if (e.target.value === '')
+                    this.setState({phone_number: { value: e.target.value, label_visibility: false }})
+                else
+                    this.setState({phone_number: { value: e.target.value, label_visibility: true }})
                 break;
-            case 'materialRegisterFormPhone':
-                this.setState({ phone: e.target.value });
+            case 'email_text_input':
+                if (e.target.value === '')
+                    this.setState({email: { value: e.target.value, label_visibility: false }})
+                else
+                    this.setState({email: { value: e.target.value, label_visibility: true }})
                 break;
-            case 'materialRegisterFormCNIC':
-                this.setState({ cnic: e.target.value });
+            case 'password_text_input':
+                if (e.target.value === '')
+                    this.setState({password: { value: e.target.value, label_visibility: false }})
+                else
+                    this.setState({password: { value: e.target.value, label_visibility: true }})
                 break;
+            case 'verify_password_text_input':
+                if (e.target.value === '')
+                    this.setState({verify_password: { value: e.target.value, label_visibility: false }})
+                else
+                    this.setState({verify_password: { value: e.target.value, label_visibility: true }})
+                break;
+            case 'gender_text_input':
+            //     if (e.target.value === '')
+            //         this.setState({gender: { value: e.target.value, label_visibility: false }})
+            //     else
+            //         this.setState({gender: { value: e.target.value, label_visibility: true }})
+                break; 
+            case 'blood_group_text_input':
+            //     if (e.target.value === '')
+            //         this.setState({blood_group: { value: e.target.value, label_visibility: false }})
+            //     else
+            //         this.setState({blood_group: { value: e.target.value, label_visibility: true }})
+                break;    
             default:
                 break;
         }
@@ -154,7 +197,8 @@ class Register extends Component {
                 if (res.data['status']) {
                     setTimeout(() => {
                         this.props.notify('success', '', res.data['message'])
-                        this.setState({ loading_status: false,
+                        this.setState({
+                            loading_status: false,
                             email: '',
                             password: '',
                             first_name: '',
@@ -185,6 +229,20 @@ class Register extends Component {
     }
     render() {
         const role_selection_button_classes = "btn-rounded my-2 waves-effect z-depth-0"
+        const options_blood_group = [
+            { value: 'A+', label: 'A+' },
+            { value: 'A-', label: 'A-' },
+            { value: 'B+', label: 'B+' },
+            { value: 'B-', label: 'B-' },
+            { value: 'AB+', label: 'AB+' },
+            { value: 'AB-', label: 'AB-' },
+            { value: 'O+', label: 'O+' },
+            { value: 'O-', label: 'O-' },
+        ];
+        const options_gender = [
+            { value: 'male', label: 'Male' },
+            { value: 'female', label: 'Female' },
+        ];
         var status = ''
         if (this.state.loading_status) {
             status = <div className="mt-3">
@@ -205,6 +263,154 @@ class Register extends Component {
         else {
             status = <div className="container-fluid">
                 <div className="row">
+                    <div className="col-lg-6 offset-lg-3">
+                        <div className="text-center mb-3">
+                            <i className="icon-plus3 icon-2x text-success border-success border-3 rounded-round p-3 mb-3 mt-1"></i>
+                            <h5 className="mb-0">Create account</h5>
+                            <span className="d-block text-muted">All fields are required</span>
+                        </div>
+                        <div className="form-group form-group-float">
+                            <div className="form-group form-group-float">
+                                <label className={`form-group-float-label animate ${this.state.email.label_visibility ? 'is-visible' : ''}`}>Email</label>
+                                <div className="input-group">
+                                    <span className="input-group-prepend">
+                                        <span className="input-group-text">
+                                            <i className="icon-mention text-muted"></i>
+                                        </span>
+                                    </span>
+                                    <input type="text"
+                                        className="form-control"
+                                        placeholder="Enter your email"
+                                        id="email_text_input"
+                                        onChange={this.on_text_field_change}/>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="form-group form-group-float">
+                                    <label className={`form-group-float-label animate ${this.state.first_name.label_visibility ? 'is-visible' : ''}`}>First name</label>
+                                    <div className="input-group">
+                                        <span className="input-group-prepend">
+                                            <span className="input-group-text">
+                                                <i className="icon-user-check text-muted"></i>
+                                            </span>
+                                        </span>
+                                        <input type="text"
+                                            className="form-control"
+                                            placeholder="First name"
+                                            id="first_name_text_input"
+                                            onChange={this.on_text_field_change}/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6">
+                                <div className="form-group form-group-float">
+                                    <label className={`form-group-float-label animate ${this.state.last_name.label_visibility ? 'is-visible' : ''}`}>Last name</label>
+                                    <div className="input-group">
+                                        <span className="input-group-prepend">
+                                            <span className="input-group-text">
+                                                <i className="icon-user-check text-muted"></i>
+                                            </span>
+                                        </span>
+                                        <input type="text"
+                                            className="form-control"
+                                            placeholder="Last name"
+                                            id="last_name_text_input"
+                                            onChange={this.on_text_field_change} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="form-group form-group-float">
+                                    <label className={`form-group-float-label animate ${this.state.password.label_visibility ? 'is-visible' : ''}`}>Password</label>
+                                    <div className="input-group">
+                                        <span className="input-group-prepend">
+                                            <span className="input-group-text">
+                                                <i className="icon-user-lock text-muted"></i>
+                                            </span>
+                                        </span>
+                                        <input type="password"
+                                            className="form-control"
+                                            placeholder="Password"
+                                            id="password_text_input"
+                                            onChange={this.on_text_field_change} />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6">
+                                <div className="form-group form-group-float">
+                                    <label className={`form-group-float-label animate ${this.state.verify_password.label_visibility ? 'is-visible' : ''}`}>Verify Password</label>
+                                    <div className="input-group">
+                                        <span className="input-group-prepend">
+                                            <span className="input-group-text">
+                                                <i className="icon-user-lock text-muted"></i>
+                                            </span>
+                                        </span>
+                                        <input type="password"
+                                            className="form-control"
+                                            placeholder="Password"
+                                            id="verify_pgenderassword_text_input"
+                                            onChange={this.on_text_field_change} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <div className="row">
+                            <div className="col-md-4">
+                            <div class="form-group form-group-feedback form-group-feedback-right">
+                                    <Select
+                                        options={options_blood_group}
+                                        classNamePrefix={`form-control`}
+                                        placeholder="Select gender"
+                                        id="blood_group_text_input"
+                                        onChange={this.on_text_field_change}
+                                    />
+                                    <div class="form-control-feedback">
+                                        <i class="icon-user-check text-muted"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-4">
+                                <div class="form-group form-group-feedback form-group-feedback-right">
+                                    <Select
+                                        options={options_gender}
+                                        classNamePrefix={`form-control`}
+                                        placeholder="Select gender"
+                                        id="gender_text_input"
+                                        onChange={this.on_text_field_change}
+                                    />
+                                    <div class="form-control-feedback">
+                                        <i class="icon-user-check text-muted"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-md-4">
+                                <DateTimePicker
+                                            // onChange={this.on_text_field_change}
+                                            value={this.state.dob.value}
+                                            // className="form-control"
+
+                                            />
+                                {/* <div className="form-group form-group-feeback form-group-feedback-right">
+                                    
+                                    <div class="form-control-feedback">
+                                        <i class="icon-calender3 text-muted"></i>
+                                    </div>
+                                </div> */}
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                {/* <div className="row">
                     <div className="col-md-2 col-lg-3 col-sm-0"></div>
                     <div className="col-md-8 col-lg-6 col-sm-12">
                         <div className="card mt-3">
@@ -337,12 +543,12 @@ class Register extends Component {
                         </div>
                     </div>
                     <div className="col-md-8 col-lg-3 col-sm-0"></div>
-                </div>
+                </div> */}
 
             </div>
         }
         return (
-            <Container header={false} footer={false}>
+            <Container container_type={'register'}>
                 {
                     status
                 }
@@ -384,10 +590,10 @@ class Register extends Component {
                         </div>
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className={`btn btn-outline-info ${role_selection_button_classes}`} onClick={() => this.setState({role_select_modal_visibility: false})}>
+                        <button type="button" className={`btn btn-outline-info ${role_selection_button_classes}`} onClick={() => this.setState({ role_select_modal_visibility: false })}>
                             Accept
                         </button>
-                        <button type="button" className={`btn btn-outline-dark ${role_selection_button_classes}`} onClick={() => this.setState({role_select_modal_visibility: false, role: ''})}>
+                        <button type="button" className={`btn btn-outline-dark ${role_selection_button_classes}`} onClick={() => this.setState({ role_select_modal_visibility: false, role: '' })}>
                             Cancel
                         </button>
                     </div>
