@@ -17,18 +17,18 @@ class Register extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            first_name: { value: '', label_visibility: false },
-            last_name: { value: '', label_visibility: false },
-            email: { value: '', label_visibility: false },
-            password: { value: '', label_visibility: false },
-            verify_password: { value: '', label_visibility: false },
-            gender: { value: '', label_visibility: false },
-            dob: { value: new Date(), label_visibility: false },
-            blood_group: { value: '', label_visibility: false },
-            role: { value: '', label_visibility: false },
-            phone: { value: '', label_visibility: false },
-            cnic: { value: '', label_visibility: false },
-            loading_status: false,
+            first_name:         { value: '', label_visibility: false },
+            last_name:          { value: '', label_visibility: false },
+            email:              { value: '', label_visibility: false },
+            password:           { value: '', label_visibility: false },
+            verify_password:    { value: '', label_visibility: false },
+            gender:             { value: '', label_visibility: false },
+            dob:                { value: new Date(), label_visibility: false },
+            blood_group:        { value: '', label_visibility: false },
+            role:               { value: '', label_visibility: false },
+            phone:              { value: '', label_visibility: false },
+            cnic:               { value: '', label_visibility: false },
+            loading_status:     false,
             role_select_modal_visibility: false
         }
     }
@@ -183,13 +183,13 @@ class Register extends Component {
     }
     on_submit = () => {
         const data = {
-            first_name: this.state.first_name.trim(),
-            last_name: this.state.last_name.trim(),
-            email: this.state.email.trim(),
-            password: this.state.password.trim(),
-            phone_number: this.state.phone.trim(),
-            cnic: this.state.cnic.trim(),
-            role: this.state.role.trim()
+            first_name: this.state.first_name.value.trim(),
+            last_name: this.state.last_name.value.trim(),
+            email: this.state.email.value.trim(),
+            password: this.state.password.value.trim(),
+            phone_number: this.state.phone.value.trim(),
+            cnic: this.state.cnic.value.trim(),
+            role: this.state.role.value.trim()
         }
         if (this.__check_soft_constraints(data) && this.__check_hard_constraints(data)) {
             this.setState({ loading_status: true })
@@ -261,6 +261,7 @@ class Register extends Component {
             </div>
         }
         else {
+            const form_group = "form-group form-group-float mb-1"
             status = <div className="container-fluid">
                 <div className="row">
                     <div className="col-lg-6 offset-lg-3">
@@ -269,26 +270,24 @@ class Register extends Component {
                             <h5 className="mb-0">Create account</h5>
                             <span className="d-block text-muted">All fields are required</span>
                         </div>
-                        <div className="form-group form-group-float">
-                            <div className="form-group form-group-float">
-                                <label className={`form-group-float-label animate ${this.state.email.label_visibility ? 'is-visible' : ''}`}>Email</label>
-                                <div className="input-group">
-                                    <span className="input-group-prepend">
-                                        <span className="input-group-text">
-                                            <i className="icon-mention text-muted"></i>
-                                        </span>
+                        <div className={form_group}>
+                            <label className={`form-group-float-label animate ${this.state.email.label_visibility ? 'is-visible' : ''}`}>Email</label>
+                            <div className="input-group">
+                                <span className="input-group-prepend">
+                                    <span className="input-group-text">
+                                        <i className="icon-mention text-muted"></i>
                                     </span>
-                                    <input type="text"
-                                        className="form-control"
-                                        placeholder="Enter your email"
-                                        id="email_text_input"
-                                        onChange={this.on_text_field_change}/>
-                                </div>
+                                </span>
+                                <input type="text"
+                                    className="form-control"
+                                    placeholder="Enter your email"
+                                    id="email_text_input"
+                                    onChange={this.on_text_field_change}/>
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-md-6">
-                                <div className="form-group form-group-float">
+                                <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.first_name.label_visibility ? 'is-visible' : ''}`}>First name</label>
                                     <div className="input-group">
                                         <span className="input-group-prepend">
@@ -306,7 +305,7 @@ class Register extends Component {
                             </div>
 
                             <div className="col-md-6">
-                                <div className="form-group form-group-float">
+                                <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.last_name.label_visibility ? 'is-visible' : ''}`}>Last name</label>
                                     <div className="input-group">
                                         <span className="input-group-prepend">
@@ -325,7 +324,7 @@ class Register extends Component {
                         </div>
                         <div className="row">
                             <div className="col-md-6">
-                                <div className="form-group form-group-float">
+                                <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.password.label_visibility ? 'is-visible' : ''}`}>Password</label>
                                     <div className="input-group">
                                         <span className="input-group-prepend">
@@ -343,7 +342,7 @@ class Register extends Component {
                             </div>
 
                             <div className="col-md-6">
-                                <div className="form-group form-group-float">
+                                <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.verify_password.label_visibility ? 'is-visible' : ''}`}>Verify Password</label>
                                     <div className="input-group">
                                         <span className="input-group-prepend">
@@ -354,7 +353,7 @@ class Register extends Component {
                                         <input type="password"
                                             className="form-control"
                                             placeholder="Password"
-                                            id="verify_pgenderassword_text_input"
+                                            id="verify_password_text_input"
                                             onChange={this.on_text_field_change} />
                                     </div>
                                 </div>
@@ -392,18 +391,24 @@ class Register extends Component {
                             </div>
                             <div className="col-md-4">
                                 <DateTimePicker
-                                            // onChange={this.on_text_field_change}
-                                            value={this.state.dob.value}
-                                            // className="form-control"
-
-                                            />
-                                {/* <div className="form-group form-group-feeback form-group-feedback-right">
-                                    
-                                    <div class="form-control-feedback">
-                                        <i class="icon-calender3 text-muted"></i>
-                                    </div>
-                                </div> */}
-                                
+                                    // onChange={this.on_text_field_change}
+                                    value={this.state.dob.value}
+                                    // className="form-control"
+                                    />
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-md-12">
+                                <div className="float-right mt-0">
+                                    <button 
+                                        type="button" 
+                                        className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
+                                        style={{textTransform: "inherit"}}
+                                        onClick={this.on_submit}>
+                                        <b><i className="icon-plus3"></i></b>
+                                        Create Account
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

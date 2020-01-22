@@ -34,6 +34,12 @@ class Home extends Component {
                     // -----------------todo: data received! do what ever with this data now!
                     this.props.set_active_user(res.data['payload'])
                 }
+            }).catch(err => {
+                // call for server not responding
+                // todo make a page witth not responding message
+                // todo ask redux to save the connection status
+                // todo ask redux to tell if connection is there or not.
+                // if not show the message
             })
         }
     }
