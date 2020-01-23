@@ -20,8 +20,8 @@ class Container extends Component {
         var page_header = ''
 
         if (this.state.type === 'login'){
-            header = false
-            footer = false
+            header = true
+            footer = true
             left_sidebar = false
             page_header = false
         }

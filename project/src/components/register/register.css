@@ -1,12 +1,17 @@
-/* input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
   -webkit-appearance: none; 
   margin: 0; 
-} */
+}
 
 .rdt {
   position: relative;
 }
+
+.clock_datatime_picker {
+  width: -webkit-fill-available;
+}
+
 .rdtPicker {
   display: none;
   position: absolute;

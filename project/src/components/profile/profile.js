@@ -25,7 +25,7 @@ class Profile extends Component {
                     value: '',
                     label_visibility: false
                 },
-                CNIC: {
+                cnic: {
                     value: '',
                     label_visibility: false
                 },
@@ -47,7 +47,7 @@ class Profile extends Component {
                         first_name: {value: res.data['payload'].first_name,label_visibility: false},
                         last_name: {value: res.data['payload'].last_name,label_visibility: false},
                         email: {value: res.data['payload'].email,label_visibility: false},
-                        CNIC: {value: res.data['payload'].cnic,label_visibility: false},
+                        cnic: {value: res.data['payload'].cnic,label_visibility: false},
                         phone_number: {value: res.data['payload'].first_name,label_visibility: false},
                     })
                 }
@@ -73,9 +73,9 @@ class Profile extends Component {
                 break;
             case 'cnic_text_input':
                 if (e.target.value === '')
-                    this.setState({CNIC: { value: e.target.value, label_visibility: false }})
+                    this.setState({cnic: { value: e.target.value, label_visibility: false }})
                 else
-                    this.setState({CNIC: { value: e.target.value, label_visibility: true }})
+                    this.setState({cnic: { value: e.target.value, label_visibility: true }})
                 break;
             case 'phone_number_text_input':
                 if (e.target.value === '')
@@ -170,7 +170,7 @@ class Profile extends Component {
                                 </div>
                                 <div className="col-md-4 col-sm-12">
                                     <div className="form-group form-group-float">
-                                        <label className={`form-group-float-label animate ${this.state.CNIC.label_visibility? 'is-visible': ''}`}>CNIC</label>
+                                        <label className={`form-group-float-label animate ${this.state.cnic.label_visibility? 'is-visible': ''}`}>CNIC</label>
                                         <div className="input-group">
                                             <span className="input-group-prepend">
                                                 <span className="input-group-text">
@@ -181,7 +181,7 @@ class Profile extends Component {
                                                 id="cnic_text_input" 
                                                 className="form-control" 
                                                 placeholder="CNIC"
-                                                value={this.state.CNIC.value}
+                                                value={this.state.cnic.value}
                                                 onChange={this.on_text_changed}/>
                                         </div>
                                     </div>
