@@ -5,7 +5,7 @@ import NO_PICTURE from '../../resources/images/placeholder.jpg'
 import { connect } from "react-redux";
 import Axios from 'axios';
 import { PROFILE_USER_REQUEST } from '../../shared/rest_end_points';
-import { LOGIN_URL, BASE_URL } from '../../shared/router_constants';
+import { LOGIN_URL } from '../../shared/router_constants';
 import {set_active_user} from '../../actions'
 
 
@@ -99,7 +99,7 @@ class Profile extends Component {
                             </p>
                         </div>
                         <div className="card-img-actions d-inline-block mb-3">
-                            <img className="img-fluid rounded-circle" src={NO_PICTURE} style={{width: 170,height: 170}} />
+                            <img className="img-fluid rounded-circle" src={NO_PICTURE} style={{width: 170,height: 170}}  alt=""/>
                             <div className="card-img-actions-overlay card-img rounded-circle">
                                 <Link to={"#"} className="btn btn-outline bg-white text-white border-white border-2 btn-icon rounded-round">
                                     <i className="icon-plus3"></i>

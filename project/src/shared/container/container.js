@@ -1,8 +1,8 @@
-import React, { Component,Fragment } from 'react';
+import React, { Component } from 'react';
 import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
-import Left_sidebar from '../left_sidebar/left_sidebar';
-import Page_header from '../page_header/page_header';
+import Leftsidebar from '../left_sidebar/left_sidebar';
+import Pageheader from '../page_header/page_header';
 import { connect } from "react-redux";
 
 
@@ -42,11 +42,11 @@ class Container extends Component {
                 {header? <Header /> : ''}
                 <div className="page-content">
 
-                    {left_sidebar? <Left_sidebar /> : ''}
+                    {left_sidebar? <Leftsidebar /> : ''}
 
                     <div className="content-wrapper">
                         
-                        {page_header? <Page_header /> : ''}
+                        {page_header? <Pageheader /> : ''}
 
                         <div className={`content ${this.state.type === 'register' || this.state.type === 'login'? 'd-flex justify-content-center align-items-center':''}`}>
                             {

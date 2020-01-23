@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import Container from '../../shared/container/container';
-import { LOGIN_URL, BASE_URL, REGISTER_URL } from '../../shared/router_constants';
+import { BASE_URL, REGISTER_URL, LOGIN_URL } from '../../shared/router_constants';
 import Axios from 'axios';
 import { LOGIN_USER_REQUEST } from '../../shared/rest_end_points';
 import { connect } from "react-redux";
 import { notify, set_active_user } from '../../actions';
 import Loader from 'react-loader-spinner';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 
 
 class Login extends Component {
@@ -184,7 +184,7 @@ class Login extends Component {
                         </button>
                     </div>
 
-                    <span className="form-text text-center text-muted">By continuing, you're confirming that you've read our <a href="#">Terms &amp; Conditions</a> and <a href="#">Cookie Policy</a></span>
+                    <span className="form-text text-center text-muted">By continuing, you're confirming that you've read our <Link to={LOGIN_URL}>Terms &amp; Conditions</Link> and <Link to={LOGIN_URL}>Cookie Policy</Link></span>
                 </div>
             </div>
         }

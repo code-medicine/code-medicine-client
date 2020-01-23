@@ -9,7 +9,7 @@ import { LOGIN_URL } from '../../shared/router_constants';
 import Container from '../../shared/container/container';
 import Select from 'react-select';
 import './register.css'
-import Modal from 'react-bootstrap4-modal';
+// import Modal from 'react-bootstrap4-modal';
 import DateTimePicker from 'react-datetime'
 
 
@@ -77,12 +77,6 @@ class Register extends Component {
                 else
                     this.setState({ verify_password: { value: e.target.value, label_visibility: true } })
                 break;
-            case 'cnic_text_input':
-                if (e.target.value === '')
-                    this.setState({ cnic: { value: e.target.value, label_visibility: false } })
-                else
-                    this.setState({ cnic: { value: e.target.value, label_visibility: true } })
-                break;
             case 'phone_text_input':
                 if (e.target.value === '')
                     this.setState({ phone: { value: e.target.value, label_visibility: false } })
@@ -116,6 +110,8 @@ class Register extends Component {
                 break;
             case 'role_selection':
                 this.setState({ role: { value: e.label } })
+                break;
+            default:
                 break;
         }
     }
@@ -237,7 +233,6 @@ class Register extends Component {
         }
     }
     render() {
-        const role_selection_button_classes = "btn-rounded my-2 waves-effect z-depth-0"
         const options_blood_group = [
             { id: 'blood_group_selection', label: 'A+' },
             { id: 'blood_group_selection', label: 'A-' },

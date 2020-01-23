@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { BASE_URL } from '../../shared/router_constants';
 import Logo_light from './logo_light.png';
-import Logo_dark from './logo_dark.png';
+// import Logo_dark from './logo_dark.png';
 import { connect } from "react-redux";
-import { notify, left_sidebar_controls } from '../../actions';
+import { left_sidebar_controls } from '../../actions';
 import { Link, withRouter } from 'react-router-dom';
 
 
@@ -141,9 +141,6 @@ class Header extends Component {
                     </ul>
                 </div>
             </div>
-
-
-
         );
     }
 }
