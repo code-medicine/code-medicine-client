@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
-import { BASE_URL, PROFILE } from '../router_constants';
+import { BASE_URL, PROFILE, LOGIN_URL } from '../router_constants';
 import { connect } from "react-redux";
 import { Link, withRouter } from 'react-router-dom';
+import { set_active_user } from '../../actions'
 
 class Left_sidebar extends Component {
 
     componentDidMount(){
         console.log(this.props.active_user);
+        
+        
     }
 
     on_logout_button_click = () => {
         localStorage.clear()
+        this.props.set_active_user({})
     }
     render() {
         return (
@@ -77,7 +81,7 @@ class Left_sidebar extends Component {
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to={BASE_URL} onClick={this.on_logout_button_click}>
+                                <Link className="nav-link" onClick={this.on_logout_button_click} to={LOGIN_URL}>
                                     <i className="icon-exit3"></i>
                                     <span>Logout</span>
                                 </Link>
@@ -98,4 +102,4 @@ function map_state_to_props(state) {
         active_user: state.active_user
     }
 }
-export default connect(map_state_to_props)(withRouter(Left_sidebar));
+export default connect(map_state_to_props,{set_active_user})(withRouter(Left_sidebar));

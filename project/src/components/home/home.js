@@ -15,14 +15,11 @@ class Home extends Component {
         }
     }
 
-    componentWillMount(){
+    componentDidMount(){
         if (!localStorage.user){
             this.props.history.push(LOGIN_URL)
         }
-    }
-
-    componentDidMount(){
-        if (localStorage.user){
+        else {
             Axios.get(`${PROFILE_USER_REQUEST}?tag=${localStorage.user}`).then(res => {
                 if (!res.data['status']){
                     this.props.notify('default','',res.data['message'])

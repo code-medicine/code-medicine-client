@@ -4,14 +4,40 @@ import Footer from '../../components/footer/footer';
 import Leftsidebar from '../left_sidebar/left_sidebar';
 import Pageheader from '../page_header/page_header';
 import { connect } from "react-redux";
+import Axios from 'axios';
+import { PROFILE_USER_REQUEST } from '../rest_end_points';
+import { LOGIN_URL } from '../router_constants';
+import { withRouter } from 'react-router-dom';
+import { set_active_user,notify } from '../../actions'
 
 
 class Container extends Component {
     constructor(props){
         super(props);
             this.state = {
-                type: this.props.container_type
+                type: this.props.container_type,
+                user_auth_check_interval: null
             };
+    }
+
+    componentWillUnmount(){
+        clearInterval(this.state.user_auth_check_interval)
+    }
+
+    componentDidMount() {
+        if (localStorage.getItem('user') || this.props.active_user){
+            this.setState({user_auth_check_interval: setInterval(() => {
+                console.log('user',this.props.active_user);
+                Axios.get(`${PROFILE_USER_REQUEST}?tag=${localStorage.user}`).then(res => {
+                    if (!res.data['status']){
+                        this.props.history.push(LOGIN_URL)
+                    }
+                    else{
+                        this.props.set_active_user(res.data['payload'])
+                    }
+                })
+            },5000)})
+        }
     }
     render() {
         var header = ''
@@ -62,7 +88,8 @@ class Container extends Component {
 }
 function map_state_to_props(state) {
     return { 
-        left_sidebar: state.left_sidebar
+        left_sidebar: state.left_sidebar,
+        active_user: state.active_user
      }
 }
-export default connect(map_state_to_props)(Container);
+export default connect(map_state_to_props, {notify, set_active_user})(withRouter( Container));
