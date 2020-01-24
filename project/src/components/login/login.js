@@ -43,6 +43,18 @@ class Login extends Component {
         }
     }
 
+    __check_hard_constraints = (data) => {
+        if (data.email === ''){
+            this.props.notify('error','','Please specify a username or phone number');
+            return false;
+        }
+        if (data.password === ''){
+            this.props.notify('error','','Please give your password');
+            return false;
+        }
+        return true
+    }
+
     on_submit = (e) => {
         this.setState({loading_status: true})
         const data = {
@@ -136,6 +148,8 @@ class Login extends Component {
                                 onChange={this.on_text_field_change} />
                         </div>
                     </div>
+
+                    <hr/>
 
                     <div className="form-group d-flex align-items-center">
                         <div className="form-check mb-0">
