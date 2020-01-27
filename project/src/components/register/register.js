@@ -205,20 +205,21 @@ class Register extends Component {
                         this.setState({
                             loading_status: false,
                             email: '',
-                            password: '',
+                            password: '',         
                             first_name: '',
                             last_name: '',
                             phone_number: '',
                             cnic: '',
                             role: ''
                         })
+                        this.props.history.push(LOGIN_URL)
                     }, 5000)
                 }
                 else {
                     this.props.notify('error', '', res.data['message'])
                     setTimeout(() => {
                         this.setState({ loading_status: false })
-                        this.props.history.push(LOGIN_URL)
+                        
                     }, 3000)
                 }
             }).catch(err => {
@@ -517,7 +518,7 @@ class Register extends Component {
                 {
                     status
                 }
-            </Container>
+             </Container>
         );
     }
 }

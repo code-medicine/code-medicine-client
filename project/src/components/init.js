@@ -19,7 +19,7 @@ class Init extends Component {
                     <Route exact path={LOGIN_URL} component={Login} />
                     <Route exact path={REGISTER_URL} component={Register} />
                     <Route exact path={PROFILE} component={Profile} />
-                    <ToastContainer />
+                    <ToastContainer hideProgressBar />
                 </BrowserRouter>
         );
     }

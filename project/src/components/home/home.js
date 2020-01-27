@@ -26,7 +26,7 @@ class Home extends Component {
                     this.props.history.push(LOGIN_URL)
                 }
                 else{
-                    this.props.notify('success','',res.data['message'])
+                    // this.props.notify('success','',res.data['message'])
                     console.log(res.data['payload']);
                     // -----------------todo: data received! do what ever with this data now!
                     this.props.set_active_user(res.data['payload'])

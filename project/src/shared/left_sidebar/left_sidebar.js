@@ -68,17 +68,35 @@ class Left_sidebar extends Component {
                                     Main
                                 </div>
                             </li>
-                            <li className="nav-item">
+                            <li className="nav-item nav-item-submenu">
                                 <Link className="nav-link" to={BASE_URL}>
                                     <i className="icon-home4"></i>
-                                    <span className="">Dashboard</span>
+                                    <span className="">Home</span>
                                 </Link>
+
+                                <ul className="nav nav-group-sub" data-submenu-title="Home">
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link active">Dashboard</Link></li>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Messages<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Emergency<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Admissions<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Requests<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                </ul>
+
                             </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to={PROFILE}>
+                            <li className="nav-item nav-item-submenu">
+                                <Link className="nav-link" to={BASE_URL}>
                                     <i className="icon-user"></i>
-                                    <span>Profile</span>
+                                    <span>Reception</span>
                                 </Link>
+
+                                <ul className="nav nav-group-sub" data-submenu-title="Reception">
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link active">Today's Patients</Link></li>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link">Visits</Link></li>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Emergency<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Admissions<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Requests<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                </ul>
+
                             </li>
                             <li className="nav-item">
                                 <Link className="nav-link" onClick={this.on_logout_button_click} to={LOGIN_URL}>
