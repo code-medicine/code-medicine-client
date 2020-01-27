@@ -25,19 +25,19 @@ class Container extends Component {
     }
 
     componentDidMount() {
-        if (localStorage.getItem('user') || this.props.active_user){
-            this.setState({user_auth_check_interval: setInterval(() => {
-                console.log('user',this.props.active_user);
-                Axios.get(`${PROFILE_USER_REQUEST}?tag=${localStorage.user}`).then(res => {
-                    if (!res.data['status']){
-                        this.props.history.push(LOGIN_URL)
-                    }
-                    else{
-                        this.props.set_active_user(res.data['payload'])
-                    }
-                })
-            },5000)})
-        }
+        // if (localStorage.getItem('user') || this.props.active_user){
+        //     this.setState({user_auth_check_interval: setInterval(() => {
+        //         console.log('user',this.props.active_user);
+        //         Axios.get(`${PROFILE_USER_REQUEST}?tag=${localStorage.user}`).then(res => {
+        //             if (!res.data['status']){
+        //                 this.props.history.push(LOGIN_URL)
+        //             }
+        //             else{
+        //                 this.props.set_active_user(res.data['payload'])
+        //             }
+        //         })
+        //     },5000)})
+        // }
     }
     render() {
         var header = ''

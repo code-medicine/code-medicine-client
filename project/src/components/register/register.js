@@ -96,7 +96,7 @@ class Register extends Component {
 
     on_date_of_birth_change = (e) => {
         if (e === '')
-            this.setState({ dob: { value: e, label_visibility: false } })
+            this.setState({ dob: { value: '', label_visibility: false } })
         else
             this.setState({ dob: { value: e, label_visibility: true } })
     }
@@ -194,8 +194,13 @@ class Register extends Component {
             password: this.state.password.value.trim(),
             phone_number: this.state.phone.value.trim(),
             cnic: this.state.cnic.value.trim(),
-            role: this.state.role.value.trim()
+            role: this.state.role.value.trim(),
+            dob: this.state.dob.value.format('ll'),
+            gender: this.state.gender.value.trim(),
+            blood_group: this.state.blood_group.value.trim(),
+            address: this.state.address.value.trim()
         }
+        console.log(data);
         if (this.__check_soft_constraints(data) && this.__check_hard_constraints(data)) {
             this.setState({ loading_status: true })
             Axios.post(`${REGISTER_USER_REQUEST}`, data).then(res => {
@@ -204,13 +209,17 @@ class Register extends Component {
                         this.props.notify('success', '', res.data['message'])
                         this.setState({
                             loading_status: false,
-                            email: '',
-                            password: '',         
-                            first_name: '',
-                            last_name: '',
-                            phone_number: '',
-                            cnic: '',
-                            role: ''
+                            email: {value: '', label_visibility: false},
+                            password: {value: '', label_visibility: false},         
+                            first_name: {value: '', label_visibility: false},
+                            last_name: {value: '', label_visibility: false},
+                            phone_number: {value: '', label_visibility: false},
+                            cnic: {value: '', label_visibility: false},
+                            role: {value: '', label_visibility: false},
+                            dob: {value: '', label_visibility: false},
+                            gender: {value: '', label_visibility: false},
+                            blood_group: {value: '', label_visibility: false},
+                            address: {value: '', label_visibility: false},
                         })
                         this.props.history.push(LOGIN_URL)
                     }, 5000)
@@ -223,7 +232,7 @@ class Register extends Component {
                     }, 3000)
                 }
             }).catch(err => {
-                this.props.notify('error', '', err.data['message'])
+                this.props.notify('error', '', 'We are sorry for invonvenience. Server is not responding! please try again later')
                 setTimeout(() => {
                     this.setState({ loading_status: false })
                 }, 3000)
@@ -243,6 +252,7 @@ class Register extends Component {
             { id: 'blood_group_selection', label: 'AB-' },
             { id: 'blood_group_selection', label: 'O+' },
             { id: 'blood_group_selection', label: 'O-' },
+            { id: 'blood_group_selection', label: 'Unknown' },
         ];
         const options_gender = [
             { id: 'gender_selection', label: 'Male' },
@@ -380,6 +390,7 @@ class Register extends Component {
                                             onChange={this.on_date_of_birth_change}
                                             className="clock_datatime_picker"
                                             inputProps={{ placeholder: 'Date of birth', width: '100%', className: 'form-control' }}
+                                            input={true}
                                         >
 
                                         </DateTimePicker>

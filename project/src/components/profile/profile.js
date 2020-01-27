@@ -13,26 +13,18 @@ class Profile extends Component {
     constructor(props){
         super(props);
             this.state = {
-                first_name : {
-                    value: '',
-                    label_visibility: false
-                },
-                last_name: {
-                    value: '',
-                    label_visibility: false
-                },
-                email: {
-                    value: '',
-                    label_visibility: false
-                },
-                cnic: {
-                    value: '',
-                    label_visibility: false
-                },
-                phone_number: {
-                    value: '',
-                    label_visibility: false
-                }
+                first_name: { value: '', label_visibility: false },
+            last_name: { value: '', label_visibility: false },
+            email: { value: '', label_visibility: false },
+            password: { value: '', label_visibility: false },
+            verify_password: { value: '', label_visibility: false },
+            gender: { value: '', label_visibility: false },
+            dob: { value: new Date(), label_visibility: false },
+            blood_group: { value: '', label_visibility: false },
+            role: { value: '', label_visibility: false },
+            phone_number: { value: '', label_visibility: false },
+            cnic: { value: '', label_visibility: false },
+            address: { value: '', label_visibility: false },
             };
     }
     componentDidMount(){
@@ -44,11 +36,11 @@ class Profile extends Component {
                 else{
                     this.props.set_active_user(res.data['payload'])
                     this.setState({
-                        first_name: {value: res.data['payload'].first_name,label_visibility: false},
-                        last_name: {value: res.data['payload'].last_name,label_visibility: false},
-                        email: {value: res.data['payload'].email,label_visibility: false},
-                        cnic: {value: res.data['payload'].cnic,label_visibility: false},
-                        phone_number: {value: res.data['payload'].first_name,label_visibility: false},
+                        first_name: { value: res.data['payload'].first_name,label_visibility: true },
+                        last_name: { value: res.data['payload'].last_name,label_visibility: true },
+                        email: { value: res.data['payload'].email,label_visibility: true },
+                        cnic: { value: res.data['payload'].cnic,label_visibility: true },
+                        phone_number: { value: res.data['payload'].phone_number,label_visibility: true },
                     })
                 }
             })
