@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BASE_URL, PROFILE, LOGIN_URL } from '../router_constants';
+import { BASE_URL, LOGIN_URL } from '../router_constants';
 import { connect } from "react-redux";
 import { Link, withRouter } from 'react-router-dom';
 import { set_active_user } from '../../actions'
@@ -8,8 +8,6 @@ class Left_sidebar extends Component {
 
     componentDidMount(){
         console.log(this.props.active_user);
-        
-        
     }
 
     on_logout_button_click = () => {

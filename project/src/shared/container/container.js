@@ -4,9 +4,9 @@ import Footer from '../../components/footer/footer';
 import Leftsidebar from '../left_sidebar/left_sidebar';
 import Pageheader from '../page_header/page_header';
 import { connect } from "react-redux";
-import Axios from 'axios';
-import { PROFILE_USER_REQUEST } from '../rest_end_points';
-import { LOGIN_URL } from '../router_constants';
+// import Axios from 'axios';
+// import { PROFILE_USER_REQUEST } from '../rest_end_points';
+// import { LOGIN_URL } from '../router_constants';
 import { withRouter } from 'react-router-dom';
 import { set_active_user,notify } from '../../actions'
 
@@ -20,9 +20,9 @@ class Container extends Component {
             };
     }
 
-    componentWillUnmount(){
-        clearInterval(this.state.user_auth_check_interval)
-    }
+    // componentWillUnmount(){
+    //     clearInterval(this.state.user_auth_check_interval)
+    // }
 
     componentDidMount() {
         // if (localStorage.getItem('user') || this.props.active_user){

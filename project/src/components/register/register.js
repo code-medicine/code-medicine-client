@@ -11,6 +11,7 @@ import Select from 'react-select';
 import './register.css'
 // import Modal from 'react-bootstrap4-modal';
 import DateTimePicker from 'react-datetime'
+import { withRouter } from 'react-router-dom';
 
 
 class Register extends Component {
@@ -95,10 +96,21 @@ class Register extends Component {
     }
 
     on_date_of_birth_change = (e) => {
+        
         if (e === '')
             this.setState({ dob: { value: '', label_visibility: false } })
-        else
-            this.setState({ dob: { value: e, label_visibility: true } })
+        else{
+            var configured_date = null;
+            try{
+                configured_date = e.format('ll');
+            }
+            catch(err){
+                configured_date = ''
+            }
+            finally{
+                this.setState({ dob: { value: configured_date, label_visibility: true } })
+            }
+        }
     }
     on_selected_changed = (e) => {
         switch (e.id) {
@@ -116,127 +128,130 @@ class Register extends Component {
         }
     }
     __check_soft_constraints = (data) => {
-        var status = true;
         var alphabets = /^[A-Za-z]+$/;
         var numbers = /^[0-9]+$/;
         if (data.first_name === '') {
             this.props.notify('error', '', 'First Name is required!');
-            status = false;
+            return false;
         }
         else {
             if (!data.first_name.match(alphabets)) {
                 this.props.notify('error', '', "First Name can only have alphabets!");
-                status = false;
+                return false;
             }
         }
         if (data.last_name === '') {
             this.props.notify('error', '', 'Last Name is required!');
-            status = false;
+            return false;
         }
         else {
             if (!data.last_name.match(alphabets)) {
                 this.props.notify('error', '', "Last Name can only have alphabets!");
-                status = false;
+                return false
             }
         }
         if (data.email === '') {
             this.props.notify('error', '', 'Email is required!');
-            status = false;
+            return false;
         }
         if (data.password === '') {
             this.props.notify('error', '', 'Please specify a password to secure your account!')
-            status = false
+            return false
         }
         if (data.cnic === '') {
             this.props.notify('error', '', 'Please specify your CNIC!');
-            status = false;
+            return false;
         }
         if (data.phone_number === '') {
             this.props.notify('error', '', 'Please specify your phone number!');
-            status = false;
+            return false;
         }
         else {
             if (!data.phone_number.match(numbers)) {
                 this.props.notify('error', '', 'Phone number is invalid!');
-                status = false;
+                return false;
             }
         }
         if (data.role === '') {
             this.props.notify('error', '', 'Please select one of the roles!');
+            return false
         }
-        return status; // all clear. no false condition :)
+        if (data.dob === ''){
+            this.props.notify('error','','Choose your date of birth correctly!');
+            return false;
+        }
+        return true; // all clear. no false condition :)
     }
     __check_hard_constraints = (data) => {
-        var status = true;
         if (!data.email.includes('@')) {
             this.props.notify('error', '', data.email + ' Invalid email!');
-            status = false;
+            return false;
         }
         if (data.password.length < 8) {
             this.props.notify('error', '', 'Password must have atleast 8 characters!');
-            status = false
+            return false;
+        }
+        if (data.password !== data.verify_password){
+            this.props.notify('error', '', 'Password do not match!');
+            return false;
         }
         if (data.phone_number.length < 11) {
             this.props.notify('error', '', 'Invalid Phone number!');
-            status = false
+            return false;
         }
         if (data.cnic.length < 13) {
             this.props.notify('error', '', 'Invalid CNIC number!');
-            status = false
+            return false;
         }
-        return status;
+        var configured_date = null;
+        try{
+            configured_date = new Date(data.dob)
+        }
+        catch(err) {
+            this.props.notify('error','','Please specify the Date of birth as per given format')
+            return false;
+        }
+        return true;
     }
-    on_submit = () => {
+    on_submit = async () => {
         const data = {
             first_name: this.state.first_name.value.trim(),
             last_name: this.state.last_name.value.trim(),
             email: this.state.email.value.trim(),
             password: this.state.password.value.trim(),
+            verify_password: this.state.verify_password.value.trim(),
             phone_number: this.state.phone.value.trim(),
             cnic: this.state.cnic.value.trim(),
             role: this.state.role.value.trim(),
-            dob: this.state.dob.value.format('ll'),
+            dob: this.state.dob.value,
             gender: this.state.gender.value.trim(),
             blood_group: this.state.blood_group.value.trim(),
             address: this.state.address.value.trim()
         }
-        console.log(data);
         if (this.__check_soft_constraints(data) && this.__check_hard_constraints(data)) {
             this.setState({ loading_status: true })
-            Axios.post(`${REGISTER_USER_REQUEST}`, data).then(res => {
-                if (res.data['status']) {
+            var response = await Axios.post(`${REGISTER_USER_REQUEST}`, data);
+
+            try{
+                if (response.data['status']){
                     setTimeout(() => {
-                        this.props.notify('success', '', res.data['message'])
-                        this.setState({
-                            loading_status: false,
-                            email: {value: '', label_visibility: false},
-                            password: {value: '', label_visibility: false},         
-                            first_name: {value: '', label_visibility: false},
-                            last_name: {value: '', label_visibility: false},
-                            phone_number: {value: '', label_visibility: false},
-                            cnic: {value: '', label_visibility: false},
-                            role: {value: '', label_visibility: false},
-                            dob: {value: '', label_visibility: false},
-                            gender: {value: '', label_visibility: false},
-                            blood_group: {value: '', label_visibility: false},
-                            address: {value: '', label_visibility: false},
-                        })
-                        this.props.history.push(LOGIN_URL)
+                        this.props.notify('success','',response.data['message']);
+                        this.props.history.push(LOGIN_URL);
                     }, 5000)
                 }
                 else {
-                    this.props.notify('error', '', res.data['message'])
+                    this.props.notify('error', '', response.data['message'])
                     setTimeout(() => {
                         this.setState({ loading_status: false })
-                        
                     }, 3000)
                 }
-            }).catch(err => {
+            }
+            catch(err){
                 this.props.notify('error', '', 'We are sorry for invonvenience. Server is not responding! please try again later')
                 setTimeout(() => {
                     this.setState({ loading_status: false })
                 }, 3000)
-            })
+            }
         }
         else {
             this.props.notify('info', '', 'Registartion unsuccessfull!');
@@ -262,9 +277,8 @@ class Register extends Component {
             { id: 'role_selection', label: 'Patient' },
             { id: 'role_selection', label: 'Doctor' },
             { id: 'role_selection', label: 'Admin' },
-
         ];
-        var status = ''
+        var status = null;
         if (this.state.loading_status) {
             status = <div className="mt-3">
                 <div className="d-flex justify-content-center ">
@@ -303,7 +317,8 @@ class Register extends Component {
                                     className="form-control"
                                     placeholder="Enter your email"
                                     id="email_text_input"
-                                    onChange={this.on_text_field_change} />
+                                    onChange={this.on_text_field_change}
+                                    value={this.state.email.value} />
                             </div>
                         </div>
                         <div className="row">
@@ -320,7 +335,8 @@ class Register extends Component {
                                             className="form-control"
                                             placeholder="First name"
                                             id="first_name_text_input"
-                                            onChange={this.on_text_field_change} />
+                                            onChange={this.on_text_field_change}
+                                            value={this.state.first_name.value} />
                                     </div>
                                 </div>
                             </div>
@@ -338,7 +354,8 @@ class Register extends Component {
                                             className="form-control"
                                             placeholder="Last name"
                                             id="last_name_text_input"
-                                            onChange={this.on_text_field_change} />
+                                            onChange={this.on_text_field_change}
+                                            value={this.state.last_name.value} />
                                     </div>
                                 </div>
                             </div>
@@ -357,7 +374,8 @@ class Register extends Component {
                                             className="form-control"
                                             placeholder="Password"
                                             id="password_text_input"
-                                            onChange={this.on_text_field_change} />
+                                            onChange={this.on_text_field_change}
+                                            value={this.state.password.value} />
                                     </div>
                                 </div>
                             </div>
@@ -375,7 +393,8 @@ class Register extends Component {
                                             className="form-control"
                                             placeholder="Verify password"
                                             id="verify_password_text_input"
-                                            onChange={this.on_text_field_change} />
+                                            onChange={this.on_text_field_change}
+                                            value={this.state.verify_password.value} />
                                     </div>
                                 </div>
                             </div>
@@ -391,9 +410,11 @@ class Register extends Component {
                                             className="clock_datatime_picker"
                                             inputProps={{ placeholder: 'Date of birth', width: '100%', className: 'form-control' }}
                                             input={true}
-                                        >
-
-                                        </DateTimePicker>
+                                            dateFormat={'ll'}
+                                            timeFormat={false}
+                                            closeOnSelect={true}
+                                            value={this.state.dob.value}
+                                            />
                                     </span>
 
                                 </div>
@@ -414,7 +435,8 @@ class Register extends Component {
                                             className="form-control"
                                             placeholder="Enter cnic number"
                                             id="cnic_text_input"
-                                            onChange={this.on_text_field_change} />
+                                            onChange={this.on_text_field_change}
+                                            value={this.state.cnic.value} />
                                     </div>
                                 </div>
                             </div>
@@ -431,7 +453,8 @@ class Register extends Component {
                                             className="form-control"
                                             placeholder="Enter phone number"
                                             id="phone_text_input"
-                                            onChange={this.on_text_field_change} />
+                                            onChange={this.on_text_field_change}
+                                            value={this.state.phone.value} />
                                     </div>
                                 </div>
                             </div>
@@ -448,58 +471,59 @@ class Register extends Component {
                                             className="form-control"
                                             placeholder="Enter current address"
                                             id="address_text_input"
-                                            onChange={this.on_text_field_change} />
+                                            onChange={this.on_text_field_change}
+                                            value={this.state.address.value}
+                                            />
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-
-
                         <hr />
-
-
 
                         <div className="row">
                             <div className="col-md-4">
-                                <div class="form-group form-group-feedback form-group-feedback-right">
+                                <div className="form-group form-group-feedback form-group-feedback-right">
                                     <Select
                                         options={options_blood_group}
                                         classNamePrefix={`form-control`}
                                         placeholder="Select blood group"
                                         id="blood_group_selection"
                                         onChange={this.on_selected_changed}
+                                        value={{id: 'blood_group_selection', label: this.state.blood_group.value}}
                                     />
-                                    <div class="form-control-feedback">
-                                        <i class="icon-user-check text-muted"></i>
+                                    <div className="form-control-feedback">
+                                        <i className="icon-user-check text-muted"></i>
                                     </div>
                                 </div>
                             </div>
                             <div className="col-md-4">
-                                <div class="form-group form-group-feedback form-group-feedback-right">
+                                <div className="form-group form-group-feedback form-group-feedback-right">
                                     <Select
                                         options={options_gender}
                                         classNamePrefix={`form-control`}
                                         placeholder="Select gender"
                                         id="gender_selection"
                                         onChange={this.on_selected_changed}
+                                        value={{id: 'gender_selection', label: this.state.gender.value}}
                                     />
-                                    <div class="form-control-feedback">
-                                        <i class="icon-user-check text-muted"></i>
+                                    <div className="form-control-feedback">
+                                        <i className="icon-user-check text-muted"></i>
                                     </div>
                                 </div>
                             </div>
                             <div className="col-md-4">
-                                <div class="form-group form-group-feedback form-group-feedback-right">
+                                <div className="form-group form-group-feedback form-group-feedback-right">
                                     <Select
                                         options={options_roles}
                                         classNamePrefix={`form-control`}
                                         placeholder="Select role"
                                         id="role_selection"
                                         onChange={this.on_selected_changed}
+                                        value={{id: 'role_selection', label: this.state.role.value}}
                                     />
-                                    <div class="form-control-feedback">
-                                        <i class="icon-user-check text-muted"></i>
+                                    <div className="form-control-feedback">
+                                        <i className="icon-user-check text-muted"></i>
                                     </div>
                                 </div>
                             </div>
@@ -536,4 +560,4 @@ class Register extends Component {
 function map_state_to_props(notify) {
     return { notify }
 }
-export default connect(map_state_to_props, { notify })(Register);
+export default connect(map_state_to_props, { notify })(withRouter(Register));
