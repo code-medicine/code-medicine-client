@@ -12,26 +12,34 @@ import './register.css'
 // import Modal from 'react-bootstrap4-modal';
 import DateTimePicker from 'react-datetime'
 import { withRouter } from 'react-router-dom';
+import Inputfield from '../../shared/inputfield/inputfield';
 
 
 class Register extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            first_name: { value: '', label_visibility: false },
-            last_name: { value: '', label_visibility: false },
-            email: { value: '', label_visibility: false },
-            password: { value: '', label_visibility: false },
-            verify_password: { value: '', label_visibility: false },
-            gender: { value: '', label_visibility: false },
-            dob: { value: new Date(), label_visibility: false },
-            blood_group: { value: '', label_visibility: false },
-            role: { value: '', label_visibility: false },
-            phone: { value: '', label_visibility: false },
-            cnic: { value: '', label_visibility: false },
-            address: { value: '', label_visibility: false },
-            loading_status: false,
+            first_name:         { value: '', label_visibility: false },
+            last_name:          { value: '', label_visibility: false },
+            email:              { value: '', label_visibility: false },
+            password:           { value: '', label_visibility: false },
+            verify_password:    { value: '', label_visibility: false },
+            gender:             { value: '', label_visibility: false },
+            dob:                { value: '', label_visibility: false },
+            blood_group:        { value: '', label_visibility: false },
+            role:               { value: '', label_visibility: false },
+            phone:              { value: '', label_visibility: false },
+            cnic:               { value: '', label_visibility: false },
+            address:            { value: '', label_visibility: false },
+            loading_status:     false,
             role_select_modal_visibility: false
+        }
+    }
+    on_key_press_listener = (e) => {
+        if (e.keyCode === 8) {
+            this.setState({
+                cnic: {value: this.state.cnic.value[0, this.state.cnic.value.length - 1]}
+            })
         }
     }
     on_text_field_change = (e) => {
@@ -51,8 +59,18 @@ class Register extends Component {
             case 'cnic_text_input':
                 if (e.target.value === '')
                     this.setState({ cnic: { value: e.target.value, label_visibility: false } })
-                else
-                    this.setState({ cnic: { value: e.target.value, label_visibility: true } })
+                else{
+                    var raw_cnic = e.target.value
+                    var digit = raw_cnic[raw_cnic.length-1]
+                    console.log(raw_cnic,digit);
+                    if (digit.match(/^[0-9-]+$/)){
+                        if (raw_cnic.length === 5){
+                            if (raw_cnic[raw_cnic.length-1] != '-')
+                                raw_cnic += '-'
+                        }
+                        this.setState({ cnic: { value: raw_cnic, label_visibility: true } })
+                    }
+                }
                 break;
             case 'phone_number_text_input':
                 if (e.target.value === '')
@@ -305,7 +323,16 @@ class Register extends Component {
                             <h5 className="mb-0">Create account</h5>
                             <span className="d-block text-muted">All fields are required</span>
                         </div>
-                        <div className={form_group}>
+                        <Inputfield 
+                            id={'email_text_input'}
+                            label_visibility={this.state.email.label_visibility}
+                            label_tag={'Email'}
+                            icon={'icon-mention'}
+                            input_type={'email'}
+                            on_text_change_listener={this.on_text_field_change}
+                            default_value={this.state.email.value}
+                            />
+                        {/* <div className={form_group}>
                             <label className={`form-group-float-label animate ${this.state.email.label_visibility ? 'is-visible' : ''}`}>Email</label>
                             <div className="input-group">
                                 <span className="input-group-prepend">
@@ -320,10 +347,19 @@ class Register extends Component {
                                     onChange={this.on_text_field_change}
                                     value={this.state.email.value} />
                             </div>
-                        </div>
+                        </div> */}
                         <div className="row">
                             <div className="col-md-6">
-                                <div className={form_group}>
+                                <Inputfield 
+                                    id={`first_name_text_input`}
+                                    label_visibility={this.state.first_name.label_visibility}
+                                    label_tag={'First name'}
+                                    icon={'icon-user-check'}
+                                    input_type={'text'}
+                                    on_text_change_listener={this.on_text_field_change}
+                                    default_value={this.state.first_name.value}
+                                    />
+                                {/* <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.first_name.label_visibility ? 'is-visible' : ''}`}>First name</label>
                                     <div className="input-group">
                                         <span className="input-group-prepend">
@@ -338,11 +374,20 @@ class Register extends Component {
                                             onChange={this.on_text_field_change}
                                             value={this.state.first_name.value} />
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
 
                             <div className="col-md-6">
-                                <div className={form_group}>
+                                <Inputfield 
+                                    id={`last_name_text_input`}
+                                    label_visibility={this.state.last_name.label_visibility}
+                                    label_tag={'Last name'}
+                                    icon={'icon-user-check'}
+                                    input_type={'text'}
+                                    on_text_change_listener={this.on_text_field_change}
+                                    default_value={this.state.last_name.value}
+                                    />
+                                {/* <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.last_name.label_visibility ? 'is-visible' : ''}`}>Last name</label>
                                     <div className="input-group">
                                         <span className="input-group-prepend">
@@ -357,12 +402,21 @@ class Register extends Component {
                                             onChange={this.on_text_field_change}
                                             value={this.state.last_name.value} />
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                         <div className="row">
                             <div className="col-md-4">
-                                <div className={form_group}>
+                                <Inputfield 
+                                    id={`password_text_input`}
+                                    label_visibility={this.state.password.label_visibility}
+                                    label_tag={'Password'}
+                                    icon={'icon-user-lock'}
+                                    input_type={'password'}
+                                    on_text_change_listener={this.on_text_field_change}
+                                    default_value={this.state.password.value}
+                                    />
+                                {/* <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.password.label_visibility ? 'is-visible' : ''}`}>Password</label>
                                     <div className="input-group">
                                         <span className="input-group-prepend">
@@ -377,11 +431,20 @@ class Register extends Component {
                                             onChange={this.on_text_field_change}
                                             value={this.state.password.value} />
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
 
                             <div className="col-md-4">
-                                <div className={form_group}>
+                                <Inputfield 
+                                    id={`verify_password_text_input`}
+                                    label_visibility={this.state.first_name.label_visibility}
+                                    label_tag={'Verify Password'}
+                                    icon={'icon-user-lock'}
+                                    input_type={'password'}
+                                    on_text_change_listener={this.on_text_field_change}
+                                    default_value={this.state.verify_password.value}
+                                    />
+                                {/* <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.verify_password.label_visibility ? 'is-visible' : ''}`}>Verify Password</label>
                                     <div className="input-group">
                                         <span className="input-group-prepend">
@@ -396,7 +459,7 @@ class Register extends Component {
                                             onChange={this.on_text_field_change}
                                             value={this.state.verify_password.value} />
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                             <div className="col-md-4">
                                 <div className={`${form_group} `}>
@@ -423,6 +486,15 @@ class Register extends Component {
                         </div>
                         <div className="row">
                             <div className="col-md-3">
+                                {/* <Inputfield 
+                                    id={`cnic_text_input`}
+                                    label_visibility={this.state.cnic.label_visibility}
+                                    label_tag={'CNIC'}
+                                    icon={'icon-vcard'}
+                                    input_type={'text'}
+                                    on_text_change_listener={this.on_text_field_change}
+                                    default_value={this.state.cnic.value}
+                                    /> */}
                                 <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.cnic.label_visibility ? 'is-visible' : ''}`}>CNIC number</label>
                                     <div className="input-group">
@@ -431,17 +503,27 @@ class Register extends Component {
                                                 <i className="icon-vcard text-muted"></i>
                                             </span>
                                         </span>
-                                        <input type="number"
+                                        <input type="text"
                                             className="form-control"
                                             placeholder="Enter cnic number"
                                             id="cnic_text_input"
                                             onChange={this.on_text_field_change}
+                                            onKeyDown={this.on_key_press_listener}
                                             value={this.state.cnic.value} />
                                     </div>
                                 </div>
                             </div>
                             <div className="col-md-3">
-                                <div className={form_group}>
+                                <Inputfield 
+                                    id={`phone_text_input`}
+                                    label_visibility={this.state.phone.label_visibility}
+                                    label_tag={'Phone number'}
+                                    icon={'icon-phone2'}
+                                    input_type={'text'}
+                                    on_text_change_listener={this.on_text_field_change}
+                                    default_value={this.state.phone.value}
+                                    />
+                                {/* <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.phone.label_visibility ? 'is-visible' : ''}`}>Phone number</label>
                                     <div className="input-group">
                                         <span className="input-group-prepend">
@@ -456,10 +538,19 @@ class Register extends Component {
                                             onChange={this.on_text_field_change}
                                             value={this.state.phone.value} />
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                             <div className="col-md-6">
-                                <div className={form_group}>
+                                <Inputfield 
+                                    id={`address_text_input`}
+                                    label_visibility={this.state.address.label_visibility}
+                                    label_tag={'Address'}
+                                    icon={'icon-home'}
+                                    input_type={'text'}
+                                    on_text_change_listener={this.on_text_field_change}
+                                    default_value={this.state.address.value}
+                                    />
+                                {/* <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.address.label_visibility ? 'is-visible' : ''}`}>Address</label>
                                     <div className="input-group">
                                         <span className="input-group-prepend">
@@ -475,7 +566,7 @@ class Register extends Component {
                                             value={this.state.address.value}
                                             />
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
 
@@ -490,7 +581,6 @@ class Register extends Component {
                                         placeholder="Select blood group"
                                         id="blood_group_selection"
                                         onChange={this.on_selected_changed}
-                                        value={{id: 'blood_group_selection', label: this.state.blood_group.value}}
                                     />
                                     <div className="form-control-feedback">
                                         <i className="icon-user-check text-muted"></i>
@@ -505,7 +595,6 @@ class Register extends Component {
                                         placeholder="Select gender"
                                         id="gender_selection"
                                         onChange={this.on_selected_changed}
-                                        value={{id: 'gender_selection', label: this.state.gender.value}}
                                     />
                                     <div className="form-control-feedback">
                                         <i className="icon-user-check text-muted"></i>
@@ -520,7 +609,6 @@ class Register extends Component {
                                         placeholder="Select role"
                                         id="role_selection"
                                         onChange={this.on_selected_changed}
-                                        value={{id: 'role_selection', label: this.state.role.value}}
                                     />
                                     <div className="form-control-feedback">
                                         <i className="icon-user-check text-muted"></i>
