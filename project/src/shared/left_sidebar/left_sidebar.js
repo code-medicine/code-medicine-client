@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
-import { BASE_URL, LOGIN_URL } from '../router_constants';
+import { BASE_URL, LOGIN_URL, RECEPTION_TODAYSPATIIENT, RECEPTION_VISITS } from '../router_constants';
 import { connect } from "react-redux";
 import { Link, withRouter } from 'react-router-dom';
 import { set_active_user } from '../../actions'
 
 class Left_sidebar extends Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            home_toggle: '',
+            reception_toggle: '',
+        }
+    }
     componentDidMount(){
         console.log(this.props.active_user);
     }
@@ -14,6 +21,26 @@ class Left_sidebar extends Component {
         localStorage.clear()
         this.props.set_active_user({})
     }
+
+    on_item_click = (e) => {
+        console.log(e);
+        switch(e.target.id){
+            case 'home_link':
+                if (this.state.home_toggle === '')
+                    this.setState({home_toggle: 'nav-item-open'});
+                else
+                    this.setState({home_toggle: ''});
+                break;
+            case 'reception_link':
+                if (this.state.reception_toggle === '')
+                    this.setState({reception_toggle: 'nav-item-open'});
+                else
+                    this.setState({reception_toggle: ''});
+                break;
+            default:
+                break;
+        }
+    } 
     render() {
         return (
             < div className="sidebar sidebar-dark sidebar-main sidebar-fixed sidebar-expand-md" >
@@ -66,13 +93,18 @@ class Left_sidebar extends Component {
                                     Main
                                 </div>
                             </li>
-                            <li className="nav-item nav-item-submenu">
-                                <Link className="nav-link" to={BASE_URL}>
+                            <li className={`nav-item nav-item-submenu ${this.state.home_toggle}`}>
+                                <Link className="nav-link" 
+                                    to={'#'} 
+                                    onClick={this.on_item_click}
+                                    id="home_link">
                                     <i className="icon-home4"></i>
                                     <span className="">Home</span>
                                 </Link>
 
-                                <ul className="nav nav-group-sub" data-submenu-title="Home">
+                                <ul className="nav nav-group-sub" 
+                                    data-submenu-title="Home"
+                                    style={{display: this.state.home_toggle === ''? 'none':'block'}}>
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link active">Dashboard</Link></li>
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Messages<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Emergency<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
@@ -81,15 +113,19 @@ class Left_sidebar extends Component {
                                 </ul>
 
                             </li>
-                            <li className="nav-item nav-item-submenu">
-                                <Link className="nav-link" to={BASE_URL}>
+                            <li className={`nav-item nav-item-submenu ${this.state.reception_toggle}`}>
+                                <Link className="nav-link" 
+                                    to={'#'} 
+                                    onClick={this.on_item_click}
+                                    id="reception_link">
                                     <i className="icon-user"></i>
                                     <span>Reception</span>
                                 </Link>
 
-                                <ul className="nav nav-group-sub" data-submenu-title="Reception">
-                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link active">Today's Patients</Link></li>
-                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link">Visits</Link></li>
+                                <ul className="nav nav-group-sub" data-submenu-title="Reception"
+                                    style={{display: this.state.reception_toggle === ''? 'none':'block'}}>
+                                    <li className="nav-item"><Link to={RECEPTION_TODAYSPATIIENT} className="nav-link active">Today's Patients</Link></li>
+                                    <li className="nav-item"><Link to={RECEPTION_VISITS} className="nav-link">Visits</Link></li>
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Emergency<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Admissions<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Requests<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>

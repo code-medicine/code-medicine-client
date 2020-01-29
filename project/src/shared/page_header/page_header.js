@@ -35,7 +35,7 @@ class Page_header extends Component {
                     </div>
                 </div>
 
-                <div className="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+                {/* <div className="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
                     <div className="d-flex">
                         <div className="breadcrumb">
                             <Link to="index.html" className="breadcrumb-item">
@@ -85,7 +85,7 @@ class Page_header extends Component {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
         );
     }

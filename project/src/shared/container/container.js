@@ -45,23 +45,39 @@ class Container extends Component {
         var left_sidebar = ''
         var page_header = ''
 
-        if (this.state.type === 'login'){
-            header = true
-            footer = true
-            left_sidebar = false
-            page_header = false
-        }
-        else if (this.state.type === 'register'){
-            header = true
-            footer = true
-            left_sidebar = false
-            page_header = false
-        }
-        else if (this.state.type === 'home'){
-            header = true
-            footer = true
-            left_sidebar = true
-            page_header = true
+        switch(this.state.type){
+            case 'login':
+                header = true
+                footer = true
+                left_sidebar = false
+                page_header = false
+                break;
+            case 'register':
+                header = true
+                footer = true
+                left_sidebar = false
+                page_header = false
+                break;
+            case 'home':
+                header = true
+                footer = true
+                left_sidebar = true
+                page_header = true
+                break;
+            case 'todayspatient':
+                header = true
+                footer = true
+                left_sidebar = true
+                page_header = true
+                break;
+            case 'visits':
+                header = true
+                footer = true
+                left_sidebar = true
+                page_header = true
+                break;
+            default:
+                break;
         }
         return (
             <div className={`virtual-body navbar-top ${this.props.left_sidebar? 'sidebar-xs':''}`}>

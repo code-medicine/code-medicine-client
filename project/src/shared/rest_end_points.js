@@ -1,5 +1,5 @@
 const PROTOCOL = 'http';
-const ADDRESS = '192.168.10.13';
+const ADDRESS = '192.168.10.3';
 const PORT = '5000';
 
 export const BASE_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;

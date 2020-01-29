@@ -37,9 +37,13 @@ class Register extends Component {
     }
     on_key_press_listener = (e) => {
         if (e.keyCode === 8) {
-            this.setState({
-                cnic: {value: this.state.cnic.value[0, this.state.cnic.value.length - 1]}
-            })
+            switch(e.target.id){
+                case 'cnic_text_input':
+                    this.setState({
+                        cnic: {value: this.state.cnic.value[0, this.state.cnic.value.length - 1]}
+                    })
+                    break;
+            }
         }
     }
     on_text_field_change = (e) => {
@@ -62,11 +66,9 @@ class Register extends Component {
                 else{
                     var raw_cnic = e.target.value
                     var digit = raw_cnic[raw_cnic.length-1]
-                    console.log(raw_cnic,digit);
                     if (digit.match(/^[0-9-]+$/)){
                         if (raw_cnic.length === 5){
-                            if (raw_cnic[raw_cnic.length-1] != '-')
-                                raw_cnic += '-'
+                            raw_cnic += '-'                                
                         }
                         this.setState({ cnic: { value: raw_cnic, label_visibility: true } })
                     }
@@ -437,7 +439,7 @@ class Register extends Component {
                             <div className="col-md-4">
                                 <Inputfield 
                                     id={`verify_password_text_input`}
-                                    label_visibility={this.state.first_name.label_visibility}
+                                    label_visibility={this.state.verify_password.label_visibility}
                                     label_tag={'Verify Password'}
                                     icon={'icon-user-lock'}
                                     input_type={'password'}

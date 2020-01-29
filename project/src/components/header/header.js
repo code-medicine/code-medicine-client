@@ -1,28 +1,34 @@
 import React, { Component } from 'react';
-import { BASE_URL } from '../../shared/router_constants';
+import { BASE_URL, PROFILE, LOGIN_URL } from '../../shared/router_constants';
 import Logo_light from './logo_light.png';
 // import Logo_dark from './logo_dark.png';
 import { connect } from "react-redux";
-import { left_sidebar_controls } from '../../actions';
+import { left_sidebar_controls, set_active_user} from '../../actions';
 import { Link, withRouter } from 'react-router-dom';
+import NOPICTURE from '../../resources/images/placeholder.jpg'
 
 
 class Header extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
-            this.state = {
-                
-            };
+        this.state = {
+
+        };
     }
 
     on_sidebar_control_button_click = () => {
-        if (this.props.left_sidebar === true){
+        if (this.props.left_sidebar === true) {
             this.props.left_sidebar_controls(false)
         }
-        else{
+        else {
             this.props.left_sidebar_controls(true)
         }
+    }
+
+    on_logout_button_click = () => {
+        localStorage.clear()
+        this.props.set_active_user({})
     }
 
     render() {
@@ -47,12 +53,13 @@ class Header extends Component {
                 <div className="collapse navbar-collapse" id="navbar-mobile">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <Link onClick={this.on_sidebar_control_button_click} to={"#"} className="navbar-nav-link sidebar-control sidebar-main-toggle d-none d-md-block">
+                            <Link onClick={this.on_sidebar_control_button_click} to={"#"}
+                                className="navbar-nav-link sidebar-control sidebar-main-toggle d-none d-md-block">
                                 <i className="icon-paragraph-justify3"></i>
                             </Link>
                         </li>
 
-                        <li className="nav-item dropdown">
+                        {/* <li className="nav-item dropdown">
                             <Link to={BASE_URL} className="navbar-nav-link dropdown-toggle caret-0" data-toggle="dropdown">
                                 <i className="icon-git-compare"></i>
                                 <span className="d-md-none ml-2">Git updates</span>
@@ -132,12 +139,27 @@ class Header extends Component {
                                     </div>
                                 </div>
                             </div>
-                        </li>
+                        </li> */}
                     </ul>
 
+                    <span className="navbar-text ml-md-3 mr-md-auto">
+                        <span className="badge bg-success">Online</span>
+                    </span>
+
                     <ul className="navbar-nav">
-                        
-                        
+                        <li className="nav-item dropdown dropdown-user">
+                            <Link to={`#`} className="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
+                                <img src={NOPICTURE} className="rounded-circle" alt="" />
+                                <span>{this.props.active_user['first_name']}</span>
+                            </Link>
+
+                            <div className="dropdown-menu dropdown-menu-right">
+                                <Link to={PROFILE} className="dropdown-item"><i className="icon-user-plus"></i> My profile</Link>
+                                <Link to={`#`} className="dropdown-item"><i className="icon-comment-discussion"></i> Messages <span className="badge badge-pill bg-blue ml-auto">58</span></Link>
+                                <div className="dropdown-divider"></div>
+                                <Link onClick={this.on_logout_button_click} to={LOGIN_URL} className="dropdown-item"><i className="icon-switch2"></i> Logout</Link>
+                            </div>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -145,8 +167,9 @@ class Header extends Component {
     }
 }
 function map_state_to_props(state) {
-    return { 
-        left_sidebar: state.left_sidebar
+    return {
+        left_sidebar: state.left_sidebar,
+        active_user: state.active_user
     }
 }
-export default connect(map_state_to_props, { left_sidebar_controls })(withRouter(Header));
+export default connect(map_state_to_props, { left_sidebar_controls, set_active_user })(withRouter(Header));
