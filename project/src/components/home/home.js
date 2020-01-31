@@ -17,7 +17,7 @@ class Home extends Component {
 
     componentDidMount(){
         if (!localStorage.user){
-            this.props.history.push(LOGIN_URL)
+            // this.props.history.push(LOGIN_URL)
         }
         else {
             Axios.get(`${PROFILE_USER_REQUEST}?tag=${localStorage.user}`).then(res => {

@@ -19,28 +19,28 @@ class Register extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            first_name:         { value: '', label_visibility: false },
-            last_name:          { value: '', label_visibility: false },
-            email:              { value: '', label_visibility: false },
-            password:           { value: '', label_visibility: false },
-            verify_password:    { value: '', label_visibility: false },
-            gender:             { value: '', label_visibility: false },
-            dob:                { value: '', label_visibility: false },
-            blood_group:        { value: '', label_visibility: false },
-            role:               { value: '', label_visibility: false },
-            phone:              { value: '', label_visibility: false },
-            cnic:               { value: '', label_visibility: false },
-            address:            { value: '', label_visibility: false },
-            loading_status:     false,
+            first_name: { value: '', label_visibility: false },
+            last_name: { value: '', label_visibility: false },
+            email: { value: '', label_visibility: false },
+            password: { value: '', label_visibility: false },
+            verify_password: { value: '', label_visibility: false },
+            gender: { value: '', label_visibility: false },
+            dob: { value: '', label_visibility: false },
+            blood_group: { value: '', label_visibility: false },
+            role: { value: '', label_visibility: false },
+            phone: { value: '', label_visibility: false },
+            cnic: { value: '', label_visibility: false },
+            address: { value: '', label_visibility: false },
+            loading_status: false,
             role_select_modal_visibility: false
         }
     }
     on_key_press_listener = (e) => {
         if (e.keyCode === 8) {
-            switch(e.target.id){
+            switch (e.target.id) {
                 case 'cnic_text_input':
                     this.setState({
-                        cnic: {value: this.state.cnic.value[0, this.state.cnic.value.length - 1]}
+                        cnic: { value: this.state.cnic.value[0, this.state.cnic.value.length - 1] }
                     })
                     break;
             }
@@ -63,12 +63,12 @@ class Register extends Component {
             case 'cnic_text_input':
                 if (e.target.value === '')
                     this.setState({ cnic: { value: e.target.value, label_visibility: false } })
-                else{
+                else {
                     var raw_cnic = e.target.value
-                    var digit = raw_cnic[raw_cnic.length-1]
-                    if (digit.match(/^[0-9-]+$/)){
-                        if (raw_cnic.length === 5){
-                            raw_cnic += '-'                                
+                    var digit = raw_cnic[raw_cnic.length - 1]
+                    if (digit.match(/^[0-9-]+$/)) {
+                        if (raw_cnic.length === 5) {
+                            raw_cnic += '-'
                         }
                         this.setState({ cnic: { value: raw_cnic, label_visibility: true } })
                     }
@@ -116,18 +116,18 @@ class Register extends Component {
     }
 
     on_date_of_birth_change = (e) => {
-        
+
         if (e === '')
             this.setState({ dob: { value: '', label_visibility: false } })
-        else{
+        else {
             var configured_date = null;
-            try{
+            try {
                 configured_date = e.format('ll');
             }
-            catch(err){
+            catch (err) {
                 configured_date = ''
             }
-            finally{
+            finally {
                 this.setState({ dob: { value: configured_date, label_visibility: true } })
             }
         }
@@ -196,8 +196,8 @@ class Register extends Component {
             this.props.notify('error', '', 'Please select one of the roles!');
             return false
         }
-        if (data.dob === ''){
-            this.props.notify('error','','Choose your date of birth correctly!');
+        if (data.dob === '') {
+            this.props.notify('error', '', 'Choose your date of birth correctly!');
             return false;
         }
         return true; // all clear. no false condition :)
@@ -211,7 +211,7 @@ class Register extends Component {
             this.props.notify('error', '', 'Password must have atleast 8 characters!');
             return false;
         }
-        if (data.password !== data.verify_password){
+        if (data.password !== data.verify_password) {
             this.props.notify('error', '', 'Password do not match!');
             return false;
         }
@@ -224,11 +224,11 @@ class Register extends Component {
             return false;
         }
         var configured_date = null;
-        try{
+        try {
             configured_date = new Date(data.dob)
         }
-        catch(err) {
-            this.props.notify('error','','Please specify the Date of birth as per given format')
+        catch (err) {
+            this.props.notify('error', '', 'Please specify the Date of birth as per given format')
             return false;
         }
         return true;
@@ -252,10 +252,10 @@ class Register extends Component {
             this.setState({ loading_status: true })
             var response = await Axios.post(`${REGISTER_USER_REQUEST}`, data);
 
-            try{
-                if (response.data['status']){
+            try {
+                if (response.data['status']) {
                     setTimeout(() => {
-                        this.props.notify('success','',response.data['message']);
+                        this.props.notify('success', '', response.data['message']);
                         this.props.history.push(LOGIN_URL);
                     }, 5000)
                 }
@@ -266,7 +266,7 @@ class Register extends Component {
                     }, 3000)
                 }
             }
-            catch(err){
+            catch (err) {
                 this.props.notify('error', '', 'We are sorry for invonvenience. Server is not responding! please try again later')
                 setTimeout(() => {
                     this.setState({ loading_status: false })
@@ -322,10 +322,10 @@ class Register extends Component {
                     <div className="col-lg-6 offset-lg-3">
                         <div className="text-center mb-3">
                             <i className="icon-plus3 icon-2x text-success border-success border-3 rounded-round p-3 mb-3 mt-1"></i>
-                            <h5 className="mb-0">Create account</h5>
+                            <h3 className="mb-0">Create account</h3>
                             <span className="d-block text-muted">All fields are required</span>
                         </div>
-                        <Inputfield 
+                        <Inputfield
                             id={'email_text_input'}
                             label_visibility={this.state.email.label_visibility}
                             label_tag={'Email'}
@@ -333,7 +333,7 @@ class Register extends Component {
                             input_type={'email'}
                             on_text_change_listener={this.on_text_field_change}
                             default_value={this.state.email.value}
-                            />
+                        />
                         {/* <div className={form_group}>
                             <label className={`form-group-float-label animate ${this.state.email.label_visibility ? 'is-visible' : ''}`}>Email</label>
                             <div className="input-group">
@@ -352,7 +352,7 @@ class Register extends Component {
                         </div> */}
                         <div className="row">
                             <div className="col-md-6">
-                                <Inputfield 
+                                <Inputfield
                                     id={`first_name_text_input`}
                                     label_visibility={this.state.first_name.label_visibility}
                                     label_tag={'First name'}
@@ -360,7 +360,7 @@ class Register extends Component {
                                     input_type={'text'}
                                     on_text_change_listener={this.on_text_field_change}
                                     default_value={this.state.first_name.value}
-                                    />
+                                />
                                 {/* <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.first_name.label_visibility ? 'is-visible' : ''}`}>First name</label>
                                     <div className="input-group">
@@ -380,7 +380,7 @@ class Register extends Component {
                             </div>
 
                             <div className="col-md-6">
-                                <Inputfield 
+                                <Inputfield
                                     id={`last_name_text_input`}
                                     label_visibility={this.state.last_name.label_visibility}
                                     label_tag={'Last name'}
@@ -388,7 +388,7 @@ class Register extends Component {
                                     input_type={'text'}
                                     on_text_change_listener={this.on_text_field_change}
                                     default_value={this.state.last_name.value}
-                                    />
+                                />
                                 {/* <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.last_name.label_visibility ? 'is-visible' : ''}`}>Last name</label>
                                     <div className="input-group">
@@ -409,7 +409,7 @@ class Register extends Component {
                         </div>
                         <div className="row">
                             <div className="col-md-4">
-                                <Inputfield 
+                                <Inputfield
                                     id={`password_text_input`}
                                     label_visibility={this.state.password.label_visibility}
                                     label_tag={'Password'}
@@ -417,7 +417,7 @@ class Register extends Component {
                                     input_type={'password'}
                                     on_text_change_listener={this.on_text_field_change}
                                     default_value={this.state.password.value}
-                                    />
+                                />
                                 {/* <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.password.label_visibility ? 'is-visible' : ''}`}>Password</label>
                                     <div className="input-group">
@@ -437,7 +437,7 @@ class Register extends Component {
                             </div>
 
                             <div className="col-md-4">
-                                <Inputfield 
+                                <Inputfield
                                     id={`verify_password_text_input`}
                                     label_visibility={this.state.verify_password.label_visibility}
                                     label_tag={'Verify Password'}
@@ -445,7 +445,7 @@ class Register extends Component {
                                     input_type={'password'}
                                     on_text_change_listener={this.on_text_field_change}
                                     default_value={this.state.verify_password.value}
-                                    />
+                                />
                                 {/* <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.verify_password.label_visibility ? 'is-visible' : ''}`}>Verify Password</label>
                                     <div className="input-group">
@@ -479,7 +479,7 @@ class Register extends Component {
                                             timeFormat={false}
                                             closeOnSelect={true}
                                             value={this.state.dob.value}
-                                            />
+                                        />
                                     </span>
 
                                 </div>
@@ -516,7 +516,7 @@ class Register extends Component {
                                 </div>
                             </div>
                             <div className="col-md-3">
-                                <Inputfield 
+                                <Inputfield
                                     id={`phone_text_input`}
                                     label_visibility={this.state.phone.label_visibility}
                                     label_tag={'Phone number'}
@@ -524,7 +524,7 @@ class Register extends Component {
                                     input_type={'text'}
                                     on_text_change_listener={this.on_text_field_change}
                                     default_value={this.state.phone.value}
-                                    />
+                                />
                                 {/* <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.phone.label_visibility ? 'is-visible' : ''}`}>Phone number</label>
                                     <div className="input-group">
@@ -543,7 +543,7 @@ class Register extends Component {
                                 </div> */}
                             </div>
                             <div className="col-md-6">
-                                <Inputfield 
+                                <Inputfield
                                     id={`address_text_input`}
                                     label_visibility={this.state.address.label_visibility}
                                     label_tag={'Address'}
@@ -551,7 +551,7 @@ class Register extends Component {
                                     input_type={'text'}
                                     on_text_change_listener={this.on_text_field_change}
                                     default_value={this.state.address.value}
-                                    />
+                                />
                                 {/* <div className={form_group}>
                                     <label className={`form-group-float-label animate ${this.state.address.label_visibility ? 'is-visible' : ''}`}>Address</label>
                                     <div className="input-group">
@@ -623,6 +623,14 @@ class Register extends Component {
                                 <div className="float-right mt-0">
                                     <button
                                         type="button"
+                                        className="btn bg-danger btn-labeled btn-labeled-right pr-5"
+                                        style={{ textTransform: "inherit" }}
+                                        onClick={() => this.props.history.push(LOGIN_URL)}>
+                                        <b><i className="icon-cross"></i></b>
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="button"
                                         className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
                                         style={{ textTransform: "inherit" }}
                                         onClick={this.on_submit}>
@@ -643,7 +651,7 @@ class Register extends Component {
                 {
                     status
                 }
-             </Container>
+            </Container>
         );
     }
 }
