@@ -1,39 +1,56 @@
 import React, { Component } from 'react';
 import Container from '../../../shared/container/container'
 import Select from 'react-select'
-
+import Axios from 'axios';
+import { BASE_RECEPTION_URL } from '../../../shared/rest_end_points';
+import { connect } from "react-redux";
+import { notify } from '../../../actions';
+import { withRouter } from 'react-router-dom';
+import Moment from 'react-moment';
+// import 'moment-timezone';
 class Todayspatient extends Component { 
 
     constructor(props){
         super(props);
         this.state = {
-            data: [
-                'hello','','asd','asd','asdasdsa'
-            ],
-            totalRecords: 4
+            data: [],
+            totalRecords: 0
         }
     }
 
 
     componentDidMount(){
         // $('.table-togglable').footable();
+        Axios.post(BASE_RECEPTION_URL,{},{
+            headers: { 
+                'code-medicine': localStorage.getItem('user')
+            }
+        }).then(res => {
+            if (res.data.status){
+                this.setState({data: res.data.payload, totalRecords: res.data.payload.length})
+            }
+            else{
+                this.props.notify('info','',res.data.message)
+            }
+        }).catch(err => {
+            console.log(err)
+        })
     }
 
     renderDataInRows = () => {
         return (this.state.data.map((booking, i) => {
+            var time = new Date(booking.time);
+            
             return (
                 <tr key={i}>
                     <td>
-                        User info
+                        {booking.patient['first_name']}
                     </td>
                     <td>
-                        time
+                        <Moment  parse="HH:mm" date={time}></Moment>
                     </td>
                     <td>
-                        visit info
-                    </td>
-                    <td>
-                        Actions
+                        {booking.description}
                     </td>
                 </tr>
             )
@@ -100,10 +117,17 @@ class Todayspatient extends Component {
                             <div className={`col-md-3`}>
                                 <div className="text-center">
                                     <h6 className="m-0 font-weight-semibold">Actions</h6>
-
-                                    <button type="button" className="btn btn-warning btn-icon" title="Search"><i className="icon-search4"></i></button>
+                                    <button
+                                        type="button"
+                                        className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
+                                        style={{ textTransform: "inherit" }}
+                                        onClick={this.on_submit}>
+                                        <b><i className="icon-plus3"></i></b>
+                                        New Appointment
+                                    </button>
+                                    {/* <button type="button" className="btn btn-warning btn-icon" title="Search"><i className="icon-search4"></i></button>
                                     <button type="button" className="btn bg-danger btn-icon" title="Walkin patient"><i className="icon-plus22"></i></button>
-                                    <button type="button" className="btn bg-teal-400 btn-icon" title="New Appointment"><i className="icon-stack-plus"></i></button>
+                                    <button type="button" className="btn bg-teal-400 btn-icon" title="New Appointment"><i className="icon-stack-plus"></i></button> */}
                                 </div>
                             </div>
                         </div>
@@ -118,4 +142,7 @@ class Todayspatient extends Component {
         )
     }
 }
-export default Todayspatient
+function map_state_to_props(notify) {
+    return { notify }
+}
+export default connect(map_state_to_props, { notify })(withRouter(Todayspatient));

@@ -14,7 +14,7 @@ class Left_sidebar extends Component {
         }
     }
     componentDidMount(){
-        console.log(this.props.active_user);
+        // console.log(this.props.active_user);
     }
 
     on_logout_button_click = () => {
@@ -23,7 +23,6 @@ class Left_sidebar extends Component {
     }
 
     on_item_click = (e) => {
-        console.log(e);
         switch(e.target.id){
             case 'home_link':
                 if (this.state.home_toggle === '')
