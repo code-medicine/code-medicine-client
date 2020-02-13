@@ -30,6 +30,7 @@ class Home extends Component {
                     // console.log(res.data['payload']);
                     // -----------------todo: data received! do what ever with this data now!
                     this.props.set_active_user(res.data['payload'])
+                    this.props.notify('success','','Welcome back ' + res.data['payload'].first_name)
                 }
             }).catch(err => {
                 // call for server not responding

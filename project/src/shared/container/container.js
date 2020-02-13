@@ -79,8 +79,9 @@ class Container extends Component {
             default:
                 break;
         }
+
         return (
-            <div className={`virtual-body navbar-top ${this.props.left_sidebar? 'sidebar-xs':''}`}>
+            <div className={`virtual-body navbar-top ${this.props.left_sidebar? (window.innerWidth >= 500? 'sidebar-xs':'sidebar-mobile-main'):''}`}>
                 {header? <Header /> : ''}
                 <div className="page-content">
 

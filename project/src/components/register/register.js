@@ -39,10 +39,12 @@ class Register extends Component {
         if (e.keyCode === 8) {
             switch (e.target.id) {
                 case 'cnic_text_input':
-                    this.setState({
-                        cnic: { value: this.state.cnic.value[0, this.state.cnic.value.length - 1] }
-                    })
+                    // this.setState({
+                    //     cnic: { value: this.state.cnic.value[0, this.state.cnic.value.length - 1] }
+                    // })
                     break;
+                default:
+                    break
             }
         }
     }
@@ -623,7 +625,7 @@ class Register extends Component {
                                 <div className="float-right mt-0">
                                     <button
                                         type="button"
-                                        className="btn bg-danger btn-labeled btn-labeled-right pr-5"
+                                        className="btn bg-danger btn-labeled btn-labeled-right pr-5 mr-2"
                                         style={{ textTransform: "inherit" }}
                                         onClick={() => this.props.history.push(LOGIN_URL)}>
                                         <b><i className="icon-cross"></i></b>

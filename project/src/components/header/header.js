@@ -29,6 +29,7 @@ class Header extends Component {
     on_logout_button_click = () => {
         localStorage.clear()
         this.props.set_active_user({})
+        this.props.history.push(LOGIN_URL)
     }
 
     render() {
