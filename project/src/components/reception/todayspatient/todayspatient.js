@@ -11,6 +11,7 @@ import Modal from 'react-bootstrap4-modal';
 // import Inputfield from '../../../shared/inputfield/inputfield';
 import Loader from 'react-loader-spinner';
 import DateTimePicker from 'react-datetime'
+import Inputfield from '../../../shared/inputfield/inputfield';
 
 // import 'moment-timezone';
 class Todayspatient extends Component {
@@ -21,7 +22,21 @@ class Todayspatient extends Component {
             data: [],
             totalRecords: 0,
             new_appointment_modal_visibility: false,
-            modal_loading_status: false
+            new_user_modal_visibility: false,
+            modal_loading_status: false,
+
+            user_first_name: { value: '', label_visibility: false },
+            user_last_name: { value: '', label_visibility: false },
+            user_email: { value: '', label_visibility: false },
+            user_password: { value: '', label_visibility: false },
+            user_verify_password: { value: '', label_visibility: false },
+            user_gender: { value: '', label_visibility: false },
+            user_dob: { value: '', label_visibility: false },
+            user_blood_group: { value: '', label_visibility: false },
+            user_role: { value: '', label_visibility: false },
+            user_phone: { value: '', label_visibility: false },
+            user_cnic: { value: '', label_visibility: false },
+            user_address: { value: '', label_visibility: false }
         }
     }
 
@@ -42,6 +57,68 @@ class Todayspatient extends Component {
         }).catch(err => {
             console.log(err)
         })
+    }
+
+    on_text_field_change = (e) => {
+        switch (e.target.id) {
+            case 'first_name_text_input':
+                if (e.target.value === '')
+                    this.setState({ user_first_name: { value: e.target.value, label_visibility: false } })
+                else
+                    this.setState({ user_first_name: { value: e.target.value, label_visibility: true } })
+                break;
+            case 'last_name_text_input':
+                if (e.target.value === '')
+                    this.setState({ user_last_name: { value: e.target.value, label_visibility: false } })
+                else
+                    this.setState({ user_last_name: { value: e.target.value, label_visibility: true } })
+                break;
+            case 'cnic_text_input':
+                if (e.target.value === '')
+                    this.setState({ user_cnic: { value: e.target.value, label_visibility: false } })
+                else {
+                    this.setState({ user_cnic: { value: e.target.value, label_visibility: true } })
+                }
+                break;
+            case 'phone_number_text_input':
+                if (e.target.value === '')
+                    this.setState({ user_phone_number: { value: e.target.value, label_visibility: false } })
+                else
+                    this.setState({ user_phone_number: { value: e.target.value, label_visibility: true } })
+                break;
+            case 'email_text_input':
+                if (e.target.value === '')
+                    this.setState({ user_email: { value: e.target.value, label_visibility: false } })
+                else
+                    this.setState({ user_email: { value: e.target.value, label_visibility: true } })
+                break;
+            case 'password_text_input':
+                if (e.target.value === '')
+                    this.setState({ user_password: { value: e.target.value, label_visibility: false } })
+                else
+                    this.setState({ user_password: { value: e.target.value, label_visibility: true } })
+                break;
+            case 'verify_password_text_input':
+                if (e.target.value === '')
+                    this.setState({ user_verify_password: { value: e.target.value, label_visibility: false } })
+                else
+                    this.setState({ user_verify_password: { value: e.target.value, label_visibility: true } })
+                break;
+            case 'phone_text_input':
+                if (e.target.value === '')
+                    this.setState({ user_phone: { value: e.target.value, label_visibility: false } })
+                else
+                    this.setState({ user_phone: { value: e.target.value, label_visibility: true } })
+                break;
+            case 'address_text_input':
+                if (e.target.value === '')
+                    this.setState({ user_address: { value: e.target.value, label_visibility: false } })
+                else
+                    this.setState({ user_address: { value: e.target.value, label_visibility: true } })
+                break;
+            default:
+                break;
+        }
     }
 
     renderDataInRows = () => {
@@ -148,14 +225,16 @@ class Todayspatient extends Component {
                         </div>
                     </div>
                     <div className="col-md-3">
-                        <button
-                            type="button"
-                            className="btn bg-teal-400 btn-labeled btn-labeled-right btn-block pr-5"
-                            style={{ textTransform: "inherit" }}
-                            onClick={() => this.setState({ new_appointment_modal_visibility: this.state.new_appointment_modal_visibility ? false : true })}>
-                            <b><i className="icon-plus3"></i></b>
-                            New Appointment
-                        </button>
+                        <div className="d-flex align-items-center">
+                            <button
+                                type="button"
+                                className="btn bg-teal-400 btn-labeled btn-labeled-right btn-block pr-5"
+                                style={{ textTransform: "inherit" }}
+                                onClick={() => this.setState({ new_appointment_modal_visibility: this.state.new_appointment_modal_visibility ? false : true })}>
+                                <b><i className="icon-plus3"></i></b>
+                                New Appointment
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -199,7 +278,7 @@ class Todayspatient extends Component {
                                     type="button"
                                     className="btn bg-teal-400 btn-labeled btn-labeled-right btn-block pr-5"
                                     style={{ textTransform: "inherit" }}
-                                    onClick={this.on_submit}>
+                                    onClick={() => this.setState({new_user_modal_visibility: true})}>
                                     <b><i className="icon-plus3"></i></b>
                                     Add new
                                 </button>
@@ -282,14 +361,30 @@ class Todayspatient extends Component {
                         </button>
                     </div>
                 </Modal>
-                {/* <Modal 
-                    visible={true} 
-                    onClickBackdrop={() => this.setState({ new_appointment_modal_visibility: false })}
+                <Modal 
+                    visible={this.state.new_user_modal_visibility} 
+                    onClickBackdrop={() => this.setState({ new_user_modal_visibility: false })}
                     fade={true}
                     dialogClassName={`modal-dialog-centered modal-lg`}
                     >
-                        <Register/>
-                    </Modal> */}
+                        {/* <Register/> */}
+                    <div className="modal-header">
+                        <h5 className="modal-title">Add new user</h5>
+                    </div>
+                    <div className="modal-body">
+                        <Inputfield 
+                            id={`first_name_text_input`}
+                            label_visibility={this.state.user_first_name.label_visibility}
+                            label_tag={'First name'}
+                            icon={'icon-user-check'}
+                            input_type={'text'}
+                            on_text_change_listener={this.on_text_field_change}
+                            default_value={this.state.user_first_name.value}/>
+                    </div>
+                    <div className="modal-footer">
+
+                    </div>
+                </Modal>
             </Container>
         )
     }
