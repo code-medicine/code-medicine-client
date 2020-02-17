@@ -24,7 +24,9 @@ class Todayspatient extends Component {
         super(props);
         this.state = {
             data: [],
-            Providers: [],
+            providers: [],
+            patients: [],
+            
             totalRecords: 0,
             new_appointment_modal_visibility: false,
             new_user_modal_visibility: false,
@@ -47,7 +49,13 @@ class Todayspatient extends Component {
 
 
     componentDidMount() {
-        Axios.post(BASE_USERS_URL,{role: 'Doctor'},{
+        var data = {
+            select: {
+                role: 'Doctor'
+            },
+            range: 'None'
+        }
+        Axios.post(BASE_USERS_URL,data,{
             headers: {
                 'code-medicine': localStorage.getItem('user')
             }
@@ -62,7 +70,39 @@ class Todayspatient extends Component {
                         label: `Dr. ${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
                     })
                 }
-                this.setState({ Providers: temp_doctors })
+                this.setState({ providers: temp_doctors })
+            }
+            else {
+                console.log(res.data.message)
+            }
+        }).catch(err => {
+            console.log('error',err)
+        })
+        data = {
+            select: {
+                role: 'Patient'
+            },
+            range: {
+                min: 0,
+                max: 4
+            }
+        }
+        Axios.post(BASE_USERS_URL,data,{
+            headers: {
+                'code-medicine': localStorage.getItem('user')
+            }
+        }).then(res => {
+            if (res.data.status){
+                var temp_patient = [] //res.data.payload['users']
+
+                for (var i = 0; i < res.data.payload['count']; ++i){
+                    var t_user = res.data.payload['users'][i]
+                    temp_patient.push({
+                        id: 'patient_selection', 
+                        label: `${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
+                    })
+                }
+                this.setState({ patients: temp_patient })
             }
             else {
                 console.log(res.data.message)
@@ -230,7 +270,7 @@ class Todayspatient extends Component {
                                         <div className="form-group">
                                             <label className="font-weight-semibold">Providers</label>
                                             <Select
-                                                options={this.state.Providers}
+                                                options={this.state.providers}
                                                 placeholder="Select Providers"
                                             // value={this.state.selectedOption}
                                             // onChange={this.handleSelectChange}
@@ -307,10 +347,10 @@ class Todayspatient extends Component {
                             <div className="col-md-10">
                                 <div className="form-group form-group-feedback form-group-feedback-right">
                                     <Select
-                                        options={users_options}
+                                        options={this.state.patients}
                                         classNamePrefix={`form-control`}
                                         placeholder="Select User"
-                                        id="gender_selection"
+                                        id="patient_selection"
                                     />
                                     <div className="form-control-feedback">
                                         <i className="icon-user-check text-muted"></i>
@@ -350,7 +390,7 @@ class Todayspatient extends Component {
                             <div className="col-md-6">
                                 <div className="form-group form-group-feedback form-group-feedback-right">
                                     <Select
-                                        options={this.state.Providers}
+                                        options={this.state.providers}
                                         classNamePrefix={`form-control`}
                                         placeholder="Select a Doctor"
                                         id="doctor_selection"
