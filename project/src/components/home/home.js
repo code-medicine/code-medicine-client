@@ -38,6 +38,7 @@ class Home extends Component {
                 // todo ask redux to save the connection status
                 // todo ask redux to tell if connection is there or not.
                 // if not show the message
+                this.props.history.push(LOGIN_URL)
             })
         }
     }

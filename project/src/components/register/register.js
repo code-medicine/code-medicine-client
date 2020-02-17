@@ -13,6 +13,7 @@ import './register.css'
 import DateTimePicker from 'react-datetime'
 import { withRouter } from 'react-router-dom';
 import Inputfield from '../../shared/inputfield/inputfield';
+import { BLOOD_GROUPS_OPTIONS, GENDER_OPTIONS, ROLES_OPTIONS } from '../../shared/constant_data';
 
 
 class Register extends Component {
@@ -280,26 +281,6 @@ class Register extends Component {
         }
     }
     render() {
-        const options_blood_group = [
-            { id: 'blood_group_selection', label: 'A+' },
-            { id: 'blood_group_selection', label: 'A-' },
-            { id: 'blood_group_selection', label: 'B+' },
-            { id: 'blood_group_selection', label: 'B-' },
-            { id: 'blood_group_selection', label: 'AB+' },
-            { id: 'blood_group_selection', label: 'AB-' },
-            { id: 'blood_group_selection', label: 'O+' },
-            { id: 'blood_group_selection', label: 'O-' },
-            { id: 'blood_group_selection', label: 'Unknown' },
-        ];
-        const options_gender = [
-            { id: 'gender_selection', label: 'Male' },
-            { id: 'gender_selection', label: 'Female' },
-        ];
-        const options_roles = [
-            { id: 'role_selection', label: 'Patient' },
-            { id: 'role_selection', label: 'Doctor' },
-            { id: 'role_selection', label: 'Admin' },
-        ];
         var status = null;
         if (this.state.loading_status) {
             status = <div className="mt-3">
@@ -580,7 +561,7 @@ class Register extends Component {
                             <div className="col-md-4">
                                 <div className="form-group form-group-feedback form-group-feedback-right">
                                     <Select
-                                        options={options_blood_group}
+                                        options={BLOOD_GROUPS_OPTIONS}
                                         classNamePrefix={`form-control`}
                                         placeholder="Select blood group"
                                         id="blood_group_selection"
@@ -594,7 +575,7 @@ class Register extends Component {
                             <div className="col-md-4">
                                 <div className="form-group form-group-feedback form-group-feedback-right">
                                     <Select
-                                        options={options_gender}
+                                        options={GENDER_OPTIONS}
                                         classNamePrefix={`form-control`}
                                         placeholder="Select gender"
                                         id="gender_selection"
@@ -608,7 +589,7 @@ class Register extends Component {
                             <div className="col-md-4">
                                 <div className="form-group form-group-feedback form-group-feedback-right">
                                     <Select
-                                        options={options_roles}
+                                        options={ROLES_OPTIONS}
                                         classNamePrefix={`form-control`}
                                         placeholder="Select role"
                                         id="role_selection"

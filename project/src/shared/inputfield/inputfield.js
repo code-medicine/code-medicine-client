@@ -12,12 +12,19 @@ class Inputfield extends Component {
                             <i className={`${this.props.icon} text-muted`}></i>
                         </span>
                     </span>
-                    <input type={this.props.input_type}
+                    {this.props.text_area? <textarea 
+                        rows={5} 
+                        cols={5} 
+                        className="form-control" 
+                        id={this.props.id}
+                        placeholder={this.props.label_tag}
+                        onChange={this.props.on_text_change_listener}
+                        value={this.props.default_value} />:<input type={this.props.input_type}
                         className="form-control"
                         placeholder={this.props.label_tag}
                         id={this.props.id}
                         onChange={this.props.on_text_change_listener}
-                        value={this.props.default_value} />
+                        value={this.props.default_value} />}
                 </div>
             </div>
         );
