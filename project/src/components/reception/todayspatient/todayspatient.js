@@ -24,10 +24,11 @@ class Todayspatient extends Component {
         super(props);
         this.state = {
             data: [],
+            totalRecords: 0,
+
             providers: [],
             patients: [],
             
-            totalRecords: 0,
             new_appointment_modal_visibility: false,
             new_user_modal_visibility: false,
             modal_loading_status: false,
@@ -64,9 +65,9 @@ class Todayspatient extends Component {
                 var temp_doctors = [] //res.data.payload['users']
 
                 for (var i = 0; i < res.data.payload['count']; ++i){
-                    var t_user = res.data.payload['users'][i]
+                    const t_user = res.data.payload['users'][i]
                     temp_doctors.push({
-                        id: 'poviders_selection', 
+                        id: t_user._id, 
                         label: `Dr. ${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
                     })
                 }
@@ -96,9 +97,9 @@ class Todayspatient extends Component {
                 var temp_patient = [] //res.data.payload['users']
 
                 for (var i = 0; i < res.data.payload['count']; ++i){
-                    var t_user = res.data.payload['users'][i]
+                    const t_user = res.data.payload['users'][i]
                     temp_patient.push({
-                        id: 'patient_selection', 
+                        id: t_user._id, 
                         label: `${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
                     })
                 }
@@ -229,6 +230,10 @@ class Todayspatient extends Component {
         }))
     }
 
+    on_submit_new_appointment = () => {
+
+    }
+
     render() {
         const users_options = [
             { id: 'user1', label: 'Farrukh | i150310@nu.edu.pk | 03044848492' },
@@ -237,7 +242,7 @@ class Todayspatient extends Component {
         ]
         var table = <div className="">
             <div className="alert alert-info" style={{ marginBottom: '0px' }}>
-                <strong>Info!</strong> No Data Found.
+                <strong>Info!</strong> No visits found.
                         </div>
             <div className="d-flex justify-content-center">
                 <Loader
@@ -364,7 +369,7 @@ class Todayspatient extends Component {
                                     style={{ textTransform: "inherit" }}
                                     onClick={() => this.setState({ new_user_modal_visibility: true })}>
                                     <b><i className="icon-plus3"></i></b>
-                                    Add new
+                                    New user
                                 </button>
                             </div>
                         </div>
