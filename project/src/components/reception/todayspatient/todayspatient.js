@@ -33,18 +33,24 @@ class Todayspatient extends Component {
             new_user_modal_visibility: false,
             modal_loading_status: false,
 
-            user_first_name: { value: '', label_visibility: false },
-            user_last_name: { value: '', label_visibility: false },
-            user_email: { value: '', label_visibility: false },
-            user_password: { value: '', label_visibility: false },
-            user_verify_password: { value: '', label_visibility: false },
-            user_gender: { value: '', label_visibility: false },
-            user_dob: { value: '', label_visibility: false },
-            user_blood_group: { value: '', label_visibility: false },
-            user_role: { value: '', label_visibility: false },
-            user_phone: { value: '', label_visibility: false },
-            user_cnic: { value: '', label_visibility: false },
-            user_address: { value: '', label_visibility: false }
+            appointment_patient:    { value: '' },
+            appointment_doctor:     { value: '' },
+            appointment_reason:     { value: '' },
+            appointment_date:       { value: '' },
+            appointment_time:       { value: '' },
+
+            user_first_name:        { value: '', label_visibility: false },
+            user_last_name:         { value: '', label_visibility: false },
+            user_email:             { value: '', label_visibility: false },
+            user_password:          { value: '', label_visibility: false },
+            user_verify_password:   { value: '', label_visibility: false },
+            user_gender:            { value: '', label_visibility: false },
+            user_dob:               { value: '', label_visibility: false },
+            user_blood_group:       { value: '', label_visibility: false },
+            user_role:              { value: '', label_visibility: false },
+            user_phone:             { value: '', label_visibility: false },
+            user_cnic:              { value: '', label_visibility: false },
+            user_address:           { value: '', label_visibility: false }
         }
     }
 
@@ -234,6 +240,19 @@ class Todayspatient extends Component {
 
     }
 
+    on_selected_changed = (e) => {
+        switch (e.id) {
+            case 'patient_selection':
+                this.setState({ appointment_patient: { value: e.label } })
+                break;
+            case 'doctor_selection':
+                this.setState({ appointment_doctor: { value: e.label } })
+                break;
+            default:
+                break;
+        }
+    }
+
     render() {
         const users_options = [
             { id: 'user1', label: 'Farrukh | i150310@nu.edu.pk | 03044848492' },
@@ -354,7 +373,7 @@ class Todayspatient extends Component {
                                     <Select
                                         options={this.state.patients}
                                         classNamePrefix={`form-control`}
-                                        placeholder="Select User"
+                                        placeholder="Select Patient"
                                         id="patient_selection"
                                     />
                                     <div className="form-control-feedback">
