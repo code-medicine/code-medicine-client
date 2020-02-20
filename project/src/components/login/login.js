@@ -119,12 +119,11 @@ class Login extends Component {
         }
         else{
             const form_group = "form-group form-group-float mb-1"
-            view = <div className="login-form">
+            view = <div className="login-form" style={{background: 'white'}}>
                 <div className="card-body">
-                    <div className="text-center mb-3">
+                    <div className="text-center mb-0">
                         <i className="icon-people icon-2x text-warning-400 border-warning-400 border-3 rounded-round p-3 mb-3 mt-1"></i>
-                        <h5 className="mb-0">Login to your account</h5>
-                        <span className="d-block text-muted">Your credentials</span>
+                        <h5 className="mb-0 text-muted">Login to your account</h5>
                     </div>
 
                     <div className={form_group}>

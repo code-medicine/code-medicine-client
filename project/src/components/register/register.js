@@ -300,7 +300,7 @@ class Register extends Component {
         }
         else {
             const form_group = "form-group form-group-float mb-1"
-            status = <div className="container-fluid">
+            status = <div className="container-fluid " style={{background: 'white'}}>
                 <div className="row">
                     <div className="col-lg-6 offset-lg-3">
                         <div className="text-center mb-3">
