@@ -106,8 +106,8 @@ class Left_sidebar extends Component {
                                     style={{display: this.state.home_toggle === ''? 'none':'block'}}>
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link active">Dashboard</Link></li>
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Messages<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
-                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Emergency<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
-                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Admissions<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link">Patients</Link></li>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link">Doctors</Link></li>
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Requests<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
                                 </ul>
 

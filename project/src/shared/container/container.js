@@ -9,7 +9,8 @@ import { connect } from "react-redux";
 // import { LOGIN_URL } from '../router_constants';
 import { withRouter } from 'react-router-dom';
 import { set_active_user,notify } from '../../actions';
-import BACKGROUND from '../../resources/images/background.jfif'
+import './container.css'
+import BACKGROUND from '../../resources/images/background_image.jpg'
 
 
 class Container extends Component {
@@ -59,31 +60,18 @@ class Container extends Component {
                 left_sidebar = false
                 page_header = false
                 break;
-            case 'home':
-                header = true
-                footer = true
-                left_sidebar = true
-                page_header = true
-                break;
-            case 'todayspatient':
-                header = true
-                footer = true
-                left_sidebar = true
-                page_header = true
-                break;
-            case 'visits':
-                header = true
-                footer = true
-                left_sidebar = true
-                page_header = true
-                break;
             default:
+                header = true
+                footer = true
+                left_sidebar = true
+                page_header = true
                 break;
         }
 
         return (
-            <div className={`virtual-body ${header? 'navbar-top':''} ${this.props.left_sidebar? (window.innerWidth >= 500? 'sidebar-xs':'sidebar-mobile-main'):''}`}
-                style={{backgroundImage: `url(${BACKGROUND})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundPosition:'center'}}>
+            <div className={`virtual-body ${header? 'navbar-top':'background_custom'} ${this.props.left_sidebar? (window.innerWidth >= 500? 'sidebar-xs':'sidebar-mobile-main'):''}`}
+                // style={{backgroundImage: `url(${BACKGROUND})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundPosition:'center'}}
+                >
                 {header? <Header /> : ''}
                 <div className="page-content">
 
