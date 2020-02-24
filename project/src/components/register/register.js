@@ -67,14 +67,7 @@ class Register extends Component {
                 if (e.target.value === '')
                     this.setState({ cnic: { value: e.target.value, label_visibility: false } })
                 else {
-                    var raw_cnic = e.target.value
-                    var digit = raw_cnic[raw_cnic.length - 1]
-                    if (digit.match(/^[0-9-]+$/)) {
-                        if (raw_cnic.length === 5) {
-                            raw_cnic += '-'
-                        }
-                        this.setState({ cnic: { value: raw_cnic, label_visibility: true } })
-                    }
+                    this.setState({ cnic: { value: e.target.value, label_visibility: true } })
                 }
                 break;
             case 'phone_number_text_input':

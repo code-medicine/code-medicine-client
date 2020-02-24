@@ -7,6 +7,7 @@ class Visits extends Component {
         return (
             <Container container_type={'visits'}>
                 <button className="btn btn-warning">hello</button>
+                
             </Container>
         )
     }
