@@ -35,7 +35,7 @@ class Header extends Component {
     render() {
         return (
 
-            <div className="navbar navbar-expand-md navbar-dark fixed-top">
+            <div className="navbar navbar-expand-md navbar-dark fixed-top pl-0">
                 {/* <div className="navbar-brand">
                     <Link to={BASE_URL} className="d-inline-block">
                         <img src={Logo_light} alt="" />
