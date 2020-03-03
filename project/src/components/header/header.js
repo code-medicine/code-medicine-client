@@ -35,12 +35,13 @@ class Header extends Component {
     render() {
         return (
 
-            <div className="navbar navbar-expand-md navbar-dark fixed-top pl-0">
-                {/* <div className="navbar-brand">
+            <div className="navbar navbar-expand-md navbar-dark fixed-top">
+                <div className="navbar-brand">
                     <Link to={BASE_URL} className="d-inline-block">
                         <img src={Logo_light} alt="" />
+                        {/* <span className="text-white">Iffat Anwar</span> */}
                     </Link>
-                </div> */}
+                </div>
 
                 <div className="d-md-none">
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-mobile">
@@ -56,16 +57,8 @@ class Header extends Component {
                         <li className="nav-item">
                             <Link onClick={this.on_sidebar_control_button_click} to={"#"}
                                 className="navbar-nav-link sidebar-control sidebar-main-toggle d-none d-md-block">
-                                <i className="icon-paragraph-justify3"></i>
+                                <i className="icon-transmission"></i>
                             </Link>
-                        </li>
-                        <li className="navbar-item">
-                            <div className="navbar-brand">
-                                <Link to={BASE_URL} className="d-inline-block">
-                                    <img src={Logo_light} alt="" />
-                                    {/* <span className="text-white">Iffat Anwar</span> */}
-                                </Link>
-                            </div>
                         </li>
 
                         {/* <li className="nav-item dropdown">
