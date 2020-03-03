@@ -10,7 +10,7 @@ import { connect } from "react-redux";
 import { withRouter } from 'react-router-dom';
 import { set_active_user,notify } from '../../actions';
 import './container.css'
-import BACKGROUND from '../../resources/images/background_image.jpg'
+// import BACKGROUND from '../../resources/images/background_image.jpg'
 
 
 class Container extends Component {
@@ -79,7 +79,7 @@ class Container extends Component {
 
                     <div className="content-wrapper">
                         
-                        {page_header? <Pageheader /> : ''}
+                        {/* {page_header? <Pageheader /> : ''} */}
 
                         <div className={`content ${this.state.type === 'register' || this.state.type === 'login'? 'd-flex justify-content-center align-items-center':''}`}>
                             {

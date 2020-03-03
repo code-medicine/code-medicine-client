@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import Container from '../../../shared/container/container'
 import Select from 'react-select'
 import Axios from 'axios';
-import { BASE_RECEPTION_URL, BASE_USERS_URL, NEW_APPOINTMENT_URL } from '../../../shared/rest_end_points';
+import { BASE_RECEPTION_URL, BASE_USERS_URL, NEW_APPOINTMENT_URL, REGISTER_USER_REQUEST } from '../../../shared/rest_end_points';
 import { connect } from "react-redux";
 import { notify } from '../../../actions';
 import { Link, withRouter } from 'react-router-dom';
 import NO_PICTURE from '../../../resources/images/placeholder.jpg'
-import Moment from 'react-moment';
+// import Moment from 'react-moment';
 import Modal from 'react-bootstrap4-modal';
 // import Inputfield from '../../../shared/inputfield/inputfield';
 import Loader from 'react-loader-spinner';
@@ -16,6 +16,7 @@ import Inputfield from '../../../shared/inputfield/inputfield';
 import { BLOOD_GROUPS_OPTIONS, GENDER_OPTIONS, ROLES_OPTIONS } from '../../../shared/constant_data'
 import './todayspatient.css'
 import { LOGIN_URL } from '../../../shared/router_constants';
+import User from '../../../shared/customs/user' 
 
 // import 'moment-timezone';
 class Todayspatient extends Component {
@@ -23,7 +24,7 @@ class Todayspatient extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [],
+            data: null,
             totalRecords: 0,
 
             providers: [],
@@ -48,95 +49,92 @@ class Todayspatient extends Component {
             user_gender: { value: '', label_visibility: false },
             user_dob: { value: '', label_visibility: false },
             user_blood_group: { value: '', label_visibility: false },
-            user_role: { value: '', label_visibility: false },
+            user_role: { value: 'Patient', label_visibility: false },
             user_phone_number: { value: '', label_visibility: false },
             user_cnic: { value: '', label_visibility: false },
             user_address: { value: '', label_visibility: false }
         }
     }
 
+    async request(data,url) {
+        try{
+            let response = await Axios.post(url, data, {
+                headers: { 'code-medicine': localStorage.getItem('user')}
+            })
+            return response
+        }
+        catch(err){
+            this.props.notify('error','','Server is not responding! Please try again later')
+            return null
+        }
+    }
 
+    populate_doctors = async (data) => {
+        let res_doctors = await this.request(data, BASE_USERS_URL)
+        if (res_doctors === null) return
+        if (res_doctors.data.status) {
+            var temp_doctors = []
+
+            for (var i = 0; i < res_doctors.data.payload['count']; ++i) {
+                const t_user = res_doctors.data.payload['users'][i]
+                temp_doctors.push({
+                    id: 'appointment_doctor_selection',
+                    reference: t_user.email,
+                    label: `Dr. ${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
+                })
+            }
+            this.setState({ providers: temp_doctors })
+        }
+        else {
+            console.log(res_doctors.data.message)
+        }
+    }
+    populate_patients = async (data) => {
+        let res_patients = await this.request(data,BASE_USERS_URL)
+        if (res_patients === null) return
+        if (res_patients.data.status) {
+            var temp_patients = [] //res.data.payload['users']
+
+            for (var i = 0; i < res_patients.data.payload['count']; ++i) {
+                const t_user = res_patients.data.payload['users'][i]
+                temp_patients.push({
+                    id: 'appointment_patient_selection',
+                    reference: t_user.email,
+                    label: `${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
+                })
+            }
+            this.setState({ patients: temp_patients })
+        }
+        else {
+            console.log(res_patients.data.message)
+        }
+    }
+
+    populate_appointments = async (data) => {
+        let res_visits = await this.request(data,BASE_RECEPTION_URL)
+        if (res_visits === null) return
+        if (res_visits.data.status) {
+            this.setState({ data: res_visits.data.payload, totalRecords: res_visits.data.payload.length })
+        }
+        else {
+            this.props.notify('info', '', res_visits.data.message)
+            if (res_visits.data.message !== 'No visits found for today')
+                this.props.history.push(LOGIN_URL)
+            this.setState({data: []})
+        }
+    }
     componentDidMount() {
+        this.populate_appointments({date_flag: 'today'})
         var data = {
-            select: {
-                role: 'Doctor'
-            },
+            select: {role: 'Doctor'},
             range: 'None'
         }
-        Axios.post(BASE_USERS_URL, data, {
-            headers: {
-                'code-medicine': localStorage.getItem('user')
-            }
-        }).then(res => {
-            if (res.data.status) {
-                var temp_doctors = [] //res.data.payload['users']
-
-                for (var i = 0; i < res.data.payload['count']; ++i) {
-                    const t_user = res.data.payload['users'][i]
-                    temp_doctors.push({
-                        id: 'appointment_doctor_selection',
-                        reference: t_user.email,
-                        label: `Dr. ${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
-                    })
-                }
-                this.setState({ providers: temp_doctors })
-            }
-            else {
-                console.log(res.data.message)
-            }
-        }).catch(err => {
-            console.log('error', err)
-        })
+        this.populate_doctors(data)
         data = {
-            select: {
-                role: 'Patient'
-            },
-            range: {
-                min: 0,
-                max: 4
-            }
+            select: {role: 'Patient'},
+            range: {min: 0,max: 4}
         }
-        Axios.post(BASE_USERS_URL, data, {
-            headers: {
-                'code-medicine': localStorage.getItem('user')
-            }
-        }).then(res => {
-            if (res.data.status) {
-                var temp_patient = [] //res.data.payload['users']
-
-                for (var i = 0; i < res.data.payload['count']; ++i) {
-                    const t_user = res.data.payload['users'][i]
-                    temp_patient.push({
-                        id: 'appointment_patient_selection',
-                        reference: t_user.email,
-                        label: `${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
-                    })
-                }
-                this.setState({ patients: temp_patient })
-            }
-            else {
-                console.log(res.data.message)
-            }
-        }).catch(err => {
-            console.log('error', err)
-        })
-        Axios.post(BASE_RECEPTION_URL, {}, {
-            headers: {
-                'code-medicine': localStorage.getItem('user')
-            }
-        }).then(res => {
-            if (res.data.status) {
-                this.setState({ data: res.data.payload, totalRecords: res.data.payload.length })
-            }
-            else {
-                this.props.notify('info', '', res.data.message)
-                if (res.data.message !== 'No visits found for today')
-                    this.props.history.push(LOGIN_URL)
-            }
-        }).catch(err => {
-            this.props.notify('error', '', err)
-            this.props.history.push(LOGIN_URL)
-        })
+        this.populate_patients(data)
     }
 
     on_text_field_change = (e) => {
@@ -223,6 +221,7 @@ class Todayspatient extends Component {
         }
     }
     on_apointment_time_change = (e) => {
+        
         if (e === '')
             this.setState({ appointment_time: { value: '', label_visibility: false } })
         else {
@@ -239,25 +238,7 @@ class Todayspatient extends Component {
         }
     }
 
-    renderDataInRows = () => {
-        return (this.state.data.map((booking, i) => {
-            // var time = new Date(booking.time);
-
-            return (
-                <tr key={i}>
-                    <td>
-                        {booking.patient['first_name']}
-                    </td>
-                    <td>
-                        <Moment format="HH:mm" date={booking.time}></Moment>
-                    </td>
-                    <td>
-                        {booking.description}
-                    </td>
-                </tr>
-            )
-        }))
-    }
+    
 
     on_submit_new_appointment = () => {
         const data = {
@@ -278,13 +259,15 @@ class Todayspatient extends Component {
             if (res.data.status) {
                 this.props.notify('success', '', res.data.message)
                 this.setState({
-                    // appointment_patient: { value: '' },
-                    // appointment_doctor: { value: '' },
-                    // appointment_date: { value: '' },
-                    // appointment_time: { value: '' },
-                    // appointment_reason: { value: '' },
+                    appointment_patient: { value: '' },
+                    appointment_doctor: { value: '' },
+                    appointment_date: { value: '' },
+                    appointment_time: { value: '' },
+                    appointment_reason: { value: '' },
                     appointment_modal_loading_status: false,
+                    new_appointment_modal_visibility: false
                 })
+                this.populate_appointments({date_flag: 'today'})
             }
             else {
                 this.props.notify('error', '', res.data.message)
@@ -302,7 +285,6 @@ class Todayspatient extends Component {
     }
 
     on_selected_changed = (e) => {
-        // console.log(e)
         switch (e.id) {
             case 'user_blood_group_selection':
                 this.setState({ user_blood_group: { value: e.label } })
@@ -320,13 +302,108 @@ class Todayspatient extends Component {
                 break;
         }
     }
-
-    render() {
-        var table = <div className="">
-            <div className="alert alert-info" style={{ marginBottom: '0px' }}>
-                <strong>Info!</strong> No visits found.
+    renderDataInRows = () => {
+        return (this.state.data.map((booking, i) => {
+            return (
+                // <div key={i} className="card border-left-slate border-top-0 border-bottom-0 border-right-0" >
+                <div key={i} className="">
+                    <div  className="row my-1 mx-1">
+                        <div className="col-md-4">
+                            <User 
+                                name={booking.patient['first_name'] + ' ' + booking.patient['last_name']} 
+                                dob={booking.patient['dob']}
+                                gender={booking.patient['gender']}
+                                phone={booking.patient['phone_number']}
+                                email={booking.patient['email']}
+                            />
                         </div>
-            <div className="d-flex justify-content-center">
+                        <div className="col-md-8">
+                            <div className="row">
+                                <div className="col-md-8">
+                                    <h5 className="font-weight-bold"> 
+                                        Today at {booking.time} 
+                                    </h5>
+                                </div>
+                                <div className="col-md-4 text-right">
+                                    <span className="badge badge-danger">{booking.status}</span>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-md-3">
+                                    Attendant
+                                </div>
+                                <div className="col-md-9">
+                                    <p>Dr. {booking.doctor['first_name']} {booking.doctor['last_name']}</p>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-md-3">
+                                    Reason
+                                </div>
+                                <div className="col-md-9">
+                                    <p className="text-break">{booking.description}</p>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-md-12">
+                                    <button className="btn btn-outline-primary btn-sm float-right">Payment</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                </div>
+                // </div>
+                
+            )
+        }))
+    }
+
+    on_submit_new_patient = async () => {
+        const data = {
+            first_name: this.state.user_first_name.value.trim(),
+            last_name: this.state.user_last_name.value.trim(),
+            email: this.state.user_email.value.trim(),
+            password: 'default',
+            phone_number: this.state.user_phone_number.value.trim(),
+            cnic: this.state.user_cnic.value.trim(),
+            role: this.state.user_role.value.trim(),
+            dob: this.state.user_dob.value,
+            gender: this.state.user_gender.value.trim(),
+            blood_group: this.state.user_blood_group.value.trim(),
+            address: this.state.user_address.value.trim()
+        }
+        this.setState({ user_modal_loading_status: true })
+        var response = await Axios.post(`${REGISTER_USER_REQUEST}`, data);
+
+        try {
+            if (response.data['status']) {
+                setTimeout(() => {
+                    this.props.notify('success', '', response.data['message']);
+                    this.setState({ user_modal_loading_status: false, new_user_modal_visibility: false })
+                    let update = {
+                        select: {role: 'Patient'},
+                        range: {min: 0,max: 4}
+                    }
+                    this.populate_patients(update)
+                }, 5000)
+            }
+            else {
+                this.props.notify('error', '', response.data['message'])
+                setTimeout(() => {
+                    this.setState({ user_modal_loading_status: false })
+                }, 3000)
+            }
+        }
+        catch (err) {
+            this.props.notify('error', '', 'We are sorry for invonvenience. Server is not responding! please try again later')
+            setTimeout(() => {
+                this.setState({ user_modal_loading_status: false })
+            }, 3000)
+        }
+    }
+    render() {
+        var table = <div className="d-flex justify-content-center">
                 <Loader
                     type="Rings"
                     color="#00BFFF"
@@ -335,14 +412,16 @@ class Todayspatient extends Component {
                     timeout={60000} //60 secs
                 />
             </div>
-        </div>;
         if (this.state.data != null) {
             if (this.state.totalRecords > 0) {
-                table = <table className="table table-togglable table-hover table-bordered">
-                    <tbody>
-                        {this.renderDataInRows(this.state.filter_data)}
-                    </tbody>
-                </table>
+                table = <div className="container-fluid">
+                    {this.renderDataInRows(this.state.filter_data)}
+                </div>
+            }
+            else{
+                table = <div className="alert alert-info" style={{ marginBottom: '0px' }}>
+                    <strong>Info!</strong> No visits found.
+                </div>;
             }
         }
 
@@ -532,6 +611,7 @@ class Todayspatient extends Component {
                                         dateFormat={false}
                                         timeFormat={true}
                                         closeOnSelect={true}
+                                        strictParsing={true}
                                         value={this.state.appointment_time.value}
                                     />
                                 </div>
@@ -570,7 +650,21 @@ class Todayspatient extends Component {
                     <div className="modal-header bg-teal-400">
                         <h5 className="modal-title">New Patient</h5>
                     </div>
-                    <div className="modal-body">
+
+                    {this.state.user_modal_loading_status ? <div className="mt-3">
+                        <div className="d-flex justify-content-center ">
+                            <Loader
+                                type="Rings"
+                                color="#00BFFF"
+                                height={150}
+                                width={150}
+                                timeout={60000} //60 secs
+                            />
+                        </div>
+                        <div className="d-flex justify-content-center">
+                            <p>Loading...</p>
+                        </div>
+                    </div> : <div className="modal-body">
                         <div className={`row`}>
                             <div className={`col-md-9`}>
                                 <div className={`row`}>
@@ -723,7 +817,7 @@ class Todayspatient extends Component {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>}
                     <div className="modal-footer">
                         <button
                             type="button"
@@ -737,7 +831,7 @@ class Todayspatient extends Component {
                             type="button"
                             className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
                             style={{ textTransform: "inherit" }}
-                            onClick={this.on_submit}>
+                            onClick={this.on_submit_new_patient}>
                             <b><i className="icon-plus3"></i></b>
                             Add
                         </button>

@@ -229,7 +229,8 @@ class Register extends Component {
         }
         return true;
     }
-    on_submit = async () => {
+    on_submit = async (e) => {
+        e.preventDefault()
         const data = {
             first_name: this.state.first_name.value.trim(),
             last_name: this.state.last_name.value.trim(),
@@ -293,7 +294,7 @@ class Register extends Component {
         }
         else {
             const form_group = "form-group form-group-float mb-1"
-            status = <div className="container-fluid " style={{background: 'white'}}>
+            status = <form method="post" action={this.on_submit}><div className="container-fluid " style={{background: 'white'}}>
                 <div className="row">
                     <div className="col-lg-6 offset-lg-3">
                         <div className="text-center mb-3">
@@ -606,7 +607,7 @@ class Register extends Component {
                                         Cancel
                                     </button>
                                     <button
-                                        type="button"
+                                        type="submit"
                                         className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
                                         style={{ textTransform: "inherit" }}
                                         onClick={this.on_submit}>
@@ -621,6 +622,7 @@ class Register extends Component {
                 </div>
 
             </div>
+            </form>
         }
         return (
             <Container container_type={'register'}>

@@ -14,17 +14,17 @@ class Profile extends Component {
         super(props);
             this.state = {
                 first_name: { value: '', label_visibility: false },
-            last_name: { value: '', label_visibility: false },
-            email: { value: '', label_visibility: false },
-            password: { value: '', label_visibility: false },
-            verify_password: { value: '', label_visibility: false },
-            gender: { value: '', label_visibility: false },
-            dob: { value: new Date(), label_visibility: false },
-            blood_group: { value: '', label_visibility: false },
-            role: { value: '', label_visibility: false },
-            phone_number: { value: '', label_visibility: false },
-            cnic: { value: '', label_visibility: false },
-            address: { value: '', label_visibility: false },
+                last_name: { value: '', label_visibility: false },
+                email: { value: '', label_visibility: false },
+                password: { value: '', label_visibility: false },
+                verify_password: { value: '', label_visibility: false },
+                gender: { value: '', label_visibility: false },
+                dob: { value: new Date(), label_visibility: false },
+                blood_group: { value: '', label_visibility: false },
+                role: { value: '', label_visibility: false },
+                phone_number: { value: '', label_visibility: false },
+                cnic: { value: '', label_visibility: false },
+                address: { value: '', label_visibility: false },
             };
     }
     componentDidMount(){

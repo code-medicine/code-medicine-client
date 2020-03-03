@@ -21,7 +21,7 @@ class Login extends Component {
         }
     }
 
-    componentDidMount() {
+    UNSAFE_componentWillMount() {
         if (localStorage.user){
             Axios.get(`${PROFILE_USER_REQUEST}?tag=${localStorage.user}`).then(res => {
                 if (res.data['status']){
@@ -66,6 +66,7 @@ class Login extends Component {
     }
 
     on_submit = (e) => {
+        e.preventDefault()
         this.setState({loading_status: true})
         const data = {
             email: this.state.email.value.trim(),
@@ -119,7 +120,7 @@ class Login extends Component {
         }
         else{
             const form_group = "form-group form-group-float mb-1"
-            view = <div className="login-form" style={{background: 'white'}}>
+            view = <form className="login-form" style={{background: 'white'}} method="post" action={this.on_submit}>
                 <div className="card-body">
                     <div className="text-center mb-0">
                         <i className="icon-people icon-2x text-warning-400 border-warning-400 border-3 rounded-round p-3 mb-3 mt-1"></i>
@@ -183,7 +184,7 @@ class Login extends Component {
 
                     <div className="form-group ">
                         <button 
-                            type="button" 
+                            type="submit" 
                             className="btn btn-block bg-teal-400 btn-labeled btn-labeled-right ml-auto"
                             style={{textTransform: "inherit"}}
                             onClick={this.on_submit}>
@@ -209,7 +210,7 @@ class Login extends Component {
 
                     <span className="form-text text-center text-muted">By continuing, you're confirming that you've read our <Link to={LOGIN_URL}>Terms &amp; Conditions</Link> and <Link to={LOGIN_URL}>Cookie Policy</Link></span>
                 </div>
-            </div>
+            </form>
         }
 
         return (
