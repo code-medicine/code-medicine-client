@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BASE_URL, PROFILE, LOGIN_URL } from '../../shared/router_constants';
-import Logo_light from './logo_light.png';
+import Logo_light from './logo_light_iffat_anwar.png';
 // import Logo_dark from './logo_dark.png';
 import { connect } from "react-redux";
 import { left_sidebar_controls, set_active_user} from '../../actions';
@@ -39,6 +39,7 @@ class Header extends Component {
                 <div className="navbar-brand">
                     <Link to={BASE_URL} className="d-inline-block">
                         <img src={Logo_light} alt="" />
+                        {/* <span className="text-white">Iffat Anwar</span> */}
                     </Link>
                 </div>
 
@@ -144,7 +145,7 @@ class Header extends Component {
                     </ul>
 
                     <span className="navbar-text ml-md-3 mr-md-auto">
-                        <span className="badge bg-success">Online</span>
+                        <span className="badge bg-transparent"></span>
                     </span>
 
                     <ul className="navbar-nav">
