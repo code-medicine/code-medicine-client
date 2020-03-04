@@ -74,10 +74,10 @@ class Left_sidebar extends Component {
                                         <i className="icon-pin font-size-sm"></i> &nbsp;Islamabad, Pakistan
                                     </div>
                                 </div>
-
-                                <div className="ml-3 align-self-center">
+                            {/* settings button in left bar */}
+                                {/* <div className="ml-3 align-self-center">
                                     <Link to={BASE_URL}  className="text-white"><i className="icon-cog3"></i></Link>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>

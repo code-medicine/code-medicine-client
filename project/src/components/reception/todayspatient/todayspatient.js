@@ -16,7 +16,7 @@ import Inputfield from '../../../shared/inputfield/inputfield';
 import { BLOOD_GROUPS_OPTIONS, GENDER_OPTIONS, ROLES_OPTIONS } from '../../../shared/constant_data'
 import './todayspatient.css'
 import { LOGIN_URL } from '../../../shared/router_constants';
-import User from '../../../shared/customs/user' 
+import User from '../../../shared/customs/user'
 
 // import 'moment-timezone';
 class Todayspatient extends Component {
@@ -56,15 +56,15 @@ class Todayspatient extends Component {
         }
     }
 
-    async request(data,url) {
-        try{
+    async request(data, url) {
+        try {
             let response = await Axios.post(url, data, {
-                headers: { 'code-medicine': localStorage.getItem('user')}
+                headers: { 'code-medicine': localStorage.getItem('user') }
             })
             return response
         }
-        catch(err){
-            this.props.notify('error','','Server is not responding! Please try again later')
+        catch (err) {
+            this.props.notify('error', '', 'Server is not responding! Please try again later')
             return null
         }
     }
@@ -90,7 +90,7 @@ class Todayspatient extends Component {
         }
     }
     populate_patients = async (data) => {
-        let res_patients = await this.request(data,BASE_USERS_URL)
+        let res_patients = await this.request(data, BASE_USERS_URL)
         if (res_patients === null) return
         if (res_patients.data.status) {
             var temp_patients = [] //res.data.payload['users']
@@ -111,7 +111,7 @@ class Todayspatient extends Component {
     }
 
     populate_appointments = async (data) => {
-        let res_visits = await this.request(data,BASE_RECEPTION_URL)
+        let res_visits = await this.request(data, BASE_RECEPTION_URL)
         if (res_visits === null) return
         if (res_visits.data.status) {
             this.setState({ data: res_visits.data.payload, totalRecords: res_visits.data.payload.length })
@@ -120,19 +120,19 @@ class Todayspatient extends Component {
             this.props.notify('info', '', res_visits.data.message)
             if (res_visits.data.message !== 'No visits found for today')
                 this.props.history.push(LOGIN_URL)
-            this.setState({data: []})
+            this.setState({ data: [] })
         }
     }
     componentDidMount() {
-        this.populate_appointments({date_flag: 'today'})
+        this.populate_appointments({ date_flag: 'today' })
         var data = {
-            select: {role: 'Doctor'},
+            select: { role: 'Doctor' },
             range: 'None'
         }
         this.populate_doctors(data)
         data = {
-            select: {role: 'Patient'},
-            range: {min: 0,max: 4}
+            select: { role: 'Patient' },
+            range: { min: 0, max: 20 }
         }
         this.populate_patients(data)
     }
@@ -185,8 +185,6 @@ class Todayspatient extends Component {
         }
     }
 
-
-
     on_user_date_of_birth_change = (e) => {
         if (e === '')
             this.setState({ user_dob: { value: '', label_visibility: false } })
@@ -221,7 +219,7 @@ class Todayspatient extends Component {
         }
     }
     on_apointment_time_change = (e) => {
-        
+
         if (e === '')
             this.setState({ appointment_time: { value: '', label_visibility: false } })
         else {
@@ -238,13 +236,13 @@ class Todayspatient extends Component {
         }
     }
 
-    
+
 
     on_submit_new_appointment = () => {
         const data = {
             patient_email: this.state.appointment_patient.value,
             doctor_email: this.state.appointment_doctor.value,
-            date: this.state.appointment_date.value,
+            date: this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT',
             time: this.state.appointment_time.value,
             reason: this.state.appointment_reason.value,
             type: 'Admin sahab replace this with token or identification!',
@@ -267,7 +265,7 @@ class Todayspatient extends Component {
                     appointment_modal_loading_status: false,
                     new_appointment_modal_visibility: false
                 })
-                this.populate_appointments({date_flag: 'today'})
+                this.populate_appointments({ date_flag: 'today' })
             }
             else {
                 this.props.notify('error', '', res.data.message)
@@ -284,22 +282,43 @@ class Todayspatient extends Component {
 
     }
 
-    on_selected_changed = (e) => {
-        switch (e.id) {
-            case 'user_blood_group_selection':
-                this.setState({ user_blood_group: { value: e.label } })
-                break;
-            case 'user_gender_selection':
-                this.setState({ user_gender: { value: e.label } })
-                break;
-            case 'appointment_patient_selection':
-                this.setState({ appointment_patient: { value: e.reference } })
-                break;
-            case 'appointment_doctor_selection':
-                this.setState({ appointment_doctor: { value: e.reference } })
-                break;
-            default:
-                break;
+    on_selected_changed = (e, actor) => {
+        if (e !== null) {
+            switch (e.id) {
+                case 'blood_group_selection':
+                    this.setState({ user_blood_group: { value: e.label } })
+                    break;
+                case 'gender_selection':
+                    console.log(e.label)
+                    this.setState({ user_gender: { value: e.label } })
+                    break;
+                case 'appointment_patient_selection':
+                    this.setState({ appointment_patient: { value: e.reference } })
+                    break;
+                case 'appointment_doctor_selection':
+                    this.setState({ appointment_doctor: { value: e.reference } })
+                    break;
+                default:
+                    break;
+            }
+        }
+        else {
+            switch (actor) {
+                case 'blood_group_selection':
+                    this.setState({ user_blood_group: { value: '' } })
+                    break;
+                case 'gender_selection':
+                    this.setState({ user_gender: { value: '' } })
+                    break;
+                case 'appointment_patient_selection':
+                    this.setState({ appointment_patient: { value: '' } })
+                    break;
+                case 'appointment_doctor_selection':
+                    this.setState({ appointment_doctor: { value: '' } })
+                    break;
+                default:
+                    break;
+            }
         }
     }
     renderDataInRows = () => {
@@ -307,10 +326,10 @@ class Todayspatient extends Component {
             return (
                 // <div key={i} className="card border-left-slate border-top-0 border-bottom-0 border-right-0" >
                 <div key={i} className="">
-                    <div  className="row my-1 mx-1">
+                    <div className="row my-1 mx-1">
                         <div className="col-md-4">
-                            <User 
-                                name={booking.patient['first_name'] + ' ' + booking.patient['last_name']} 
+                            <User
+                                name={booking.patient['first_name'] + ' ' + booking.patient['last_name']}
                                 dob={booking.patient['dob']}
                                 gender={booking.patient['gender']}
                                 phone={booking.patient['phone_number']}
@@ -320,8 +339,8 @@ class Todayspatient extends Component {
                         <div className="col-md-8">
                             <div className="row">
                                 <div className="col-md-8">
-                                    <h5 className="font-weight-bold"> 
-                                        Today at {booking.time} 
+                                    <h5 className="font-weight-bold">
+                                        Today at {booking.time}
                                     </h5>
                                 </div>
                                 <div className="col-md-4 text-right">
@@ -351,10 +370,10 @@ class Todayspatient extends Component {
                             </div>
                         </div>
                     </div>
-                    <hr/>
+                    <hr />
                 </div>
                 // </div>
-                
+
             )
         }))
     }
@@ -382,8 +401,8 @@ class Todayspatient extends Component {
                     this.props.notify('success', '', response.data['message']);
                     this.setState({ user_modal_loading_status: false, new_user_modal_visibility: false })
                     let update = {
-                        select: {role: 'Patient'},
-                        range: {min: 0,max: 4}
+                        select: { role: 'Patient' },
+                        range: { min: 0, max: 4 }
                     }
                     this.populate_patients(update)
                 }, 5000)
@@ -404,21 +423,21 @@ class Todayspatient extends Component {
     }
     render() {
         var table = <div className="d-flex justify-content-center">
-                <Loader
-                    type="Rings"
-                    color="#00BFFF"
-                    height={150}
-                    width={150}
-                    timeout={60000} //60 secs
-                />
-            </div>
+            <Loader
+                type="Rings"
+                color="#00BFFF"
+                height={150}
+                width={150}
+                timeout={60000} //60 secs
+            />
+        </div>
         if (this.state.data != null) {
             if (this.state.totalRecords > 0) {
                 table = <div className="container-fluid">
                     {this.renderDataInRows(this.state.filter_data)}
                 </div>
             }
-            else{
+            else {
                 table = <div className="alert alert-info" style={{ marginBottom: '0px' }}>
                     <strong>Info!</strong> No visits found.
                 </div>;
@@ -429,54 +448,61 @@ class Todayspatient extends Component {
             <Container container_type="todayspatient">
                 <div className="row">
                     <div className="col-md-9">
-                        <div className="card">
-                            <div className="card-body py-1">
-                                <div className="row">
-                                    <div className="col-md-4">
-                                        <div className="form-group">
-                                            <label className="font-weight-semibold">Providers</label>
-                                            <Select
-                                                options={this.state.providers}
-                                                placeholder="Select Providers"
-                                            // value={this.state.selectedOption}
-                                            // onChange={this.handleSelectChange}
-                                            // onClick={()=>this.get}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className={`col-md-4`}>
-                                        <div className="form-group">
-                                            <label className="font-weight-semibold">Location</label>
-                                            <Select
-                                                // options={this.state.search_options}
-                                                placeholder="Select Location"
-                                            // value={this.state.selectedOption}
-                                            // onChange={this.handleSelectChange}
-                                            // onClick={()=>this.get}
-                                            />
-                                        </div>
+                        <div className="row">
+                            <div className="col-md-4">
+                                <div className="form-group">
+                                    <label className="font-weight-semibold">Providers</label>
+                                    <Select
+                                        isClearable
+                                        options={this.state.providers}
+                                        placeholder="Select Providers"
+
+                                    // value={this.state.selectedOption}
+                                    // onChange={this.handleSelectChange}
+                                    // onClick={()=>this.get}
+                                    />
+                                </div>
+                            </div>
+                            <div className={`col-md-4`}>
+                                <div className="form-group">
+                                    <label className="font-weight-semibold">Location</label>
+                                    <Select
+                                        isClearable
+                                        // options={this.state.search_options}
+                                        placeholder="Select Location"
+                                    // value={this.state.selectedOption}
+                                    // onChange={this.handleSelectChange}
+                                    // onClick={()=>this.get}
+                                    />
+                                </div>
 
 
-                                    </div>
-                                    <div className={`col-md-4`}>
+                            </div>
+                            <div className={`col-md-4`}>
 
-                                        <div className="form-group">
-                                            <label className="font-weight-semibold">Status</label>
-                                            <Select
-                                                // options={this.state.search_options}
-                                                placeholder="Select Status"
-                                            // value={this.state.selectedOption}
-                                            // onChange={this.handleSelectChange}
-                                            // onClick={()=>this.get}
-                                            />
-                                        </div>
-                                    </div>
+                                <div className="form-group">
+                                    <label className="font-weight-semibold">Status</label>
+                                    <Select
+                                        isClearable
+                                        // options={this.state.search_options}
+                                        placeholder="Select Status"
+                                    // value={this.state.selectedOption}
+                                    // onChange={this.handleSelectChange}
+                                    // onClick={()=>this.get}
+                                    />
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="col-md-3">
-                        <div className="d-flex align-items-center">
+                        <div className="d-flex flex-column align-items-center">
+                            <button
+                                type="button"
+                                className="btn bg-dark btn-labeled btn-labeled-right btn-block pr-5"
+                                style={{ textTransform: "inherit" }}>
+                                <b><i className="icon-filter4"></i></b>
+                                Filter
+                            </button>
                             <button
                                 type="button"
                                 className="btn bg-teal-400 btn-labeled btn-labeled-right btn-block pr-5"
@@ -533,10 +559,11 @@ class Todayspatient extends Component {
                                 <div className="col-md-10">
                                     <div className="form-group form-group-feedback form-group-feedback-right">
                                         <Select
+                                            isClearable
                                             options={this.state.patients}
                                             classNamePrefix={`form-control`}
                                             placeholder="Select Patient"
-                                            onChange={this.on_selected_changed}
+                                            onChange={e => this.on_selected_changed(e, "appointment_patient_selection")}
                                         />
                                         <div className="form-control-feedback">
                                             <i className="icon-user-check text-muted"></i>
@@ -580,10 +607,11 @@ class Todayspatient extends Component {
                                 <div className="col-md-6">
                                     <div className="form-group form-group-feedback form-group-feedback-right">
                                         <Select
+                                            isClearable
                                             options={this.state.providers}
                                             classNamePrefix={`form-control`}
                                             placeholder="Select a Doctor"
-                                            onChange={this.on_selected_changed}
+                                            onChange={e => this.on_selected_changed(e, 'appointment_doctor_selection')}
                                         />
                                         <div className="form-control-feedback">
                                             <i className="icon-user-tie text-muted"></i>
@@ -665,159 +693,162 @@ class Todayspatient extends Component {
                             <p>Loading...</p>
                         </div>
                     </div> : <div className="modal-body">
-                        <div className={`row`}>
-                            <div className={`col-md-9`}>
-                                <div className={`row`}>
-                                    <div className={`col-md-6`}>
-                                        <Inputfield
-                                            id={`user_first_name_text_input`}
-                                            label_visibility={this.state.user_first_name.label_visibility}
-                                            label_tag={'First name'}
-                                            icon={'icon-user-check'}
-                                            input_type={'text'}
-                                            on_text_change_listener={this.on_text_field_change}
-                                            default_value={this.state.user_first_name.value} />
+                            <div className={`row`}>
+                                <div className={`col-md-9`}>
+                                    <div className={`row`}>
+                                        <div className={`col-md-6`}>
+                                            <Inputfield
+                                                id={`user_first_name_text_input`}
+                                                label_visibility={this.state.user_first_name.label_visibility}
+                                                label_tag={'First name'}
+                                                icon={'icon-user-check'}
+                                                input_type={'text'}
+                                                on_text_change_listener={this.on_text_field_change}
+                                                default_value={this.state.user_first_name.value} />
+                                        </div>
+                                        <div className={`col-md-6`}>
+                                            <Inputfield
+                                                id={`user_last_name_text_input`}
+                                                label_visibility={this.state.user_last_name.label_visibility}
+                                                label_tag={'Last name'}
+                                                icon={'icon-user-check'}
+                                                input_type={'text'}
+                                                on_text_change_listener={this.on_text_field_change}
+                                                default_value={this.state.user_last_name.value} />
+                                        </div>
                                     </div>
-                                    <div className={`col-md-6`}>
-                                        <Inputfield
-                                            id={`user_last_name_text_input`}
-                                            label_visibility={this.state.user_last_name.label_visibility}
-                                            label_tag={'Last name'}
-                                            icon={'icon-user-check'}
-                                            input_type={'text'}
-                                            on_text_change_listener={this.on_text_field_change}
-                                            default_value={this.state.user_last_name.value} />
+                                    <div className={`row`}>
+                                        <div className={`col-md-4`}>
+                                            <Inputfield
+                                                id={`user_phone_number_text_input`}
+                                                label_visibility={this.state.user_phone_number.label_visibility}
+                                                label_tag={'Phone number'}
+                                                icon={'icon-user-check'}
+                                                input_type={'number'}
+                                                on_text_change_listener={this.on_text_field_change}
+                                                default_value={this.state.user_phone_number.value} />
+                                        </div>
+                                        <div className={`col-md-4`}>
+                                            <Inputfield
+                                                id={`user_cnic_text_input`}
+                                                label_visibility={this.state.user_cnic.label_visibility}
+                                                label_tag={'CNIC'}
+                                                icon={'icon-user-check'}
+                                                input_type={'number'}
+                                                on_text_change_listener={this.on_text_field_change}
+                                                default_value={this.state.user_cnic.value} />
+                                        </div>
+                                        <div className={`col-md-4`}>
+                                            <Inputfield
+                                                id={`user_email_text_input`}
+                                                label_visibility={this.state.user_email.label_visibility}
+                                                label_tag={'Enter email'}
+                                                icon={'icon-user-check'}
+                                                input_type={'email'}
+                                                on_text_change_listener={this.on_text_field_change}
+                                                default_value={this.state.user_email.value} />
+                                        </div>
                                     </div>
                                 </div>
-                                <div className={`row`}>
-                                    <div className={`col-md-4`}>
-                                        <Inputfield
-                                            id={`user_phone_number_text_input`}
-                                            label_visibility={this.state.user_phone_number.label_visibility}
-                                            label_tag={'Phone number'}
-                                            icon={'icon-user-check'}
-                                            input_type={'number'}
-                                            on_text_change_listener={this.on_text_field_change}
-                                            default_value={this.state.user_phone_number.value} />
-                                    </div>
-                                    <div className={`col-md-4`}>
-                                        <Inputfield
-                                            id={`user_cnic_text_input`}
-                                            label_visibility={this.state.user_cnic.label_visibility}
-                                            label_tag={'CNIC'}
-                                            icon={'icon-user-check'}
-                                            input_type={'number'}
-                                            on_text_change_listener={this.on_text_field_change}
-                                            default_value={this.state.user_cnic.value} />
-                                    </div>
-                                    <div className={`col-md-4`}>
-                                        <Inputfield
-                                            id={`user_email_text_input`}
-                                            label_visibility={this.state.user_email.label_visibility}
-                                            label_tag={'Enter email'}
-                                            icon={'icon-user-check'}
-                                            input_type={'email'}
-                                            on_text_change_listener={this.on_text_field_change}
-                                            default_value={this.state.user_email.value} />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={`col-md-3`}>
-                                <div className={`d-flex justify-content-center`}>
-                                    <div className="card-img-actions d-inline-block mb-3">
-                                        <img className="img-fluid rounded-circle" src={NO_PICTURE} style={{ width: 130, height: 130 }} alt="" />
-                                        <div className="card-img-actions-overlay card-img rounded-circle">
-                                            <Link to={"#"} className="btn btn-outline bg-white text-white border-white border-2 btn-icon rounded-round">
-                                                <i className="icon-plus3"></i>
-                                            </Link>
+                                <div className={`col-md-3`}>
+                                    <div className={`d-flex justify-content-center`}>
+                                        <div className="card-img-actions d-inline-block mb-3">
+                                            <img className="img-fluid rounded-circle" src={NO_PICTURE} style={{ width: 130, height: 130 }} alt="" />
+                                            <div className="card-img-actions-overlay card-img rounded-circle">
+                                                <Link to={"#"} className="btn btn-outline bg-white text-white border-white border-2 btn-icon rounded-round">
+                                                    <i className="icon-plus3"></i>
+                                                </Link>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className={`row`}>
-                            <div className={`col-md-8`}>
-                                <Inputfield
-                                    id={`user_address_text_input`}
-                                    label_visibility={this.state.user_address.label_visibility}
-                                    label_tag={'New patient address'}
-                                    icon={'icon-user-check'}
-                                    input_type={'text'}
-                                    text_area={true}
-                                    on_text_change_listener={this.on_text_field_change}
-                                    default_value={this.state.user_address.value} />
-                            </div>
-                            <div className={`col-md-4`}>
-                                <div className={`form-group form-group-float mb-1`}>
-                                    <label className={`form-group-float-label animate ${this.state.user_dob.label_visibility ? 'is-visible' : ''}`}>Date of birth</label>
-                                    <span className="input-group-prepend">
-                                        <span className="input-group-text">
-                                            <i className="icon-calendar3 text-muted"></i>
+                            <div className={`row`}>
+                                <div className={`col-md-8`}>
+                                    <Inputfield
+                                        id={`user_address_text_input`}
+                                        label_visibility={this.state.user_address.label_visibility}
+                                        label_tag={'New patient address'}
+                                        icon={'icon-user-check'}
+                                        input_type={'text'}
+                                        text_area={true}
+                                        on_text_change_listener={this.on_text_field_change}
+                                        default_value={this.state.user_address.value} />
+                                </div>
+                                <div className={`col-md-4`}>
+                                    <div className={`form-group form-group-float mb-1`}>
+                                        <label className={`form-group-float-label animate ${this.state.user_dob.label_visibility ? 'is-visible' : ''}`}>Date of birth</label>
+                                        <span className="input-group-prepend">
+                                            <span className="input-group-text">
+                                                <i className="icon-calendar3 text-muted"></i>
+                                            </span>
+                                            <DateTimePicker id="user_dob_text_input"
+                                                onChange={this.on_user_date_of_birth_change}
+                                                className="clock_datatime_picker"
+                                                inputProps={{ placeholder: 'Date of birth', width: '100%', className: 'form-control' }}
+                                                input={true}
+                                                dateFormat={'ll'}
+                                                timeFormat={false}
+                                                closeOnSelect={true}
+                                                value={this.state.user_dob.value}
+                                            />
                                         </span>
-                                        <DateTimePicker id="user_dob_text_input"
-                                            onChange={this.on_user_date_of_birth_change}
-                                            className="clock_datatime_picker"
-                                            inputProps={{ placeholder: 'Date of birth', width: '100%', className: 'form-control' }}
-                                            input={true}
-                                            dateFormat={'ll'}
-                                            timeFormat={false}
-                                            closeOnSelect={true}
-                                            value={this.state.user_dob.value}
-                                        />
-                                    </span>
 
-                                </div>
-                            </div>
-                        </div>
-                        <hr />
-                        <div className={`row`}>
-                            <div className={`col-md-3`}>
-                                <div className="form-group form-group-feedback form-group-feedback-right">
-                                    <Select
-                                        options={GENDER_OPTIONS}
-                                        classNamePrefix={`form-control`}
-                                        placeholder="Select Gender"
-                                        id="user_gender_selection"
-                                        onChange={this.on_selected_changed}
-                                    />
-                                    <div className="form-control-feedback">
-                                        <i className="icon-user-check text-muted"></i>
                                     </div>
                                 </div>
                             </div>
-                            <div className={`col-md-3`}>
-                                <div className="form-group form-group-feedback form-group-feedback-right">
-                                    <Select
-                                        options={BLOOD_GROUPS_OPTIONS}
-                                        className={`Select-option`}
-                                        classNamePrefix={`form-control`}
-                                        placeholder="Select blood group"
-                                        id="user_blood_group_selection"
-                                        onChange={this.on_selected_changed}
-                                    />
-                                    <div className="form-control-feedback">
-                                        <i className="icon-user-check text-muted"></i>
+                            <hr />
+                            <div className={`row`}>
+                                <div className={`col-md-3`}>
+                                    <div className="form-group form-group-feedback form-group-feedback-right">
+                                        <Select
+                                            isClearable
+                                            options={GENDER_OPTIONS}
+                                            classNamePrefix={`form-control`}
+                                            placeholder="Select Gender"
+                                            id="gender_selection"
+                                            onChange={e => this.on_selected_changed(e, 'gender_selection')}
+                                        />
+                                        <div className="form-control-feedback">
+                                            <i className="icon-user-check text-muted"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={`col-md-3`}>
+                                    <div className="form-group form-group-feedback form-group-feedback-right">
+                                        <Select
+                                            isClearable
+                                            options={BLOOD_GROUPS_OPTIONS}
+                                            className={`Select-option`}
+                                            classNamePrefix={`form-control`}
+                                            placeholder="Select blood group"
+                                            id="blood_group_selection"
+                                            onChange={e => this.on_selected_changed(e, 'blood_group_selection')}
+                                        />
+                                        <div className="form-control-feedback">
+                                            <i className="icon-user-check text-muted"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={`col-md-3`}>
+                                    <div className="form-group form-group-feedback form-group-feedback-right">
+                                        <Select
+                                            isClearable
+                                            options={ROLES_OPTIONS}
+                                            className={`Select-option`}
+                                            classNamePrefix={`form-control`}
+                                            placeholder="Select roles"
+                                            id="role_selection"
+                                            value={[{ id: 'role_selection', label: 'Patient' }]}
+                                            isDisabled
+                                        />
+                                        <div className="form-control-feedback">
+                                            <i className="icon-user-check text-muted"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className={`col-md-3`}>
-                                <div className="form-group form-group-feedback form-group-feedback-right">
-                                    <Select
-                                        options={ROLES_OPTIONS}
-                                        className={`Select-option`}
-                                        classNamePrefix={`form-control`}
-                                        placeholder="Select roles"
-                                        id="role_selection"
-                                        value={[{ id: 'role_selection', label: 'Patient' }]}
-                                        isDisabled
-                                    />
-                                    <div className="form-control-feedback">
-                                        <i className="icon-user-check text-muted"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>}
+                        </div>}
                     <div className="modal-footer">
                         <button
                             type="button"
