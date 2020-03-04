@@ -8,6 +8,7 @@ import Axios from 'axios';
 import { connect } from "react-redux";
 import { notify } from '../../../actions';
 import { Link, withRouter } from 'react-router-dom';
+import moment from 'moment';
 
 class Visits extends Component { 
     constructor(props) {
@@ -82,7 +83,7 @@ class Visits extends Component {
                             <div className="row">
                                 <div className="col-md-8">
                                     <h5 className="font-weight-bold"> 
-                                        {this.state.visits_type === 'previous'? 'Was schedualed at ' + booking.time:'Is schedualed at ' + booking.time} 
+                                        {this.state.visits_type === 'previous'? moment(booking.date.toString()).format('MMMM Do YYYY, h:mm:ss a'): moment(booking.date.toString()).format('MMMM Do YYYY, h:mm:ss a')} 
                                     </h5>
                                 </div>
                                 <div className="col-md-4 text-right">
