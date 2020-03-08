@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Container from '../../../shared/container/container'
 import Select from 'react-select'
 import Axios from 'axios';
@@ -17,6 +17,12 @@ import { BLOOD_GROUPS_OPTIONS, GENDER_OPTIONS, ROLES_OPTIONS } from '../../../sh
 import './todayspatient.css'
 import { LOGIN_URL } from '../../../shared/router_constants';
 import User from '../../../shared/customs/user'
+import moment from 'moment';
+import TableRow from './tablerow';
+
+
+
+
 
 // import 'moment-timezone';
 class Todayspatient extends Component {
@@ -118,7 +124,7 @@ class Todayspatient extends Component {
         }
         else {
             this.props.notify('info', '', res_visits.data.message)
-            if (res_visits.data.message !== 'No visits found for today')
+            if (res_visits.data.message !== 'No visits found')
                 this.props.history.push(LOGIN_URL)
             this.setState({ data: [] })
         }
@@ -321,7 +327,7 @@ class Todayspatient extends Component {
             }
         }
     }
-    renderDataInRows = () => {
+    renderDataInRows2 = () => {
         return (this.state.data.map((booking, i) => {
             return (
                 // <div key={i} className="card border-left-slate border-top-0 border-bottom-0 border-right-0" >
@@ -339,8 +345,8 @@ class Todayspatient extends Component {
                         <div className="col-md-8">
                             <div className="row">
                                 <div className="col-md-8">
-                                    <h5 className="font-weight-bold">
-                                        Today at {booking.time}
+                                    <h5 className="font-weight-semibold font-size-lg">
+                                        Today  {moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY, hh:mm:ss a')} ({moment(booking.date,"YYYY-MM-DDThh:mm:ss").fromNow()})
                                     </h5>
                                 </div>
                                 <div className="col-md-4 text-right">
@@ -374,6 +380,30 @@ class Todayspatient extends Component {
                 </div>
                 // </div>
 
+            )
+        }))
+    }
+
+
+    renderDataInRows = () => {
+        return (this.state.data.map((booking, i) => {
+            let row_data = [booking.patient['first_name'] + ' ' + booking.patient['last_name'],// patient_name
+                booking.patient['phone_number'],// patient_phone_number
+                moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY'),//date_of_booking
+                `${moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('hh:mm:ss a')} (${moment(booking.date,"YYYY-MM-DDThh:mm:ss").fromNow()})`,// time of booking and arsa of booking
+                booking.doctor['first_name'] + ' ' + booking.doctor['last_name'],// doctor name
+                ]
+            let hidden_data = [
+                <User
+                    name={booking.patient['first_name'] + ' ' + booking.patient['last_name']}
+                    dob={booking.patient['dob']}
+                    gender={booking.patient['gender']}
+                    phone={booking.patient['phone_number']}
+                    email={booking.patient['email']}
+                />
+            ]
+            return (
+                <TableRow key={i} row_data={row_data} hidden_data={hidden_data}/>    
             )
         }))
     }
@@ -433,9 +463,17 @@ class Todayspatient extends Component {
         </div>
         if (this.state.data != null) {
             if (this.state.totalRecords > 0) {
-                table = <div className="container-fluid">
-                    {this.renderDataInRows(this.state.filter_data)}
-                </div>
+                table = <div className="table-responsive mt-2"><table className="table table-hover">
+                            <thead className="table-header-bg bg-dark">
+                                <tr>
+                                    <th colSpan="4">User and Appointment information</th>
+                                    <th colSpan="2">Taking care</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.renderDataInRows()}
+                            </tbody>
+                        </table></div>
             }
             else {
                 table = <div className="alert alert-info" style={{ marginBottom: '0px' }}>
@@ -444,430 +482,431 @@ class Todayspatient extends Component {
             }
         }
 
-        return (
-            <Container container_type="todayspatient">
-                <div className="row">
-                    <div className="col-md-9">
-                        <div className="row">
-                            <div className="col-md-4">
-                                <div className="form-group">
-                                    <label className="font-weight-semibold">Providers</label>
-                                    <Select
-                                        isClearable
-                                        options={this.state.providers}
-                                        placeholder="Select Providers"
+        const add_user_modal = <Modal
+            visible={this.state.new_user_modal_visibility}
+            onClickBackdrop={() => this.setState({ new_user_modal_visibility: false })}
+            fade={true}
+            dialogClassName={`modal-dialog-centered modal-lg`}
+        >
+            {/* <Register/> */}
+            <div className="modal-header bg-teal-400">
+                <h5 className="modal-title">New Patient</h5>
+            </div>
 
-                                    // value={this.state.selectedOption}
-                                    // onChange={this.handleSelectChange}
-                                    // onClick={()=>this.get}
-                                    />
-                                </div>
-                            </div>
-                            <div className={`col-md-4`}>
-                                <div className="form-group">
-                                    <label className="font-weight-semibold">Location</label>
-                                    <Select
-                                        isClearable
-                                        // options={this.state.search_options}
-                                        placeholder="Select Location"
-                                    // value={this.state.selectedOption}
-                                    // onChange={this.handleSelectChange}
-                                    // onClick={()=>this.get}
-                                    />
-                                </div>
-
-
-                            </div>
-                            <div className={`col-md-4`}>
-
-                                <div className="form-group">
-                                    <label className="font-weight-semibold">Status</label>
-                                    <Select
-                                        isClearable
-                                        // options={this.state.search_options}
-                                        placeholder="Select Status"
-                                    // value={this.state.selectedOption}
-                                    // onChange={this.handleSelectChange}
-                                    // onClick={()=>this.get}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="d-flex flex-column align-items-center">
-                            <button
-                                type="button"
-                                className="btn bg-dark btn-labeled btn-labeled-right btn-block pr-5"
-                                style={{ textTransform: "inherit" }}>
-                                <b><i className="icon-filter4"></i></b>
-                                Filter
-                            </button>
-                            <button
-                                type="button"
-                                className="btn bg-teal-400 btn-labeled btn-labeled-right btn-block pr-5"
-                                style={{ textTransform: "inherit" }}
-                                onClick={() => this.setState({
-                                    new_appointment_modal_visibility: this.state.new_appointment_modal_visibility ? false : true
-                                })}>
-                                <b><i className="icon-plus3"></i></b>
-                                New Appointment
-                            </button>
-                        </div>
-                    </div>
+            {this.state.user_modal_loading_status ? <div className="mt-3">
+                <div className="d-flex justify-content-center ">
+                    <Loader
+                        type="Rings"
+                        color="#00BFFF"
+                        height={150}
+                        width={150}
+                        timeout={60000} //60 secs
+                    />
                 </div>
-
-                <div className="card">
-                    <div className="card-body">
-                        {table}
-                    </div>
+                <div className="d-flex justify-content-center">
+                    <p>Loading...</p>
                 </div>
-
-                {/* 
-                    Add new appointment modal
-                */}
-
-                <Modal
-                    visible={this.state.new_appointment_modal_visibility}
-                    onClickBackdrop={() => this.setState({ new_appointment_modal_visibility: false })}
-                    fade={true}
-                    dialogClassName={`modal-dialog-centered modal-lg`}>
-
-                    <div className="modal-header bg-teal-400">
-                        <h5 className="modal-title">New Appointment</h5>
+            </div> : <div className="modal-body">
+                    <div className={`row`}>
+                        <div className={`col-md-9`}>
+                            <div className={`row`}>
+                                <div className={`col-md-6`}>
+                                    <Inputfield
+                                        id={`user_first_name_text_input`}
+                                        label_visibility={this.state.user_first_name.label_visibility}
+                                        label_tag={'First name'}
+                                        icon={'icon-user-check'}
+                                        input_type={'text'}
+                                        on_text_change_listener={this.on_text_field_change}
+                                        default_value={this.state.user_first_name.value} />
+                                </div>
+                                <div className={`col-md-6`}>
+                                    <Inputfield
+                                        id={`user_last_name_text_input`}
+                                        label_visibility={this.state.user_last_name.label_visibility}
+                                        label_tag={'Last name'}
+                                        icon={'icon-user-check'}
+                                        input_type={'text'}
+                                        on_text_change_listener={this.on_text_field_change}
+                                        default_value={this.state.user_last_name.value} />
+                                </div>
+                            </div>
+                            <div className={`row`}>
+                                <div className={`col-md-4`}>
+                                    <Inputfield
+                                        id={`user_phone_number_text_input`}
+                                        label_visibility={this.state.user_phone_number.label_visibility}
+                                        label_tag={'Phone number'}
+                                        icon={'icon-user-check'}
+                                        input_type={'number'}
+                                        on_text_change_listener={this.on_text_field_change}
+                                        default_value={this.state.user_phone_number.value} />
+                                </div>
+                                <div className={`col-md-4`}>
+                                    <Inputfield
+                                        id={`user_cnic_text_input`}
+                                        label_visibility={this.state.user_cnic.label_visibility}
+                                        label_tag={'CNIC'}
+                                        icon={'icon-user-check'}
+                                        input_type={'number'}
+                                        on_text_change_listener={this.on_text_field_change}
+                                        default_value={this.state.user_cnic.value} />
+                                </div>
+                                <div className={`col-md-4`}>
+                                    <Inputfield
+                                        id={`user_email_text_input`}
+                                        label_visibility={this.state.user_email.label_visibility}
+                                        label_tag={'Enter email'}
+                                        icon={'icon-user-check'}
+                                        input_type={'email'}
+                                        on_text_change_listener={this.on_text_field_change}
+                                        default_value={this.state.user_email.value} />
+                                </div>
+                            </div>
+                        </div>
+                        <div className={`col-md-3`}>
+                            <div className={`d-flex justify-content-center`}>
+                                <div className="card-img-actions d-inline-block mb-3">
+                                    <img className="img-fluid rounded-circle" src={NO_PICTURE} style={{ width: 130, height: 130 }} alt="" />
+                                    <div className="card-img-actions-overlay card-img rounded-circle">
+                                        <Link to={"#"} className="btn btn-outline bg-white text-white border-white border-2 btn-icon rounded-round">
+                                            <i className="icon-plus3"></i>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    {this.state.appointment_modal_loading_status ? <div className="mt-3">
-                        <div className="d-flex justify-content-center ">
-                            <Loader
-                                type="Rings"
-                                color="#00BFFF"
-                                height={150}
-                                width={150}
-                                timeout={60000} //60 secs
-                            />
+                    <div className={`row`}>
+                        <div className={`col-md-8`}>
+                            <Inputfield
+                                id={`user_address_text_input`}
+                                label_visibility={this.state.user_address.label_visibility}
+                                label_tag={'New patient address'}
+                                icon={'icon-user-check'}
+                                input_type={'text'}
+                                text_area={true}
+                                on_text_change_listener={this.on_text_field_change}
+                                default_value={this.state.user_address.value} />
                         </div>
-                        <div className="d-flex justify-content-center">
-                            <p>Loading...</p>
-                        </div>
-                    </div> : <div className="modal-body">
-                            <div className="row mb-1">
-                                <div className="col-12">
-                                    Select or add user
-                            </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-10">
-                                    <div className="form-group form-group-feedback form-group-feedback-right">
-                                        <Select
-                                            isClearable
-                                            options={this.state.patients}
-                                            classNamePrefix={`form-control`}
-                                            placeholder="Select Patient"
-                                            onChange={e => this.on_selected_changed(e, "appointment_patient_selection")}
-                                        />
-                                        <div className="form-control-feedback">
-                                            <i className="icon-user-check text-muted"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-md-2">
-                                    <button
-                                        type="button"
-                                        className="btn bg-teal-400 btn-labeled btn-labeled-right btn-block pr-5"
-                                        style={{ textTransform: "inherit" }}
-                                        onClick={() => this.setState({ new_user_modal_visibility: true })}>
-                                        <b><i className="icon-plus3"></i></b>
-                                        New user
-                                </button>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-12">
-                                    <div className="form-group form-group-float">
-                                        <div className="form-group-float-label is-visible mb-1">
-                                            What is the reason for the visit
-                                    </div>
-                                        <textarea rows={5} cols={5}
-                                            id="appointment_reason_text_input"
-                                            className="form-control"
-                                            placeholder="Reason for visit"
-                                            onChange={this.on_text_field_change} />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="row mb-1">
-                                <div className="col-6">
-                                    Which doctor will be suitable
-                            </div>
-                                <div className="col-6">
-                                    What is the date and time of appointment
-                            </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <div className="form-group form-group-feedback form-group-feedback-right">
-                                        <Select
-                                            isClearable
-                                            options={this.state.providers}
-                                            classNamePrefix={`form-control`}
-                                            placeholder="Select a Doctor"
-                                            onChange={e => this.on_selected_changed(e, 'appointment_doctor_selection')}
-                                        />
-                                        <div className="form-control-feedback">
-                                            <i className="icon-user-tie text-muted"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-md-3">
-                                    <DateTimePicker id="dob_text_input"
-                                        onChange={this.on_apointment_date_change}
+                        <div className={`col-md-4`}>
+                            <div className={`form-group form-group-float mb-1`}>
+                                <label className={`form-group-float-label animate ${this.state.user_dob.label_visibility ? 'is-visible' : ''}`}>Date of birth</label>
+                                <span className="input-group-prepend">
+                                    <span className="input-group-text">
+                                        <i className="icon-calendar3 text-muted"></i>
+                                    </span>
+                                    <DateTimePicker id="user_dob_text_input"
+                                        onChange={this.on_user_date_of_birth_change}
                                         className="clock_datatime_picker"
-                                        inputProps={{ placeholder: 'Select Date', width: '100%', className: 'form-control' }}
+                                        inputProps={{ placeholder: 'Date of birth', width: '100%', className: 'form-control' }}
                                         input={true}
                                         dateFormat={'ll'}
                                         timeFormat={false}
                                         closeOnSelect={true}
-                                        value={this.state.appointment_date.value}
+                                        value={this.state.user_dob.value}
                                     />
-                                </div>
-                                <div className="col-md-3">
-                                    <DateTimePicker id="dob_text_input"
-                                        onChange={this.on_apointment_time_change}
-                                        className="clock_datatime_picker"
-                                        inputProps={{ placeholder: 'Select Time', width: '100%', className: 'form-control' }}
-                                        input={true}
-                                        dateFormat={false}
-                                        timeFormat={true}
-                                        closeOnSelect={true}
-                                        strictParsing={true}
-                                        value={this.state.appointment_time.value}
-                                    />
+                                </span>
+
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <div className={`row`}>
+                        <div className={`col-md-3`}>
+                            <div className="form-group form-group-feedback form-group-feedback-right">
+                                <Select
+                                    isClearable
+                                    options={GENDER_OPTIONS}
+                                    classNamePrefix={`form-control`}
+                                    placeholder="Select Gender"
+                                    id="gender_selection"
+                                    onChange={e => this.on_selected_changed(e, 'gender_selection')}
+                                />
+                                <div className="form-control-feedback">
+                                    <i className="icon-user-check text-muted"></i>
                                 </div>
                             </div>
                         </div>
-                    }
-                    <div className="modal-footer">
-                        <button
-                            type="button"
-                            className="btn bg-danger btn-labeled btn-labeled-right pr-5"
-                            style={{ textTransform: "inherit" }}
-                            onClick={() => this.setState({ new_appointment_modal_visibility: false })}>
-                            <b><i className="icon-cross"></i></b>
-                            Cancel
-                        </button>
-                        <button
-                            type="button"
-                            className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
-                            style={{ textTransform: "inherit" }}
-                            onClick={this.on_submit_new_appointment}>
-                            <b><i className="icon-plus3"></i></b>
-                            Add
-                        </button>
+                        <div className={`col-md-3`}>
+                            <div className="form-group form-group-feedback form-group-feedback-right">
+                                <Select
+                                    isClearable
+                                    options={BLOOD_GROUPS_OPTIONS}
+                                    className={`Select-option`}
+                                    classNamePrefix={`form-control`}
+                                    placeholder="Select blood group"
+                                    id="blood_group_selection"
+                                    onChange={e => this.on_selected_changed(e, 'blood_group_selection')}
+                                />
+                                <div className="form-control-feedback">
+                                    <i className="icon-user-check text-muted"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={`col-md-3`}>
+                            <div className="form-group form-group-feedback form-group-feedback-right">
+                                <Select
+                                    isClearable
+                                    options={ROLES_OPTIONS}
+                                    className={`Select-option`}
+                                    classNamePrefix={`form-control`}
+                                    placeholder="Select roles"
+                                    id="role_selection"
+                                    value={[{ id: 'role_selection', label: 'Patient' }]}
+                                    isDisabled
+                                />
+                                <div className="form-control-feedback">
+                                    <i className="icon-user-check text-muted"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </Modal>
-                {/* 
-                    Register new patient modal 
-                */}
-                <Modal
-                    visible={this.state.new_user_modal_visibility}
-                    onClickBackdrop={() => this.setState({ new_user_modal_visibility: false })}
-                    fade={true}
-                    dialogClassName={`modal-dialog-centered modal-lg`}
-                >
-                    {/* <Register/> */}
-                    <div className="modal-header bg-teal-400">
-                        <h5 className="modal-title">New Patient</h5>
-                    </div>
+                </div>}
+            <div className="modal-footer">
+                <button
+                    type="button"
+                    className="btn bg-danger btn-labeled btn-labeled-right pr-5"
+                    style={{ textTransform: "inherit" }}
+                    onClick={() => this.setState({ new_user_modal_visibility: false })}>
+                    <b><i className="icon-cross"></i></b>
+                    Cancel
+            </button>
+                <button
+                    type="button"
+                    className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
+                    style={{ textTransform: "inherit" }}
+                    onClick={this.on_submit_new_patient}>
+                    <b><i className="icon-plus3"></i></b>
+                    Add
+            </button>
+            </div>
+        </Modal>;
 
-                    {this.state.user_modal_loading_status ? <div className="mt-3">
-                        <div className="d-flex justify-content-center ">
-                            <Loader
-                                type="Rings"
-                                color="#00BFFF"
-                                height={150}
-                                width={150}
-                                timeout={60000} //60 secs
+        const add_appointment_modal = <Modal
+            visible={this.state.new_appointment_modal_visibility}
+            onClickBackdrop={() => this.setState({ new_appointment_modal_visibility: false })}
+            fade={true}
+            dialogClassName={`modal-dialog-centered modal-lg`}>
+
+            <div className="modal-header bg-teal-400">
+                <h5 className="modal-title">New Appointment</h5>
+            </div>
+            {this.state.appointment_modal_loading_status ? <div className="mt-3">
+                <div className="d-flex justify-content-center ">
+                    <Loader
+                        type="Rings"
+                        color="#00BFFF"
+                        height={150}
+                        width={150}
+                        timeout={60000} //60 secs
+                    />
+                </div>
+                <div className="d-flex justify-content-center">
+                    <p>Loading...</p>
+                </div>
+            </div> : <div className="modal-body">
+                    <div className="row mb-1">
+                        <div className="col-12">
+                            Select or add user
+                </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-10">
+                            <div className="form-group form-group-feedback form-group-feedback-right">
+                                <Select
+                                    isClearable
+                                    options={this.state.patients}
+                                    classNamePrefix={`form-control`}
+                                    placeholder="Select Patient"
+                                    onChange={e => this.on_selected_changed(e, "appointment_patient_selection")}
+                                />
+                                <div className="form-control-feedback">
+                                    <i className="icon-user-check text-muted"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-2">
+                            <button
+                                type="button"
+                                className="btn bg-teal-400 btn-labeled btn-labeled-right btn-block pr-5"
+                                style={{ textTransform: "inherit" }}
+                                onClick={() => this.setState({ new_user_modal_visibility: true })}>
+                                <b><i className="icon-plus3"></i></b>
+                                New user
+                    </button>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="form-group form-group-float">
+                                <div className="form-group-float-label is-visible mb-1">
+                                    What is the reason for the visit
+                        </div>
+                                <textarea rows={5} cols={5}
+                                    id="appointment_reason_text_input"
+                                    className="form-control"
+                                    placeholder="Reason for visit"
+                                    onChange={this.on_text_field_change} />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row mb-1">
+                        <div className="col-6">
+                            Which doctor will be suitable
+                </div>
+                        <div className="col-6">
+                            What is the date and time of appointment
+                </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-6">
+                            <div className="form-group form-group-feedback form-group-feedback-right">
+                                <Select
+                                    isClearable
+                                    options={this.state.providers}
+                                    classNamePrefix={`form-control`}
+                                    placeholder="Select a Doctor"
+                                    onChange={e => this.on_selected_changed(e, 'appointment_doctor_selection')}
+                                />
+                                <div className="form-control-feedback">
+                                    <i className="icon-user-tie text-muted"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-3">
+                            <DateTimePicker id="dob_text_input"
+                                onChange={this.on_apointment_date_change}
+                                className="clock_datatime_picker"
+                                inputProps={{ placeholder: 'Select Date', width: '100%', className: 'form-control' }}
+                                input={true}
+                                dateFormat={'ll'}
+                                timeFormat={false}
+                                closeOnSelect={true}
+                                value={this.state.appointment_date.value}
                             />
                         </div>
-                        <div className="d-flex justify-content-center">
-                            <p>Loading...</p>
+                        <div className="col-md-3">
+                            <DateTimePicker id="dob_text_input"
+                                onChange={this.on_apointment_time_change}
+                                className="clock_datatime_picker"
+                                inputProps={{ placeholder: 'Select Time', width: '100%', className: 'form-control' }}
+                                input={true}
+                                dateFormat={false}
+                                timeFormat={true}
+                                closeOnSelect={true}
+                                strictParsing={true}
+                                value={this.state.appointment_time.value}
+                            />
                         </div>
-                    </div> : <div className="modal-body">
-                            <div className={`row`}>
-                                <div className={`col-md-9`}>
-                                    <div className={`row`}>
-                                        <div className={`col-md-6`}>
-                                            <Inputfield
-                                                id={`user_first_name_text_input`}
-                                                label_visibility={this.state.user_first_name.label_visibility}
-                                                label_tag={'First name'}
-                                                icon={'icon-user-check'}
-                                                input_type={'text'}
-                                                on_text_change_listener={this.on_text_field_change}
-                                                default_value={this.state.user_first_name.value} />
-                                        </div>
-                                        <div className={`col-md-6`}>
-                                            <Inputfield
-                                                id={`user_last_name_text_input`}
-                                                label_visibility={this.state.user_last_name.label_visibility}
-                                                label_tag={'Last name'}
-                                                icon={'icon-user-check'}
-                                                input_type={'text'}
-                                                on_text_change_listener={this.on_text_field_change}
-                                                default_value={this.state.user_last_name.value} />
-                                        </div>
-                                    </div>
-                                    <div className={`row`}>
-                                        <div className={`col-md-4`}>
-                                            <Inputfield
-                                                id={`user_phone_number_text_input`}
-                                                label_visibility={this.state.user_phone_number.label_visibility}
-                                                label_tag={'Phone number'}
-                                                icon={'icon-user-check'}
-                                                input_type={'number'}
-                                                on_text_change_listener={this.on_text_field_change}
-                                                default_value={this.state.user_phone_number.value} />
-                                        </div>
-                                        <div className={`col-md-4`}>
-                                            <Inputfield
-                                                id={`user_cnic_text_input`}
-                                                label_visibility={this.state.user_cnic.label_visibility}
-                                                label_tag={'CNIC'}
-                                                icon={'icon-user-check'}
-                                                input_type={'number'}
-                                                on_text_change_listener={this.on_text_field_change}
-                                                default_value={this.state.user_cnic.value} />
-                                        </div>
-                                        <div className={`col-md-4`}>
-                                            <Inputfield
-                                                id={`user_email_text_input`}
-                                                label_visibility={this.state.user_email.label_visibility}
-                                                label_tag={'Enter email'}
-                                                icon={'icon-user-check'}
-                                                input_type={'email'}
-                                                on_text_change_listener={this.on_text_field_change}
-                                                default_value={this.state.user_email.value} />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className={`col-md-3`}>
-                                    <div className={`d-flex justify-content-center`}>
-                                        <div className="card-img-actions d-inline-block mb-3">
-                                            <img className="img-fluid rounded-circle" src={NO_PICTURE} style={{ width: 130, height: 130 }} alt="" />
-                                            <div className="card-img-actions-overlay card-img rounded-circle">
-                                                <Link to={"#"} className="btn btn-outline bg-white text-white border-white border-2 btn-icon rounded-round">
-                                                    <i className="icon-plus3"></i>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={`row`}>
-                                <div className={`col-md-8`}>
-                                    <Inputfield
-                                        id={`user_address_text_input`}
-                                        label_visibility={this.state.user_address.label_visibility}
-                                        label_tag={'New patient address'}
-                                        icon={'icon-user-check'}
-                                        input_type={'text'}
-                                        text_area={true}
-                                        on_text_change_listener={this.on_text_field_change}
-                                        default_value={this.state.user_address.value} />
-                                </div>
-                                <div className={`col-md-4`}>
-                                    <div className={`form-group form-group-float mb-1`}>
-                                        <label className={`form-group-float-label animate ${this.state.user_dob.label_visibility ? 'is-visible' : ''}`}>Date of birth</label>
-                                        <span className="input-group-prepend">
-                                            <span className="input-group-text">
-                                                <i className="icon-calendar3 text-muted"></i>
-                                            </span>
-                                            <DateTimePicker id="user_dob_text_input"
-                                                onChange={this.on_user_date_of_birth_change}
-                                                className="clock_datatime_picker"
-                                                inputProps={{ placeholder: 'Date of birth', width: '100%', className: 'form-control' }}
-                                                input={true}
-                                                dateFormat={'ll'}
-                                                timeFormat={false}
-                                                closeOnSelect={true}
-                                                value={this.state.user_dob.value}
-                                            />
-                                        </span>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <hr />
-                            <div className={`row`}>
-                                <div className={`col-md-3`}>
-                                    <div className="form-group form-group-feedback form-group-feedback-right">
-                                        <Select
-                                            isClearable
-                                            options={GENDER_OPTIONS}
-                                            classNamePrefix={`form-control`}
-                                            placeholder="Select Gender"
-                                            id="gender_selection"
-                                            onChange={e => this.on_selected_changed(e, 'gender_selection')}
-                                        />
-                                        <div className="form-control-feedback">
-                                            <i className="icon-user-check text-muted"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className={`col-md-3`}>
-                                    <div className="form-group form-group-feedback form-group-feedback-right">
-                                        <Select
-                                            isClearable
-                                            options={BLOOD_GROUPS_OPTIONS}
-                                            className={`Select-option`}
-                                            classNamePrefix={`form-control`}
-                                            placeholder="Select blood group"
-                                            id="blood_group_selection"
-                                            onChange={e => this.on_selected_changed(e, 'blood_group_selection')}
-                                        />
-                                        <div className="form-control-feedback">
-                                            <i className="icon-user-check text-muted"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className={`col-md-3`}>
-                                    <div className="form-group form-group-feedback form-group-feedback-right">
-                                        <Select
-                                            isClearable
-                                            options={ROLES_OPTIONS}
-                                            className={`Select-option`}
-                                            classNamePrefix={`form-control`}
-                                            placeholder="Select roles"
-                                            id="role_selection"
-                                            value={[{ id: 'role_selection', label: 'Patient' }]}
-                                            isDisabled
-                                        />
-                                        <div className="form-control-feedback">
-                                            <i className="icon-user-check text-muted"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>}
-                    <div className="modal-footer">
-                        <button
-                            type="button"
-                            className="btn bg-danger btn-labeled btn-labeled-right pr-5"
-                            style={{ textTransform: "inherit" }}
-                            onClick={() => this.setState({ new_user_modal_visibility: false })}>
-                            <b><i className="icon-cross"></i></b>
-                            Cancel
-                        </button>
-                        <button
-                            type="button"
-                            className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
-                            style={{ textTransform: "inherit" }}
-                            onClick={this.on_submit_new_patient}>
-                            <b><i className="icon-plus3"></i></b>
-                            Add
-                        </button>
                     </div>
-                </Modal>
+                </div>
+            }
+            <div className="modal-footer">
+                <button
+                    type="button"
+                    className="btn bg-danger btn-labeled btn-labeled-right pr-5"
+                    style={{ textTransform: "inherit" }}
+                    onClick={() => this.setState({ new_appointment_modal_visibility: false })}>
+                    <b><i className="icon-cross"></i></b>
+                    Cancel
+            </button>
+                <button
+                    type="button"
+                    className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
+                    style={{ textTransform: "inherit" }}
+                    onClick={this.on_submit_new_appointment}>
+                    <b><i className="icon-plus3"></i></b>
+                    Add
+            </button>
+            </div>
+        </Modal>
+
+        const filters = <div className="row">
+            <div className="col-md-9">
+                <div className="row">
+                    <div className="col-md-4">
+                        <div className="form-group">
+                            <label className="font-weight-semibold">Providers</label>
+                            <Select
+                                isClearable
+                                options={this.state.providers}
+                                placeholder="Select Providers"
+
+                            // value={this.state.selectedOption}
+                            // onChange={this.handleSelectChange}
+                            // onClick={()=>this.get}
+                            />
+                        </div>
+                    </div>
+                    <div className={`col-md-4`}>
+                        <div className="form-group">
+                            <label className="font-weight-semibold">Location</label>
+                            <Select
+                                isClearable
+                                // options={this.state.search_options}
+                                placeholder="Select Location"
+                            // value={this.state.selectedOption}
+                            // onChange={this.handleSelectChange}
+                            // onClick={()=>this.get}
+                            />
+                        </div>
+
+
+                    </div>
+                    <div className={`col-md-4`}>
+
+                        <div className="form-group">
+                            <label className="font-weight-semibold">Status</label>
+                            <Select
+                                isClearable
+                                // options={this.state.search_options}
+                                placeholder="Select Status"
+                            // value={this.state.selectedOption}
+                            // onChange={this.handleSelectChange}
+                            // onClick={()=>this.get}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="col-md-3">
+                <div className="d-flex flex-column align-items-center">
+                    <button
+                        type="button"
+                        className="btn bg-dark btn-labeled btn-labeled-right btn-block pr-5"
+                        style={{ textTransform: "inherit" }}>
+                        <b><i className="icon-filter4"></i></b>
+                        Filter
+                </button>
+                    <button
+                        type="button"
+                        className="btn bg-teal-400 btn-labeled btn-labeled-right btn-block pr-5"
+                        style={{ textTransform: "inherit" }}
+                        onClick={() => this.setState({
+                            new_appointment_modal_visibility: this.state.new_appointment_modal_visibility ? false : true
+                        })}>
+                        <b><i className="icon-plus3"></i></b>
+                        New Appointment
+                </button>
+                </div>
+            </div>
+        </div>
+
+        return (
+            <Container container_type="todayspatient">
+                {/* filters panel */}
+                {filters}
+                {/* table of todays appointments */}
+                {/* <div className="card">
+                    <div className="card-body"> */}
+                        {table}
+                    {/* </div>
+                </div> */}
+                {/* Add new appointment modal */}
+                {add_appointment_modal}
+                {/* Register new patient modal */}
+                {add_user_modal}
             </Container>
         )
     }
