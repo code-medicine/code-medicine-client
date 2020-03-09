@@ -19,3 +19,11 @@ export const ROLES_OPTIONS = [
     { id: 'role_selection', label: 'Doctor' },
     { id: 'role_selection', label: 'Admin' },
 ];
+
+export const classNameColors = [
+    'bg-dark',
+    'bg-primary',
+    'bg-warning',
+    'bg-success',
+    'bg-danger',
+]

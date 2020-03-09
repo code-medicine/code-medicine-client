@@ -9,7 +9,8 @@ class Left_sidebar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            home_toggle: '',
+            search_toggle: '',
+            chat_toggle: '',
             reception_toggle: '',
             current_page: 'Home'
         }
@@ -25,11 +26,17 @@ class Left_sidebar extends Component {
 
     on_item_click = (e) => {
         switch(e.target.id){
-            case 'home_link':
-                if (this.state.home_toggle === '')
-                    this.setState({home_toggle: 'nav-item-open'});
+            case 'search_link':
+                if (this.state.search_toggle === '')
+                    this.setState({search_toggle: 'nav-item-open'});
                 else
-                    this.setState({home_toggle: ''});
+                    this.setState({search_toggle: ''});
+                break;
+            case 'chat_link':
+                if (this.state.chat_toggle === '')
+                    this.setState({chat_toggle: 'nav-item-open'});
+                else
+                    this.setState({chat_toggle: ''});
                 break;
             case 'reception_link':
                 if (this.state.reception_toggle === '')
@@ -92,23 +99,26 @@ class Left_sidebar extends Component {
                                     Main
                                 </div>
                             </li>
-                            <li className={`nav-item nav-item-submenu ${this.state.home_toggle}`}>
+                            <li className="nav-item">
+                                <Link to={BASE_URL} className="nav-link">
+                                    <i className="icon-home"></i>
+                                    <span>Dashboard</span>
+                                </Link>
+                            </li>
+                            <li className={`nav-item nav-item-submenu ${this.state.search_toggle}`}>
                                 <Link className="nav-link" 
                                     to={'#'} 
                                     onClick={this.on_item_click}
-                                    id="home_link">
-                                    <i className="icon-home4"></i>
-                                    <span className="">Home</span>
+                                    id="search_link">
+                                    <i className="icon-search4"></i>
+                                    <span className="">Search</span>
                                 </Link>
 
                                 <ul className="nav nav-group-sub" 
                                     data-submenu-title="Home"
-                                    style={{display: this.state.home_toggle === ''? 'none':'block'}}>
-                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link active">Dashboard</Link></li>
-                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Messages<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
-                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link">Patients</Link></li>
-                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link">Doctors</Link></li>
-                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Requests<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                    style={{display: this.state.search_toggle === ''? 'none':'block'}}>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Patients<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Doctors<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
                                 </ul>
 
                             </li>
@@ -127,6 +137,23 @@ class Left_sidebar extends Component {
                                     <li className="nav-item"><Link to={RECEPTION_VISITS} className="nav-link">All appointments</Link></li>
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Emergency<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Admissions<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Requests<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                </ul>
+
+                            </li>
+                            <li className={`nav-item nav-item-submenu ${this.state.chat_toggle}`}>
+                                <Link className="nav-link" 
+                                    to={'#'} 
+                                    onClick={this.on_item_click}
+                                    id="chat_link">
+                                    <i className="icon-envelop5"></i>
+                                    <span className="">Chat</span>
+                                </Link>
+
+                                <ul className="nav nav-group-sub" 
+                                    data-submenu-title="Home"
+                                    style={{display: this.state.chat_toggle === ''? 'none':'block'}}>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Messages<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Requests<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
                                 </ul>
 

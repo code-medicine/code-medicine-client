@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import NO_PICTURE from '../../resources/images/placeholder.jpg'
 import moment from 'moment';
+import { classNameColors } from '../constant_data';
 
 class User extends Component {
     
@@ -9,22 +10,27 @@ class User extends Component {
         var birthDate = new Date(dob1);  // create a date object directly from `dob1` argument
         var age_now = today.getFullYear() - birthDate.getFullYear();
         var m = today.getMonth() - birthDate.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
-        {
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
             age_now--;
         }
         return age_now;
     }
+
+    componentDidMount(){
+        
+    }
     render(){
         const date_of_birth = new Date(this.props.dob)
 
+        var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
+
+        let patient_name = this.props.name
         return(
             <div className="media">
                 <div className="mr-3">
-                    <img className="img-fluid rounded-circle" 
-                        src={NO_PICTURE} 
-                        style={{width: 42,height: 42}}  
-                        alt="" />
+                    <div className={`img-fluid rounded-circle text-white ${random_color} h3 d-flex justify-content-center align-items-center`} 
+                        // src={NO_PICTURE} 
+                        style={{width: 42, height: 42 }}>{patient_name.charAt(0)}</div>
                 </div>
                 <div className="media-body">
                     <h6 className="mb-0 font-weight-bold">{this.props.name}</h6>

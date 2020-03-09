@@ -130,6 +130,8 @@ class Todayspatient extends Component {
         }
     }
     componentDidMount() {
+
+        // this.populate_appointments({ date_flag: new Date() })
         this.populate_appointments({ date_flag: 'today' })
         var data = {
             select: { role: 'Doctor' },
@@ -265,7 +267,8 @@ class Todayspatient extends Component {
                     appointment_time: { value: '' },
                     appointment_reason: { value: '' },
                     appointment_modal_loading_status: false,
-                    new_appointment_modal_visibility: false
+                    new_appointment_modal_visibility: false,
+                    data: null,
                 })
                 this.populate_appointments({ date_flag: 'today' })
             }
@@ -385,7 +388,7 @@ class Todayspatient extends Component {
             const row_data = { patient_name: booking.patient['first_name'] + ' ' + booking.patient['last_name'],// patient_name
                 patient_phone_number: booking.patient['phone_number'],// patient_phone_number
                 date_of_booking: moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY'),//date_of_booking
-                time_of_booking: `${moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('hh:mm:ss a')} (${moment(booking.date,"YYYY-MM-DDThh:mm:ss").fromNow()})`,// time of booking and arsa of booking
+                time_of_booking: `${moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('hh:mm a')} (${moment(booking.date,"YYYY-MM-DDThh:mm:ss").fromNow()})`,// time of booking and arsa of booking
                 doctor_name: booking.doctor['first_name'] + ' ' + booking.doctor['last_name'],// doctor name
             }
             const hidden_data = [
