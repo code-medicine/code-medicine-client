@@ -207,7 +207,6 @@ class Todayspatient extends Component {
             }
         }
     }
-
     on_apointment_date_change = (e) => {
         if (e === '')
             this.setState({ appointment_date: { value: '', label_visibility: false } })
@@ -241,9 +240,6 @@ class Todayspatient extends Component {
             }
         }
     }
-
-
-
     on_submit_new_appointment = () => {
         const data = {
             patient_email: this.state.appointment_patient.value,
@@ -287,7 +283,6 @@ class Todayspatient extends Component {
         })
 
     }
-
     on_selected_changed = (e, actor) => {
         if (e !== null) {
             switch (e.id) {
@@ -387,13 +382,13 @@ class Todayspatient extends Component {
 
     renderDataInRows = () => {
         return (this.state.data.map((booking, i) => {
-            let row_data = [booking.patient['first_name'] + ' ' + booking.patient['last_name'],// patient_name
-                booking.patient['phone_number'],// patient_phone_number
-                moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY'),//date_of_booking
-                `${moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('hh:mm:ss a')} (${moment(booking.date,"YYYY-MM-DDThh:mm:ss").fromNow()})`,// time of booking and arsa of booking
-                booking.doctor['first_name'] + ' ' + booking.doctor['last_name'],// doctor name
-                ]
-            let hidden_data = [
+            const row_data = { patient_name: booking.patient['first_name'] + ' ' + booking.patient['last_name'],// patient_name
+                patient_phone_number: booking.patient['phone_number'],// patient_phone_number
+                date_of_booking: moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY'),//date_of_booking
+                time_of_booking: `${moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('hh:mm:ss a')} (${moment(booking.date,"YYYY-MM-DDThh:mm:ss").fromNow()})`,// time of booking and arsa of booking
+                doctor_name: booking.doctor['first_name'] + ' ' + booking.doctor['last_name'],// doctor name
+            }
+            const hidden_data = [
                 <User
                     name={booking.patient['first_name'] + ' ' + booking.patient['last_name']}
                     dob={booking.patient['dob']}

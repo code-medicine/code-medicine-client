@@ -22,8 +22,8 @@ class TableRow extends Component {
     }
 
     render_read_only_cols = () => {
-        return this.state.row_data.map((str,i) => {
-            return <td key={i}>{str}</td>
+        return Object.keys(this.state.row_data).map((str,i) => {
+            return <td key={i}>{this.state.row_data[str]}</td>
         })
     }
     render_hidden_items = () => {

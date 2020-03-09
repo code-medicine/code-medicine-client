@@ -37,10 +37,11 @@ class Header extends Component {
 
             <div className="navbar navbar-expand-md navbar-dark fixed-top">
                 <div className="navbar-brand">
-                    <Link to={BASE_URL} className="d-inline-block">
-                        <img src={Logo_light} alt="" />
-                        {/* <span className="text-white">Iffat Anwar</span> */}
+                    <Link onClick={this.on_sidebar_control_button_click} to={"#"}
+                                className="d-inline">
+                        <i className="icon-paragraph-justify2"></i>
                     </Link>
+                    <img className="d-inline ml-3" src={Logo_light} alt="" />
                 </div>
 
                 <div className="d-md-none">
@@ -54,12 +55,12 @@ class Header extends Component {
 
                 <div className="collapse navbar-collapse" id="navbar-mobile">
                     <ul className="navbar-nav">
-                        <li className="nav-item">
+                        {/* <li className="nav-item">
                             <Link onClick={this.on_sidebar_control_button_click} to={"#"}
                                 className="navbar-nav-link sidebar-control sidebar-main-toggle d-none d-md-block">
                                 <i className="icon-transmission"></i>
                             </Link>
-                        </li>
+                        </li> */}
 
                         {/* <li className="nav-item dropdown">
                             <Link to={BASE_URL} className="navbar-nav-link dropdown-toggle caret-0" data-toggle="dropdown">
