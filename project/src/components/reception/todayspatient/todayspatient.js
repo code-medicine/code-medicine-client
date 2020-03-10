@@ -13,7 +13,7 @@ import Modal from 'react-bootstrap4-modal';
 import Loader from 'react-loader-spinner';
 import DateTimePicker from 'react-datetime'
 import Inputfield from '../../../shared/inputfield/inputfield';
-import { BLOOD_GROUPS_OPTIONS, GENDER_OPTIONS, ROLES_OPTIONS } from '../../../shared/constant_data'
+import { BLOOD_GROUPS_OPTIONS, GENDER_OPTIONS, ROLES_OPTIONS, classNameColors } from '../../../shared/constant_data'
 import './todayspatient.css'
 import { LOGIN_URL } from '../../../shared/router_constants';
 import User from '../../../shared/customs/user'
@@ -131,8 +131,8 @@ class Todayspatient extends Component {
     }
     componentDidMount() {
 
-        // this.populate_appointments({ date_flag: new Date() })
-        this.populate_appointments({ date_flag: 'today' })
+        this.populate_appointments({ date_flag: new Date() })
+        // this.populate_appointments({ date_flag: 'today' })
         var data = {
             select: { role: 'Doctor' },
             range: 'None'
@@ -385,9 +385,12 @@ class Todayspatient extends Component {
 
     renderDataInRows = () => {
         return (this.state.data.map((booking, i) => {
+            var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
+
             const row_data = { patient_name: booking.patient['first_name'] + ' ' + booking.patient['last_name'],// patient_name
                 patient_phone_number: booking.patient['phone_number'],// patient_phone_number
-                date_of_booking: moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY'),//date_of_booking
+                // date_of_booking: moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY'),//date_of_booking
+                status: <span className="badge badge-danger">{booking.status}</span>,
                 time_of_booking: `${moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('hh:mm a')} (${moment(booking.date,"YYYY-MM-DDThh:mm:ss").fromNow()})`,// time of booking and arsa of booking
                 doctor_name: booking.doctor['first_name'] + ' ' + booking.doctor['last_name'],// doctor name
             }
@@ -398,7 +401,9 @@ class Todayspatient extends Component {
                     gender={booking.patient['gender']}
                     phone={booking.patient['phone_number']}
                     email={booking.patient['email']}
-                />
+                    thumbnail_color={random_color}
+                />,
+                <div>{moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY')}</div>
             ]
             return (
                 <TableRow key={i} row_data={row_data} hidden_data={hidden_data}/>    
@@ -464,7 +469,8 @@ class Todayspatient extends Component {
                 table = <div className="table-responsive mt-2"><table className="table table-hover">
                             <thead className="table-header-bg bg-dark">
                                 <tr>
-                                    <th colSpan="4">User and Appointment information</th>
+                                    <th colSpan="3">User and Appointment information</th>
+                                    <th >{moment(new Date(),"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY')}</th>
                                     <th colSpan="2">Taking care</th>
                                 </tr>
                             </thead>

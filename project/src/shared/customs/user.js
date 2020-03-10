@@ -22,35 +22,41 @@ class User extends Component {
     render(){
         const date_of_birth = new Date(this.props.dob)
 
-        var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
+        
 
         let patient_name = this.props.name
         return(
             <div className="media">
                 <div className="mr-3">
-                    <div className={`img-fluid rounded-circle text-white ${random_color} h3 d-flex justify-content-center align-items-center`} 
+                    <div className={`img-fluid rounded-circle text-white ${this.props.thumbnail_color} h3 d-flex justify-content-center align-items-center`} 
                         // src={NO_PICTURE} 
                         style={{width: 42, height: 42 }}>{patient_name.charAt(0)}</div>
                 </div>
                 <div className="media-body">
-                    <h6 className="mb-0 font-weight-bold">{this.props.name}</h6>
-                    <div className="row">
-                        <div className="col-md-12 col-sm-4">
-                            <div className="row">
-                                <div className="col-sm-12">
-                                    <span className="">
-                                    <i className="icon-person"></i>{this.calculate_age(this.props.dob)} years old {this.props.gender === 'Male'? 
+                    <h6 className="mb-0 font-weight-bold">{this.props.name} {this.props.gender === 'Male'? 
                                             <span className="badge badge-primary">
                                                 Male
                                             </span>:
                                             <span className="badge bg-pink-400">
                                                 Female
-                                            </span>}
+                                            </span>}</h6>
+                    <div className="row">
+                        <div className="col-md-12 col-sm-12">
+                            <div className="row">
+                                <div className="col-sm-12 col-lg-4">
+                                    <span className="">
+                                        <i className="icon-person"></i> {this.calculate_age(this.props.dob)} years old 
                                     </span>
+                                </div>
+                                <div className={`col-sm-12 col-lg-4`}>
+                                    <span><i className="icon-calendar3"></i> {moment(date_of_birth.toString()).format('MMM Do YY')}</span>
+                                </div>
+                                <div className={`col-sm-12 col-lg-4`}>
+                                    <span><i className="icon-phone-wave"></i> {this.props.phone}</span>
                                 </div>
                             </div>            
                         </div>
-                        <div className="col-md-12 col-sm-4">
+                        {/* <div className="col-md-12 col-sm-4">
                             <div className="row">
                                 <div className="col-sm-12">
                                     <span><i className="icon-calendar3"></i> {moment(date_of_birth.toString()).format('MMM Do YY')}</span>
@@ -63,7 +69,7 @@ class User extends Component {
                                     <span><i className="icon-phone-wave"></i> {this.props.phone}</span>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </div>    
                 </div>
             </div>

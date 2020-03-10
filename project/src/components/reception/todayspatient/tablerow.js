@@ -28,7 +28,7 @@ class TableRow extends Component {
     }
     render_hidden_items = () => {
         return this.state.hidden_data.map((str,i) => {
-            return <div key={i} className="p-2">{str}</div>
+            return <div key={i} className="m-2">{str}</div>
         })
     }
     render(){
@@ -43,7 +43,7 @@ class TableRow extends Component {
                 <tr>
                     <td colSpan="6" className="p-0">
                         <Collapse isOpen={this.state.toggle}>
-                            <div className="d-flex justify-content-arround">
+                            <div className="">
                             {
                                 this.render_hidden_items()
                             }
