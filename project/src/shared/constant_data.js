@@ -21,9 +21,9 @@ export const ROLES_OPTIONS = [
 ];
 
 export const classNameColors = [
-    'bg-dark',
-    'bg-primary',
-    'bg-warning',
-    'bg-success',
-    'bg-danger',
+    'dark',
+    'primary',
+    'warning',
+    'success',
+    'danger',
 ]

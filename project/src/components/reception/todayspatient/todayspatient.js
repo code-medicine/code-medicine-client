@@ -18,7 +18,7 @@ import './todayspatient.css'
 import { LOGIN_URL } from '../../../shared/router_constants';
 import User from '../../../shared/customs/user'
 import moment from 'moment';
-import TableRow from './tablerow';
+import TableRow from '../tablerow';
 
 
 
@@ -382,35 +382,6 @@ class Todayspatient extends Component {
         }))
     }
 
-
-    renderDataInRows = () => {
-        return (this.state.data.map((booking, i) => {
-            var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
-
-            const row_data = { patient_name: booking.patient['first_name'] + ' ' + booking.patient['last_name'],// patient_name
-                patient_phone_number: booking.patient['phone_number'],// patient_phone_number
-                // date_of_booking: moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY'),//date_of_booking
-                status: <span className="badge badge-danger">{booking.status}</span>,
-                time_of_booking: `${moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('hh:mm a')} (${moment(booking.date,"YYYY-MM-DDThh:mm:ss").fromNow()})`,// time of booking and arsa of booking
-                doctor_name: booking.doctor['first_name'] + ' ' + booking.doctor['last_name'],// doctor name
-            }
-            const hidden_data = [
-                <User
-                    name={booking.patient['first_name'] + ' ' + booking.patient['last_name']}
-                    dob={booking.patient['dob']}
-                    gender={booking.patient['gender']}
-                    phone={booking.patient['phone_number']}
-                    email={booking.patient['email']}
-                    thumbnail_color={random_color}
-                />,
-                <div>{moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY')}</div>
-            ]
-            return (
-                <TableRow key={i} row_data={row_data} hidden_data={hidden_data}/>    
-            )
-        }))
-    }
-
     on_submit_new_patient = async () => {
         const data = {
             first_name: this.state.user_first_name.value.trim(),
@@ -454,6 +425,70 @@ class Todayspatient extends Component {
             }, 3000)
         }
     }
+
+    renderDataInRows = () => {
+        return (this.state.data.map((booking, i) => {
+            var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
+
+            const row_data = { patient_name: booking.patient['first_name'] + ' ' + booking.patient['last_name'],// patient_name
+                patient_phone_number: booking.patient['phone_number'],// patient_phone_number
+                // date_of_booking: moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY'),//date_of_booking
+                status: <span className="badge badge-danger">{booking.status}</span>,
+                time_of_booking: `${moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('hh:mm a')} (${moment(booking.date,"YYYY-MM-DDThh:mm:ss").fromNow()})`,// time of booking and arsa of booking
+                doctor_name: booking.doctor['first_name'] + ' ' + booking.doctor['last_name'],// doctor name
+            }
+            const hidden_data = [
+                <div className={`card border-left-${random_color}`}>
+                    <div className={`card-body`}>
+                        <div className={`h6 font-weight-semibold`}>Patient Information</div>
+                        <User
+                            fname={booking.patient['first_name']}
+                            lname={booking.patient['last_name']}
+                            dob={booking.patient['dob']}
+                            gender={booking.patient['gender']}
+                            phone={booking.patient['phone_number']}
+                            email={booking.patient['email']}
+                            thumbnail_color={`bg-${random_color}`}
+                        />
+                        <hr/>
+                            <h6 className="mb-0"><span className="font-weight-semibold">Reason</span> {booking.description}</h6>
+                        <hr/>
+                        <div className={`h6 font-weight-semibold`}>Doctor Information</div>
+                        <User
+                            fname={booking.doctor['first_name']}
+                            lname={booking.doctor['last_name']}
+                            dob={booking.doctor['dob']}
+                            gender={booking.doctor['gender']}
+                            phone={booking.doctor['phone_number']}
+                            email={booking.doctor['email']}
+                            thumbnail_color={`bg-${random_color}`}
+                        />
+                    </div>
+                </div>
+                
+                
+            ]
+            let header_elements = [
+                moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY, hh:mm a'),
+                <div className={`text-muted`}>{booking.visit_id}</div>,
+                <div className={`header-elements`}>
+                    <div className={`list-icons`}>
+                        <span className="badge badge-danger">{booking.status}</span>
+                    </div>
+                </div>
+            ]
+            return (
+                <TableRow 
+                    key={i} 
+                    row_data={row_data} 
+                    hidden_data={hidden_data} 
+                    hidden_header_elements={header_elements}
+                    hidden_header_color={random_color}/>    
+            )
+        }))
+    }
+
+    
     render() {
         var table = <div className="d-flex justify-content-center">
             <Loader
@@ -466,12 +501,15 @@ class Todayspatient extends Component {
         </div>
         if (this.state.data != null) {
             if (this.state.totalRecords > 0) {
-                table = <div className="table-responsive mt-2"><table className="table table-hover">
+                table = <div className="table-responsive mt-2 card mb-0 pb-0"><table className="table table-hover">
                             <thead className="table-header-bg bg-dark">
                                 <tr>
-                                    <th colSpan="3">User and Appointment information</th>
-                                    <th >{moment(new Date(),"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY')}</th>
-                                    <th colSpan="2">Taking care</th>
+                                    <th style={{width: "40px"}}></th>
+                                    <th >Name</th>
+                                    <th >Phone</th>
+                                    <th >Status</th>
+                                    <th >Time</th>
+                                    <th colSpan="1">Taking care</th>
                                 </tr>
                             </thead>
                             <tbody>

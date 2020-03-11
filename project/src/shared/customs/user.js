@@ -24,52 +24,43 @@ class User extends Component {
 
         
 
-        let patient_name = this.props.name
+        let patient_name = this.props.fname + ' ' + this.props.lname
         return(
             <div className="media">
                 <div className="mr-3">
                     <div className={`img-fluid rounded-circle text-white ${this.props.thumbnail_color} h3 d-flex justify-content-center align-items-center`} 
                         // src={NO_PICTURE} 
-                        style={{width: 42, height: 42 }}>{patient_name.charAt(0)}</div>
+                        style={{width: 50, height: 50 }}>{this.props.fname.charAt(0) + this.props.lname.charAt(0)}</div>
                 </div>
                 <div className="media-body">
-                    <h6 className="mb-0 font-weight-bold">{this.props.name} {this.props.gender === 'Male'? 
+                    <h5 className="mb-0 ">{patient_name}</h5>
+                    <div className="row">
+                        <div className="col-md-12 col-sm-12">
+                            <div className="row">
+                                <div className="col-sm-12 col-lg-2">
+                                    <span className="">
+                                        <i className="icon-person"></i> {this.calculate_age(this.props.dob)} years old 
+                                    </span>
+                                </div>
+                                <div className={`col-sm-12 col-lg-2`}>
+                                    <span><i className="icon-calendar3"></i> {moment(date_of_birth.toString()).format('MMM Do YY')}</span>
+                                </div>
+                                <div className={`col-sm-12 col-lg-2`}>
+                                    <span><i className="icon-phone-wave"></i> {this.props.phone}</span>
+                                </div>
+                                <div className={`col-sm-12 col-lg-3`}>
+                                    <span><i className="icon-envelop5"></i> {this.props.email}</span>
+                                </div>
+                                <div className={`col-sm-12 col-lg-1`}>{this.props.gender === 'Male'? 
                                             <span className="badge badge-primary">
                                                 Male
                                             </span>:
                                             <span className="badge bg-pink-400">
                                                 Female
-                                            </span>}</h6>
-                    <div className="row">
-                        <div className="col-md-12 col-sm-12">
-                            <div className="row">
-                                <div className="col-sm-12 col-lg-4">
-                                    <span className="">
-                                        <i className="icon-person"></i> {this.calculate_age(this.props.dob)} years old 
-                                    </span>
-                                </div>
-                                <div className={`col-sm-12 col-lg-4`}>
-                                    <span><i className="icon-calendar3"></i> {moment(date_of_birth.toString()).format('MMM Do YY')}</span>
-                                </div>
-                                <div className={`col-sm-12 col-lg-4`}>
-                                    <span><i className="icon-phone-wave"></i> {this.props.phone}</span>
+                                            </span>}
                                 </div>
                             </div>            
                         </div>
-                        {/* <div className="col-md-12 col-sm-4">
-                            <div className="row">
-                                <div className="col-sm-12">
-                                    <span><i className="icon-calendar3"></i> {moment(date_of_birth.toString()).format('MMM Do YY')}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-12 col-sm-4">
-                            <div className="row">
-                                <div className="col-sm-12">
-                                    <span><i className="icon-phone-wave"></i> {this.props.phone}</span>
-                                </div>
-                            </div>
-                        </div> */}
                     </div>    
                 </div>
             </div>

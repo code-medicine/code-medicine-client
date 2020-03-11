@@ -74,27 +74,22 @@ class Login extends Component {
             remember_me: this.state.remember_me_option
         }
         Axios.post(LOGIN_USER_REQUEST,data).then(res => {
-            setTimeout(() => {
-                this.setState({ loading_status: false })
-                if (res.data['status']){
-                    localStorage.setItem("user",res.data['token'])
-                    this.props.notify('success','', res.data['message'])
-                    this.props.history.push(BASE_URL)
-                }
-                else{
-                    this.props.notify('error','', res.data['message'])
-                }
-            }, 5000)
-            
+            this.setState({ loading_status: false })
+            if (res.data['status']){
+                localStorage.setItem("user",res.data['token'])
+                this.props.notify('success','', res.data['message'])
+                this.props.history.push(BASE_URL)
+            }
+            else{
+                this.props.notify('error','', res.data['message'])
+            }
         }).catch(err => {
             this.props.notify('error','', 'Server not responding! please try again later')
-            setTimeout(() => {
-                this.setState({ 
-                    loading_status: false,
-                    email: '',
-                    password: ''
-                })
-            }, 3000);
+            this.setState({ 
+                loading_status: false,
+                email: '',
+                password: ''
+            })
         });
     }
 

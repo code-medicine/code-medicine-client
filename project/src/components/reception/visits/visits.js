@@ -9,18 +9,23 @@ import { connect } from "react-redux";
 import { notify } from '../../../actions';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
+import DateTimePicker from 'react-datetime'
+import "./visits.css"
+
 
 class Visits extends Component { 
     constructor(props) {
         super(props)
         this.state = {
             data: null,
-            visits_type: 'previous'
+            visits_type: 'previous',
+            date_from: {value: '', label_visibility: false},
+            date_to: {value: '', label_visibility: false}
         }
     }
 
     componentDidMount(){
-        this.render_data('previous')
+        // this.render_data('previous')
     }
 
 
@@ -145,16 +150,54 @@ class Visits extends Component {
         return (
             <Container container_type={'visits'}>
                 <div className="row mb-2">
-                    <div className="col-6">
-                        <button className="btn btn-outline-dark btn-sm btn-block"
-                            onClick={() => this.render_data('previous')}>
-                            Previous
-                        </button>
+                    <div className="col-3">
+                        <div className={`form-group form-group-float mb-1`}>
+                            <label className={`form-group-float-label animate ${this.state.date_from.label_visibility ? 'is-visible' : ''}`}>Date of birth</label>
+                            <span className="input-group-prepend">
+                                <span className="input-group-text">
+                                    <i className="icon-calendar3 text-muted"></i>
+                                </span>
+                                <DateTimePicker id="dob_text_input"
+                                    onChange={this.on_date_of_birth_change}
+                                    className="clock_datatime_picker"
+                                    inputProps={{ placeholder: 'From', width: '100%', className: 'form-control' }}
+                                    input={true}
+                                    dateFormat={'ll'}
+                                    timeFormat={false}
+                                    closeOnSelect={true}
+                                />
+                            </span>
+
+                        </div>
                     </div>
-                    <div className="col-6">
-                        <button className="btn btn-outline-dark btn-sm btn-block"
-                            onClick={() => this.render_data('upcoming')}>
-                            Upcoming
+                    <div className="col-3">
+                        <div className={`form-group form-group-float mb-1`}>
+                            <label className={`form-group-float-label animate ${this.state.date_to.label_visibility ? 'is-visible' : ''}`}>Date of birth</label>
+                            <span className="input-group-prepend">
+                                <span className="input-group-text">
+                                    <i className="icon-calendar3 text-muted"></i>
+                                </span>
+                                <DateTimePicker id="dob_text_input"
+                                    onChange={this.on_date_of_birth_change}
+                                    className="clock_datatime_picker"
+                                    inputProps={{ placeholder: 'To', width: '100%', className: 'form-control' }}
+                                    input={true}
+                                    dateFormat={'ll'}
+                                    timeFormat={false}
+                                    closeOnSelect={true}
+                                />
+                            </span>
+
+                        </div>
+                    </div>
+                    <div className={`col-6 d-flex align-items-end mb-1`}>
+                        <button
+                            type="button"
+                            className="btn bg-dark btn-labeled btn-labeled-right pr-5"
+                            style={{ textTransform: "inherit" }}
+                            onClick={this.on_submit_new_patient}>
+                            <b><i className="icon-filter4"></i></b>
+                            Filter
                         </button>
                     </div>
                 </div>
