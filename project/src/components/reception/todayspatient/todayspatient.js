@@ -270,7 +270,7 @@ class Todayspatient extends Component {
                     new_appointment_modal_visibility: false,
                     data: null,
                 })
-                this.populate_appointments({ date_flag: 'today' })
+                this.populate_appointments({ date_flag: new Date() })
             }
             else {
                 this.props.notify('error', '', res.data.message)
@@ -397,6 +397,7 @@ class Todayspatient extends Component {
             address: this.state.user_address.value.trim()
         }
         this.setState({ user_modal_loading_status: true })
+
         var response = await Axios.post(`${REGISTER_USER_REQUEST}`, data);
 
         try {
