@@ -69,7 +69,7 @@ class TableRow extends Component {
                                     {
                                         this.render_hidden_elements()
                                     }
-                                    <div className={`card card-body border-left-${this.state.hidden_header_color} mb-0`}>
+                                    {/* <div className={`card card-body border-left-${this.state.hidden_header_color} mb-0`}> */}
                                         <div className={``}>
 
                                             <button
@@ -89,7 +89,7 @@ class TableRow extends Component {
                                                 Close
                                             </button>       
                                         </div>
-                                    </div>
+                                    {/* </div> */}
                                 </div>
                             </div>
                         </Collapse>

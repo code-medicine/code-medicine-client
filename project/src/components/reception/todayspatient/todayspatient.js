@@ -133,7 +133,6 @@ class Todayspatient extends Component {
         let d = new Date();
         d = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
         this.populate_appointments({ date_flag: d })
-        // this.populate_appointments({ date_flag: 'today' })
         var data = {
             select: { role: 'Doctor' },
             range: 'None'
@@ -328,62 +327,7 @@ class Todayspatient extends Component {
             }
         }
     }
-    renderDataInRows2 = () => {
-        return (this.state.data.map((booking, i) => {
-            return (
-                // <div key={i} className="card border-left-slate border-top-0 border-bottom-0 border-right-0" >
-                <div key={i} className="">
-                    <div className="row my-1 mx-1">
-                        <div className="col-md-4">
-                            <User
-                                name={booking.patient['first_name'] + ' ' + booking.patient['last_name']}
-                                dob={booking.patient['dob']}
-                                gender={booking.patient['gender']}
-                                phone={booking.patient['phone_number']}
-                                email={booking.patient['email']}
-                            />
-                        </div>
-                        <div className="col-md-8">
-                            <div className="row">
-                                <div className="col-md-8">
-                                    <h5 className="font-weight-semibold font-size-lg">
-                                        Today  {moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY, hh:mm:ss a')} ({moment(booking.date,"YYYY-MM-DDThh:mm:ss").fromNow()})
-                                    </h5>
-                                </div>
-                                <div className="col-md-4 text-right">
-                                    <span className="badge badge-danger">{booking.status}</span>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-3">
-                                    Attendant
-                                </div>
-                                <div className="col-md-9">
-                                    <p>Dr. {booking.doctor['first_name']} {booking.doctor['last_name']}</p>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-3">
-                                    Reason
-                                </div>
-                                <div className="col-md-9">
-                                    <p className="text-break">{booking.description}</p>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-12">
-                                    <button className="btn btn-outline-primary btn-sm float-right">Payment</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr />
-                </div>
-                // </div>
-
-            )
-        }))
-    }
+    
 
     on_submit_new_patient = async () => {
         const data = {
@@ -455,8 +399,6 @@ class Todayspatient extends Component {
                             thumbnail_color={`bg-${random_color}`}
                         />
                         <hr/>
-                            <h6 className="mb-0"><span className="font-weight-semibold">Reason</span> {booking.description}</h6>
-                        <hr/>
                         <div className={`h6 font-weight-semibold`}>Doctor Information</div>
                         <User
                             fname={booking.doctor['first_name']}
@@ -467,6 +409,8 @@ class Todayspatient extends Component {
                             email={booking.doctor['email']}
                             thumbnail_color={`bg-${random_color}`}
                         />
+                        <hr/>
+                        <h6 className="mb-0"><span className="font-weight-semibold">Reason:</span> {booking.description}</h6>
                     </div>
                 </div>
                 
