@@ -130,8 +130,9 @@ class Todayspatient extends Component {
         }
     }
     componentDidMount() {
-
-        this.populate_appointments({ date_flag: new Date() })
+        let d = new Date();
+        d = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+        this.populate_appointments({ date_flag: d })
         // this.populate_appointments({ date_flag: 'today' })
         var data = {
             select: { role: 'Doctor' },
@@ -270,7 +271,9 @@ class Todayspatient extends Component {
                     new_appointment_modal_visibility: false,
                     data: null,
                 })
-                this.populate_appointments({ date_flag: new Date() })
+                let d = new Date();
+                d = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+                this.populate_appointments({ date_flag: d })
             }
             else {
                 this.props.notify('error', '', res.data.message)
