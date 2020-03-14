@@ -388,28 +388,34 @@ class Todayspatient extends Component {
             const hidden_data = [
                 <div className={`card border-left-${random_color}`}>
                     <div className={`card-body`}>
-                        <div className={`h6 font-weight-semibold`}>Patient Information</div>
-                        <User
-                            fname={booking.patient['first_name']}
-                            lname={booking.patient['last_name']}
-                            dob={booking.patient['dob']}
-                            gender={booking.patient['gender']}
-                            phone={booking.patient['phone_number']}
-                            email={booking.patient['email']}
-                            thumbnail_color={`bg-${random_color}`}
-                        />
-                        <hr/>
-                        <div className={`h6 font-weight-semibold`}>Doctor Information</div>
-                        <User
-                            fname={booking.doctor['first_name']}
-                            lname={booking.doctor['last_name']}
-                            dob={booking.doctor['dob']}
-                            gender={booking.doctor['gender']}
-                            phone={booking.doctor['phone_number']}
-                            email={booking.doctor['email']}
-                            thumbnail_color={`bg-${random_color}`}
-                        />
-                        <hr/>
+                        <div className={`row`}>
+                            <div className={`col-lg-6 col-md-6 col-sm-12`}>
+                                <div className={`h6 font-weight-semibold`}>Patient Information</div>
+                                <User
+                                    fname={booking.patient['first_name']}
+                                    lname={booking.patient['last_name']}
+                                    dob={booking.patient['dob']}
+                                    gender={booking.patient['gender']}
+                                    phone={booking.patient['phone_number']}
+                                    email={booking.patient['email']}
+                                    thumbnail_color={`bg-${random_color}`}
+                                />
+                                <hr/>
+                            </div>
+                            <div className={`col-lg-6 col-md-6 col-sm-12`}>
+                                <div className={`h6 font-weight-semibold`}>Doctor Information</div>
+                                <User
+                                    fname={booking.doctor['first_name']}
+                                    lname={booking.doctor['last_name']}
+                                    dob={booking.doctor['dob']}
+                                    gender={booking.doctor['gender']}
+                                    phone={booking.doctor['phone_number']}
+                                    email={booking.doctor['email']}
+                                    thumbnail_color={`bg-${random_color}`}
+                                />
+                                <hr/>
+                            </div>
+                        </div>
                         <h6 className="mb-0"><span className="font-weight-semibold">Reason:</span> {booking.description}</h6>
                     </div>
                 </div>

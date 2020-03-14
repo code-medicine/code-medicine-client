@@ -69,7 +69,7 @@ class Container extends Component {
         }
 
         return (
-            <div className={`virtual-body ${header? 'navbar-top':'background_custom'} ${this.props.left_sidebar? (window.innerWidth >= 500? 'sidebar-xs':'sidebar-mobile-main'):''}`}
+            <div className={`virtual-body ${header? 'navbar-top':''} ${this.props.left_sidebar? (window.innerWidth >= 500? 'sidebar-xs':'sidebar-mobile-main'):''}`}
                 // style={{backgroundImage: `url(${BACKGROUND})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundPosition:'center'}}
                 >
                 {header? <Header /> : ''}
@@ -81,7 +81,7 @@ class Container extends Component {
                         
                         {/* {page_header? <Pageheader /> : ''} */}
 
-                        <div className={`content ${this.state.type === 'register' || this.state.type === 'login'? 'd-flex justify-content-center align-items-center':''}`}>
+                        <div >
                             {
                                 this.props.children
                             }

@@ -223,3 +223,10 @@ td.rdtYear:hover {
 .rdtTime td {
   cursor: default;
 }
+
+.background_custom {
+  background-image: url(../../resources/images/background_image_black.jpg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
