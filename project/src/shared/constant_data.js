@@ -20,6 +20,14 @@ export const ROLES_OPTIONS = [
     { id: 'role_selection', label: 'Admin' },
 ];
 
+export const PATIENT_VISIT_STATUSES = [
+    { id: 'visit_status_selection', label: 'Waiting'},
+    { id: 'visit_status_selection', label: 'Checkedin'},
+    { id: 'visit_status_selection', label: 'Checkedout'},
+    { id: 'visit_status_selection', label: 'Emergency'},
+    
+]
+
 export const classNameColors = [
     'dark',
     'primary',

@@ -34,9 +34,20 @@ class User extends Component {
                 </div>
                 <div className="media-body">
                     <h5 className="mb-0 ">{patient_name}</h5>
-                    <div className="row">
-                        <div className="col-md-12 col-sm-12">
-                            <div className="row">
+                    <div className="row mt-1 ml-1 d-flex align-items-start flex-column">
+                        {/* <div className=""> */}
+                            <span><i className="icon-person"></i> {this.calculate_age(this.props.dob)} years old</span>
+                            <span><i className="icon-calendar3"></i> {moment(date_of_birth.toString()).format('MMM Do YY')}</span>
+                            <span><i className="icon-phone-wave"></i> {this.props.phone}</span>
+                            <span><i className="icon-envelop5"></i> {this.props.email}</span>
+                            {this.props.gender === 'Male'? 
+                                            <span className="badge badge-primary">
+                                                Male
+                                            </span>:
+                                            <span className="badge bg-pink-400">
+                                                Female
+                                            </span>}
+                            {/* <div className="row">
                                 <div className="col-sm-12 col-lg-2">
                                     <span className="">
                                         <i className="icon-person"></i> {this.calculate_age(this.props.dob)} years old 
@@ -59,8 +70,8 @@ class User extends Component {
                                                 Female
                                             </span>}
                                 </div>
-                            </div>            
-                        </div>
+                            </div>             */}
+                        {/* </div> */}
                     </div>    
                 </div>
             </div>
