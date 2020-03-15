@@ -12,6 +12,7 @@ class Inputfield extends Component {
         const _on_change = this.props.on_text_change_listener
         const _value = this.props.default_value
         const _field_type = this.props.field_type
+        const _custom_classes = this.props.custom_classes
         
         const input_label = <label className="col-form-label-lg">{_label}</label>
         
@@ -51,7 +52,7 @@ class Inputfield extends Component {
         }
 
         return(
-            <div className="form-group row">
+            <div className={`form-group row ${_custom_classes}`}>
                 {input_label}
                 <div className={`input-group`}>
                     <span className="input-group-prepend">

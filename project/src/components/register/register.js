@@ -190,7 +190,6 @@ class Register extends Component {
         return true;
     }
     on_submit = async (e) => {
-        // e.preventDefault()
         const data = {
             first_name: this.state.first_name.value.trim(),
             last_name: this.state.last_name.value.trim(),
@@ -231,6 +230,7 @@ class Register extends Component {
 
     
     next_button_click = (e) => {
+        e.preventDefault()
         if (this.state.current_page < 3){
             this.setState({current_page: this.state.current_page + 1})
         }
@@ -436,67 +436,55 @@ class Register extends Component {
             <Container container_type={'register'}>
                 <div className={`container-fluid`}>
                     <div className={`row`}>
-                        <div className={`col-lg-4 p-0`} >
-                            <div className={`card m-0 `} style={{height: '100vh'}}>
-                                <div className={`card-header text-center h4 font-weight-light`}>
-                                    <span>Sign up</span>
-                                    <hr/>
-                                </div>
+                        <div className={`col-lg-4 col-md-6 p-0`} >
+                            <form method="post" action={this.next_button_click}>
+                                <div className={`card m-0 `} style={{height: '100vh'}}>
+                                    <div className={`card-header text-center h4 font-weight-light`}>
+                                        <span>Sign up</span>
+                                        <hr/>
+                                    </div>
 
-                                <div className={`card-body px-5`}>                   
-                                    {to_render_page}
-                                </div>
+                                    <div className={`card-body px-5`}>                   
+                                        {to_render_page}
+                                    </div>
 
-                                <div className={`row card-footer`}>
-                                    <div className={`col-12 d-flex flex-row-reverse`}>
-                                        
-                                        <button
-                                            type="submit"
-                                            className="btn bg-teal-400 btn-icon"
-                                            id="next_button"
-                                            onClick={this.next_button_click}>
+                                    <div className={`row card-footer`}>
+                                        <div className={`col-12 d-flex flex-row-reverse`}>
                                             
-                                            {
-                                                this.state.current_page === 3? <b><i className="icon-plus3"></i></b>:
-                                                        <b><i className="icon-arrow-right14"></i></b>
-                                            }
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="btn btn-danger btn-icon mr-2"
-                                            style={{ textTransform: "inherit" }}
-                                            onClick={() => this.props.history.push(LOGIN_URL)}>
-                                            <b><i className="icon-cross"></i></b>
-                                        </button>
-                                        <button  
-                                            id="back_button"
-                                            type="button"
-                                            className="btn bg-teal-400 btn-icon mr-2"                                        
-                                            style={{ textTransform: "inherit", display: this.state.current_page === 0? 'none': 'inline'}}
-                                            onClick={this.back_button_click}>
-                                            <b><i className="icon-arrow-left13"/></b>
-                                        </button>
-                                        {/* <button className={`btn btn-primary btn-sm ml-2`} id="next_button"
-                                            onClick={e => this.render_next_page(e)}>
-                                            {
-                                                this.state.current_page === 2? 'Register': 'Next'
-                                            }
-                                            <i className="icon-arrow-right14"></i>
-                                        </button>
-                                        <button className={`btn btn-dark btn-sm`} 
-                                            id="back_button"
-                                            style={{display: this.state.current_page === 0? 'none': ''}}
-                                            onClick={e => this.render_next_page(e)}>
-                                            <i className="icon-arrow-left13"/>
-                                            {
-                                                this.state.current_page === 0? '': 'Back'
-                                            }
-                                        </button> */}
+                                            <button
+                                                type="submit"
+                                                className={`btn bg-teal-400 ${this.state.current_page !== 3? 'btn-icon': 'btn-labeled btn-labeled-right pr-5'}`}
+                                                id="next_button"
+                                                onClick={this.next_button_click}>
+                                                {
+                                                    this.state.current_page === 3? <b><i className="icon-plus3"></i></b>:
+                                                            <b><i className="icon-arrow-right14"></i></b>
+                                                }
+                                                {
+                                                    this.state.current_page === 3? "Register":''
+                                                }
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="btn btn-danger btn-icon mr-2"
+                                                style={{ textTransform: "inherit" }}
+                                                onClick={() => this.props.history.push(LOGIN_URL)}>
+                                                <b><i className="icon-cross"></i></b>
+                                            </button>
+                                            <button  
+                                                id="back_button"
+                                                type="button"
+                                                className="btn bg-teal-400 btn-icon mr-2"                                        
+                                                style={{ textTransform: "inherit", display: this.state.current_page === 0? 'none': 'inline'}}
+                                                onClick={this.back_button_click}>
+                                                <b><i className="icon-arrow-left13"/></b>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
-                        <div className={`col-lg-8 col-md-0 col-sm-0 background_custom`} style={{height:'100vh'}}>
+                        <div className={`col-lg-8 col-md-6 d-none d-lg-block d-xl-block d-md-block background_custom`} style={{height:'100vh'}}>
                                             
                         </div>
                     </div>
