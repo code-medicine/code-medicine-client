@@ -295,7 +295,6 @@ class Todayspatient extends Component {
                     this.setState({ user_blood_group: { value: e.label } })
                     break;
                 case 'gender_selection':
-                    console.log(e.label)
                     this.setState({ user_gender: { value: e.label } })
                     break;
                 case 'appointment_patient_selection':
