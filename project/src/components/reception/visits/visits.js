@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Container from '../../../shared/container/container';
-import { BASE_RECEPTION_URL } from '../../../shared/rest_end_points';
+import { BASE_RECEPTION_URL, SEARCH_USER_REQUEST } from '../../../shared/rest_end_points';
 import { LOGIN_URL } from '../../../shared/router_constants';
 import User from '../../../shared/customs/user';
 import Loader from 'react-loader-spinner';
@@ -23,38 +23,36 @@ class Visits extends Component {
         super(props)
         this.state = {
             data: null,
+            users_list: [],
             today:  moment().format('LT'),
             visits_type: 'previous',
+            
             date_from: { value: '' },
             date_to: { value: '' },
+            search_user_id: { value: '' },
+
+            patient_checkbox: false,
+            doctor_checkbox: false,
+
             loading_status: false,
         }
     }
 
     componentDidMount() {
-        // this.render_data('previous')
-        setInterval(()=>{
+        setInterval(() => {
             this.setState({today: moment().format('LT')})
         },60000)
     }
 
-
-    render_data = (e) => {
-        if (e === 'previous') {
-            this.setState({ visits_type: 'previous', data: null }, () => {
-                this.populate_appointments({ date_flag: 'yesterday' })
-            })
-        }
-        else if (e === 'upcoming') {
-            this.setState({ visits_type: 'upcoming', data: null }, () => {
-                this.populate_appointments({ date_flag: 'tomorrow' })
-            })
-        }
-    }
-
-    async request(data, url) {
+    async request(_data, _url, _method="post") {
         try {
-            let response = await Axios.post(url, data, {
+            const response = await Axios({ 
+                method: _method,
+                url: _url,
+                data: _data,
+                auth: {
+                    headers: { 'code-medicine': localStorage.getItem('user') }
+                },
                 headers: { 'code-medicine': localStorage.getItem('user') }
             })
             return response
@@ -65,19 +63,99 @@ class Visits extends Component {
         }
     }
 
+    on_selected_changed = (e, actor) => {
+        if (e !== null) {
+            switch (e.id) {
+                case 'gender_selection':
+                    this.setState({ user_gender: { value: e.label } })
+                    break;
+                case 'user_list':
+                    this.setState({ search_user_id: { value: e.reference } })
+                    break;
+                default:
+                    break;
+            }
+        }
+        else {
+            switch (actor) {
+                case 'gender_selection':
+                    this.setState({ user_gender: { value: '' } })
+                    break;
+                case 'user_list':
+                    this.setState({ search_user_id: { value: '' }})
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    async render_users(string){
+        let role = ''
+        if ((this.state.patient_checkbox === true && this.state.doctor_checkbox === true) || 
+                (this.state.patient_checkbox === false && this.state.doctor_checkbox === false)){
+                    role = 'any'
+                }
+        else if (this.state.patient_checkbox === true && this.state.doctor_checkbox === false){
+            role = 'Patient'
+        }
+        else if (this.state.patient_checkbox === false && this.state.doctor_checkbox === true){
+            role = "Doctor"
+        }
+
+        const res_users = await this.request({search: string, role: 'Patient'},
+                        `${SEARCH_USER_REQUEST}?search=${string}&role=${role}`,'get')
+        let temp_users = []
+        if (res_users.data['status']){
+            for (var i = 0; i < res_users.data.payload['count']; ++i) {
+                const t_user = res_users.data.payload['users'][i]
+                temp_users.push({
+                    id: 'users_list',
+                    reference: t_user.email,
+                    label: `${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
+                })
+            }
+            this.setState({users_list: temp_users})
+        }
+    }
+
+    populate_users = (string) => {
+        if (string.length >= 3){
+            this.render_users(string)
+        }
+        else{
+            this.setState({ users_list: [] })
+        }
+    }
+
     populate_appointments = async (data) => {
         this.setState({loading_status: true})
         let res_visits = await this.request(data, BASE_RECEPTION_URL)
         if (res_visits === null) return
         if (res_visits.data.status) {
-            // console.log(res_visits.data.payload)
-            this.setState({ data: res_visits.data.payload, totalRecords: res_visits.data.payload.length, loading_status:false })
+            this.setState({ 
+                data: res_visits.data.payload, 
+                totalRecords: res_visits.data.payload.length, 
+                loading_status:false 
+            })
+            
         }
         else {
             this.props.notify('info', '', res_visits.data.message)
-            if (res_visits.data.message !== 'No visits found')
-                this.props.history.push(LOGIN_URL)
-            this.setState({ data: [] })
+            this.setState({ 
+                data: null,
+                loading_status:false })
+        }
+    }
+
+    on_text_field_change = (e) =>{
+        switch(e.target.id){
+            case 'patient_checkbox_input':
+                this.setState({ patient_checkbox: e.target.checked })
+                break;
+            case 'doctor_checkbox_input':
+                this.setState({ doctor_checkbox: e.target.checked })
+                break;
         }
     }
 
@@ -117,68 +195,35 @@ class Visits extends Component {
 
     on_search_click = () => {
         if (this.state.date_from.value !== '' && this.state.date_to.value !== ''){
-            this.populate_appointments({to_date: this.state.date_to,from_date: this.state.date_from})
+            let role = {}
+            if ((this.state.patient_checkbox === true && this.state.doctor_checkbox === true) || 
+                    (this.state.patient_checkbox === false && this.state.doctor_checkbox === false)){
+                        this.populate_appointments({
+                            to_date: this.state.date_to.value,
+                            from_date: this.state.date_from.value,
+                            patient_id: this.state.search_user_id,
+                            doctor_id: this.state.search_user_id 
+                        }) 
+                    }
+            else if (this.state.patient_checkbox === true && this.state.doctor_checkbox === false){
+                this.populate_appointments({
+                    to_date: this.state.date_to.value,
+                    from_date: this.state.date_from.value,
+                    patient_id: this.state.search_user_id 
+                }) 
+            }
+            else if (this.state.patient_checkbox === false && this.state.doctor_checkbox === true){
+                this.populate_appointments({
+                    to_date: this.state.date_to.value,
+                    from_date: this.state.date_from.value,
+                    doctor_id: this.state.search_user_id
+                }) 
+            }
+            
         }
         else{
             this.props.notify('error','','Please specify a range of dates')
         }
-    }
-
-    renderDataInRows2 = () => {
-        return (this.state.data.map((booking, i) => {
-            return (
-                // <div key={i} className="card border-left-slate border-top-0 border-bottom-0 border-right-0" >
-                <div key={i} className="">
-                    <div className="row my-1 mx-1">
-                        <div className="col-md-4">
-                            <User
-                                name={booking.patient['first_name'] + ' ' + booking.patient['last_name']}
-                                dob={booking.patient['dob']}
-                                gender={booking.patient['gender']}
-                                phone={booking.patient['phone_number']}
-                                email={booking.patient['email']}
-                            />
-                        </div>
-                        <div className="col-md-8">
-                            <div className="row">
-                                <div className="col-md-8">
-                                    <h5 className="font-weight-bold">
-                                        {this.state.visits_type === 'previous' ? moment(booking.date.toString()).format('MMMM Do YYYY, h:mm:ss a') : moment(booking.date.toString()).format('MMMM Do YYYY, h:mm:ss a')}
-                                    </h5>
-                                </div>
-                                <div className="col-md-4 text-right">
-                                    <span className="badge badge-danger">{booking.status}</span>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-3">
-                                    Attendant
-                                </div>
-                                <div className="col-md-9">
-                                    <p>Dr. {booking.doctor['first_name']} {booking.doctor['last_name']}</p>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-3">
-                                    Reason
-                                </div>
-                                <div className="col-md-9">
-                                    <p className="text-break">{booking.description}</p>
-                                </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-md-12">
-                                    {/* <button className="btn btn-outline-primary btn-sm float-right">Payment</button> */}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr />
-                </div>
-                // </div>
-
-            )
-        }))
     }
 
     renderDataInRows = () => {
@@ -333,12 +378,12 @@ class Visits extends Component {
                                         <div className="form-check mb-0 d-inline ml-2">
                                             <label className="form-check-label">
                                                 <div className="uniform-checker">
-                                                    <span className={this.state.remember_me_option ? 'checked' : ''}>
+                                                    <span className={this.state.patient_checkbox ? 'checked' : ''}>
                                                         <input type="checkbox"
-                                                            name="remember"
-                                                            id="remember_me_text_input"
-                                                            defaultChecked={this.state.remember_me_option}
-                                                            value={this.state.remember_me_option}
+                                                            name="patient"
+                                                            id="patient_checkbox_input"
+                                                            defaultChecked={this.state.patient_checkbox}
+                                                            value={this.state.patient_checkbox}
                                                             onChange={this.on_text_field_change}
                                                             className="form-input-styled" />
                                                     </span>
@@ -349,12 +394,12 @@ class Visits extends Component {
                                         <div className="form-check mb-0 d-inline ml-2">
                                             <label className="form-check-label">
                                                 <div className="uniform-checker">
-                                                    <span className={this.state.remember_me_option ? 'checked' : ''}>
+                                                    <span className={this.state.doctor_checkbox ? 'checked' : ''}>
                                                         <input type="checkbox"
-                                                            name="remember"
-                                                            id="remember_me_text_input"
-                                                            defaultChecked={this.state.remember_me_option}
-                                                            value={this.state.remember_me_option}
+                                                            name="doctor"
+                                                            id="doctor_checkbox_input"
+                                                            defaultChecked={this.state.doctor_checkbox}
+                                                            value={this.state.doctor_checkbox}
                                                             onChange={this.on_text_field_change}
                                                             className="form-input-styled" />
                                                     </span>
@@ -365,26 +410,21 @@ class Visits extends Component {
                                     </div>
                                     <div className={`input-group`}>
                                         <span className="input-group-prepend">
-                                            <span className="input-group-text"><i className={'icon-droplet'}/></span>
+                                            <span className="input-group-text"><i className={'icon-search4'}/></span>
                                         </span>
                                         <Select
+                                            isClearable
                                             className="w-75"
-                                            options={BLOOD_GROUPS_OPTIONS}
+                                            options={this.state.users_list}
                                             classNamePrefix={``}
-                                            components={makeAnimated()}
-                                            placeholder="Select blood group"
-                                            id="blood_group_selection"
-                                            onChange={this.on_selected_changed}
+                                            placeholder="Search by"
+                                            id="users_list"
+                                            onInputChange={e => this.populate_users(e)}
+                                            onChange={e => this.on_selected_changed(e,'users_list')}//this.on_selected_changed(e, 'users_list')}
                                         />
-                                        <div className={`ml-lg-3 ml-md-3 font-weight-light h4`}>{this.state.today}</div>
+                                        <div className={`ml-lg-2 ml-md-2 font-weight-light h4`}>{this.state.today}</div>
                                     </div>
                                 </div>
-                                {/* <Inputfield
-                                    id="user"
-                                    label_tag={}
-                                    icon_class="icon-search4"
-                                    placeholder="Search by"
-                                    custom_classes="mb-2" /> */}
                                 
                                 <div className={`mt-0 `}>
                                     <div className={`row`}>
@@ -399,7 +439,7 @@ class Visits extends Component {
                                                 components={makeAnimated()}
                                                 placeholder="Select Status"
                                                 isClearable
-                                                id="blood_group_selection"
+                                                id="status_selection"
                                                 onChange={this.on_selected_changed}
                                             />
                                         </div>
@@ -423,7 +463,8 @@ class Visits extends Component {
                                                     style={{ textTransform: "inherit" }}
                                                     onClick={() => this.setState({
                                                         date_from: {value:''}, date_to: {value:''},
-
+                                                        patient_checkbox: false,
+                                                        doctor_checkbox: false,
                                                     })}>
                                                     <b><i className="icon-reset"></i></b>
                                                     Reset filters
@@ -451,16 +492,13 @@ class Visits extends Component {
                                             </div>
                                         </div>
                                     </div>
-
-                                    
-                                
                                 </div>
                                 
                             </div>
                         </div>
                     </div>
                 </div>
-                        {this.state.loading_status? loading:table}
+                {this.state.loading_status? loading:table}
             </Container>
         )
     }
