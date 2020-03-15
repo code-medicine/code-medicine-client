@@ -81,7 +81,7 @@ class Container extends Component {
                         
                         {/* {page_header? <Pageheader /> : ''} */}
 
-                        <div className={`content ${this.state.type === 'register' || this.state.type === 'login'? 'd-flex justify-content-center align-items-center':''}`}>
+                        <div className={`content`}>
                             {
                                 this.props.children
                             }
