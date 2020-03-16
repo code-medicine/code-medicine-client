@@ -7,6 +7,9 @@ import { connect } from "react-redux";
 import { notify, set_active_user } from '../../actions';
 import ReactEcharts from 'echarts-for-react';
 import * as echarts from 'echarts/lib/echarts'
+import Select, { components } from 'react-select';
+import { BLOOD_GROUPS_OPTIONS } from '../../shared/constant_data';
+import Inputfield from '../../shared/inputfield/inputfield';
 
 
 class Home extends Component {
@@ -47,7 +50,8 @@ class Home extends Component {
         
     }
 
-    render() {
+    render() {        
+        const colourOptions = BLOOD_GROUPS_OPTIONS
         return (
             <Container container_type={'home'}>
 
@@ -55,7 +59,14 @@ class Home extends Component {
                 {/* <link href="../../echart/assets/css/components.min.css" rel="stylesheet" type="text/css"></link> */}
                 {/* <script src="../../echart/echarts.min.js" async></script>
                 <script src="../../echart/bars_tornados.js" async></script> */}
-
+                 <div className="row">
+                    <div className="col-8">
+                        <Inputfield label_tag="hello"
+                        icon_class="icon-user"
+                        placeholder="hey there"
+                        field_type="select" />
+                    </div>
+                </div>
 
                 <div class="row">
                     <div class="col-sm-4" >
@@ -113,7 +124,7 @@ class Home extends Component {
                         </div>
                     </div>
                 </div>
-
+               
                 <div class="row">
                     <div class="col-sm-8" >
                         <div class="card">
@@ -200,7 +211,7 @@ class Home extends Component {
                         </div>
                     </div>
                 </div>
-
+                
             </Container >
         );
     }

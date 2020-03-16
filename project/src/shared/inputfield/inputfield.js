@@ -1,7 +1,14 @@
 import React, {Component} from 'react';
+import Select, { components } from 'react-select'
 
 class Inputfield extends Component {
 
+    constructor(props) {
+        super(props)
+        this.state = {
+            options: this.props.options
+        }
+    }
 
     render(){
         const _id = this.props.id
@@ -13,7 +20,7 @@ class Inputfield extends Component {
         const _value = this.props.default_value
         const _field_type = this.props.field_type
         const _custom_classes = this.props.custom_classes
-        
+
         const input_label = <label className="col-form-label-lg">{_label}</label>
         
         const input_field_type = <input 
@@ -33,6 +40,35 @@ class Inputfield extends Component {
                                         placeholder={_placeholder}
                                         onChange={_on_change}
                                         value={_value}></textarea>
+
+        const selection_value_container = ({ children, ...props }) => (
+                                            <components.ValueContainer {...props}>
+                                                <div className={`input-group `}>
+                                                    <span className="input-group-prepend">
+                                                        <span className="input-group-text border-top-0 border-bottom-0 border-left-0">
+                                                            <i className={_icon}/>
+                                                        </span>
+                                                    </span>
+                                                    <div className="ml-2 my-1">
+                                                        {
+                                                            children
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </components.ValueContainer>
+                                        );
+        const select_field_type = <Select
+                                        isClearable
+                                        components={{ ValueContainer : selection_value_container }}
+                                        name="color"
+                                        options={this.state.options}
+                                        placeholder={_placeholder}
+                                        menuPosition="auto"
+                                        id={_id}
+                                        onInputChange={_on_change}
+                                        onChange={this.props.on_selected_change}
+                                        className={_custom_classes}
+                                    />
         let render_field = ''
 
         if (_field_type === 'text-area'){
@@ -42,7 +78,7 @@ class Inputfield extends Component {
 
         }
         else if (_field_type === 'select'){
-
+            render_field = select_field_type
         }
         else if (_field_type === 'custom'){
             render_field = this.props.custom_field
@@ -51,13 +87,15 @@ class Inputfield extends Component {
             render_field = input_field_type
         }
 
+        
+
         return(
-            <div className={`form-group row ${_custom_classes}`}>
+            <div className={`${_field_type !== 'select'? `form-group row ${_custom_classes}`:''}`}>
                 {input_label}
-                <div className={`input-group`}>
-                    <span className="input-group-prepend">
+                <div className={`${_field_type !== 'select'? `input-group`:''}`}>
+                    {_field_type !== 'select'? <span className="input-group-prepend">
                         <span className="input-group-text"><i className={_icon}/></span>
-                    </span>
+                    </span>:''}
                     {render_field}
                 </div>
             </div>
