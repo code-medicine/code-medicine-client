@@ -46,16 +46,11 @@ class Visits extends Component {
 
     async request(_data, _url, _method="post") {
         try {
-            const response = await Axios({ 
-                method: _method,
-                url: _url,
-                data: _data,
-                auth: {
-                    headers: { 'code-medicine': localStorage.getItem('user') }
-                },
-                headers: { 'code-medicine': localStorage.getItem('user') }
-            })
-            return response
+            if (_method === 'post')
+                return await Axios.post(_url,_data,{ headers: { 'code-medicine': localStorage.getItem('user') }})
+            else if (_method === 'get'){
+                return await Axios.get(_url,{ headers: { 'code-medicine': localStorage.getItem('user') }})
+            }
         }
         catch (err) {
             this.props.notify('error', '', 'Server is not responding! Please try again later')
@@ -64,12 +59,13 @@ class Visits extends Component {
     }
 
     on_selected_changed = (e, actor) => {
+        
         if (e !== null) {
             switch (e.id) {
                 case 'gender_selection':
                     this.setState({ user_gender: { value: e.label } })
                     break;
-                case 'user_list':
+                case 'users_list':
                     this.setState({ search_user_id: { value: e.reference } })
                     break;
                 default:
@@ -81,7 +77,7 @@ class Visits extends Component {
                 case 'gender_selection':
                     this.setState({ user_gender: { value: '' } })
                     break;
-                case 'user_list':
+                case 'users_list':
                     this.setState({ search_user_id: { value: '' }})
                     break;
                 default:
@@ -111,7 +107,7 @@ class Visits extends Component {
                 const t_user = res_users.data.payload['users'][i]
                 temp_users.push({
                     id: 'users_list',
-                    reference: t_user.email,
+                    reference: t_user._id,
                     label: `${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
                 })
             }
@@ -195,29 +191,42 @@ class Visits extends Component {
 
     on_search_click = () => {
         if (this.state.date_from.value !== '' && this.state.date_to.value !== ''){
-            let role = {}
-            if ((this.state.patient_checkbox === true && this.state.doctor_checkbox === true) || 
-                    (this.state.patient_checkbox === false && this.state.doctor_checkbox === false)){
-                        this.populate_appointments({
-                            to_date: this.state.date_to.value,
-                            from_date: this.state.date_from.value,
-                            patient_id: this.state.search_user_id,
-                            doctor_id: this.state.search_user_id 
-                        }) 
-                    }
-            else if (this.state.patient_checkbox === true && this.state.doctor_checkbox === false){
+            console.log(this.state)
+            if (this.state.patient_checkbox === true && this.state.doctor_checkbox === true) {
                 this.populate_appointments({
                     to_date: this.state.date_to.value,
-                    from_date: this.state.date_from.value,
-                    patient_id: this.state.search_user_id 
+                    from_date: this.state.date_from.value 
                 }) 
             }
-            else if (this.state.patient_checkbox === false && this.state.doctor_checkbox === true){
+            else if (this.state.patient_checkbox === false && this.state.doctor_checkbox === false){
                 this.populate_appointments({
                     to_date: this.state.date_to.value,
-                    from_date: this.state.date_from.value,
-                    doctor_id: this.state.search_user_id
+                    from_date: this.state.date_from.value 
                 }) 
+            }
+            else if (this.state.patient_checkbox === true && this.state.doctor_checkbox === false){
+                if (this.state.search_user_id.value !== ''){
+                    this.populate_appointments({
+                        to_date: this.state.date_to.value,
+                        from_date: this.state.date_from.value,
+                        patient_id: this.state.search_user_id.value
+                    }) 
+                }
+                else{
+                    this.props.notify('info','','Please select a patient')
+                }
+            }
+            else if (this.state.patient_checkbox === false && this.state.doctor_checkbox === true){
+                if (this.state.search_user_id.value !== ''){
+                    this.populate_appointments({
+                        to_date: this.state.date_to.value,
+                        from_date: this.state.date_from.value,
+                        doctor_id: this.state.search_user_id.value
+                    }) 
+                }
+                else{
+                    this.props.notify('info','','Please select a doctor')
+                } 
             }
             
         }
