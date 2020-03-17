@@ -22,9 +22,7 @@ import { LOGIN_URL } from '../../../shared/router_constants';
 import User from '../../../shared/customs/user'
 import moment from 'moment';
 import TableRow from '../tablerow';
-
-
-
+import ProcedureModal from '../procedureModal/procedureModal';
 
 
 // import 'moment-timezone';
@@ -43,6 +41,7 @@ class Todayspatient extends Component {
             new_user_modal_visibility: false,
             appointment_modal_loading_status: false,
             user_modal_loading_status: false,
+            procedure_visibility: false,
 
             appointment_patient: { value: '' },
             appointment_doctor: { value: '' },
@@ -419,11 +418,20 @@ class Todayspatient extends Component {
                     key={i}
                     row_data={row_data}
                     hidden_data={hidden_data}
+                    openModal={this.openProcedureModalHandler}
                     hidden_header_elements={header_elements}
                     hidden_header_color={random_color} />
             )
         }))
     }
+
+    openProcedureModalHandler = () => {
+        this.setState({procedure_visibility:true})
+    };
+
+    closeProcedureModalHandler = () => {
+        this.setState({procedure_visibility:false})
+    };
 
 
     render() {
@@ -885,6 +893,7 @@ class Todayspatient extends Component {
             </div>
         </div>
 
+
         return (
             <Container container_type="todayspatient">
                 {/* filters panel */}
@@ -899,6 +908,12 @@ class Todayspatient extends Component {
                 {add_appointment_modal}
                 {/* Register new patient modal */}
                 {add_user_modal}
+
+                <ProcedureModal
+                    new_procedure_visibility={this.state.procedure_visibility}
+                    procedure_backDrop={this.closeProcedureModalHandler}
+                    cancelProcedureModal={this.closeProcedureModalHandler}
+                />
             </Container>
         )
     }

@@ -78,9 +78,10 @@ class TableRow extends Component {
                                                 type="button"
                                                 className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5 float-right"
                                                 style={{ textTransform: "inherit" }}
+                                                onClick={this.props.openModal}
                                                 >
                                                 <b><i className="icon-plus3"></i></b>
-                                                Add Payment
+                                                Add Procedure
                                             </button>
                                             <button
                                                 type="button"
