@@ -2,7 +2,10 @@ import React, { Component, Fragment } from 'react';
 import Container from '../../../shared/container/container'
 import Select from 'react-select'
 import Axios from 'axios';
-import { BASE_RECEPTION_URL, BASE_USERS_URL, NEW_APPOINTMENT_URL, REGISTER_USER_REQUEST } from '../../../shared/rest_end_points';
+import { BASE_USERS_URL, 
+        NEW_APPOINTMENT_URL, 
+        REGISTER_USER_REQUEST, 
+        SEARCH_TODAYS_APPOINTMENTS_URL } from '../../../shared/rest_end_points';
 import { connect } from "react-redux";
 import { notify } from '../../../actions';
 import { Link, withRouter } from 'react-router-dom';
@@ -47,18 +50,18 @@ class Todayspatient extends Component {
             appointment_date: { value: '' },
             appointment_time: { value: '' },
 
-            user_first_name: { value: '', label_visibility: false },
-            user_last_name: { value: '', label_visibility: false },
-            user_email: { value: '', label_visibility: false },
-            user_password: { value: '', label_visibility: false },
-            user_verify_password: { value: '', label_visibility: false },
-            user_gender: { value: '', label_visibility: false },
-            user_dob: { value: '', label_visibility: false },
-            user_blood_group: { value: '', label_visibility: false },
-            user_role: { value: 'Patient', label_visibility: false },
-            user_phone_number: { value: '', label_visibility: false },
-            user_cnic: { value: '', label_visibility: false },
-            user_address: { value: '', label_visibility: false }
+            user_first_name: { value: '' },
+            user_last_name: { value: '' },
+            user_email: { value: '' },
+            user_password: { value: '' },
+            user_verify_password: { value: '' },
+            user_gender: { value: '' },
+            user_dob: { value: '' },
+            user_blood_group: { value: '' },
+            user_role: { value: 'Patient' },
+            user_phone_number: { value: '' },
+            user_cnic: { value: '' },
+            user_address: { value: '' }
         }
     }
 
@@ -117,7 +120,7 @@ class Todayspatient extends Component {
     }
 
     populate_appointments = async (data) => {
-        let res_visits = await this.request(data, BASE_RECEPTION_URL)
+        let res_visits = await this.request(data, SEARCH_TODAYS_APPOINTMENTS_URL)
         if (res_visits === null) return
         if (res_visits.data.status) {
             this.setState({ data: res_visits.data.payload, totalRecords: res_visits.data.payload.length })
@@ -148,46 +151,26 @@ class Todayspatient extends Component {
     on_text_field_change = (e) => {
         switch (e.target.id) {
             case 'user_first_name_text_input':
-                if (e.target.value === '')
-                    this.setState({ user_first_name: { value: e.target.value, label_visibility: false } })
-                else
-                    this.setState({ user_first_name: { value: e.target.value, label_visibility: true } })
+                this.setState({ user_first_name: { value: e.target.value } })
                 break;
             case 'user_last_name_text_input':
-                if (e.target.value === '')
-                    this.setState({ user_last_name: { value: e.target.value, label_visibility: false } })
-                else
-                    this.setState({ user_last_name: { value: e.target.value, label_visibility: true } })
+                this.setState({ user_last_name: { value: e.target.value } })
                 break;
             case 'user_cnic_text_input':
-                if (e.target.value === '')
-                    this.setState({ user_cnic: { value: e.target.value, label_visibility: false } })
-                else {
-                    this.setState({ user_cnic: { value: e.target.value, label_visibility: true } })
-                }
+                this.setState({ user_cnic: { value: e.target.value } })
                 break;
             case 'user_phone_number_text_input':
-                if (e.target.value === '')
-                    this.setState({ user_phone_number: { value: e.target.value, label_visibility: false } })
-                else
-                    this.setState({ user_phone_number: { value: e.target.value, label_visibility: true } })
+                this.setState({ user_phone_number: { value: e.target.value } })
                 break;
             case 'user_email_text_input':
-                if (e.target.value === '')
-                    this.setState({ user_email: { value: e.target.value, label_visibility: false } })
-                else
-                    this.setState({ user_email: { value: e.target.value, label_visibility: true } })
+                this.setState({ user_email: { value: e.target.value } })
                 break;
             case 'user_address_text_input':
-                if (e.target.value === '')
-                    this.setState({ user_address: { value: e.target.value, label_visibility: false } })
-                else
-                    this.setState({ user_address: { value: e.target.value, label_visibility: true } })
+                this.setState({ user_address: { value: e.target.value } })
                 break;
             case 'appointment_reason_text_input':
                 this.setState({ appointment_reason: { value: e.target.value } })
                 break;
-
             default:
                 break;
         }
@@ -195,7 +178,7 @@ class Todayspatient extends Component {
 
     on_user_date_of_birth_change = (e) => {
         if (e === '')
-            this.setState({ user_dob: { value: '', label_visibility: false } })
+            this.setState({ user_dob: { value: '' } })
         else {
             var configured_date = null;
             try {
@@ -205,13 +188,13 @@ class Todayspatient extends Component {
                 configured_date = ''
             }
             finally {
-                this.setState({ user_dob: { value: configured_date, label_visibility: true } })
+                this.setState({ user_dob: { value: configured_date } })
             }
         }
     }
     on_apointment_date_change = (e) => {
         if (e === '')
-            this.setState({ appointment_date: { value: '', label_visibility: false } })
+            this.setState({ appointment_date: { value: '' } })
         else {
             var configured_date = null;
             try {
@@ -221,14 +204,14 @@ class Todayspatient extends Component {
                 configured_date = ''
             }
             finally {
-                this.setState({ appointment_date: { value: configured_date, label_visibility: true } })
+                this.setState({ appointment_date: { value: configured_date } })
             }
         }
     }
     on_apointment_time_change = (e) => {
 
         if (e === '')
-            this.setState({ appointment_time: { value: '', label_visibility: false } })
+            this.setState({ appointment_time: { value: '' } })
         else {
             var configured_date = null;
             try {
@@ -238,7 +221,7 @@ class Todayspatient extends Component {
                 configured_date = ''
             }
             finally {
-                this.setState({ appointment_time: { value: configured_date, label_visibility: true } })
+                this.setState({ appointment_time: { value: configured_date } })
             }
         }
     }
@@ -326,7 +309,7 @@ class Todayspatient extends Component {
             }
         }
     }
-    
+
 
     on_submit_new_patient = async () => {
         const data = {
@@ -377,11 +360,12 @@ class Todayspatient extends Component {
         return (this.state.data.map((booking, i) => {
             var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
 
-            const row_data = { patient_name: booking.patient['first_name'] + ' ' + booking.patient['last_name'],// patient_name
+            const row_data = {
+                patient_name: booking.patient['first_name'] + ' ' + booking.patient['last_name'],// patient_name
                 patient_phone_number: booking.patient['phone_number'],// patient_phone_number
                 // date_of_booking: moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY'),//date_of_booking
                 status: <span className="badge badge-danger">{booking.status}</span>,
-                time_of_booking: `${moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('hh:mm a')} (${moment(booking.date,"YYYY-MM-DDThh:mm:ss").fromNow()})`,// time of booking and arsa of booking
+                time_of_booking: `${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('hh:mm a')} (${moment(booking.date, "YYYY-MM-DDThh:mm:ss").fromNow()})`,// time of booking and arsa of booking
                 doctor_name: booking.doctor['first_name'] + ' ' + booking.doctor['last_name'],// doctor name
             }
             const hidden_data = [
@@ -399,7 +383,7 @@ class Todayspatient extends Component {
                                     email={booking.patient['email']}
                                     thumbnail_color={`bg-${random_color}`}
                                 />
-                                <hr/>
+                                <hr />
                             </div>
                             <div className={`col-lg-6 col-md-6 col-sm-12`}>
                                 <div className={`h6 font-weight-semibold`}>Doctor Information</div>
@@ -412,17 +396,17 @@ class Todayspatient extends Component {
                                     email={booking.doctor['email']}
                                     thumbnail_color={`bg-${random_color}`}
                                 />
-                                <hr/>
+                                <hr />
                             </div>
                         </div>
                         <h6 className="mb-0"><span className="font-weight-semibold">Reason:</span> {booking.description}</h6>
                     </div>
                 </div>
-                
-                
+
+
             ]
             let header_elements = [
-                moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY, hh:mm a'),
+                moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY, hh:mm a'),
                 <div className={`text-muted`}>{booking.visit_id}</div>,
                 <div className={`header-elements`}>
                     <div className={`list-icons`}>
@@ -431,17 +415,17 @@ class Todayspatient extends Component {
                 </div>
             ]
             return (
-                <TableRow 
-                    key={i} 
-                    row_data={row_data} 
-                    hidden_data={hidden_data} 
+                <TableRow
+                    key={i}
+                    row_data={row_data}
+                    hidden_data={hidden_data}
                     hidden_header_elements={header_elements}
-                    hidden_header_color={random_color}/>    
+                    hidden_header_color={random_color} />
             )
         }))
     }
 
-    
+
     render() {
         var table = <div className="d-flex justify-content-center">
             <Loader
@@ -455,20 +439,20 @@ class Todayspatient extends Component {
         if (this.state.data != null) {
             if (this.state.totalRecords > 0) {
                 table = <div className="table-responsive mt-2 card mb-0 pb-0"><table className="table table-hover">
-                            <thead className="table-header-bg bg-dark">
-                                <tr>
-                                    <th style={{width: "40px"}}></th>
-                                    <th >Name</th>
-                                    <th >Phone</th>
-                                    <th >Status</th>
-                                    <th >Time</th>
-                                    <th colSpan="1">Taking care</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.renderDataInRows()}
-                            </tbody>
-                        </table></div>
+                    <thead className="table-header-bg bg-dark">
+                        <tr>
+                            <th style={{ width: "40px" }}></th>
+                            <th >Name</th>
+                            <th >Phone</th>
+                            <th >Status</th>
+                            <th >Time</th>
+                            <th colSpan="1">Taking care</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.renderDataInRows()}
+                    </tbody>
+                </table></div>
             }
             else {
                 table = <div className="alert alert-info" style={{ marginBottom: '0px' }}>
@@ -503,57 +487,62 @@ class Todayspatient extends Component {
                 </div>
             </div> : <div className="modal-body">
                     <div className={`row`}>
-                        <div className={`col-md-9`}>
+                        <div className={`col-md-9 `}>
                             <div className={`row`}>
-                                <div className={`col-md-6`}>
+                                <div className={`col-md-6 px-3`}>
                                     <Inputfield
                                         id={`user_first_name_text_input`}
-                                        label_visibility={this.state.user_first_name.label_visibility}
+
                                         label_tag={'First name'}
-                                        icon={'icon-user-check'}
+                                        icon_class={'icon-user-check'}
                                         input_type={'text'}
+                                        placeholder="Enter first name"
                                         on_text_change_listener={this.on_text_field_change}
                                         default_value={this.state.user_first_name.value} />
                                 </div>
-                                <div className={`col-md-6`}>
+                                <div className={`col-md-6 px-3`}>
                                     <Inputfield
                                         id={`user_last_name_text_input`}
-                                        label_visibility={this.state.user_last_name.label_visibility}
+
                                         label_tag={'Last name'}
-                                        icon={'icon-user-check'}
+                                        icon_class={'icon-user-check'}
                                         input_type={'text'}
+                                        placeholder="Enter last name"
                                         on_text_change_listener={this.on_text_field_change}
                                         default_value={this.state.user_last_name.value} />
                                 </div>
                             </div>
                             <div className={`row`}>
-                                <div className={`col-md-4`}>
+                                <div className={`col-md-4 px-3`}>
                                     <Inputfield
                                         id={`user_phone_number_text_input`}
-                                        label_visibility={this.state.user_phone_number.label_visibility}
+
                                         label_tag={'Phone number'}
-                                        icon={'icon-user-check'}
+                                        icon_class={'icon-user-check'}
                                         input_type={'number'}
+                                        placeholder="Enter phone number"
                                         on_text_change_listener={this.on_text_field_change}
                                         default_value={this.state.user_phone_number.value} />
                                 </div>
-                                <div className={`col-md-4`}>
+                                <div className={`col-md-4 px-3`}>
                                     <Inputfield
                                         id={`user_cnic_text_input`}
-                                        label_visibility={this.state.user_cnic.label_visibility}
+
                                         label_tag={'CNIC'}
-                                        icon={'icon-user-check'}
+                                        icon_class={'icon-user-check'}
                                         input_type={'number'}
+                                        placeholder="Enter CNIC"
                                         on_text_change_listener={this.on_text_field_change}
                                         default_value={this.state.user_cnic.value} />
                                 </div>
-                                <div className={`col-md-4`}>
+                                <div className={`col-md-4 px-3`}>
                                     <Inputfield
                                         id={`user_email_text_input`}
-                                        label_visibility={this.state.user_email.label_visibility}
+
                                         label_tag={'Enter email'}
-                                        icon={'icon-user-check'}
+                                        icon_class={'icon-user-check'}
                                         input_type={'email'}
+                                        placeholder="Enter email"
                                         on_text_change_listener={this.on_text_field_change}
                                         default_value={this.state.user_email.value} />
                                 </div>
@@ -573,36 +562,38 @@ class Todayspatient extends Component {
                         </div>
                     </div>
                     <div className={`row`}>
-                        <div className={`col-md-8`}>
+                        <div className={`col-md-8  px-3`}>
                             <Inputfield
                                 id={`user_address_text_input`}
-                                label_visibility={this.state.user_address.label_visibility}
+
                                 label_tag={'New patient address'}
-                                icon={'icon-user-check'}
+                                icon_class={'icon-user-check'}
+                                placeholder="Enter address"
                                 input_type={'text'}
-                                text_area={true}
+                                field_type="text-area"
                                 on_text_change_listener={this.on_text_field_change}
                                 default_value={this.state.user_address.value} />
                         </div>
-                        <div className={`col-md-4`}>
-                            <div className={`form-group form-group-float mb-1`}>
-                                <label className={`form-group-float-label animate ${this.state.user_dob.label_visibility ? 'is-visible' : ''}`}>Date of birth</label>
-                                <span className="input-group-prepend">
-                                    <span className="input-group-text">
-                                        <i className="icon-calendar3 text-muted"></i>
+                        <div className={`col-md-4  px-3`}>
+                            <div className={`form-group row`}>
+                                <label className={`col-form-label-lg `}>Date of birth</label>
+                                <div className="input-group">
+                                    <span className="input-group-prepend">
+                                        <span className="input-group-text">
+                                            <i className="icon-calendar3 text-muted"></i>
+                                        </span>
                                     </span>
                                     <DateTimePicker id="user_dob_text_input"
                                         onChange={this.on_user_date_of_birth_change}
-                                        className="clock_datatime_picker"
-                                        inputProps={{ placeholder: 'Date of birth', width: '100%', className: 'form-control' }}
+                                        className="clock_datatime_picker form-control form-control-lg"
+                                        inputProps={{ placeholder: 'Date of birth', className: 'border-0 w-100' }}
                                         input={true}
                                         dateFormat={'ll'}
                                         timeFormat={false}
                                         closeOnSelect={true}
                                         value={this.state.user_dob.value}
                                     />
-                                </span>
-
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -612,6 +603,7 @@ class Todayspatient extends Component {
                             <div className="form-group form-group-feedback form-group-feedback-right">
                                 <Select
                                     isClearable
+                                    menuPlacement="auto"
                                     options={GENDER_OPTIONS}
                                     classNamePrefix={`form-control`}
                                     placeholder="Select Gender"
@@ -627,6 +619,7 @@ class Todayspatient extends Component {
                             <div className="form-group form-group-feedback form-group-feedback-right">
                                 <Select
                                     isClearable
+                                    menuPlacement="auto"
                                     options={BLOOD_GROUPS_OPTIONS}
                                     className={`Select-option`}
                                     classNamePrefix={`form-control`}
@@ -643,6 +636,7 @@ class Todayspatient extends Component {
                             <div className="form-group form-group-feedback form-group-feedback-right">
                                 <Select
                                     isClearable
+                                    menuPlacement="auto"
                                     options={ROLES_OPTIONS}
                                     className={`Select-option`}
                                     classNamePrefix={`form-control`}
@@ -711,6 +705,7 @@ class Todayspatient extends Component {
                             <div className="form-group form-group-feedback form-group-feedback-right">
                                 <Select
                                     isClearable
+                                    menuPlacement="auto"
                                     options={this.state.patients}
                                     classNamePrefix={`form-control`}
                                     placeholder="Select Patient"
@@ -737,7 +732,7 @@ class Todayspatient extends Component {
                             <div className="form-group form-group-float">
                                 <div className="form-group-float-label is-visible mb-1">
                                     What is the reason for the visit
-                        </div>
+                                </div>
                                 <textarea rows={5} cols={5}
                                     id="appointment_reason_text_input"
                                     className="form-control"
@@ -749,7 +744,7 @@ class Todayspatient extends Component {
                     <div className="row mb-1">
                         <div className="col-6">
                             Which doctor will be suitable
-                </div>
+                        </div>
                         <div className="col-6">
                             What is the date and time of appointment
                 </div>
@@ -759,9 +754,11 @@ class Todayspatient extends Component {
                             <div className="form-group form-group-feedback form-group-feedback-right">
                                 <Select
                                     isClearable
+                                    menuPlacement="auto"
                                     options={this.state.providers}
                                     classNamePrefix={`form-control`}
                                     placeholder="Select a Doctor"
+                                    menuPlacement="auto"
                                     onChange={e => this.on_selected_changed(e, 'appointment_doctor_selection')}
                                 />
                                 <div className="form-control-feedback">
@@ -895,8 +892,8 @@ class Todayspatient extends Component {
                 {/* table of todays appointments */}
                 {/* <div className="card">
                     <div className="card-body"> */}
-                        {table}
-                    {/* </div>
+                {table}
+                {/* </div>
                 </div> */}
                 {/* Add new appointment modal */}
                 {add_appointment_modal}

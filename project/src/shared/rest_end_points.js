@@ -11,5 +11,8 @@ export const PROFILE_USER_REQUEST = `${BASE_USERS_URL}/profile`;
 export const SEARCH_USER_REQUEST = `${BASE_USERS_URL}/search`;
 export const BASE_RECEPTION_URL = `${BASE_URL}/visits`;
 export const NEW_APPOINTMENT_URL = `${BASE_RECEPTION_URL}/new`;
+export const SEARCH_APPOINTMENTS_URL = `${BASE_RECEPTION_URL}/search`;
+export const SEARCH_TODAYS_APPOINTMENTS_URL = `${SEARCH_APPOINTMENTS_URL}/today`;
+
 
 

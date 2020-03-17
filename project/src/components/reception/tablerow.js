@@ -15,7 +15,8 @@ class TableRow extends Component {
             row_data: this.props.row_data,
             hidden_data: this.props.hidden_data,
             hidden_header_elements: this.props.hidden_header_elements,
-            hidden_header_color: this.props.hidden_header_color
+            hidden_header_color: this.props.hidden_header_color,
+            col_span: ''
         }
     }
     toggle_row = () => {
@@ -26,6 +27,7 @@ class TableRow extends Component {
     }
     componentDidMount(){
         // this.setState({row_data: this.props.data})
+        this.setState({col_span: Object.keys(this.state.row_data).length + 1})
     }
 
     render_read_only_cols = () => {
@@ -57,7 +59,7 @@ class TableRow extends Component {
                     }
                 </tr>
                 <tr >
-                    <td colSpan="6" className="p-0">
+                    <td colSpan={`${this.state.col_span}`} className="p-0">
                         <Collapse isOpen={this.state.toggle} >
                             <div className={`card m-0 `}>
                                 <div className={`card-header alpha-${this.state.hidden_header_color} border-${this.state.hidden_header_color} d-flex justify-content-between header-elements-inline`}>
