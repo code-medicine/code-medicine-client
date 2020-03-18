@@ -31,6 +31,37 @@ class ProcedureModal extends Component {
         this.setState({procedureList:updateProcedureList});
     };
 
+    handlerSubmit = (e) => {
+        e.preventDefault();
+        console.log('handlerSubmit');
+    };
+
+    getIndex = (list,id) => {
+        const element = (data) => data.id === id;
+        return list.findIndex(element);
+    };
+
+    handleChangeProcedureDetails = (event,id) => {
+        let updateProcedureList = [...this.state.procedureList];
+        const index = this.getIndex(updateProcedureList,id);
+        console.log('Index: ' + index);
+        console.log('ID: ' + id);
+        updateProcedureList[index] = {...updateProcedureList,procedure_details:event.target.value};
+        this.setState({procedureList:updateProcedureList});
+    };
+
+    handleChangeProcedureFee = (event,id) => {
+        let updateProcedureList = this.state.procedureList;
+        updateProcedureList[this.getIndex(updateProcedureList,id)] = {...updateProcedureList,procedure_fee:event.target.value};
+        this.setState({procedureList:updateProcedureList});
+    };
+
+    handleChangeDiscount = (event,id) => {
+        let updateProcedureList = this.state.procedureList;
+        updateProcedureList[this.getIndex(updateProcedureList,id)] = {...updateProcedureList,discount:event.target.value};
+        this.setState({procedureList:updateProcedureList});
+    };
+
 
     render() {
 
@@ -59,6 +90,12 @@ class ProcedureModal extends Component {
                            return <Procedure
                                key={data.id}
                                id={data.id}
+                               ProcedureDetailValue={data.procedure_details}
+                               ProcedureFeeValue={data.procedure_fee}
+                               discountValue={data.discount}
+                               procedureDetailHandler={this.handleChangeProcedureDetails}
+                               procedureFeeHandler={this.handleChangeProcedureFee}
+                               procedureDiscount={this.handleChangeDiscount}
                                deleteProcedure={this.deleteProcedureHandler}
                            />
                         })
@@ -79,6 +116,7 @@ class ProcedureModal extends Component {
                         type="button"
                         className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
                         style={{ textTransform: "inherit" }}
+                        onClick={this.handlerSubmit}
                     >
                         <b><i className="icon-plus3"></i></b>
                         Add

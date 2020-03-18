@@ -15,7 +15,8 @@ class Procedure extends Component {
                         placeholder="Enter Reason"
                         input_type={'text'}
                         field_type=""
-                        on_text_change_listener={this.on_text_field_change}
+                        on_text_change_listener={(e)=>{this.props.procedureDetailHandler(e,this.props.id);console.log('Testing!!')}}
+                        default_value={this.props.ProcedureDetailValue}
                     />
                 </div>
 
@@ -27,7 +28,8 @@ class Procedure extends Component {
                         placeholder="Enter Price"
                         input_type={'text'}
                         field_type=""
-                        on_text_change_listener={this.on_text_field_change}
+                        on_text_change_listener={this.props.procedureFeeHandler}
+                        default_value={this.props.ProcedureFeeValue}
                     />
                 </div>
 
@@ -39,7 +41,8 @@ class Procedure extends Component {
                         placeholder="Enter Amount"
                         input_type={'text'}
                         field_type=""
-                        on_text_change_listener={this.on_text_field_change}
+                        on_text_change_listener={this.props.procedureDiscount}
+                        default_value={this.props.discountValue}
                     />
                 </div>
                 <div className={`col-md-1  px-3`}
