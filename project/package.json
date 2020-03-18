@@ -30,7 +30,8 @@
     "react-toastify": "^5.5.0",
     "react-widgets": "^4.4.11",
     "reactstrap": "^8.4.1",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "unique-random": "^2.1.0"
   },
   "scripts": {
     "predeploy": "npm run build",

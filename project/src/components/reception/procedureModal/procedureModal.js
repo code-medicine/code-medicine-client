@@ -1,18 +1,39 @@
 import React, { Component, Fragment } from 'react';
 import Modal from "react-bootstrap4-modal";
-import Inputfield from "../../../shared/inputfield/inputfield";
+import Procedure from "./procedure/procedure";
+import uniqueRandom from 'unique-random';
 
 class ProcedureModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            procedureList:[]
+            procedureList:[],
+            random : uniqueRandom(1, Math.pow(2,53))
         }
     }
 
+    componentDidMount() {
+        this.addProcedure();
+    }
+
+    addProcedure = () => {
+        const updateProcedureList = this.state.procedureList;
+        updateProcedureList.push({id:this.state.random(),procedure_details:'',procedure_fee:0,discount:0});
+        this.setState({procedureList:updateProcedureList});
+    };
+
+    deleteProcedureHandler= (id) => {
+        console.log(id);
+        let updateProcedureList = this.state.procedureList;
+        updateProcedureList = updateProcedureList.filter((ele) => {
+            return ele.id !== id;
+        });
+        this.setState({procedureList:updateProcedureList});
+    };
+
 
     render() {
-        console.log('new_procedure_visibility: ' + this.props.new_procedure_visibility);
+
         return (
             <Modal
                 visible={this.props.new_procedure_visibility}
@@ -33,54 +54,15 @@ class ProcedureModal extends Component {
                     </button>
                 </div>
                 <div className="modal-body">
-                    <div className="row">
-                        <div className={`col-md-4  px-3`}>
-                            <Inputfield
-                                id={`procedure_reason_text_input`}
-                                label_tag={'Procedure Reason'}
-                                icon_class={'icon-question3'}
-                                placeholder="Enter Reason"
-                                input_type={'text'}
-                                field_type=""
-                                on_text_change_listener={this.on_text_field_change}
-                            />
-                        </div>
-
-                        <div className={`col-md-4  px-3`}>
-                            <Inputfield
-                                id={`total_price_text_input`}
-                                label_tag={'Total Price'}
-                                icon_class={'icon-cash2'}
-                                placeholder="Enter Price"
-                                input_type={'text'}
-                                field_type=""
-                                on_text_change_listener={this.on_text_field_change}
-                            />
-                        </div>
-
-                        <div className={`col-md-3  px-3`}>
-                            <Inputfield
-                                id={`discount_price_text_input`}
-                                label_tag={'Discount Amount'}
-                                icon_class={'icon-percent'}
-                                placeholder="Enter Amount"
-                                input_type={'text'}
-                                field_type=""
-                                on_text_change_listener={this.on_text_field_change}
-                            />
-                        </div>
-                        <div className={`col-md-1  px-3`}
-                             style={{display: 'flex', justifyContent: 'center',alignItems: 'center'}}
-                        >
-                            <button
-                                type="button"
-                                className="btn bg-danger mt-4"
-                                style={{ textTransform: "inherit" }}
-                            >
-                                <b><i className="icon-cross"></i></b>
-                            </button>
-                        </div>
-                    </div>
+                    {
+                        this.state.procedureList.map((data)=>{
+                           return <Procedure
+                               key={data.id}
+                               id={data.id}
+                               deleteProcedure={this.deleteProcedureHandler}
+                           />
+                        })
+                    }
                 </div>
                 <div className="modal-footer">
                     <button
@@ -93,6 +75,7 @@ class ProcedureModal extends Component {
                         Cancel
                     </button>
                     <button
+                        disabled={this.state.procedureList.length===0}
                         type="button"
                         className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
                         style={{ textTransform: "inherit" }}
