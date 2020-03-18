@@ -48,7 +48,7 @@ class TableRow extends Component {
     render(){
         return(
             <Fragment>
-                <tr >
+                <tr>
                     <td onClick={this.toggle_row}>
                         <Link className="" onClick={this.toggle_row}>
                             <i className={this.state.toggle_icon}></i>
@@ -57,44 +57,33 @@ class TableRow extends Component {
                     {
                         this.render_read_only_cols()
                     }
+                    <td >
+                        
+                        <div className="d-flex flex-row">
+                            <button className="btn btn-outline btn-sm bg-secondary border-secondary text-secondary btn-icon "
+                                    onClick={this.props.openModal}>
+                                <i className="icon-plus2"></i>
+                            </button>
+                            <button className="btn btn-outline btn-sm bg-primary border-primary text-primary-800 btn-icon ml-1">
+                                <i className="icon-pencil3"></i>
+                            </button>
+                            <button className="btn btn-outline btn-sm bg-danger border-danger text-danger btn-icon ml-1">
+                                <i className="icon-cross3"></i>
+                            </button>
+                        </div>
+                    </td>
                 </tr>
-                <tr >
-                    <td colSpan={`${this.state.col_span}`} className="p-0">
+                <tr className="">
+                    <td colSpan={`${this.state.col_span}`} className={`${this.state.toggle? '':'py-0'}`}>
                         <Collapse isOpen={this.state.toggle} >
-                            <div className={`card m-0 `}>
-                                <div className={`card-header alpha-${this.state.hidden_header_color} border-${this.state.hidden_header_color} d-flex justify-content-between header-elements-inline`}>
-                                    {
-                                        this.render_hidden_header_elements()
-                                    }
-                                </div>
-                                <div className={`card-body`}>
-                                    {
-                                        this.render_hidden_elements()
-                                    }
-                                    {/* <div className={`card card-body border-left-${this.state.hidden_header_color} mb-0`}> */}
-                                        <div className={``}>
-
-                                            <button
-                                                type="button"
-                                                className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5 float-right"
-                                                style={{ textTransform: "inherit" }}
-                                                onClick={this.props.openModal}
-                                                >
-                                                <b><i className="icon-plus3"></i></b>
-                                                Add Procedure
-                                            </button>
-                                            <button
-                                                type="button"
-                                                className="btn bg-dark btn-labeled btn-labeled-right pr-5 float-right mr-2"
-                                                style={{ textTransform: "inherit" }}
-                                                onClick={this.toggle_row}>
-                                                <b><i className="icon-cross"></i></b>
-                                                Close
-                                            </button>       
-                                        </div>
-                                    {/* </div> */}
-                                </div>
+                            <div className="float-right">
+                                <Link onClick={this.toggle_row} className="btn btn-sm btn-outline bg-teal-400 text-teal-400">
+                                    <i className="icon-cross3 icon-2x"></i>
+                                </Link>
                             </div>
+                            {
+                                this.render_hidden_elements()
+                            }
                         </Collapse>
                     </td>
                 </tr>

@@ -32,8 +32,8 @@ class Visits extends Component {
             total_records_on_this_page: 0,
             total_pages: 0,
 
-            date_from: { value: '' },
-            date_to: { value: '' },
+            date_from: { value: moment().subtract(7, 'days').format('ll') },
+            date_to: { value: moment().format('ll') },
 
             search_patient_id: { value: '' },
             search_doctor_id: { value: '' },
@@ -50,6 +50,7 @@ class Visits extends Component {
         setInterval(() => {
             this.setState({ today: moment().format('LT') })
         }, 60000)
+        this.on_search_click()
     }
 
     async request(_data, _url, _method = "post") {
@@ -285,45 +286,57 @@ class Visits extends Component {
             const row_data = {
                 date_of_booking: `${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LL')}`,// date of booking
                 time_of_booking: `${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LT')}`,// time of booking
-                patient_name: booking.patient['first_name'] + ' ' + booking.patient['last_name'],// patient_name
-                doctor_name: booking.doctor['first_name'] + ' ' + booking.doctor['last_name'],// doctor name
-                visit_reason: <p style={{width: '40px'}}>{booking.description}</p>,
+                patient_name: <button className="btn btn-outline bg-teal-400 border-teal-400 text-teal-400 btn-sm btn-block" onClick={() => console.log(booking.patient['id'])}>
+                                {booking.patient['first_name'] + ' ' + booking.patient['last_name']}
+                            </button>,// patient_name
+                doctor_name: <button className="btn btn-outline-secondary btn-sm btn-block" onClick={() => console.log(booking.doctor['id'])}>
+                                {booking.doctor['first_name'] + ' ' + booking.doctor['last_name']}
+                            </button>,// doctor name
+                visit_status: <span className={`badge ${booking.status === 'waiting'? 'badge-danger':'badge-primary'}`}>{booking.status}</span>,
                 visit_total_charges: 0
             }
             const hidden_data = [
-                <div className={`card border-left-${random_color}`}>
-                    <div className={`card-body`}>
-                        <div className={`row`}>
-                            <div className={`col-lg-6 col-md-6 col-sm-12`}>
-                                <div className={`h5 font-weight-bold`}>Patient Information</div>
-                                <User
-                                    fname={booking.patient['first_name']}
-                                    lname={booking.patient['last_name']}
-                                    dob={booking.patient['dob']}
-                                    gender={booking.patient['gender']}
-                                    phone={booking.patient['phone_number']}
-                                    email={booking.patient['email']}
-                                    thumbnail_color={`bg-${random_color}`}
-                                />
-                                <hr />
-                            </div>
-                            <div className={`col-lg-6 col-md-6 col-sm-12`}>
-                                <div className={`h5 font-weight-bold`}>Doctor Information</div>
-                                <User
-                                    fname={booking.doctor['first_name']}
-                                    lname={booking.doctor['last_name']}
-                                    dob={booking.doctor['dob']}
-                                    gender={booking.doctor['gender']}
-                                    phone={booking.doctor['phone_number']}
-                                    email={booking.doctor['email']}
-                                    thumbnail_color={`bg-${random_color}`}
-                                />
-                                <hr />
-                            </div>
-                        </div>
-                        <h6 className="mb-0"><span className="font-weight-semibold">Reason:</span> {booking.description}</h6>
-                    </div>
-                </div>
+                <h5 className="font-weight-semibold">Reason of visit</h5>,
+                <blockquote className="blockquote blockquote-bordered py-2 pl-3 mb-0">
+                    <p className="mb-1">
+                        {booking.description}
+                    </p>
+                    <footer className="blockquote-footer">Perscription</footer>
+                </blockquote>
+                
+                // <div className={`card border-left-${random_color}`}>
+                //     <div className={`card-body`}>
+                //         <div className={`row`}>
+                //             <div className={`col-lg-6 col-md-6 col-sm-12`}>
+                //                 <div className={`h5 font-weight-bold`}>Patient Information</div>
+                //                 <User
+                //                     fname={booking.patient['first_name']}
+                //                     lname={booking.patient['last_name']}
+                //                     dob={booking.patient['dob']}
+                //                     gender={booking.patient['gender']}
+                //                     phone={booking.patient['phone_number']}
+                //                     email={booking.patient['email']}
+                //                     thumbnail_color={`bg-${random_color}`}
+                //                 />
+                //                 <hr />
+                //             </div>
+                //             <div className={`col-lg-6 col-md-6 col-sm-12`}>
+                //                 <div className={`h5 font-weight-bold`}>Doctor Information</div>
+                //                 <User
+                //                     fname={booking.doctor['first_name']}
+                //                     lname={booking.doctor['last_name']}
+                //                     dob={booking.doctor['dob']}
+                //                     gender={booking.doctor['gender']}
+                //                     phone={booking.doctor['phone_number']}
+                //                     email={booking.doctor['email']}
+                //                     thumbnail_color={`bg-${random_color}`}
+                //                 />
+                //                 <hr />
+                //             </div>
+                //         </div>
+                //         <h6 className="mb-0"><span className="font-weight-semibold">Reason:</span> {booking.description}</h6>
+                //     </div>
+                // </div>
             ]
             let header_elements = [
                 moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY, hh:mm a'),
@@ -347,7 +360,12 @@ class Visits extends Component {
     }
 
     on_previous_button_click = () => {
-
+        const to_request_page_number = this.state.page_number - 1 
+        const updated = this.state.previous_query
+        updated.data.page = to_request_page_number
+        this.setState({page_number: to_request_page_number}, () => {
+            this.populate_appointments(updated.data)
+        })
     }
 
     on_page_number_click = (e) => {
@@ -360,7 +378,12 @@ class Visits extends Component {
     }
 
     on_next_button_click = () => {
-
+        const to_request_page_number = this.state.page_number + 1  
+        const updated = this.state.previous_query
+        updated.data.page = to_request_page_number
+        this.setState({page_number: to_request_page_number}, () => {
+            this.populate_appointments(updated.data)
+        })
     }
 
 
@@ -380,13 +403,14 @@ class Visits extends Component {
                 table = <div className="table-responsive mt-2 card mb-0 pb-0"><table className="table table-hover">
                     <thead className="table-header-bg bg-dark">
                         <tr>
-                            <th style={{ width: "40px" }}></th>
-                            <th style={{ width: "80px" }}>Date</th>
-                            <th style={{ width: "40px" }}>Time</th>
-                            <th style={{ width: "40px" }}>Name</th>
-                            <th style={{ width: "40px" }}>Doctor</th>
-                            <th style={{ width: "40px" }}>Reason</th>
-                            <th style={{ width: "40px" }}>Charges</th>
+                            <th></th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Status</th>
+                            <th>Charges</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -409,13 +433,15 @@ class Visits extends Component {
                                                 Previous
                                             </Link>
                                         </li>
-                                        {Array(this.state.total_pages).fill().map((item,i) => {
+                                        {
+                                        Array(this.state.total_pages).fill().map((item,i) => {
                                             return <li key={i} className="page-item">
                                                 <Link className="page-link" onClick={e => this.on_page_number_click(e)}>
                                                     {i + 1}
                                                 </Link>
                                             </li>
-                                        })}
+                                        })
+                                        }
                                         <li className={`page-item ${this.state.page_number === this.state.total_pages-1? 'disabled':''}`}>
                                             <Link className="page-link" onClick={this.on_next_button_click}>Next</Link>
                                         </li>
