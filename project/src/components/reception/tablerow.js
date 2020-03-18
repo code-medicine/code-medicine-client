@@ -27,12 +27,12 @@ class TableRow extends Component {
     }
     componentDidMount(){
         // this.setState({row_data: this.props.data})
-        this.setState({col_span: Object.keys(this.state.row_data).length + 1})
+        this.setState({col_span: this.props.columns})
     }
 
     render_read_only_cols = () => {
         return Object.keys(this.state.row_data).map((str,i) => {
-            return <td key={i}>{this.state.row_data[str]}</td>
+            return <td key={i} >{this.state.row_data[str]}</td>
         })
     }
     render_hidden_elements = () => {

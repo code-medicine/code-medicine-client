@@ -283,12 +283,12 @@ class Visits extends Component {
             var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
 
             const row_data = {
-                patient_name: booking.patient['first_name'] + ' ' + booking.patient['last_name'],// patient_name
-                patient_phone_number: booking.patient['phone_number'],// patient_phone_number
-                status: <span className="badge badge-danger">{booking.status}</span>,//status of visit
                 date_of_booking: `${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LL')}`,// date of booking
                 time_of_booking: `${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LT')}`,// time of booking
+                patient_name: booking.patient['first_name'] + ' ' + booking.patient['last_name'],// patient_name
                 doctor_name: booking.doctor['first_name'] + ' ' + booking.doctor['last_name'],// doctor name
+                visit_reason: <p style={{width: '40px'}}>{booking.description}</p>,
+                visit_total_charges: 0
             }
             const hidden_data = [
                 <div className={`card border-left-${random_color}`}>
@@ -340,7 +340,8 @@ class Visits extends Component {
                     row_data={row_data}
                     hidden_data={hidden_data}
                     hidden_header_elements={header_elements}
-                    hidden_header_color={random_color} />
+                    hidden_header_color={random_color}
+                    columns="8" />
             )
         }))
     }
@@ -380,12 +381,12 @@ class Visits extends Component {
                     <thead className="table-header-bg bg-dark">
                         <tr>
                             <th style={{ width: "40px" }}></th>
-                            <th >Name</th>
-                            <th >Phone</th>
-                            <th >Status</th>
-                            <th >Date</th>
-                            <th >Time</th>
-                            <th colSpan="1">Taking care</th>
+                            <th style={{ width: "80px" }}>Date</th>
+                            <th style={{ width: "40px" }}>Time</th>
+                            <th style={{ width: "40px" }}>Name</th>
+                            <th style={{ width: "40px" }}>Doctor</th>
+                            <th style={{ width: "40px" }}>Reason</th>
+                            <th style={{ width: "40px" }}>Charges</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -398,7 +399,7 @@ class Visits extends Component {
                                     <span className="font-weight-semibold h5">Showing page {this.state.page_number + 1} of {this.state.total_pages} ...</span>
                                 </div>
                             </td>
-                            <td colSpan="3">
+                            <td colSpan="4">
                                 <nav className="mt-2">
                                     <ul className="pagination justify-content-end">
                                         <li className={`page-item ${this.state.page_number === 0? 'disabled':''}`}>
