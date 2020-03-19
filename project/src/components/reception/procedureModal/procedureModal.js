@@ -41,30 +41,32 @@ class ProcedureModal extends Component {
         return list.findIndex(element);
     };
 
-    handleChangeProcedureDetails = (event,id) => {
+    changeProcedureList = (id,updatedObject) => {
         let updateProcedureList = [...this.state.procedureList];
         const index = this.getIndex(updateProcedureList,id);
-        console.log('Index: ' + index);
-        console.log('ID: ' + id);
-        updateProcedureList[index] = {...updateProcedureList,procedure_details:event.target.value};
+        updateProcedureList[index] = {
+            ...updateProcedureList[index],
+            ...updatedObject
+        };
         this.setState({procedureList:updateProcedureList});
+    };
+
+    handleChangeProcedureDetails = (event,id) => {
+        this.changeProcedureList(id,{procedure_details:event.target.value});
     };
 
     handleChangeProcedureFee = (event,id) => {
-        let updateProcedureList = this.state.procedureList;
-        updateProcedureList[this.getIndex(updateProcedureList,id)] = {...updateProcedureList,procedure_fee:event.target.value};
-        this.setState({procedureList:updateProcedureList});
+        this.changeProcedureList(id,{procedure_fee:event.target.value});
     };
 
     handleChangeDiscount = (event,id) => {
-        let updateProcedureList = this.state.procedureList;
-        updateProcedureList[this.getIndex(updateProcedureList,id)] = {...updateProcedureList,discount:event.target.value};
-        this.setState({procedureList:updateProcedureList});
+        this.changeProcedureList(id,{discount:event.target.value});
     };
 
 
     render() {
-
+        console.log('Render Call!!');
+        console.log(this.state.procedureList);
         return (
             <Modal
                 visible={this.props.new_procedure_visibility}
@@ -81,13 +83,13 @@ class ProcedureModal extends Component {
                         style={{ textTransform: "inherit" }}
                         onClick={this.addProcedure}
                     >
-                        <b><i className="icon-plus3"></i></b>
+                        <b><i className="icon-plus3" /></b>
                     </button>
                 </div>
                 <div className="modal-body">
                     {
                         this.state.procedureList.map((data)=>{
-                           return <Procedure
+                           return (<Procedure
                                key={data.id}
                                id={data.id}
                                ProcedureDetailValue={data.procedure_details}
@@ -97,7 +99,7 @@ class ProcedureModal extends Component {
                                procedureFeeHandler={this.handleChangeProcedureFee}
                                procedureDiscount={this.handleChangeDiscount}
                                deleteProcedure={this.deleteProcedureHandler}
-                           />
+                           />)
                         })
                     }
                 </div>
@@ -108,7 +110,7 @@ class ProcedureModal extends Component {
                         style={{ textTransform: "inherit" }}
                         onClick={this.props.cancelProcedureModal}
                     >
-                        <b><i className="icon-cross"></i></b>
+                        <b><i className="icon-cross" /></b>
                         Cancel
                     </button>
                     <button
@@ -118,7 +120,7 @@ class ProcedureModal extends Component {
                         style={{ textTransform: "inherit" }}
                         onClick={this.handlerSubmit}
                     >
-                        <b><i className="icon-plus3"></i></b>
+                        <b><i className="icon-plus3" /></b>
                         Add
                     </button>
                 </div>

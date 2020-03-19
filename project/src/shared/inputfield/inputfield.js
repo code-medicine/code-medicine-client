@@ -26,10 +26,10 @@ class Inputfield extends Component {
         const input_field_type = <input 
                                     type={_input_type} 
                                     className="form-control form-control-lg" 
-                                    id={_id} 
+                                    id={_id}
                                     placeholder={_placeholder}
                                     onChange={_on_change}
-                                    value={_value}></input>
+                                    value={_value} />
         
         const text_area_field_type = <textarea
                                         row={"5"}

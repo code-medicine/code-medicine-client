@@ -3,19 +3,19 @@ import Inputfield from "../../../../shared/inputfield/inputfield";
 
 
 class Procedure extends Component {
-    render() {
 
+    render() {
         return (
             <div className="row">
                 <div className={`col-md-4  px-3`}>
                     <Inputfield
-                        id={`procedure_reason_text_input`}
+                        id={`procedure_reason_text_input`+this.props.id}
                         label_tag={'Procedure Reason'}
                         icon_class={'icon-question3'}
                         placeholder="Enter Reason"
                         input_type={'text'}
                         field_type=""
-                        on_text_change_listener={(e)=>{this.props.procedureDetailHandler(e,this.props.id);console.log('Testing!!')}}
+                        on_text_change_listener={(e)=>{this.props.procedureDetailHandler(e,this.props.id)}}
                         default_value={this.props.ProcedureDetailValue}
                     />
                 </div>
@@ -28,7 +28,7 @@ class Procedure extends Component {
                         placeholder="Enter Price"
                         input_type={'text'}
                         field_type=""
-                        on_text_change_listener={this.props.procedureFeeHandler}
+                        on_text_change_listener={(e)=>{this.props.procedureFeeHandler(e,this.props.id)}}
                         default_value={this.props.ProcedureFeeValue}
                     />
                 </div>
@@ -41,7 +41,7 @@ class Procedure extends Component {
                         placeholder="Enter Amount"
                         input_type={'text'}
                         field_type=""
-                        on_text_change_listener={this.props.procedureDiscount}
+                        on_text_change_listener={(e)=>{this.props.procedureDiscount(e,this.props.id)}}
                         default_value={this.props.discountValue}
                     />
                 </div>
@@ -54,7 +54,7 @@ class Procedure extends Component {
                         style={{ textTransform: "inherit" }}
                         onClick={()=>this.props.deleteProcedure(this.props.id)}
                     >
-                        <b><i className="icon-cross"></i></b>
+                        <b><i className="icon-cross" /></b>
                     </button>
                 </div>
             </div>
