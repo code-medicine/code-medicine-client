@@ -57,7 +57,7 @@ class TableRow extends Component {
                     {
                         this.render_read_only_cols()
                     }
-                    <td >
+                    {/* <td >
                         
                         <div className="d-flex flex-row">
                             <button className="btn btn-outline btn-sm bg-secondary border-secondary text-secondary btn-icon "
@@ -71,7 +71,7 @@ class TableRow extends Component {
                                 <i className="icon-cross3"></i>
                             </button>
                         </div>
-                    </td>
+                    </td> */}
                 </tr>
                 <tr className="">
                     <td colSpan={`${this.state.col_span}`} className={`${this.state.toggle? '':'py-0'}`}>

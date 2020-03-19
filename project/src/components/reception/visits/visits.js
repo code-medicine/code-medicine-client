@@ -284,16 +284,20 @@ class Visits extends Component {
             var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
 
             const row_data = {
-                date_of_booking: `${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LL')}`,// date of booking
-                time_of_booking: `${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LT')}`,// time of booking
-                patient_name: <button className="btn btn-outline bg-teal-400 border-teal-400 text-teal-400 btn-sm btn-block" onClick={() => console.log(booking.patient['id'])}>
+                date_of_booking: <span className="bounceInRight animated">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}</span>,// date of booking
+                time_of_booking: <span className="bounceInRight animated">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LT')}`}</span>,// time of booking
+                patient_name: <button className="btn btn-outline bg-teal-400 border-teal-400 text-teal-400 btn-sm btn-block jackInTheBox animated" onClick={() => console.log(booking.patient['id'])}>
                                 {booking.patient['first_name'] + ' ' + booking.patient['last_name']}
                             </button>,// patient_name
-                doctor_name: <button className="btn btn-outline-secondary btn-sm btn-block" onClick={() => console.log(booking.doctor['id'])}>
+                visit_reason: <span class="d-inline-block text-truncate " style={{maxWidth: "150px"}}>
+                                {booking.description}
+                            </span>,
+                doctor_name: <button className="btn btn-outline-secondary btn-sm btn-block jackInTheBox animated" onClick={() => console.log(booking.doctor['id'])}>
                                 {booking.doctor['first_name'] + ' ' + booking.doctor['last_name']}
                             </button>,// doctor name
                 visit_status: <span className={`badge ${booking.status === 'waiting'? 'badge-danger':'badge-primary'}`}>{booking.status}</span>,
                 visit_total_charges: 0
+                
             }
             const hidden_data = [
                 <h5 className="font-weight-semibold">Reason of visit</h5>,
@@ -407,10 +411,11 @@ class Visits extends Component {
                             <th>Date</th>
                             <th>Time</th>
                             <th>Patient</th>
+                            <th>Reasons</th>
                             <th>Doctor</th>
                             <th>Status</th>
                             <th>Charges</th>
-                            <th>Actions</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
