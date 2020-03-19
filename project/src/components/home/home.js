@@ -7,9 +7,6 @@ import { connect } from "react-redux";
 import { notify, set_active_user } from '../../actions';
 import ReactEcharts from 'echarts-for-react';
 import * as echarts from 'echarts/lib/echarts'
-import Select, { components } from 'react-select';
-import { BLOOD_GROUPS_OPTIONS } from '../../shared/constant_data';
-import Inputfield from '../../shared/inputfield/inputfield';
 
 
 class Home extends Component {
@@ -51,7 +48,6 @@ class Home extends Component {
     }
 
     render() {        
-        const colourOptions = BLOOD_GROUPS_OPTIONS
         return (
             <Container container_type={'home'}>
 
@@ -59,45 +55,37 @@ class Home extends Component {
                 {/* <link href="../../echart/assets/css/components.min.css" rel="stylesheet" type="text/css"></link> */}
                 {/* <script src="../../echart/echarts.min.js" async></script>
                 <script src="../../echart/bars_tornados.js" async></script> */}
-                 <div className="row">
-                    <div className="col-8">
-                        <Inputfield label_tag="hello"
-                        icon_class="icon-user"
-                        placeholder="hey there"
-                        field_type="select" />
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-sm-4" >
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col-sm-8" >
+                <div className="row">
+                    <div className="col-sm-4" >
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-sm-8" >
 
                                             <h1 style={{ color: "#1D67E9", fontSize: '40px' }} >5</h1>
                                             <h5 style={{ marginTop: '-20px' }}>Doctors</h5>
                                         </div>
-                                        <div class="col-sm-3" >
-                                            <i class="fa fa-stethoscope fa-5x" style={{ paddingTop: "12px", color: '#1D67E9' }}></i>
+                                        <div className="col-sm-3" >
+                                            <i className="fa fa-stethoscope fa-5x" style={{ paddingTop: "12px", color: '#1D67E9' }}></i>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4" >
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col-sm-8" >
+                    <div className="col-sm-4" >
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-sm-8" >
                                             <h1 style={{ color: "#D80B0B", fontSize: '40px' }}>28</h1>
                                             <h5 style={{ marginTop: '-20px' }}>Patients Left</h5>
                                         </div>
-                                        <div class="col-sm-3" >
-                                            <i class="fa fa-heartbeat fa-5x" style={{ paddingTop: "12px", color: '#D80B0B' }}></i>
+                                        <div className="col-sm-3" >
+                                            <i className="fa fa-heartbeat fa-5x" style={{ paddingTop: "12px", color: '#D80B0B' }}></i>
                                         </div>
                                     </div>
                                 </div>
@@ -105,17 +93,17 @@ class Home extends Component {
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4" >
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col-sm-8" >
+                    <div className="col-sm-4" >
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-sm-8" >
                                             <h1 style={{ color: "#249A1A", fontSize: '40px' }}>12</h1>
                                             <h5 style={{ marginTop: '-20px' }}>Patients Attended</h5>
                                         </div>
-                                        <div class="col-sm-3" >
-                                            <i class="fa fa-heartbeat fa-5x" style={{ paddingTop: "12px", color: '#249A1A' }}></i>
+                                        <div className="col-sm-3" >
+                                            <i className="fa fa-heartbeat fa-5x" style={{ paddingTop: "12px", color: '#249A1A' }}></i>
                                         </div>
                                     </div>
                                 </div>
@@ -125,21 +113,21 @@ class Home extends Component {
                     </div>
                 </div>
                
-                <div class="row">
-                    <div class="col-sm-8" >
-                        <div class="card">
-                            <div class="card-header header-elements-inline">
-                                <h5 class="card-title" style={{ fontSize: '20px' }}>Patients per doctor</h5>
-                                <div class="header-elements">
-                                    <div class="list-icons">
-                                        <a class="list-icons-item" data-action="collapse"></a>
-                                        <a class="list-icons-item" data-action="remove"></a>
+                <div className="row">
+                    <div className="col-sm-8" >
+                        <div className="card">
+                            <div className="card-header header-elements-inline">
+                                <h5 className="card-title" style={{ fontSize: '20px' }}>Patients per doctor</h5>
+                                <div className="header-elements">
+                                    <div className="list-icons">
+                                        <a className="list-icons-item" data-action="collapse"></a>
+                                        <a className="list-icons-item" data-action="remove"></a>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="card-body">
-                                <div class="chart-container">
+                            <div className="card-body">
+                                <div className="chart-container">
                                     <ReactEcharts
                                         option={option_patients_per_doctor}
                                     />
@@ -147,20 +135,20 @@ class Home extends Component {
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4" >
-                        <div class="card">
-                            <div class="card-header header-elements-inline">
-                                <h5 class="card-title" style={{ fontSize: '20px' }}>Patients Attended</h5>
-                                <div class="header-elements">
-                                    <div class="list-icons">
-                                        <a class="list-icons-item" data-action="collapse"></a>
-                                        <a class="list-icons-item" data-action="remove"></a>
+                    <div className="col-sm-4" >
+                        <div className="card">
+                            <div className="card-header header-elements-inline">
+                                <h5 className="card-title" style={{ fontSize: '20px' }}>Patients Attended</h5>
+                                <div className="header-elements">
+                                    <div className="list-icons">
+                                        <a className="list-icons-item" data-action="collapse"></a>
+                                        <a className="list-icons-item" data-action="remove"></a>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="card-body">
-                                <div class="chart-container">
+                            <div className="card-body">
+                                <div className="chart-container">
                                     <ReactEcharts
                                         option={option_patients_attended_percentage}
                                     />
@@ -168,20 +156,20 @@ class Home extends Component {
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4" >
-                        <div class="card">
-                            <div class="card-header header-elements-inline">
-                                <h5 class="card-title" style={{ fontSize: '20px' }}>Procedures</h5>
-                                <div class="header-elements">
-                                    <div class="list-icons">
-                                        <a class="list-icons-item" data-action="collapse"></a>
-                                        <a class="list-icons-item" data-action="remove"></a>
+                    <div className="col-sm-4" >
+                        <div className="card">
+                            <div className="card-header header-elements-inline">
+                                <h5 className="card-title" style={{ fontSize: '20px' }}>Procedures</h5>
+                                <div className="header-elements">
+                                    <div className="list-icons">
+                                        <a className="list-icons-item" data-action="collapse"></a>
+                                        <a className="list-icons-item" data-action="remove"></a>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="card-body">
-                                <div class="chart-container">
+                            <div className="card-body">
+                                <div className="chart-container">
                                     <ReactEcharts
                                         option={option_procedures}
                                     />
@@ -189,20 +177,20 @@ class Home extends Component {
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-8" >
-                        <div class="card">
-                            <div class="card-header header-elements-inline">
-                                <h5 class="card-title" style={{ fontSize: '20px' }}>Patients Attendence History</h5>
-                                <div class="header-elements">
-                                    <div class="list-icons">
-                                        <a class="list-icons-item" data-action="collapse"></a>
-                                        <a class="list-icons-item" data-action="remove"></a>
+                    <div className="col-sm-8" >
+                        <div className="card">
+                            <div className="card-header header-elements-inline">
+                                <h5 className="card-title" style={{ fontSize: '20px' }}>Patients Attendence History</h5>
+                                <div className="header-elements">
+                                    <div className="list-icons">
+                                        <a className="list-icons-item" data-action="collapse"></a>
+                                        <a className="list-icons-item" data-action="remove"></a>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="card-body">
-                                <div class="chart-container">
+                            <div className="card-body">
+                                <div className="chart-container">
                                     <ReactEcharts
                                         option={option_patients_attended_history}
                                     />

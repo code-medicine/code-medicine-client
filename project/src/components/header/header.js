@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BASE_URL, PROFILE, LOGIN_URL } from '../../shared/router_constants';
+import { PROFILE, LOGIN_URL } from '../../shared/router_constants';
 import Logo_light from './logo_light_iffat_anwar.png';
 // import Logo_dark from './logo_dark.png';
 import { connect } from "react-redux";

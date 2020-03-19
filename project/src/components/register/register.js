@@ -179,9 +179,8 @@ class Register extends Component {
             this.props.notify('error', '', 'Invalid CNIC number!');
             return false;
         }
-        var configured_date = null;
         try {
-            configured_date = new Date(data.dob)
+            new Date(data.dob)
         }
         catch (err) {
             this.props.notify('error', '', 'Please specify the Date of birth as per given format')

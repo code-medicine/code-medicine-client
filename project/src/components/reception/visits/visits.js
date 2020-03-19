@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Container from '../../../shared/container/container';
-import { BASE_RECEPTION_URL, SEARCH_USER_REQUEST, SEARCH_APPOINTMENTS_URL } from '../../../shared/rest_end_points';
+import { SEARCH_USER_REQUEST, SEARCH_APPOINTMENTS_URL } from '../../../shared/rest_end_points';
 // import { LOGIN_URL } from '../../../shared/router_constants';
-import User from '../../../shared/customs/user';
+// import User from '../../../shared/customs/user';
 import Loader from 'react-loader-spinner';
 import Axios from 'axios';
 import { connect } from "react-redux";
@@ -173,6 +173,8 @@ class Visits extends Component {
                 break;
             case 'doctor_checkbox_input':
                 this.setState({ doctor_checkbox: e.target.checked })
+                break;
+            default:
                 break;
         }
     }
