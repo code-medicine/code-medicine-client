@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import Inputfield from "../../../../shared/inputfield/inputfield";
+import Inputfield from "../../../../shared/customs/inputfield/inputfield";
 
 
 class Procedure extends Component {

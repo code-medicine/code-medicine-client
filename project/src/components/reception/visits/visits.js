@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import Container from '../../../shared/container/container';
 import { SEARCH_USER_REQUEST, SEARCH_APPOINTMENTS_URL } from '../../../shared/rest_end_points';
-// import { LOGIN_URL } from '../../../shared/router_constants';
-// import User from '../../../shared/customs/user';
 import Loader from 'react-loader-spinner';
 import Axios from 'axios';
 import { connect } from "react-redux";
@@ -11,12 +9,13 @@ import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import DateTimePicker from 'react-datetime'
 import "./visits.css"
-// import Inputfield from '../../../shared/inputfield/inputfield';
 import { BLOOD_GROUPS_OPTIONS, PATIENT_VISIT_STATUSES, classNameColors } from '../../../shared/constant_data';
 import makeAnimated from 'react-select/animated';
 import Select from 'react-select';
-import TableRow from '../tablerow';
-
+import TableRow from '../../../shared/customs/tablerows/tablerow';
+import '../../../shared/customs/Animations/animations.css';
+import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
+import Loading from '../../../shared/customs/loading/loading';
 
 
 class Visits extends Component {
@@ -43,6 +42,9 @@ class Visits extends Component {
 
             loading_status: false,
             previous_query: { data: null },
+
+            user_preview_modal_visibility: false,
+            user_modal_props: null,
         }
     }
 
@@ -281,6 +283,11 @@ class Visits extends Component {
             this.props.notify('info','','Select dates and click search button to search')
         }
     }
+
+    handle_user_modal_click = (id) => {
+        console.log(id)
+        this.setState({user_preview_modal_visibility: true})
+    }
     renderDataInRows = () => {
         return (this.state.data.map((booking, i) => {
             var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
@@ -288,7 +295,8 @@ class Visits extends Component {
             const row_data = {
                 date_of_booking: <span className="bounceInRight animated">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}</span>,// date of booking
                 time_of_booking: <span className="bounceInRight animated">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LT')}`}</span>,// time of booking
-                patient_name: <button className="btn btn-outline bg-teal-400 border-teal-400 text-teal-400 btn-sm btn-block jackInTheBox animated" onClick={() => console.log(booking.patient['id'])}>
+                patient_name: <button className="btn btn-outline bg-teal-400 border-teal-400 text-teal-400 btn-sm btn-block jackInTheBox animated" 
+                                    onClick={() => this.handle_user_modal_click(booking.patient['id'])}>
                                 {booking.patient['first_name'] + ' ' + booking.patient['last_name']}
                             </button>,// patient_name
                 visit_reason: <span class="d-inline-block text-truncate " style={{maxWidth: "150px"}}>
@@ -394,15 +402,7 @@ class Visits extends Component {
 
 
     render() {
-        const loading = <div className="d-flex justify-content-center">
-            <Loader
-                type="Rings"
-                color="#00BFFF"
-                height={150}
-                width={150}
-                timeout={60000} //60 secs
-            />
-        </div>
+        const loading = <Loading />
         var table = ''
         if (this.state.data != null) {
             if (this.state.total_records_on_this_page > 0) {
@@ -417,7 +417,6 @@ class Visits extends Component {
                             <th>Doctor</th>
                             <th>Status</th>
                             <th>Charges</th>
-                            
                         </tr>
                     </thead>
                     <tbody>
@@ -686,6 +685,8 @@ class Visits extends Component {
                     </div>
                 </div>
                 {this.state.loading_status ? loading : table}
+                <UserPreviewModal visibility={this.state.user_preview_modal_visibility} 
+                    modal_props={this.props.user_modal_props}/>
             </Container>
         )
     }

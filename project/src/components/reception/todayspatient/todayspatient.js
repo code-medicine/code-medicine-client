@@ -15,13 +15,13 @@ import Modal from 'react-bootstrap4-modal';
 // import Inputfield from '../../../shared/inputfield/inputfield';
 import Loader from 'react-loader-spinner';
 import DateTimePicker from 'react-datetime'
-import Inputfield from '../../../shared/inputfield/inputfield';
+import Inputfield from '../../../shared/customs/inputfield/inputfield';
 import { BLOOD_GROUPS_OPTIONS, GENDER_OPTIONS, ROLES_OPTIONS, classNameColors } from '../../../shared/constant_data'
 import './todayspatient.css'
 import { LOGIN_URL } from '../../../shared/router_constants';
-import User from '../../../shared/customs/user'
+import User from '../../../shared/customs/user/user'
 import moment from 'moment';
-import TableRow from '../tablerow';
+import TableRow from '../../../shared/customs/tablerows/tablerow';
 import ProcedureModal from '../procedureModal/procedureModal';
 
 
