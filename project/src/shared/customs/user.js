@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import NO_PICTURE from '../../resources/images/placeholder.jpg'
+// import NO_PICTURE from '../../resources/images/placeholder.jpg'
 import moment from 'moment';
-import { classNameColors } from '../constant_data';
+// import { classNameColors } from '../constant_data';
 
 class User extends Component {
     

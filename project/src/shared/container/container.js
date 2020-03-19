@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
 import Leftsidebar from '../left_sidebar/left_sidebar';
-import Pageheader from '../page_header/page_header';
+// import Pageheader from '../page_header/page_header';
 import { connect } from "react-redux";
 // import Axios from 'axios';
 // import { PROFILE_USER_REQUEST } from '../rest_end_points';
@@ -45,26 +45,26 @@ class Container extends Component {
         var header = ''
         var footer = ''
         var left_sidebar = ''
-        var page_header = ''
+        // var page_header = ''
 
         switch(this.state.type){
             case 'login':
                 header = false
                 footer = false
                 left_sidebar = false
-                page_header = false
+                // page_header = false
                 break;
             case 'register':
                 header = false
                 footer = false
                 left_sidebar = false
-                page_header = false
+                // page_header = false
                 break;
             default:
                 header = true
                 footer = true
                 left_sidebar = true
-                page_header = true
+                // page_header = true
                 break;
         }
 

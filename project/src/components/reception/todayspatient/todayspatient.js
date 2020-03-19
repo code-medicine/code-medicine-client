@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Container from '../../../shared/container/container'
 import Select from 'react-select'
 import Axios from 'axios';
@@ -762,7 +762,6 @@ class Todayspatient extends Component {
                             <div className="form-group form-group-feedback form-group-feedback-right">
                                 <Select
                                     isClearable
-                                    menuPlacement="auto"
                                     options={this.state.providers}
                                     classNamePrefix={`form-control`}
                                     placeholder="Select a Doctor"
