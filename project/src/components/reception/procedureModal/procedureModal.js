@@ -70,7 +70,7 @@ class ProcedureModal extends Component {
                 visible={this.props.new_procedure_visibility}
                 onClickBackdrop={this.props.procedure_backDrop}
                 fade={true}
-                dialogClassName={`modal-dialog-centered modal-lg`}
+                dialogClassName={`modal-dialog modal-lg`}
             >
                 {/* <Register/> */}
                 <div className="modal-header bg-teal-400">
@@ -84,7 +84,7 @@ class ProcedureModal extends Component {
                         <b><i className="icon-plus3"></i></b>
                     </button>
                 </div>
-                <div className="modal-body">
+                <div className="modal-body" style={{height: '60vh', overflowY: 'auto'}}>
                     {
                         this.state.procedureList.map((data)=>{
                            return <Procedure
