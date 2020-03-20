@@ -7,6 +7,8 @@ import { connect } from "react-redux";
 import { notify, set_active_user } from '../../actions';
 import ReactEcharts from 'echarts-for-react';
 import * as echarts from 'echarts/lib/echarts'
+import { Link } from 'react-router-dom';
+
 
 
 class Home extends Component {
@@ -120,8 +122,8 @@ class Home extends Component {
                                 <h5 className="card-title" style={{ fontSize: '20px' }}>Patients per doctor</h5>
                                 <div className="header-elements">
                                     <div className="list-icons">
-                                        <a className="list-icons-item" data-action="collapse"></a>
-                                        <a className="list-icons-item" data-action="remove"></a>
+                                        <Link to={"#"} className="list-icons-item" data-action="collapse"></Link>
+                                        <Link to={"#"} className="list-icons-item" data-action="remove"></Link>
                                     </div>
                                 </div>
                             </div>
@@ -141,8 +143,8 @@ class Home extends Component {
                                 <h5 className="card-title" style={{ fontSize: '20px' }}>Patients Attended</h5>
                                 <div className="header-elements">
                                     <div className="list-icons">
-                                        <a className="list-icons-item" data-action="collapse"></a>
-                                        <a className="list-icons-item" data-action="remove"></a>
+                                        <Link to={"#"} className="list-icons-item" data-action="collapse"></Link>
+                                        <Link to={"#"} className="list-icons-item" data-action="remove"></Link>
                                     </div>
                                 </div>
                             </div>
@@ -162,8 +164,8 @@ class Home extends Component {
                                 <h5 className="card-title" style={{ fontSize: '20px' }}>Procedures</h5>
                                 <div className="header-elements">
                                     <div className="list-icons">
-                                        <a className="list-icons-item" data-action="collapse"></a>
-                                        <a className="list-icons-item" data-action="remove"></a>
+                                        <Link to={"#"} className="list-icons-item" data-action="collapse"></Link>
+                                        <Link to={"#"} className="list-icons-item" data-action="remove"></Link>
                                     </div>
                                 </div>
                             </div>
@@ -183,8 +185,8 @@ class Home extends Component {
                                 <h5 className="card-title" style={{ fontSize: '20px' }}>Patients Attendence History</h5>
                                 <div className="header-elements">
                                     <div className="list-icons">
-                                        <a className="list-icons-item" data-action="collapse"></a>
-                                        <a className="list-icons-item" data-action="remove"></a>
+                                        <Link to={"#"} className="list-icons-item" data-action="collapse"></Link>
+                                        <Link to={"#"} className="list-icons-item" data-action="remove"></Link>
                                     </div>
                                 </div>
                             </div>

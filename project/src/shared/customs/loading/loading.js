@@ -11,10 +11,10 @@ class Loading extends Component {
                     color="#00BFFF"
                     height={150}
                     width={150}
-                    timeout={120000} //60 secs
+                    timeout={120000} //120 secs
                 />
             </div>
         )
     }
 }
-export default Loading
+export default Loading;

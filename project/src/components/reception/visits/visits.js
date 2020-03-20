@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Container from '../../../shared/container/container';
 import { SEARCH_USER_REQUEST, SEARCH_APPOINTMENTS_URL } from '../../../shared/rest_end_points';
-import Loader from 'react-loader-spinner';
 import Axios from 'axios';
 import { connect } from "react-redux";
 import { notify } from '../../../actions';
@@ -299,7 +298,7 @@ class Visits extends Component {
                                     onClick={() => this.handle_user_modal_click(booking.patient['id'])}>
                                 {booking.patient['first_name'] + ' ' + booking.patient['last_name']}
                             </button>,// patient_name
-                visit_reason: <span class="d-inline-block text-truncate " style={{maxWidth: "150px"}}>
+                visit_reason: <span className="d-inline-block text-truncate " style={{maxWidth: "150px"}}>
                                 {booking.description}
                             </span>,
                 doctor_name: <button className="btn btn-outline-secondary btn-sm btn-block jackInTheBox animated" onClick={() => console.log(booking.doctor['id'])}>
@@ -434,7 +433,8 @@ class Visits extends Component {
                                     <ul className="pagination justify-content-end">
                                         <li className={`page-item ${this.state.page_number === 0? 'disabled':''}`}>
                                             <Link 
-                                                className="page-link" 
+                                                className="page-link"
+                                                to="#"
                                                 onClick={this.on_previous_button_click}>
                                                 Previous
                                             </Link>
@@ -442,14 +442,14 @@ class Visits extends Component {
                                         {
                                         Array(this.state.total_pages).fill().map((item,i) => {
                                             return <li key={i} className="page-item">
-                                                <Link className="page-link" onClick={e => this.on_page_number_click(e)}>
+                                                <Link className="page-link" to="#" onClick={e => this.on_page_number_click(e)}>
                                                     {i + 1}
                                                 </Link>
                                             </li>
                                         })
                                         }
                                         <li className={`page-item ${this.state.page_number === this.state.total_pages-1? 'disabled':''}`}>
-                                            <Link className="page-link" onClick={this.on_next_button_click}>Next</Link>
+                                            <Link className="page-link" to="#" onClick={this.on_next_button_click}>Next</Link>
                                         </li>
                                     </ul>
                                 </nav>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Modal from "react-bootstrap4-modal";
-import Procedure from "./procedure/procedure";
+import Procedure from "../customs/tablerows/procedurerow";
 import uniqueRandom from 'unique-random';
 
 class ProcedureModal extends Component {

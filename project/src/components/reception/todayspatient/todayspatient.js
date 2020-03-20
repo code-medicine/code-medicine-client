@@ -22,7 +22,8 @@ import { LOGIN_URL } from '../../../shared/router_constants';
 import User from '../../../shared/customs/user/user'
 import moment from 'moment';
 import TableRow from '../../../shared/customs/tablerows/tablerow';
-import ProcedureModal from '../procedureModal/procedureModal';
+import ProcedureModal from '../../../shared/modals/proceduremodal';
+import TodaysPatientRow from '../../../shared/customs/tablerows/todayspatientrow';
 
 
 // import 'moment-timezone';
@@ -42,6 +43,7 @@ class Todayspatient extends Component {
             appointment_modal_loading_status: false,
             user_modal_loading_status: false,
             procedure_visibility: false,
+            user_preview_modal_visibility: false,
 
             appointment_patient: { value: '' },
             appointment_doctor: { value: '' },
@@ -359,14 +361,53 @@ class Todayspatient extends Component {
         return (this.state.data.map((booking, i) => {
             var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
 
-            const row_data = {
-                patient_name: booking.patient['first_name'] + ' ' + booking.patient['last_name'],// patient_name
-                patient_phone_number: booking.patient['phone_number'],// patient_phone_number
-                // date_of_booking: moment(booking.date,"YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY'),//date_of_booking
-                status: <span className="badge badge-danger">{booking.status}</span>,
-                time_of_booking: `${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('hh:mm a')} (${moment(booking.date, "YYYY-MM-DDThh:mm:ss").fromNow()})`,// time of booking and arsa of booking
-                doctor_name: booking.doctor['first_name'] + ' ' + booking.doctor['last_name'],// doctor name
-            }
+            const row_data = <div className={`container-fluid`}>
+                <div className={`row`}>
+                    <div className={`col-lg-3 col-md-6 col-sm-6 mt-0 text-teal-400 border-left-2 border-left-teal-400 btn-block d-flex align-items-center justify-content-center text-center`}>
+                        <div className={`btn btn-outline bg-teal-400 text-teal-400 jackInTheBox animated`} style={{verticalAlign:'center'}}>
+                            <span className={`img-fluid rounded-circle text-white bg-teal-400 h3 p-2`} >
+                                {booking.patient['first_name'].charAt(0).toUpperCase() + booking.patient['last_name'].charAt(0).toUpperCase()}
+                            </span>
+                            <h4 className="mt-2">{booking.patient['first_name'] + ' ' + booking.patient['last_name']}</h4>
+                            <span><i className="icon-phone-wave mr-1"></i> {booking.patient['phone_number']}</span>
+                        </div>
+                    </div>
+                    <div className={`col-lg-3 col-md-6 col-sm-6 mt-0 text-teal-400 border-left-2 border-left-teal-400 border-right-teal-400 border-right-2 btn-block d-flex align-items-center justify-content-center text-center`} >
+                        <div className={` jackInTheBox animated`} >
+                            <h1 className="mb-0">{moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('hh:mm a')}</h1>
+                            <p>{moment(booking.date, "YYYY-MM-DDThh:mm:ss").fromNow()}</p>
+                        </div>
+                    </div>
+                    <div className={`col-lg-6 col-md-12 col-sm-12 mt-sm-2`}>
+                        <div className={`row`}>
+                            <div className={`col-4 h6 font-weight-bold`}>Reason</div>
+                            <div className={`col-8 h6`}>{booking.description}</div>
+                        </div>
+                        <div className={`row`}>
+                            <div className={`col-4 h6 font-weight-bold`}>Appointment</div>
+                            <div className={`col-8 h6`}>
+                                <span className="">On {moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LLL')}</span>
+                            </div>
+                        </div>
+                        <div className={`row`}>
+                            <div className={`col-4 h6 font-weight-bold`}>Doctor</div>
+                            <div className={`col-8 h6`}>
+                                <Link className="text-teal-400 font-weight-bold" to={"#"} onClick={this.setState({modal})}>
+                                    <i className="icon-user-tie mr-2"></i>
+                                    {booking.doctor['first_name'] + ' ' + booking.doctor['last_name']}
+                                </Link>
+                            </div>
+                        </div>
+                        <div className={`row`}>
+                            <div className={`col-4 h6 font-weight-bold`}>Status</div>
+                            <div className={`col-8 h6`}>
+                                <span className="badge badge-danger">{booking.status}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>;
+            
             const hidden_data = [
                 <div className={`card border-left-${random_color}`}>
                     <div className={`card-body`}>
@@ -414,13 +455,14 @@ class Todayspatient extends Component {
                 </div>
             ]
             return (
-                <TableRow
+                <TodaysPatientRow
                     key={i}
                     row_data={row_data}
                     hidden_data={hidden_data}
                     openModal={this.openProcedureModalHandler}
                     hidden_header_elements={header_elements}
-                    hidden_header_color={random_color} />
+                    hidden_header_color={random_color}
+                    columns="7" />
             )
         }))
     }
@@ -450,11 +492,10 @@ class Todayspatient extends Component {
                     <thead className="table-header-bg bg-dark">
                         <tr>
                             <th style={{ width: "40px" }}></th>
-                            <th >Name</th>
-                            <th >Phone</th>
-                            <th >Status</th>
-                            <th >Time</th>
-                            <th colSpan="1">Taking care</th>
+                            <th colSpan="7">Patients List for today 
+                                <span className="badge badge-secondary ml-2">{moment().format('LL')}</span>
+                            </th>
+                            <th >Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -913,6 +954,9 @@ class Todayspatient extends Component {
                     procedure_backDrop={this.closeProcedureModalHandler}
                     cancelProcedureModal={this.closeProcedureModalHandler}
                 />
+                <UserPreviewModal 
+                    visibility={this.state.user_preview_modal_visibility} 
+                    modal_props={this.props.user_modal_props}/>
             </Container>
         )
     }

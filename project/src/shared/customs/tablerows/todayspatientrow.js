@@ -3,10 +3,7 @@ import { Collapse } from 'reactstrap'
 // import moment from 'moment';
 import { Link } from 'react-router-dom';
 
-
-
-class TableRow extends Component {
-
+class TodaysPatientRow extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -31,9 +28,7 @@ class TableRow extends Component {
     }
 
     render_read_only_cols = () => {
-        return Object.keys(this.state.row_data).map((str,i) => {
-            return <td key={i} >{this.state.row_data[str]}</td>
-        })
+        return <div>{this.state.row_data}</div>
     }
     render_hidden_elements = () => {
         return this.state.hidden_data.map((str,i) => {
@@ -45,18 +40,26 @@ class TableRow extends Component {
             return <Fragment key={i}>{str}</Fragment>
         })
     }
-    render(){
-        return(
+    render () {
+        return (
             <Fragment>
                 <tr>
-                    <td onClick={this.toggle_row}>
+                    <td onClick={this.toggle_row} className="">
                         <Link className="" to="#" onClick={this.toggle_row}>
                             <i className={this.state.toggle_icon}></i>
                         </Link>
                     </td>
-                    {
-                        this.render_read_only_cols()
-                    }
+                    <td colSpan={this.state.col_span}>
+                        {
+                            this.render_read_only_cols()
+                        }
+                    </td>
+                    <td>
+                        <button className="btn btn-outline btn-sm bg-secondary border-secondary text-secondary btn-icon "
+                                onClick={this.props.openModal}>
+                            <i className="icon-plus2"></i>
+                        </button>
+                    </td>
                     {/* <td >
                         
                         <div className="d-flex flex-row">
@@ -74,16 +77,16 @@ class TableRow extends Component {
                     </td> */}
                 </tr>
                 <tr className="">
-                    <td colSpan={`${this.state.col_span}`} className={`${this.state.toggle? '':'py-0'}`}>
+                    <td colSpan={`${this.state.col_span + 1}`} className={`${this.state.toggle? '':'py-0'}`}>
                         <Collapse isOpen={this.state.toggle} >
                             <div className="float-right">
                                 <Link onClick={this.toggle_row} to="#" className="btn btn-sm btn-outline bg-teal-400 text-teal-400">
                                     <i className="icon-cross3 icon-2x"></i>
                                 </Link>
                             </div>
-                            {
+                            {/* {
                                 this.render_hidden_elements()
-                            }
+                            } */}
                         </Collapse>
                     </td>
                 </tr>
@@ -91,4 +94,4 @@ class TableRow extends Component {
         )
     }
 }
-export default TableRow
+export default TodaysPatientRow

@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { notify, set_active_user } from '../../actions';
 import Loader from 'react-loader-spinner';
 import { withRouter, Link } from 'react-router-dom';
-import Inputfield from '../../shared/inputfield/inputfield';
+import Inputfield from '../../shared//customs/inputfield/inputfield';
 
 
 class Login extends Component {
