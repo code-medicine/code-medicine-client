@@ -5,6 +5,20 @@ import moment from 'moment';
 
 class User extends Component {
     
+    constructor(props) {
+        super(props)
+        this.state = {
+            data: this.props.data,
+            size: this.props.size,
+
+            text_size: '',
+            icon_size: '',
+            button_size: '',
+            heading_size: '',
+
+        }
+    }
+
     calculate_age = (dob1) => {
         var today = new Date();
         var birthDate = new Date(dob1);  // create a date object directly from `dob1` argument
@@ -17,61 +31,62 @@ class User extends Component {
     }
 
     componentDidMount(){
-        
+        switch(this.state.size){
+            case 'large':
+                this.setState({
+                    text_size: 'h3',
+                    icon_size: 'icon-2x',
+                    button_size: 'btn-lg',
+                    heading_size: 'h1 font-weight-bold'
+                })
+                break;
+            default:
+                break
+        }
     }
     render(){
-        const date_of_birth = new Date(this.props.dob)
 
-        
+        const store = this.state.data
+        const name = store['first_name'] + ' ' + store['last_name']
+        const gender = store['gender']
+        const date_of_birth = store['dob']
+        const email = store['email']
+        const phone = store['phone_number']
 
-        let patient_name = this.props.fname + ' ' + this.props.lname
+        const icon = this.state.icon_size
+        const text = this.state.text_size
         return(
             <div className="media">
                 <div className="mr-3">
-                    <div className={`img-fluid rounded-circle text-white ${this.props.thumbnail_color} h3 d-flex justify-content-center align-items-center`} 
-                        // src={NO_PICTURE} 
-                        style={{width: 50, height: 50 }}>{this.props.fname.charAt(0) + this.props.lname.charAt(0)}</div>
+                    <div className={`img-fluid rounded-circle text-white bg-teal-400 h3 d-flex justify-content-center align-items-center p-2`} 
+                        style={{height: '50px', width: '50px'}}// src={NO_PICTURE} 
+                        >
+                        {store['first_name'].charAt(0) + store['last_name'].charAt(0)}
+                    </div>
                 </div>
                 <div className="media-body">
-                    <h5 className="mb-0 ">{patient_name} {this.props.gender === 'Male'? 
+                    <h5 className={`mb-0 ${this.state.heading_size}`}>{name} {gender === 'Male'? 
                                             <span className="badge badge-primary">
                                                 <small>Male</small>
                                             </span>:
                                             <span className="badge bg-pink-400">
                                                <small>Female</small>
                                             </span>}</h5>
-                    <div className="row mt-1 ml-1 d-flex align-items-start flex-column">
-                        {/* <div className=""> */}
-                            <span className=""><i className="icon-person"></i> {this.calculate_age(this.props.dob)} years old</span>
-                            <span className="mt-1"><i className="icon-calendar3"></i> {moment(date_of_birth.toString()).format('MMM Do YY')}</span>
-                            <span className="mt-1"><i className="icon-phone-wave"></i> {this.props.phone}</span>
-                            <span className="mt-1"><i className="icon-envelop5"></i> {this.props.email}</span>
-                            
-                            {/* <div className="row">
-                                <div className="col-sm-12 col-lg-2">
-                                    <span className="">
-                                        <i className="icon-person"></i> {this.calculate_age(this.props.dob)} years old 
-                                    </span>
-                                </div>
-                                <div className={`col-sm-12 col-lg-2`}>
-                                    <span><i className="icon-calendar3"></i> {moment(date_of_birth.toString()).format('MMM Do YY')}</span>
-                                </div>
-                                <div className={`col-sm-12 col-lg-2`}>
-                                    <span><i className="icon-phone-wave"></i> {this.props.phone}</span>
-                                </div>
-                                <div className={`col-sm-12 col-lg-3`}>
-                                    <span><i className="icon-envelop5"></i> {this.props.email}</span>
-                                </div>
-                                <div className={`col-sm-12 col-lg-1`}>{this.props.gender === 'Male'? 
-                                            <span className="badge badge-primary">
-                                                Male
-                                            </span>:
-                                            <span className="badge bg-pink-400">
-                                                Female
-                                            </span>}
-                                </div>
-                            </div>             */}
-                        {/* </div> */}
+                    <div className="row mt-1">
+                        <div className="col">
+                            <span className={`${text}`}><i className={`icon-person ${icon}`}></i> {this.calculate_age(date_of_birth)} years old</span>
+                        </div>
+                        <div className="col">
+                        <span className={`mt-1 ${text}`}><i className={`icon-calendar3 mr-2 ${icon}`}></i> {moment(new Date(date_of_birth).toString()).format('MMM Do YY')}</span>
+                        </div>
+                    </div>
+                    <div className="row mt-1">
+                        <div className="col">  
+                            <span className={`mt-1 ${text}`}><i className={`icon-phone-wave mr-2 ${icon}`}></i> {phone}</span>
+                        </div>
+                        <div className="col">
+                            <span className={`mt-1 ${text}`}><i className={`icon-envelop5 mr-2 ${icon}`}></i> {email}</span>
+                        </div>
                     </div>    
                 </div>
             </div>

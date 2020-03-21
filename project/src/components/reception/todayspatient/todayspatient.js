@@ -24,6 +24,8 @@ import moment from 'moment';
 import TableRow from '../../../shared/customs/tablerows/tablerow';
 import ProcedureModal from '../../../shared/modals/proceduremodal';
 import TodaysPatientRow from '../../../shared/customs/tablerows/todayspatientrow';
+import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
+import Loading from '../../../shared/customs/loading/loading';
 
 
 // import 'moment-timezone';
@@ -392,7 +394,7 @@ class Todayspatient extends Component {
                         <div className={`row`}>
                             <div className={`col-4 h6 font-weight-bold`}>Doctor</div>
                             <div className={`col-8 h6`}>
-                                <Link className="text-teal-400 font-weight-bold" to={"#"} onClick={this.setState({modal})}>
+                                <Link className="text-teal-400 font-weight-bold" to={"#"}>
                                     <i className="icon-user-tie mr-2"></i>
                                     {booking.doctor['first_name'] + ' ' + booking.doctor['last_name']}
                                 </Link>
@@ -515,22 +517,14 @@ class Todayspatient extends Component {
             onClickBackdrop={() => this.setState({ new_user_modal_visibility: false })}
             fade={true}
             dialogClassName={`modal-dialog-centered modal-lg`}
-        >
+            >
             {/* <Register/> */}
             <div className="modal-header bg-teal-400">
                 <h5 className="modal-title">New Patient</h5>
             </div>
 
             {this.state.user_modal_loading_status ? <div className="mt-3">
-                <div className="d-flex justify-content-center ">
-                    <Loader
-                        type="Rings"
-                        color="#00BFFF"
-                        height={150}
-                        width={150}
-                        timeout={60000} //60 secs
-                    />
-                </div>
+                <Loading />
                 <div className="d-flex justify-content-center">
                     <p>Loading...</p>
                 </div>
@@ -956,7 +950,8 @@ class Todayspatient extends Component {
                 />
                 <UserPreviewModal 
                     visibility={this.state.user_preview_modal_visibility} 
-                    modal_props={this.props.user_modal_props}/>
+                    modal_props={this.props.user_modal_props}
+                    onClickBackdrop={this}/>
             </Container>
         )
     }

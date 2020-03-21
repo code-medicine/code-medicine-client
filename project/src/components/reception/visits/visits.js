@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Container from '../../../shared/container/container';
-import { SEARCH_USER_REQUEST, SEARCH_APPOINTMENTS_URL } from '../../../shared/rest_end_points';
+import { SEARCH_USER_REQUEST, SEARCH_APPOINTMENTS_URL, SEARCH_BY_ID_USER_REQUEST } from '../../../shared/rest_end_points';
 import Axios from 'axios';
 import { connect } from "react-redux";
 import { notify } from '../../../actions';
@@ -283,10 +283,29 @@ class Visits extends Component {
         }
     }
 
-    handle_user_modal_click = (id) => {
-        console.log(id)
-        this.setState({user_preview_modal_visibility: true})
+    request_user = (id) => {
+        this.setState({
+            user_preview_modal_visibility: true
+        }, () => {
+            
+        })
+        Axios.post(SEARCH_BY_ID_USER_REQUEST, {
+            user_id: id
+        }, {
+            headers: { 'code-medicine': localStorage.getItem('user') }
+        }).then( res => {
+            if (res.data.status === true){
+                console.log(res.data.payload.user)
+                this.setState({
+                    user_modal_props: res.data.payload.user
+                })
+            }
+
+        }).catch(err => {
+            console.log('failed to fetch user')
+        })        
     }
+
     renderDataInRows = () => {
         return (this.state.data.map((booking, i) => {
             var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
@@ -295,13 +314,14 @@ class Visits extends Component {
                 date_of_booking: <span className="bounceInRight animated">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}</span>,// date of booking
                 time_of_booking: <span className="bounceInRight animated">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LT')}`}</span>,// time of booking
                 patient_name: <button className="btn btn-outline bg-teal-400 border-teal-400 text-teal-400 btn-sm btn-block jackInTheBox animated" 
-                                    onClick={() => this.handle_user_modal_click(booking.patient['id'])}>
+                                    onClick={() => this.request_user(booking.patient['id']) }>
                                 {booking.patient['first_name'] + ' ' + booking.patient['last_name']}
                             </button>,// patient_name
                 visit_reason: <span className="d-inline-block text-truncate " style={{maxWidth: "150px"}}>
                                 {booking.description}
                             </span>,
-                doctor_name: <button className="btn btn-outline-secondary btn-sm btn-block jackInTheBox animated" onClick={() => console.log(booking.doctor['id'])}>
+                doctor_name: <button className="btn btn-outline-secondary btn-sm btn-block jackInTheBox animated" 
+                                    onClick={() => this.request_user(booking.doctor['id'])}>
                                 {booking.doctor['first_name'] + ' ' + booking.doctor['last_name']}
                             </button>,// doctor name
                 visit_status: <span className={`badge ${booking.status === 'waiting'? 'badge-danger':'badge-primary'}`}>{booking.status}</span>,
@@ -316,40 +336,6 @@ class Visits extends Component {
                     </p>
                     <footer className="blockquote-footer">Perscription</footer>
                 </blockquote>
-                
-                // <div className={`card border-left-${random_color}`}>
-                //     <div className={`card-body`}>
-                //         <div className={`row`}>
-                //             <div className={`col-lg-6 col-md-6 col-sm-12`}>
-                //                 <div className={`h5 font-weight-bold`}>Patient Information</div>
-                //                 <User
-                //                     fname={booking.patient['first_name']}
-                //                     lname={booking.patient['last_name']}
-                //                     dob={booking.patient['dob']}
-                //                     gender={booking.patient['gender']}
-                //                     phone={booking.patient['phone_number']}
-                //                     email={booking.patient['email']}
-                //                     thumbnail_color={`bg-${random_color}`}
-                //                 />
-                //                 <hr />
-                //             </div>
-                //             <div className={`col-lg-6 col-md-6 col-sm-12`}>
-                //                 <div className={`h5 font-weight-bold`}>Doctor Information</div>
-                //                 <User
-                //                     fname={booking.doctor['first_name']}
-                //                     lname={booking.doctor['last_name']}
-                //                     dob={booking.doctor['dob']}
-                //                     gender={booking.doctor['gender']}
-                //                     phone={booking.doctor['phone_number']}
-                //                     email={booking.doctor['email']}
-                //                     thumbnail_color={`bg-${random_color}`}
-                //                 />
-                //                 <hr />
-                //             </div>
-                //         </div>
-                //         <h6 className="mb-0"><span className="font-weight-semibold">Reason:</span> {booking.description}</h6>
-                //     </div>
-                // </div>
             ]
             let header_elements = [
                 moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY, hh:mm a'),
@@ -686,7 +672,9 @@ class Visits extends Component {
                 </div>
                 {this.state.loading_status ? loading : table}
                 <UserPreviewModal visibility={this.state.user_preview_modal_visibility} 
-                    modal_props={this.props.user_modal_props}/>
+                    modal_props={this.state.user_modal_props}
+                    on_click_back_drop={() => this.setState({user_preview_modal_visibility: false, user_modal_props: null})}
+                    on_click_cancel={() => this.setState({user_preview_modal_visibility: false, user_modal_props: null})}/>
             </Container>
         )
     }
