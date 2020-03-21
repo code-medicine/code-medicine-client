@@ -5,7 +5,8 @@ import Axios from 'axios';
 import { BASE_USERS_URL, 
         NEW_APPOINTMENT_URL, 
         REGISTER_USER_REQUEST, 
-        SEARCH_TODAYS_APPOINTMENTS_URL } from '../../../shared/rest_end_points';
+        SEARCH_TODAYS_APPOINTMENTS_URL, 
+        SEARCH_BY_ID_USER_REQUEST} from '../../../shared/rest_end_points';
 import { connect } from "react-redux";
 import { notify } from '../../../actions';
 import { Link, withRouter } from 'react-router-dom';
@@ -46,6 +47,8 @@ class Todayspatient extends Component {
             user_modal_loading_status: false,
             procedure_visibility: false,
             user_preview_modal_visibility: false,
+            
+            user_modal_props: null,
 
             appointment_patient: { value: '' },
             appointment_doctor: { value: '' },
@@ -359,14 +362,40 @@ class Todayspatient extends Component {
         }
     }
 
+    request_user = (id) => {
+        this.setState({
+            user_preview_modal_visibility: true
+        }, () => {
+            
+        })
+        Axios.post(SEARCH_BY_ID_USER_REQUEST, {
+            user_id: id
+        }, {
+            headers: { 'code-medicine': localStorage.getItem('user') }
+        }).then( res => {
+            if (res.data.status === true){
+                console.log(res.data.payload.user)
+                this.setState({
+                    user_modal_props: res.data.payload.user
+                })
+            }
+
+        }).catch(err => {
+            console.log('failed to fetch user')
+        })        
+    }
+
     renderDataInRows = () => {
         return (this.state.data.map((booking, i) => {
             var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
 
             const row_data = <div className={`container-fluid`}>
                 <div className={`row`}>
+                    {/* Patient name and phone number */}
                     <div className={`col-lg-3 col-md-6 col-sm-6 mt-0 text-teal-400 border-left-2 border-left-teal-400 btn-block d-flex align-items-center justify-content-center text-center`}>
-                        <div className={`btn btn-outline bg-teal-400 text-teal-400 jackInTheBox animated`} style={{verticalAlign:'center'}}>
+                        <div className={`btn btn-outline bg-teal-400 text-teal-400 jackInTheBox animated`} 
+                            style={{verticalAlign:'center'}}
+                            onClick={() => this.request_user(booking.patient['id'])}>
                             <span className={`img-fluid rounded-circle text-white bg-teal-400 h3 p-2`} >
                                 {booking.patient['first_name'].charAt(0).toUpperCase() + booking.patient['last_name'].charAt(0).toUpperCase()}
                             </span>
@@ -374,32 +403,41 @@ class Todayspatient extends Component {
                             <span><i className="icon-phone-wave mr-1"></i> {booking.patient['phone_number']}</span>
                         </div>
                     </div>
-                    <div className={`col-lg-3 col-md-6 col-sm-6 mt-0 text-teal-400 border-left-2 border-left-teal-400 border-right-teal-400 border-right-2 btn-block d-flex align-items-center justify-content-center text-center`} >
+                    {/* Appointment Time column */}
+                    <div className={`col-lg-3 col-md-6 col-sm-6 mt-0 text-teal-400 border-left-2 border-bottom-sm-2 border-left-teal-400 border-right-teal-400 border-right-2 btn-block d-flex align-items-center justify-content-center text-center`} >
                         <div className={` jackInTheBox animated`} >
                             <h1 className="mb-0">{moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('hh:mm a')}</h1>
                             <p>{moment(booking.date, "YYYY-MM-DDThh:mm:ss").fromNow()}</p>
                         </div>
                     </div>
+                    {/* appointment details */}
                     <div className={`col-lg-6 col-md-12 col-sm-12 mt-sm-2`}>
+                        {/* Appointment Reason */}
                         <div className={`row`}>
-                            <div className={`col-4 h6 font-weight-bold`}>Reason</div>
-                            <div className={`col-8 h6`}>{booking.description}</div>
+                            <div className={`col-lg-4 h6 font-weight-bold`}>Reason</div>
+                            <div className={`col-lg-8 h6`}>
+                                {booking.description.length > 30? booking.description.substring(0,30)+'...':booking.description}
+                            </div>
                         </div>
+                        {/* Appointment date and time */}
                         <div className={`row`}>
                             <div className={`col-4 h6 font-weight-bold`}>Appointment</div>
                             <div className={`col-8 h6`}>
                                 <span className="">On {moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LLL')}</span>
                             </div>
                         </div>
+                        {/* Appointment Doctor */}
                         <div className={`row`}>
                             <div className={`col-4 h6 font-weight-bold`}>Doctor</div>
                             <div className={`col-8 h6`}>
-                                <Link className="text-teal-400 font-weight-bold" to={"#"}>
+                                <Link className="text-teal-400 font-weight-bold" to={"#"}
+                                    onClick={() => this.request_user(booking.doctor['id'])}>
                                     <i className="icon-user-tie mr-2"></i>
                                     {booking.doctor['first_name'] + ' ' + booking.doctor['last_name']}
                                 </Link>
                             </div>
                         </div>
+                        {/* Status of the appointment */}
                         <div className={`row`}>
                             <div className={`col-4 h6 font-weight-bold`}>Status</div>
                             <div className={`col-8 h6`}>
@@ -411,41 +449,13 @@ class Todayspatient extends Component {
             </div>;
             
             const hidden_data = [
-                <div className={`card border-left-${random_color}`}>
-                    <div className={`card-body`}>
-                        <div className={`row`}>
-                            <div className={`col-lg-6 col-md-6 col-sm-12`}>
-                                <div className={`h6 font-weight-semibold`}>Patient Information</div>
-                                <User
-                                    fname={booking.patient['first_name']}
-                                    lname={booking.patient['last_name']}
-                                    dob={booking.patient['dob']}
-                                    gender={booking.patient['gender']}
-                                    phone={booking.patient['phone_number']}
-                                    email={booking.patient['email']}
-                                    thumbnail_color={`bg-${random_color}`}
-                                />
-                                <hr />
-                            </div>
-                            <div className={`col-lg-6 col-md-6 col-sm-12`}>
-                                <div className={`h6 font-weight-semibold`}>Doctor Information</div>
-                                <User
-                                    fname={booking.doctor['first_name']}
-                                    lname={booking.doctor['last_name']}
-                                    dob={booking.doctor['dob']}
-                                    gender={booking.doctor['gender']}
-                                    phone={booking.doctor['phone_number']}
-                                    email={booking.doctor['email']}
-                                    thumbnail_color={`bg-${random_color}`}
-                                />
-                                <hr />
-                            </div>
-                        </div>
-                        <h6 className="mb-0"><span className="font-weight-semibold">Reason:</span> {booking.description}</h6>
-                    </div>
-                </div>
-
-
+                <h5 className="font-weight-semibold">Reason of visit</h5>,
+                <blockquote className="blockquote blockquote-bordered py-2 pl-3 mb-0">
+                    <p className="mb-1">
+                        {booking.description}
+                    </p>
+                    <footer className="blockquote-footer">Perscription</footer>
+                </blockquote>
             ]
             let header_elements = [
                 moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY, hh:mm a'),
@@ -493,7 +503,7 @@ class Todayspatient extends Component {
                 table = <div className="table-responsive mt-2 card mb-0 pb-0"><table className="table table-hover">
                     <thead className="table-header-bg bg-dark">
                         <tr>
-                            <th style={{ width: "40px" }}></th>
+                            {/* <th style={{ width: "40px" }}></th> */}
                             <th colSpan="7">Patients List for today 
                                 <span className="badge badge-secondary ml-2">{moment().format('LL')}</span>
                             </th>
@@ -948,10 +958,11 @@ class Todayspatient extends Component {
                     procedure_backDrop={this.closeProcedureModalHandler}
                     cancelProcedureModal={this.closeProcedureModalHandler}
                 />
-                <UserPreviewModal 
-                    visibility={this.state.user_preview_modal_visibility} 
-                    modal_props={this.props.user_modal_props}
-                    onClickBackdrop={this}/>
+                    
+                <UserPreviewModal visibility={this.state.user_preview_modal_visibility} 
+                    modal_props={this.state.user_modal_props}
+                    on_click_back_drop={() => this.setState({user_preview_modal_visibility: false, user_modal_props: null})}
+                    on_click_cancel={() => this.setState({user_preview_modal_visibility: false, user_modal_props: null})}/>
             </Container>
         )
     }

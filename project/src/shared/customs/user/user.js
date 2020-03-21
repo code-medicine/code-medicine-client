@@ -49,7 +49,7 @@ class User extends Component {
         const store = this.state.data
         const name = store['first_name'] + ' ' + store['last_name']
         const gender = store['gender']
-        const date_of_birth = store['dob']
+        const date_of_birth = store['date_of_birth']
         const email = store['email']
         const phone = store['phone_number']
 

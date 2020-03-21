@@ -43,22 +43,37 @@ class TodaysPatientRow extends Component {
     render () {
         return (
             <Fragment>
-                <tr>
-                    <td onClick={this.toggle_row} className="">
-                        <Link className="" to="#" onClick={this.toggle_row}>
-                            <i className={this.state.toggle_icon}></i>
-                        </Link>
-                    </td>
+                <tr >
+                    {/* <td onClick={this.toggle_row} >
+                        <div  >
+                            <Link className="" to="#" onClick={this.toggle_row}>
+                                <i className={this.state.toggle_icon}></i>
+                            </Link>
+                        </div>
+                        
+                    </td> */}
                     <td colSpan={this.state.col_span}>
                         {
                             this.render_read_only_cols()
                         }
                     </td>
                     <td>
-                        <button className="btn btn-outline btn-sm bg-secondary border-secondary text-secondary btn-icon "
-                                onClick={this.props.openModal}>
-                            <i className="icon-plus2"></i>
-                        </button>
+                        <div className={``}>
+                            <button className="btn btn-outline btn-sm bg-secondary border-secondary text-secondary btn-icon "
+                                    onClick={this.props.openModal}>
+                                <i className="icon-plus2"></i>
+                            </button>
+                        </div>
+
+                        <div className={``}>
+                            <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon mt-1`}
+                                    onClick={this.toggle_row}>
+                                <i className={this.state.toggle_icon}></i>
+                            </button>
+                        </div>
+                        
+                        
+                        
                     </td>
                     {/* <td >
                         
@@ -84,9 +99,9 @@ class TodaysPatientRow extends Component {
                                     <i className="icon-cross3 icon-2x"></i>
                                 </Link>
                             </div>
-                            {/* {
+                            {
                                 this.render_hidden_elements()
-                            } */}
+                            }
                         </Collapse>
                     </td>
                 </tr>
