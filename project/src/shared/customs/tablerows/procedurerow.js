@@ -11,9 +11,9 @@ class Procedure extends Component {
                 <div className={`col-md-7  px-3`}>
                     <Inputfield
                         id={`procedure_reason_text_input`}
-                        label_tag={'Perscription'}
+                        label_tag={'Description'}
                         icon_class={'icon-pencil3'}
-                        placeholder="Enter perscription"
+                        placeholder="Enter description"
                         input_type={'text'}
                         field_type=""
                         on_text_change_listener={(e)=>{this.props.procedureDetailHandler(e,this.props.id);console.log('Testing!!')}}
@@ -27,7 +27,7 @@ class Procedure extends Component {
                         label_tag={'Charges'}
                         icon_class={'icon-price-tag3'}
                         placeholder="Charges"
-                        input_type={'number'}
+                        input_type={'text'}
                         field_type=""
                         on_text_change_listener={this.props.procedureFeeHandler}
                         default_value={this.props.ProcedureFeeValue}
@@ -40,7 +40,7 @@ class Procedure extends Component {
                         label_tag={'Discount'}
                         icon_class={'icon-percent'}
                         placeholder="Discount"
-                        input_type={'number'}
+                        input_type={'text'}
                         field_type=""
                         on_text_change_listener={this.props.procedureDiscount}
                         default_value={this.props.discountValue}
