@@ -19,7 +19,9 @@ class ProcedureModal extends Component {
     addProcedure = () => {
         const updateProcedureList = this.state.procedureList;
         updateProcedureList.push({id:this.state.random(),procedure_details:'',procedure_fee:0,discount:0});
-        this.setState({procedureList:updateProcedureList});
+        this.setState({procedureList:updateProcedureList}, () => {
+            this.scrollToBottom()
+        });
     };
 
     deleteProcedureHandler= (id) => {
@@ -62,6 +64,10 @@ class ProcedureModal extends Component {
         this.setState({procedureList:updateProcedureList});
     };
 
+    scrollToBottom = () => {
+        this.last_element.scrollIntoView({ behavior: "smooth" });
+      }
+
 
     render() {
 
@@ -70,18 +76,18 @@ class ProcedureModal extends Component {
                 visible={this.props.new_procedure_visibility}
                 onClickBackdrop={this.props.procedure_backDrop}
                 fade={true}
-                dialogClassName={`modal-dialog modal-lg`}
-            >
-                {/* <Register/> */}
+                dialogClassName={`modal-dialog modal-lg `}
+                >
                 <div className="modal-header bg-teal-400">
                     <h5 className="modal-title">Add New Procedures</h5>
                     <button
                         type="button"
-                        className="btn bg-teal-400 btn-labeled btn-labeled-right"
+                        className="btn bg-secondary btn-labeled btn-labeled-right pr-5"
                         style={{ textTransform: "inherit" }}
                         onClick={this.addProcedure}
                     >
                         <b><i className="icon-plus3"></i></b>
+                        Add
                     </button>
                 </div>
                 <div className="modal-body" style={{height: '60vh', overflowY: 'auto'}}>
@@ -100,6 +106,9 @@ class ProcedureModal extends Component {
                            />
                         })
                     }
+                    <div style={{ float:"left", clear: "both" }}
+                        ref={(el) => { this.last_element = el; }}>
+                    </div>
                 </div>
                 <div className="modal-footer">
                     <button
@@ -118,8 +127,8 @@ class ProcedureModal extends Component {
                         style={{ textTransform: "inherit" }}
                         onClick={this.handlerSubmit}
                     >
-                        <b><i className="icon-plus3"></i></b>
-                        Add
+                        <b><i className="icon-floppy-disk"></i></b>
+                        Save
                     </button>
                 </div>
 

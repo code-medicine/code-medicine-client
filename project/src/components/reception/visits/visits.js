@@ -387,7 +387,7 @@ class Visits extends Component {
 
 
     render() {
-        const loading = <Loading />
+        const loading = <Loading size={150}/>
         var table = ''
         if (this.state.data != null) {
             if (this.state.total_records_on_this_page > 0) {

@@ -73,19 +73,19 @@ class User extends Component {
                                                <small>Female</small>
                                             </span>}</h5>
                     <div className="row mt-1">
-                        <div className="col">
+                        <div className="col-md-6 col-sm-12">
                             <span className={`${text}`}><i className={`icon-person ${icon}`}></i> {this.calculate_age(date_of_birth)} years old</span>
                         </div>
-                        <div className="col">
+                        <div className="col-md-6 col-sm-12">
                         <span className={`mt-1 ${text}`}><i className={`icon-calendar3 mr-2 ${icon}`}></i> {moment(new Date(date_of_birth).toString()).format('MMM Do YY')}</span>
                         </div>
                     </div>
                     <div className="row mt-1">
-                        <div className="col">  
-                            <span className={`mt-1 ${text}`}><i className={`icon-phone-wave mr-2 ${icon}`}></i> {phone}</span>
+                        <div className="col-md-6 col-sm-12">  
+                            <span className={`mt-1 ${text}`}><i className={`icon-phone-wave mr-2 ${icon}`}></i>{phone}</span>
                         </div>
-                        <div className="col">
-                            <span className={`mt-1 ${text}`}><i className={`icon-envelop5 mr-2 ${icon}`}></i> {email}</span>
+                        <div className="col-md-6 col-sm-12">
+                            <span className={`mt-1 ${text}`}><i className={`icon-envelop5 mr-2 ${icon}`}></i>{email}</span>
                         </div>
                     </div>    
                 </div>

@@ -7,24 +7,26 @@ import Axios from 'axios';
 import { PROFILE_USER_REQUEST } from '../../shared/rest_end_points';
 import { LOGIN_URL } from '../../shared/router_constants';
 import {set_active_user} from '../../actions'
+import Inputfield from '../../shared/customs/inputfield/inputfield';
+import '../../shared/customs/Animations/animations.css'
 
 
 class Profile extends Component {
     constructor(props){
         super(props);
             this.state = {
-                first_name: { value: '', label_visibility: false },
-                last_name: { value: '', label_visibility: false },
-                email: { value: '', label_visibility: false },
-                password: { value: '', label_visibility: false },
-                verify_password: { value: '', label_visibility: false },
-                gender: { value: '', label_visibility: false },
-                dob: { value: new Date(), label_visibility: false },
-                blood_group: { value: '', label_visibility: false },
-                role: { value: '', label_visibility: false },
-                phone_number: { value: '', label_visibility: false },
-                cnic: { value: '', label_visibility: false },
-                address: { value: '', label_visibility: false },
+                first_name: { value: '' },
+                last_name: { value: '' },
+                email: { value: '' },
+                password: { value: '' },
+                verify_password: { value: '' },
+                gender: { value: '' },
+                dob: { value: new Date() },
+                blood_group: { value: '' },
+                role: { value: '' },
+                phone_number: { value: '' },
+                cnic: { value: '' },
+                address: { value: '' },
             };
     }
     componentDidMount(){
@@ -36,11 +38,14 @@ class Profile extends Component {
                 else{
                     this.props.set_active_user(res.data['payload'])
                     this.setState({
-                        first_name: { value: res.data['payload'].first_name,label_visibility: true },
-                        last_name: { value: res.data['payload'].last_name,label_visibility: true },
-                        email: { value: res.data['payload'].email,label_visibility: true },
-                        cnic: { value: res.data['payload'].cnic,label_visibility: true },
-                        phone_number: { value: res.data['payload'].phone_number,label_visibility: true },
+                        first_name: { value: res.data['payload'].first_name },
+                        last_name: { value: res.data['payload'].last_name },
+                        email: { value: res.data['payload'].email },
+                        cnic: { value: res.data['payload'].cnic },
+                        phone_number: { value: res.data['payload'].phone_number },
+                        date_of_birth: { value: res.data['payload'].date_of_birth },
+                        register_date: { value: res.data.payload.register_date },
+                         
                     })
                 }
             })
@@ -52,28 +57,16 @@ class Profile extends Component {
     on_text_changed = (e) => {
         switch(e.target.id){
             case 'first_name_text_input':
-                if (e.target.value === '')
-                    this.setState({first_name: { value: e.target.value, label_visibility: false }})
-                else
-                    this.setState({first_name: { value: e.target.value, label_visibility: true }})
+                this.setState({first_name: { value: e.target.value }})
                 break;
             case 'last_name_text_input':
-                if (e.target.value === '')
-                    this.setState({last_name: { value: e.target.value, label_visibility: false }})
-                else
-                    this.setState({last_name: { value: e.target.value, label_visibility: true }})
+                this.setState({last_name: { value: e.target.value }})
                 break;
             case 'cnic_text_input':
-                if (e.target.value === '')
-                    this.setState({cnic: { value: e.target.value, label_visibility: false }})
-                else
-                    this.setState({cnic: { value: e.target.value, label_visibility: true }})
+                this.setState({cnic: { value: e.target.value }})
                 break;
             case 'phone_number_text_input':
-                if (e.target.value === '')
-                    this.setState({phone_number: { value: e.target.value, label_visibility: false }})
-                else
-                    this.setState({phone_number: { value: e.target.value, label_visibility: true }})
+                this.setState({phone_number: { value: e.target.value }})
                 break;
             default:
                 break;
@@ -91,7 +84,7 @@ class Profile extends Component {
                             </p>
                         </div>
                         <div className="card-img-actions d-inline-block mb-3">
-                            <img className="img-fluid rounded-circle" src={NO_PICTURE} style={{width: 170,height: 170}}  alt=""/>
+                            <img className="img-fluid rounded-circle" src={NO_PICTURE} style={{width: 100,height: 100}}  alt=""/>
                             <div className="card-img-actions-overlay card-img rounded-circle">
                                 <Link to={"#"} className="btn btn-outline bg-white text-white border-white border-2 btn-icon rounded-round">
                                     <i className="icon-plus3"></i>
@@ -101,105 +94,105 @@ class Profile extends Component {
                         
                     </div>
                     <div className="card-body">
-                        <div className="container-f">
+                        <div className="container-fluid">
                             <div className="row">
-                                <div className="col-md-6 col-sm-12">
-                                    <div className="form-group form-group-float">
-                                        <label className={`form-group-float-label animate ${this.state.first_name.label_visibility? 'is-visible': ''}`}>First name</label>
-                                        <div className="input-group">
-                                            <span className="input-group-prepend">
-                                                <span className="input-group-text">
-                                                    <i className="icon-pen2"></i>
-                                                </span>
-                                            </span>
-                                            <input type="text" 
-                                                id="first_name_text_input" 
-                                                className="form-control" 
-                                                placeholder="First name"
-                                                value={this.state.first_name.value}
-                                                onChange={this.on_text_changed}/>
-                                        </div>
-                                    </div>
+                                <div className="col-md-6 col-sm-12 px-3">
+                                    <Inputfield 
+                                        id="first_name_text_input"
+                                        label_tag="First Name"
+                                        placeholder="First name"
+                                        icon_class="icon-user"
+                                        default_value={this.state.first_name.value}
+                                        onChange={this.on_text_changed}
+                                        custom_classes="rotateInDownLeft animated"
+                                    />
                                 </div>
-                                <div className="col-md-6 col-sm-6">
-                                    <div className="form-group form-group-float">
-                                        <label className={`form-group-float-label animate ${this.state.last_name.label_visibility? 'is-visible': ''}`}>Last name</label>
-                                        <div className="input-group">
-                                            <span className="input-group-prepend">
-                                                <span className="input-group-text">
-                                                    <i className="icon-pen2"></i>
-                                                </span>
-                                            </span>
-                                            <input type="text" 
-                                                id="last_name_text_input" 
-                                                className="form-control" 
-                                                placeholder="Last name"
-                                                value={this.state.last_name.value}
-                                                onChange={this.on_text_changed}/>
-                                        </div>
-                                    </div>
+                                <div className="col-md-6 col-sm-6 px-3">
+                                    <Inputfield 
+                                        id="last_name_text_input"
+                                        label_tag="Last Name"
+                                        placeholder="Last name"
+                                        icon_class="icon-user"
+                                        disabled={true}
+                                        type="email"
+                                        default_value={this.state.last_name.value}
+                                        onChange={this.on_text_changed}
+                                        custom_classes="rotateInDownRight animated"
+                                    />
                                 </div>
                             </div>
                             <div className="row">
-                                <div className="col-md-4 col-sm-12">
-                                    <div className="form-group form-group-float">
-                                        <label className={`form-group-float-label animate ${this.state.email.label_visibility? 'is-visible': ''}`}>Email</label>
-                                        <div className="input-group">
-                                            <span className="input-group-prepend">
-                                                <span className="input-group-text">
-                                                    <i className="icon-envelop4"></i>
-                                                </span>
-                                            </span>
-                                            <input type="email"
-                                                disabled={true}
-                                                id="email_text_input" 
-                                                className="form-control" 
-                                                placeholder="Email"
-                                                value={this.state.email.value}
-                                                onChange={this.on_text_changed}/>
-                                        </div>
-                                    </div>
+                                <div className="col-md-4 col-sm-12 px-3">
+                                    <Inputfield 
+                                        id="email_text_input"
+                                        label_tag="Email"
+                                        placeholder="Email"
+                                        icon_class="icon-envelop4"
+                                        default_value={this.state.email.value}
+                                        onChange={this.on_text_changed}
+                                        custom_classes="rotateInUpLeft animated"
+                                        disabled={true}
+                                    />
                                 </div>
-                                <div className="col-md-4 col-sm-12">
-                                    <div className="form-group form-group-float">
-                                        <label className={`form-group-float-label animate ${this.state.cnic.label_visibility? 'is-visible': ''}`}>CNIC</label>
-                                        <div className="input-group">
-                                            <span className="input-group-prepend">
-                                                <span className="input-group-text">
-                                                    <i className="icon-vcard"></i>
-                                                </span>
-                                            </span>
-                                            <input type="text"
-                                                id="cnic_text_input" 
-                                                className="form-control" 
-                                                placeholder="CNIC"
-                                                value={this.state.cnic.value}
-                                                onChange={this.on_text_changed}/>
-                                        </div>
-                                    </div>
+                                <div className="col-md-4 col-sm-12 px-3">
+                                    <Inputfield 
+                                        id="cnic_text_input"
+                                        label_tag="CNIC"
+                                        placeholder="CNIC"
+                                        icon_class="icon-vcard"
+                                        default_value={this.state.cnic.value}
+                                        onChange={this.on_text_changed}
+                                        custom_classes="rotateIn animated"
+                                    />
                                 </div>
-                                <div className="col-md-4 col-sm-12">
-                                    <div className="form-group form-group-float">
-                                        <label className={`form-group-float-label animate ${this.state.phone_number.label_visibility? 'is-visible': ''}`}>Phone number</label>
-                                        <div className="input-group">
-                                            <span className="input-group-prepend">
-                                                <span className="input-group-text">
-                                                    <i className="icon-phone2"></i>
-                                                </span>
-                                            </span>
-                                            <input type="text"
-                                                id="phone_number_text_input" 
-                                                className="form-control" 
-                                                placeholder="Phone number"
-                                                value={this.state.phone_number.value}
-                                                onChange={this.on_text_changed}/>
-                                        </div>
-                                    </div>
+                                <div className="col-md-4 col-sm-12 px-3">
+                                    <Inputfield 
+                                        id="phone_number_text_input"
+                                        label_tag="Phone number"
+                                        placeholder="Phone number"
+                                        icon_class="icon-phone2"
+                                        default_value={this.state.phone_number.value}
+                                        onChange={this.on_text_changed}
+                                        custom_classes="rotateInDownRight animated"
+                                    />
                                 </div>
                             </div>
                             <hr />
                             <div className="row">
-
+                                <div className="col-md-4 col-sm-12 px-3">
+                                    <Inputfield 
+                                        id="email_text_input"
+                                        label_tag="Email"
+                                        placeholder="Email"
+                                        icon_class="icon-envelop4"
+                                        default_value={this.state.email.value}
+                                        onChange={this.on_text_changed}
+                                        custom_classes="rotateInUpLeft animated"
+                                        disabled={true}
+                                    />
+                                </div>
+                                <div className="col-md-4 col-sm-12 px-3">
+                                    <Inputfield 
+                                        id="cnic_text_input"
+                                        label_tag="CNIC"
+                                        placeholder="CNIC"
+                                        icon_class="icon-vcard"
+                                        default_value={this.state.cnic.value}
+                                        onChange={this.on_text_changed}
+                                        custom_classes="rotateIn animated"
+                                    />
+                                </div>
+                                <div className="col-md-4 col-sm-12 px-3">
+                                    <Inputfield 
+                                        id="phone_number_text_input"
+                                        label_tag="Phone number"
+                                        placeholder="Phone number"
+                                        icon_class="icon-phone2"
+                                        default_value={this.state.phone_number.value}
+                                        onChange={this.on_text_changed}
+                                        custom_classes="rotateInDownRight animated"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>

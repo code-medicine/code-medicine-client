@@ -1,13 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Modal from "react-bootstrap4-modal";
 import Loading from "../customs/loading/loading";
-import Axios from 'axios';
-import { SEARCH_BY_ID_USER_REQUEST } from '../rest_end_points';
 import User from '../customs/user/user';
 import { Link } from 'react-router-dom';
 import '../customs/Animations/animations.css'
-
-
 
 function UserPreviewModal(props) {
 
@@ -24,7 +20,6 @@ function UserPreviewModal(props) {
                 dialogClassName={`modal-dialog-centered modal-lg `}
                 >
                 
-                
                 <div className="modal-body">
                     <div className="float-right">
                         <Link onClick={() => handle_on_click_back_drop()} 
@@ -34,7 +29,7 @@ function UserPreviewModal(props) {
                         </Link>
                     </div>
                     {
-                        props.modal_props === null? <Loading />: <User data={props.modal_props} size="large"/> 
+                        props.modal_props === null? <Loading size={150} />: <User data={props.modal_props} size="large"/> 
                     }
                 </div>
                 <div className="modal-footer">

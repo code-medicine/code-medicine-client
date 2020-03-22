@@ -20,6 +20,7 @@ class Inputfield extends Component {
         const _value = this.props.default_value
         const _field_type = this.props.field_type
         const _custom_classes = this.props.custom_classes
+        const _disabled = this.props.disabled
 
         const input_label = <label className="col-form-label-lg">{_label}</label>
         
@@ -29,7 +30,8 @@ class Inputfield extends Component {
                                     id={_id} 
                                     placeholder={_placeholder}
                                     onChange={_on_change}
-                                    value={_value}></input>
+                                    value={_value}
+                                    disabled={_disabled}></input>
         
         const text_area_field_type = <textarea
                                         row={"5"}
