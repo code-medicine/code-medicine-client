@@ -45,7 +45,7 @@ class Profile extends Component {
                         phone_number: { value: res.data['payload'].phone_number },
                         date_of_birth: { value: res.data['payload'].date_of_birth },
                         register_date: { value: res.data.payload.register_date },
-                         
+
                     })
                 }
             })
@@ -160,27 +160,49 @@ class Profile extends Component {
                             <hr />
                             <div className="row">
                                 <div className="col-md-4 col-sm-12 px-3">
-                                    <Inputfield 
-                                        id="email_text_input"
-                                        label_tag="Email"
-                                        placeholder="Email"
-                                        icon_class="icon-envelop4"
-                                        default_value={this.state.email.value}
-                                        onChange={this.on_text_changed}
-                                        custom_classes="rotateInUpLeft animated"
-                                        disabled={true}
-                                    />
+                                    <div className={`form-group row`}>
+                                        <label className={`col-form-label-lg `}>Date of birth</label>
+                                        <div className="input-group">
+                                            <span className="input-group-prepend">
+                                                <span className="input-group-text">
+                                                    <i className="icon-calendar3 text-muted"></i>
+                                                </span>
+                                            </span>
+                                            <DateTimePicker id="user_dob_text_input"
+                                                onChange={this.on_user_date_of_birth_change}
+                                                className="clock_datatime_picker form-control form-control-lg"
+                                                inputProps={{ placeholder: 'Date of birth', className: 'border-0 w-100' }}
+                                                input={true}
+                                                dateFormat={'ll'}
+                                                timeFormat={false}
+                                                closeOnSelect={true}
+                                                value={this.state.user_dob.value}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="col-md-4 col-sm-12 px-3">
-                                    <Inputfield 
-                                        id="cnic_text_input"
-                                        label_tag="CNIC"
-                                        placeholder="CNIC"
-                                        icon_class="icon-vcard"
-                                        default_value={this.state.cnic.value}
-                                        onChange={this.on_text_changed}
-                                        custom_classes="rotateIn animated"
-                                    />
+                                    <div className={`form-group row`}>
+                                        <label className={`col-form-label-lg `}>Date of birth</label>
+                                        <div className="input-group">
+                                            <span className="input-group-prepend">
+                                                <span className="input-group-text">
+                                                    <i className="icon-calendar3 text-muted"></i>
+                                                </span>
+                                            </span>
+                                            <DateTimePicker id="user_dob_text_input"
+                                                onChange={this.on_user_date_of_birth_change}
+                                                className="clock_datatime_picker form-control form-control-lg"
+                                                inputProps={{ placeholder: 'Date of birth', className: 'border-0 w-100' }}
+                                                input={true}
+                                                dateFormat={'ll'}
+                                                timeFormat={false}
+                                                closeOnSelect={true}
+                                                value={this.state.user_dob.value}
+                                                disabled
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="col-md-4 col-sm-12 px-3">
                                     <Inputfield 
