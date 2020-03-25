@@ -15,4 +15,6 @@ export const SEARCH_APPOINTMENTS_URL = `${BASE_RECEPTION_URL}/search`;
 export const SEARCH_TODAYS_APPOINTMENTS_URL = `${SEARCH_APPOINTMENTS_URL}/today`;
 
 
+export const BASE_PROCEDURES_URL = `${BASE_URL}/procedures`;
+export const NEW_PROCEDURES_URL = `${BASE_PROCEDURES_URL}/new`;
 

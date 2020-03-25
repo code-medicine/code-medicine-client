@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import { Collapse } from 'reactstrap'
-import moment from 'moment';
 import { Link } from 'react-router-dom';
 
 
@@ -8,7 +7,7 @@ import { Link } from 'react-router-dom';
 class TableRow extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             toggle: false,
             toggle_icon: 'icon-eye-plus',
@@ -51,7 +50,7 @@ class TableRow extends Component {
                 <tr>
                     <td onClick={this.toggle_row}>
                         <Link className="" onClick={this.toggle_row}>
-                            <i className={this.state.toggle_icon}></i>
+                            <i className={this.state.toggle_icon} />
                         </Link>
                     </td>
                     {
@@ -61,14 +60,14 @@ class TableRow extends Component {
                         
                         <div className="d-flex flex-row">
                             <button className="btn btn-outline btn-sm bg-secondary border-secondary text-secondary btn-icon "
-                                    onClick={this.props.openModal}>
-                                <i className="icon-plus2"></i>
+                                    onClick={()=>this.props.openModal(this.props.visit_id)}>
+                                <i className="icon-plus2" />
                             </button>
                             <button className="btn btn-outline btn-sm bg-primary border-primary text-primary-800 btn-icon ml-1">
-                                <i className="icon-pencil3"></i>
+                                <i className="icon-pencil3" />
                             </button>
                             <button className="btn btn-outline btn-sm bg-danger border-danger text-danger btn-icon ml-1">
-                                <i className="icon-cross3"></i>
+                                <i className="icon-cross3" />
                             </button>
                         </div>
                     </td>
@@ -78,7 +77,7 @@ class TableRow extends Component {
                         <Collapse isOpen={this.state.toggle} >
                             <div className="float-right">
                                 <Link onClick={this.toggle_row} className="btn btn-sm btn-outline bg-teal-400 text-teal-400">
-                                    <i className="icon-cross3 icon-2x"></i>
+                                    <i className="icon-cross3 icon-2x" />
                                 </Link>
                             </div>
                             {

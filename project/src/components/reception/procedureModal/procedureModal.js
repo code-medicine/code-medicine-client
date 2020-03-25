@@ -2,6 +2,8 @@ import React, { Component, Fragment } from 'react';
 import Modal from "react-bootstrap4-modal";
 import Procedure from "./procedure/procedure";
 import uniqueRandom from 'unique-random';
+import Axios from "axios";
+import {NEW_PROCEDURES_URL} from "../../../shared/rest_end_points";
 
 class ProcedureModal extends Component {
     constructor(props) {
@@ -33,7 +35,28 @@ class ProcedureModal extends Component {
 
     handlerSubmit = (e) => {
         e.preventDefault();
-        console.log('handlerSubmit');
+        console.log(this.props.visit_id);
+        console.log(this.state.procedureList);
+        let data = {
+            "visit_id": this.props.visit_id,
+            "procedures":this.state.procedureList
+        };
+
+        try {
+            let response = Axios.post(`${NEW_PROCEDURES_URL}`, data,{
+                headers: { 'code-medicine': localStorage.getItem('user') }
+            });
+            response.then((response)=>{
+                console.log(response);
+            });
+        }
+        catch (err) {
+            this.props.notify('error', '', 'Server is not responding! Please try again later');
+        }
+
+        this.setState({procedureList:[]});
+        this.props.cancelProcedureModal();
+
     };
 
     getIndex = (list,id) => {
@@ -65,8 +88,6 @@ class ProcedureModal extends Component {
 
 
     render() {
-        console.log('Render Call!!');
-        console.log(this.state.procedureList);
         return (
             <Modal
                 visible={this.props.new_procedure_visibility}
