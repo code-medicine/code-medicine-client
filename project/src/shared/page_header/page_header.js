@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { BASE_URL } from '../router_constants'
+import { BASE_URL, PROFILE, LOGIN_URL } from '../router_constants'
+import NOPICTURE from '../../resources/images/placeholder.jpg'
+
 
 class Page_header extends Component {
     render() {
         return (
             <div className="page-header page-header-light">
-                <div className="page-header-content header-elements-md-inline">
+                {/* <div className="page-header-content header-elements-md-inline">
                     <div className="page-title d-flex">
                         <h4>
                             <i className="icon-arrow-left52 mr-2"></i> 
@@ -33,11 +35,11 @@ class Page_header extends Component {
                             </Link>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
-                {/* <div className="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+                <div className="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
                     <div className="d-flex">
-                        <div className="breadcrumb">
+                        <div className="breadcrumb py-0">
                             <Link to="index.html" className="breadcrumb-item">
                                 <i className="icon-home2 mr-2"></i> 
                                 Home
@@ -51,13 +53,26 @@ class Page_header extends Component {
                     </div>
 
                     <div className="header-elements d-none">
-                        <div className="breadcrumb justify-content-center">
+                        <div className="breadcrumb justify-content-center py-0">
                             <Link to={BASE_URL} className="breadcrumb-elements-item">
                                 <i className="icon-comment-discussion mr-2"></i>
                                 Support
                             </Link>
 
                             <div className="breadcrumb-elements-item dropdown p-0">
+                                <Link to={`#`} className="breadcrumb-elements-item dropdown-toggle" data-toggle="dropdown">
+                                    <img src={NOPICTURE} style={{height: 30, width: 30}} className="rounded-circle mr-2" alt="" />
+                                    <span className={``}>{'Farrukh'}</span>
+                                </Link>
+
+                                <div className="dropdown-menu dropdown-menu-right">
+                                    <Link to={PROFILE} className="dropdown-item"><i className="icon-user-plus"></i> My profile</Link>
+                                    {/* <Link to={`#`} className="dropdown-item"><i className="icon-comment-discussion"></i> Messages <span className="badge badge-pill bg-blue ml-auto">58</span></Link> */}
+                                    <div className="dropdown-divider"></div>
+                                    <Link onClick={this.on_logout_button_click} to={LOGIN_URL} className="dropdown-item"><i className="icon-switch2"></i> Logout</Link>
+                                </div>
+                            </div>
+                            {/* <div className="breadcrumb-elements-item dropdown p-0">
                                 <Link to={BASE_URL} className="breadcrumb-elements-item dropdown-toggle" data-toggle="dropdown">
                                     <i className="icon-gear mr-2"></i>
                                     Settings
@@ -82,10 +97,10 @@ class Page_header extends Component {
                                         All settings
                                     </Link>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
-                </div> */}
+                </div>
             </div>
         );
     }

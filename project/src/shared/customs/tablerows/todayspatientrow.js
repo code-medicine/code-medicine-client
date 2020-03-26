@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { Collapse } from 'reactstrap'
 // import moment from 'moment';
 import { Link } from 'react-router-dom';
+import { Popup } from "semantic-ui-react";
 
 class TodaysPatientRow extends Component {
     constructor(props) {
@@ -41,6 +42,11 @@ class TodaysPatientRow extends Component {
         })
     }
     render () {
+        const popup_style = {
+            borderRadius: 0,
+            opacity: 0.7,
+            padding: '2em',
+          }
         return (
             <Fragment>
                 <tr >
@@ -59,20 +65,52 @@ class TodaysPatientRow extends Component {
                     </td>
                     <td>
                         <div className={``}>
-                            <button className="btn btn-outline btn-sm bg-secondary border-secondary text-secondary btn-icon "
-                                    onClick={this.props.openModal}>
-                                <i className="icon-plus2"></i>
-                            </button>
+                            <Fragment>
+                            <Popup
+                                trigger={
+                                    <button className="btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 secondary btn-icon "
+                                            onClick={this.props.openModal}>
+                                        <i className="icon-plus2"></i>
+                                    </button>}
+                                content={<div className={`card card-body bg-teal-400 text-teal-white shadow mr-2 mt-3 py-1`}>View or add procedures</div>}
+                                flowing
+                                hoverable
+                                // style={popup_style}
+                                position='left center'
+                                // inverted={false}
+                            />
+                            </Fragment>
                         </div>
 
-                        <div className={``}>
-                            <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon mt-1`}
-                                    onClick={this.toggle_row}>
-                                <i className={this.state.toggle_icon}></i>
-                            </button>
+                        <div className={`mt-1`}>
+                            <Popup
+                                trigger={
+                                    <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon`}>
+                                        <i className={`icon-file-text2`}></i>
+                                    </button>}
+                                content={<div className={`card card-body bg-teal-400 text-white shadow mr-2 mt-3 py-1`}>Generate Invoice</div>}
+                                flowing
+                                hoverable
+                                // style={popup_style}
+                                position='left center'
+                                // inverted={false}
+                            />
                         </div>
-                        
-                        
+
+                        <div className={`mt-1`}>
+                            
+                            <Popup
+                                trigger={
+                                    <button className={`btn btn-outline btn-sm bg-dark border-dark text-dark btn-icon`}
+                                            onClick={this.toggle_row}>
+                                        <i className={this.state.toggle_icon}></i>
+                                    </button>}
+                                flowing
+                                hoverable
+                                content={<div className={`card card-body bg-dark text-white shadow mr-2 mt-3 py-1`}>Show more details</div>}
+                                position='left center'
+                            />
+                        </div>
                         
                     </td>
                     {/* <td >

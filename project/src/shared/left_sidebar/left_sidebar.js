@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { BASE_URL, LOGIN_URL, RECEPTION_TODAYSPATIIENT, RECEPTION_VISITS } from '../router_constants';
 import { connect } from "react-redux";
 import { Link, withRouter } from 'react-router-dom';
-import { set_active_user } from '../../actions'
+import { set_active_user } from '../../actions';
+import '../customs/Animations/animations.css';
 
 class Left_sidebar extends Component {
 
@@ -177,7 +178,8 @@ class Left_sidebar extends Component {
 }
 function map_state_to_props(state) {
     return { 
-        active_user: state.active_user
+        active_user: state.active_user,
+        left_sidebar: state.left_sidebar
     }
 }
 export default connect(map_state_to_props,{set_active_user})(withRouter(Left_sidebar));

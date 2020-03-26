@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Header from '../../components/header/header';
 import Footer from '../../components/footer/footer';
 import Leftsidebar from '../left_sidebar/left_sidebar';
-// import Pageheader from '../page_header/page_header';
+import Pageheader from '../page_header/page_header';
 import { connect } from "react-redux";
 // import Axios from 'axios';
 // import { PROFILE_USER_REQUEST } from '../rest_end_points';
@@ -10,6 +10,7 @@ import { connect } from "react-redux";
 import { withRouter } from 'react-router-dom';
 import { set_active_user,notify } from '../../actions';
 import './container.css'
+import '../customs/Animations/animations.css'
 // import BACKGROUND from '../../resources/images/background_image.jpg'
 
 
@@ -45,26 +46,26 @@ class Container extends Component {
         var header = ''
         var footer = ''
         var left_sidebar = ''
-        // var page_header = ''
+        var page_header = ''
 
         switch(this.state.type){
             case 'login':
                 header = false
                 footer = false
                 left_sidebar = false
-                // page_header = false
+                page_header = false
                 break;
             case 'register':
                 header = false
                 footer = false
                 left_sidebar = false
-                // page_header = false
+                page_header = false
                 break;
             default:
                 header = true
                 footer = true
                 left_sidebar = true
-                // page_header = true
+                page_header = true
                 break;
         }
 
@@ -79,7 +80,7 @@ class Container extends Component {
 
                     <div className="content-wrapper">
                         
-                        {/* {page_header? <Pageheader /> : ''} */}
+                        {page_header? <Pageheader /> : ''}
 
                         <div className={`content ${this.state.type === 'login'? 'p-0':this.state.type === 'register'? 'p-0':'' }`}>
                             {

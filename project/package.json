@@ -31,6 +31,7 @@
     "react-widgets": "^4.4.11",
     "reactstrap": "^8.4.1",
     "redux": "^4.0.5",
+    "semantic-ui-react": "^0.88.2",
     "unique-random": "^2.1.0"
   },
   "scripts": {

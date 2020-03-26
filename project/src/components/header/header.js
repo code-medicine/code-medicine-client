@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { PROFILE, LOGIN_URL } from '../../shared/router_constants';
-import Logo_light from './logo_light_iffat_anwar.png';
-// import Logo_dark from './logo_dark.png';
+import Logo_light from './logo_main.png';
+import IAMC from './IAMC.png';
+import IAMC_detail from "./iffatanwarmedicalcomplex.png";
 import { connect } from "react-redux";
 import { left_sidebar_controls, set_active_user} from '../../actions';
 import { Link, withRouter } from 'react-router-dom';
@@ -38,10 +39,13 @@ class Header extends Component {
             <div className="navbar navbar-expand-md navbar-dark fixed-top">
                 <div className="navbar-brand">
                     <Link onClick={this.on_sidebar_control_button_click} to={"#"}
-                                className="d-inline">
+                        className="d-inline py-3">
                         <i className="icon-paragraph-justify2"></i>
                     </Link>
-                    <img className="d-inline ml-3" src={Logo_light} alt="" />
+                    <img 
+                        className="d-inline ml-3"  src={Logo_light} alt="" />
+                    <img className="d-inline ml-2" src={IAMC} alt="" />
+                    {/* <img className="d-inline float-right m-0" src={Logo_light} alt="" /> */}
                 </div>
 
                 <div className="d-md-none">
@@ -54,7 +58,21 @@ class Header extends Component {
                 </div>
 
                 <div className="collapse navbar-collapse" id="navbar-mobile">
-                    <ul className="navbar-nav">
+                    <div className={`container-fluid`}>
+                        <div className={`row`}>
+                            <div className={`col`}></div>
+                            <div className={`col d-flex justify-content-center pr-lg-5 mr-lg-5`}>
+                                <img 
+                                className="mr-lg-5" style={{ height: 30, width: 30 }} 
+                                    src={Logo_light} 
+                                    alt="" />
+                            </div>
+                            <div className={`col`}></div>
+                        </div>
+                    </div>
+                    
+                    {/* <ul className="navbar-nav"> */}
+                        
                         {/* <li className="nav-item">
                             <Link onClick={this.on_sidebar_control_button_click} to={"#"}
                                 className="navbar-nav-link sidebar-control sidebar-main-toggle d-none d-md-block">
@@ -143,13 +161,13 @@ class Header extends Component {
                                 </div>
                             </div>
                         </li> */}
-                    </ul>
+                    {/* </ul>s */}
 
                     <span className="navbar-text ml-md-3 mr-md-auto">
                         <span className="badge bg-transparent"></span>
                     </span>
 
-                    <ul className="navbar-nav">
+                    {/* <ul className="navbar-nav">
                         <li className="nav-item dropdown dropdown-user">
                             <Link to={`#`} className="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
                                 <img src={NOPICTURE} className="rounded-circle" alt="" />
@@ -163,7 +181,7 @@ class Header extends Component {
                                 <Link onClick={this.on_logout_button_click} to={LOGIN_URL} className="dropdown-item"><i className="icon-switch2"></i> Logout</Link>
                             </div>
                         </li>
-                    </ul>
+                    </ul> */}
                 </div>
             </div>
         );
