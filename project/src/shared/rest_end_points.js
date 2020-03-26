@@ -9,6 +9,7 @@ export const BASE_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
 export const BASE_USERS_URL = `${BASE_URL}/users`;
 export const REGISTER_USER_REQUEST = `${BASE_USERS_URL}/register`;
 export const LOGIN_USER_REQUEST = `${BASE_USERS_URL}/login`;
+export const LOGOUT_USER_REQUEST = `${BASE_USERS_URL}/logout`;
 export const PROFILE_USER_REQUEST = `${BASE_USERS_URL}/profile`;
 export const PROFILE_UPDATE_USER_REQUEST = `${PROFILE_USER_REQUEST}/update`;
 export const SEARCH_USER_REQUEST = `${BASE_USERS_URL}/search`;

@@ -2,9 +2,41 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { BASE_URL, PROFILE, LOGIN_URL } from '../router_constants'
 import NOPICTURE from '../../resources/images/placeholder.jpg'
+import { set_active_user, notify } from "../../actions";
+import { connect } from "react-redux";
+import Axios from 'axios';
+import { LOGOUT_USER_REQUEST } from '../rest_end_points'
+
 
 
 class Page_header extends Component {
+
+    on_logout_button_click = () => {
+
+        Axios.post(LOGOUT_USER_REQUEST,{
+            token: localStorage.getItem('user')
+        },{
+            headers: { 'code-medicine': localStorage.getItem('user') }
+        }).then(res => {
+            if (res.data.status === true){
+                localStorage.clear()
+                this.props.set_active_user({})
+                this.props.history.push(LOGIN_URL)
+                
+                this.props.notify('success', '', res.data.message)
+            }
+            else{
+                this.props.notify('error', '', res.data.message)
+            }
+            
+        })
+        .catch(err => {
+            this.props.notify('error','',err)
+        })
+
+        
+    }
+
     render() {
         return (
             <div className="page-header page-header-light">
@@ -105,4 +137,9 @@ class Page_header extends Component {
         );
     }
 }
-export default withRouter(Page_header);
+function map_state_to_props(state) {
+    return {
+        active_user: state.active_user
+    }
+}
+export default connect(map_state_to_props, { set_active_user, notify })(withRouter(Page_header));

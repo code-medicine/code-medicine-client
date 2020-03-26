@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { BASE_URL, LOGIN_URL, RECEPTION_TODAYSPATIIENT, RECEPTION_VISITS } from '../router_constants';
 import { connect } from "react-redux";
 import { Link, withRouter } from 'react-router-dom';
-import { set_active_user } from '../../actions';
+import { set_active_user,notify } from '../../actions';
 import '../customs/Animations/animations.css';
+import { LOGOUT_USER_REQUEST } from '../rest_end_points';
+import Axios from 'axios';
 
 class Left_sidebar extends Component {
 
@@ -21,8 +23,29 @@ class Left_sidebar extends Component {
     }
 
     on_logout_button_click = () => {
-        localStorage.clear()
-        this.props.set_active_user({})
+
+        Axios.post(LOGOUT_USER_REQUEST,{
+            token: localStorage.getItem('user')
+        },{
+            headers: { 'code-medicine': localStorage.getItem('user') }
+        }).then(res => {
+            if (res.data.status === true){
+                localStorage.clear()
+                this.props.set_active_user({})
+                this.props.history.push(LOGIN_URL)
+                
+                this.props.notify('success', '', res.data.message)
+            }
+            else{
+                this.props.notify('error', '', res.data.message)
+            }
+            
+        })
+        .catch(err => {
+            this.props.notify('error','',err.toString())
+        })
+
+        
     }
 
     on_item_click = (e) => {
@@ -160,7 +183,7 @@ class Left_sidebar extends Component {
 
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" onClick={this.on_logout_button_click} to={LOGIN_URL}>
+                                <Link className="nav-link" onClick={this.on_logout_button_click} to={"#"}>
                                     <i className="icon-exit3"></i>
                                     <span>Logout</span>
                                 </Link>
@@ -182,4 +205,4 @@ function map_state_to_props(state) {
         left_sidebar: state.left_sidebar
     }
 }
-export default connect(map_state_to_props,{set_active_user})(withRouter(Left_sidebar));
+export default connect(map_state_to_props,{set_active_user,notify})(withRouter(Left_sidebar));
