@@ -44,7 +44,6 @@ class Profile extends Component {
                 }
                 else {
                     this.props.set_active_user(res.data['payload'])
-                    console.log(res.data['payload'])
                     this.setState({
                         first_name: { value: res.data['payload'].first_name },
                         last_name: { value: res.data['payload'].last_name },
@@ -185,7 +184,8 @@ class Profile extends Component {
       }
 
     on_text_changed = (e) => {
-        console.log(e.target.vaue)
+        console.log('updated',e.target.id)
+        
         switch (e.target.id) {
             case 'first_name_text_input':
                 this.setState({ first_name: { value: e.target.value } })

@@ -1,9 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Collapse } from 'reactstrap'
-<<<<<<< HEAD:project/src/shared/customs/tablerows/tablerow.js
 // import moment from 'moment';
-=======
->>>>>>> 58d3ed518c70525ebb34bfbe6cfc2ae8ad541b25:project/src/components/reception/tablerow.js
 import { Link } from 'react-router-dom';
 
 

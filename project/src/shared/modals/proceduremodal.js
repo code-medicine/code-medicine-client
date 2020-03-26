@@ -3,7 +3,7 @@ import Modal from "react-bootstrap4-modal";
 import Procedure from "../customs/tablerows/procedurerow";
 import uniqueRandom from 'unique-random';
 import Axios from "axios";
-import {NEW_PROCEDURES_URL,GET_PROCEDURE_BY_ID} from "../../../shared/rest_end_points";
+import {NEW_PROCEDURES_URL,GET_PROCEDURE_BY_ID} from "../../shared/rest_end_points";
 
 class ProcedureModal extends Component {
     constructor(props) {
