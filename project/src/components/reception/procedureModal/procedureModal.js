@@ -1,9 +1,9 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Modal from "react-bootstrap4-modal";
 import Procedure from "./procedure/procedure";
 import uniqueRandom from 'unique-random';
 import Axios from "axios";
-import {NEW_PROCEDURES_URL} from "../../../shared/rest_end_points";
+import {NEW_PROCEDURES_URL,GET_PROCEDURE_BY_ID} from "../../../shared/rest_end_points";
 
 class ProcedureModal extends Component {
     constructor(props) {
@@ -15,6 +15,20 @@ class ProcedureModal extends Component {
     }
 
     componentDidMount() {
+
+        try {
+            let response = Axios.get(`${GET_PROCEDURE_BY_ID}`,{
+                headers: { 'code-medicine': localStorage.getItem('user') }
+            });
+            response.then((response)=>{
+                console.log(response);
+            });
+        }
+        catch (err) {
+            this.props.notify('error', '', 'Server is not responding! Please try again later');
+        }
+
+
         this.addProcedure();
     }
 
