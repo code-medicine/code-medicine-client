@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import Modal from "react-bootstrap4-modal";
 import Procedure from "../customs/tablerows/procedurerow";
 import uniqueRandom from 'unique-random';
+import Axios from "axios";
+import {NEW_PROCEDURES_URL,GET_PROCEDURE_BY_ID} from "../../../shared/rest_end_points";
 
 class ProcedureModal extends Component {
     constructor(props) {
@@ -13,6 +15,20 @@ class ProcedureModal extends Component {
     }
 
     componentDidMount() {
+
+        try {
+            let response = Axios.get(`${GET_PROCEDURE_BY_ID}`,{
+                headers: { 'code-medicine': localStorage.getItem('user') }
+            });
+            response.then((response)=>{
+                console.log(response);
+            });
+        }
+        catch (err) {
+            this.props.notify('error', '', 'Server is not responding! Please try again later');
+        }
+
+
         this.addProcedure();
     }
 
@@ -35,7 +51,28 @@ class ProcedureModal extends Component {
 
     handlerSubmit = (e) => {
         e.preventDefault();
-        console.log('handlerSubmit');
+        console.log(this.props.visit_id);
+        console.log(this.state.procedureList);
+        let data = {
+            "visit_id": this.props.visit_id,
+            "procedures":this.state.procedureList
+        };
+
+        try {
+            let response = Axios.post(`${NEW_PROCEDURES_URL}`, data,{
+                headers: { 'code-medicine': localStorage.getItem('user') }
+            });
+            response.then((response)=>{
+                console.log(response);
+            });
+        }
+        catch (err) {
+            this.props.notify('error', '', 'Server is not responding! Please try again later');
+        }
+
+        this.setState({procedureList:[]});
+        this.props.cancelProcedureModal();
+
     };
 
     getIndex = (list,id) => {
@@ -43,25 +80,26 @@ class ProcedureModal extends Component {
         return list.findIndex(element);
     };
 
-    handleChangeProcedureDetails = (event,id) => {
+    changeProcedureList = (id,updatedObject) => {
         let updateProcedureList = [...this.state.procedureList];
         const index = this.getIndex(updateProcedureList,id);
-        console.log('Index: ' + index);
-        console.log('ID: ' + id);
-        updateProcedureList[index] = {...updateProcedureList,procedure_details:event.target.value};
+        updateProcedureList[index] = {
+            ...updateProcedureList[index],
+            ...updatedObject
+        };
         this.setState({procedureList:updateProcedureList});
+    };
+
+    handleChangeProcedureDetails = (event,id) => {
+        this.changeProcedureList(id,{procedure_details:event.target.value});
     };
 
     handleChangeProcedureFee = (event,id) => {
-        let updateProcedureList = this.state.procedureList;
-        updateProcedureList[this.getIndex(updateProcedureList,id)] = {...updateProcedureList,procedure_fee:event.target.value};
-        this.setState({procedureList:updateProcedureList});
+        this.changeProcedureList(id,{procedure_fee:event.target.value});
     };
 
     handleChangeDiscount = (event,id) => {
-        let updateProcedureList = this.state.procedureList;
-        updateProcedureList[this.getIndex(updateProcedureList,id)] = {...updateProcedureList,discount:event.target.value};
-        this.setState({procedureList:updateProcedureList});
+        this.changeProcedureList(id,{discount:event.target.value});
     };
 
     scrollToBottom = () => {
@@ -70,7 +108,6 @@ class ProcedureModal extends Component {
 
 
     render() {
-
         return (
             <Modal
                 visible={this.props.new_procedure_visibility}
@@ -93,7 +130,7 @@ class ProcedureModal extends Component {
                 <div className="modal-body" style={{height: '60vh', overflowY: 'auto'}}>
                     {
                         this.state.procedureList.map((data)=>{
-                           return <Procedure
+                           return (<Procedure
                                key={data.id}
                                id={data.id}
                                ProcedureDetailValue={data.procedure_details}
@@ -103,7 +140,7 @@ class ProcedureModal extends Component {
                                procedureFeeHandler={this.handleChangeProcedureFee}
                                procedureDiscount={this.handleChangeDiscount}
                                deleteProcedure={this.deleteProcedureHandler}
-                           />
+                           />)
                         })
                     }
                     <div style={{ float:"left", clear: "both" }}
@@ -117,7 +154,7 @@ class ProcedureModal extends Component {
                         style={{ textTransform: "inherit" }}
                         onClick={this.props.cancelProcedureModal}
                     >
-                        <b><i className="icon-cross"></i></b>
+                        <b><i className="icon-cross" /></b>
                         Cancel
                     </button>
                     <button

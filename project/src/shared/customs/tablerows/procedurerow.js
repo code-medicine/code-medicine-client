@@ -4,19 +4,19 @@ import "../Animations/animations.css"
 
 
 class Procedure extends Component {
-    render() {
 
+    render() {
         return (
             <div className="row jackInTheBox animated">
                 <div className={`col-md-7  px-3`}>
                     <Inputfield
-                        id={`procedure_reason_text_input`}
-                        label_tag={'Description'}
-                        icon_class={'icon-pencil3'}
-                        placeholder="Enter description"
+                        id={`procedure_reason_text_input`+this.props.id}
+                        label_tag={'Procedure Reason'}
+                        icon_class={'icon-question3'}
+                        placeholder="Enter Reason"
                         input_type={'text'}
                         field_type=""
-                        on_text_change_listener={(e)=>{this.props.procedureDetailHandler(e,this.props.id);console.log('Testing!!')}}
+                        on_text_change_listener={(e)=>{this.props.procedureDetailHandler(e,this.props.id)}}
                         default_value={this.props.ProcedureDetailValue}
                     />
                 </div>
@@ -29,7 +29,7 @@ class Procedure extends Component {
                         placeholder="Charges"
                         input_type={'text'}
                         field_type=""
-                        on_text_change_listener={this.props.procedureFeeHandler}
+                        on_text_change_listener={(e)=>{this.props.procedureFeeHandler(e,this.props.id)}}
                         default_value={this.props.ProcedureFeeValue}
                     />
                 </div>
@@ -42,7 +42,7 @@ class Procedure extends Component {
                         placeholder="Discount"
                         input_type={'text'}
                         field_type=""
-                        on_text_change_listener={this.props.procedureDiscount}
+                        on_text_change_listener={(e)=>{this.props.procedureDiscount(e,this.props.id)}}
                         default_value={this.props.discountValue}
                     />
                 </div>

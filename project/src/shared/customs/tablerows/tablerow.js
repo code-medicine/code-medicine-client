@@ -1,6 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { Collapse } from 'reactstrap'
+<<<<<<< HEAD:project/src/shared/customs/tablerows/tablerow.js
 // import moment from 'moment';
+=======
+>>>>>>> 58d3ed518c70525ebb34bfbe6cfc2ae8ad541b25:project/src/components/reception/tablerow.js
 import { Link } from 'react-router-dom';
 
 
@@ -8,7 +11,7 @@ import { Link } from 'react-router-dom';
 class TableRow extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             toggle: false,
             toggle_icon: 'icon-eye-plus',
@@ -61,14 +64,14 @@ class TableRow extends Component {
                         
                         <div className="d-flex flex-row">
                             <button className="btn btn-outline btn-sm bg-secondary border-secondary text-secondary btn-icon "
-                                    onClick={this.props.openModal}>
-                                <i className="icon-plus2"></i>
+                                    onClick={()=>this.props.openModal(this.props.visit_id)}>
+                                <i className="icon-plus2" />
                             </button>
                             <button className="btn btn-outline btn-sm bg-primary border-primary text-primary-800 btn-icon ml-1">
-                                <i className="icon-pencil3"></i>
+                                <i className="icon-pencil3" />
                             </button>
                             <button className="btn btn-outline btn-sm bg-danger border-danger text-danger btn-icon ml-1">
-                                <i className="icon-cross3"></i>
+                                <i className="icon-cross3" />
                             </button>
                         </div>
                     </td> */}

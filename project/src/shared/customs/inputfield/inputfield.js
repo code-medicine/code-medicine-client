@@ -27,21 +27,20 @@ class Inputfield extends Component {
         const input_field_type = <input 
                                     type={_input_type} 
                                     className="form-control form-control-lg" 
-                                    id={_id} 
+                                    id={_id}
                                     placeholder={_placeholder}
                                     onChange={_on_change}
                                     value={_value}
                                     disabled={_disabled}></input>
         
         const text_area_field_type = <textarea
-                                        row={"5"}
-                                        col={"5"}
-                                        type={_input_type}
+                                        rows={"5"}
+                                        cols={"5"}
                                         className="form-control form-control-lg"
                                         id={_id}
                                         placeholder={_placeholder}
                                         onChange={_on_change}
-                                        value={_value}></textarea>
+                                        value={_value} />
 
         const selection_value_container = ({ children, ...props }) => (
                                             <components.ValueContainer {...props}>

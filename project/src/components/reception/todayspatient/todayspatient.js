@@ -69,7 +69,9 @@ class Todayspatient extends Component {
             user_role: { value: 'Patient' },
             user_phone_number: { value: '' },
             user_cnic: { value: '' },
-            user_address: { value: '' }
+            user_address: { value: '' },
+
+            modal_visit_id: null
         }
     }
 
@@ -77,7 +79,7 @@ class Todayspatient extends Component {
         try {
             let response = await Axios.post(url, data, {
                 headers: { 'code-medicine': localStorage.getItem('user') }
-            })
+            });
             return response
         }
         catch (err) {
@@ -467,6 +469,7 @@ class Todayspatient extends Component {
             return (
                 <TodaysPatientRow
                     key={i}
+                    visit_id={booking.visit_id}
                     row_data={row_data}
                     hidden_data={hidden_data}
                     openModal={this.openProcedureModalHandler}
@@ -476,8 +479,9 @@ class Todayspatient extends Component {
             )
         }))
     }
-    openProcedureModalHandler = () => {
-        this.setState({ procedure_visibility: true })
+
+    openProcedureModalHandler = (id) => {
+        this.setState({procedure_visibility:true,modal_visit_id:id})
     };
     closeProcedureModalHandler = () => {
         this.setState({ procedure_visibility: false })
@@ -926,6 +930,7 @@ class Todayspatient extends Component {
 
                 <ProcedureModal
                     new_procedure_visibility={this.state.procedure_visibility}
+                    visit_id={this.state.modal_visit_id}
                     procedure_backDrop={this.closeProcedureModalHandler}
                     cancelProcedureModal={this.closeProcedureModalHandler}
                 />
