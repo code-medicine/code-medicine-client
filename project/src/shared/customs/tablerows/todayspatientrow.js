@@ -69,7 +69,7 @@ class TodaysPatientRow extends Component {
                             <Popup
                                 trigger={
                                     <button className="btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 secondary btn-icon "
-                                            onClick={this.props.openModal}>
+                                            onClick={()=>this.props.openModal(this.props.visit_id)}>
                                         <i className="icon-plus2"></i>
                                     </button>}
                                 content={<div className={`card card-body bg-teal-400 text-teal-white shadow mr-2 mt-3 py-1`}>View or add procedures</div>}

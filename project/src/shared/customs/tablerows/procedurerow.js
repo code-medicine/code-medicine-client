@@ -46,15 +46,17 @@ class Procedure extends Component {
                         default_value={this.props.discountValue}
                     />
                 </div>
-                <div className="col-md-1 d-flex align-items-end pb-1">
-                    <button
-                        type="button"
-                        className="btn btn-outline btn-sm bg-danger text-danger btn-icon mb-3"
-                        style={{ textTransform: "inherit" }}
-                        onClick={()=>this.props.deleteProcedure(this.props.id)}>
-                        <i className="icon-cross"></i>
-                    </button>
-                </div>
+                {
+                    this.props.disableDelete ? '':(<div className="col-md-1 d-flex align-items-end pb-1">
+                        <button
+                            type="button"
+                            className="btn btn-outline btn-sm bg-danger text-danger btn-icon mb-3"
+                            style={{ textTransform: "inherit" }}
+                            onClick={()=>this.props.deleteProcedure(this.props.id)}>
+                            <i className="icon-cross" />
+                        </button>
+                    </div>)
+                }
             </div>
         );
     }
