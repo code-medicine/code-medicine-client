@@ -30,7 +30,7 @@ class Procedure extends Component {
                         input_type={'text'}
                         disabled={disabled}
                         field_type=""
-                        on_text_change_listener={(e)=>{this.props.procedureDetailHandler(e,this.props.id)}}
+                        on_text_change_listener={(e)=>{this.props.procedureDetailHandler(e,this.props.id,this.props.listType)}}
                         default_value={this.props.ProcedureDetailValue}
                     />
                 </div>
@@ -44,7 +44,7 @@ class Procedure extends Component {
                         input_type={'text'}
                         disabled={disabled}
                         field_type=""
-                        on_text_change_listener={(e)=>{this.props.procedureFeeHandler(e,this.props.id)}}
+                        on_text_change_listener={(e)=>{this.props.procedureFeeHandler(e,this.props.id,this.props.listType)}}
                         default_value={this.props.ProcedureFeeValue}
                     />
                 </div>
@@ -58,7 +58,7 @@ class Procedure extends Component {
                         disabled={disabled}
                         input_type={'text'}
                         field_type=""
-                        on_text_change_listener={(e)=>{this.props.procedureDiscount(e,this.props.id)}}
+                        on_text_change_listener={(e)=>{this.props.procedureDiscount(e,this.props.id,this.props.listType)}}
                         default_value={this.props.discountValue}
                     />
                 </div>
@@ -77,7 +77,7 @@ class Procedure extends Component {
                             type="button"
                             className="btn btn-outline btn-sm bg-success text-success btn-icon mb-3"
                             style={{ textTransform: "inherit" }}
-                            onClick={this.changeInputEditableHandler}>
+                            onClick={()=>this.props.updateProcedure(this.props.id)}>
                             <i className="icon-floppy-disk" />
                         </button>
                     ))):(

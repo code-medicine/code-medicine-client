@@ -3,8 +3,9 @@ import Modal from "react-bootstrap4-modal";
 import Procedure from "../customs/tablerows/procedurerow";
 import uniqueRandom from 'unique-random';
 import Axios from "axios";
-import {NEW_PROCEDURES_URL,GET_PROCEDURE_BY_ID} from "../../shared/rest_end_points";
+import {NEW_PROCEDURES_URL,GET_PROCEDURE_BY_ID,UPDATE_PROCEDURE} from "../../shared/rest_end_points";
 import {connect} from "react-redux";
+import {notify} from "../../actions";
 
 class ProcedureModal extends Component {
     constructor(props) {
@@ -18,7 +19,6 @@ class ProcedureModal extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-//        console.log('componentDidUpdate' + this.props.visit_id);
         if(this.props.visit_id!=null && this.props.visit_id!==this.state.visitId) {
             try {
                 let response = Axios.get(`${GET_PROCEDURE_BY_ID}?visit_id=`+this.props.visit_id,{
@@ -30,7 +30,6 @@ class ProcedureModal extends Component {
                             prevProcedureList : response.data.payload.procedures,
                             visitId: this.props.visit_id
                         });
-                        console.log(response);
                     }
                 });
             }
@@ -41,31 +40,46 @@ class ProcedureModal extends Component {
     }
 
     componentDidMount() {
-        console.log('componentDidMount');
         this.addProcedure();
     }
 
     addProcedure = () => {
         const updateProcedureList = this.state.procedureList;
-        updateProcedureList.push({id:this.state.random(),procedure_details:'',procedure_fee:0,discount:0});
+        updateProcedureList.push({_id:this.state.random(),procedure_details:'',procedure_fee:0,discount:0});
         this.setState({procedureList:updateProcedureList}, () => {
             this.scrollToBottom()
         });
     };
 
     deleteProcedureHandler= (id) => {
-        console.log(id);
         let updateProcedureList = this.state.procedureList;
         updateProcedureList = updateProcedureList.filter((ele) => {
-            return ele.id !== id;
+            return ele._id !== id;
         });
         this.setState({procedureList:updateProcedureList});
     };
 
+    updateProcedureHandler = (id) => {
+
+        const data = this.state.prevProcedureList.find(ele => ele._id === id);
+
+        try {
+            let response = Axios.post(`${UPDATE_PROCEDURE}`, data,{
+                headers: { 'code-medicine': localStorage.getItem('user') }
+            });
+            response.then((response)=>{
+                if(response.data.status===true) {
+                    this.props.notify('success', '', 'Procedures Updated!');
+                }
+            });
+        }
+        catch (err) {
+            this.props.notify('error', '', 'Server is not responding! Please try again later');
+        }
+    };
+
     handlerSubmit = (e) => {
         e.preventDefault();
-        console.log(this.props.visit_id);
-        console.log(this.state.procedureList);
         let data = {
             "visit_id": this.props.visit_id,
             "procedures":this.state.procedureList
@@ -79,7 +93,6 @@ class ProcedureModal extends Component {
                 if(response.data.status===true) {
                     this.props.notify('success', '', 'Procedures added!');
                 }
-                console.log(response);
             });
         }
         catch (err) {
@@ -92,30 +105,37 @@ class ProcedureModal extends Component {
     };
 
     getIndex = (list,id) => {
-        const element = (data) => data.id === id;
+        const element = (data) => data._id === id;
         return list.findIndex(element);
     };
 
-    changeProcedureList = (id,updatedObject) => {
-        let updateProcedureList = [...this.state.procedureList];
+    changeProcedureList = (id,updatedObject,list,listType) => {
+        let updateProcedureList = [...list];
         const index = this.getIndex(updateProcedureList,id);
         updateProcedureList[index] = {
             ...updateProcedureList[index],
             ...updatedObject
         };
-        this.setState({procedureList:updateProcedureList});
+        listType==='prev'? this.setState({prevProcedureList:updateProcedureList}):this.setState({procedureList:updateProcedureList});
     };
 
-    handleChangeProcedureDetails = (event,id) => {
-        this.changeProcedureList(id,{procedure_details:event.target.value});
+    handleChangeProcedureDetails = (event,id,listType) => {
+        listType ==='new' ?
+            this.changeProcedureList(id,{procedure_details:event.target.value},this.state.procedureList,listType):
+            this.changeProcedureList(id,{procedure_details:event.target.value},this.state.prevProcedureList,listType);
     };
 
-    handleChangeProcedureFee = (event,id) => {
-        this.changeProcedureList(id,{procedure_fee:event.target.value});
+    handleChangeProcedureFee = (event,id,listType) => {
+        listType ==='new' ?
+            this.changeProcedureList(id,{procedure_fee:event.target.value},this.state.procedureList,listType):
+            this.changeProcedureList(id,{procedure_fee:event.target.value},this.state.prevProcedureList,listType);
+
     };
 
-    handleChangeDiscount = (event,id) => {
-        this.changeProcedureList(id,{discount:event.target.value});
+    handleChangeDiscount = (event,id,listType) => {
+        listType ==='new' ?
+            this.changeProcedureList(id,{discount:event.target.value},this.state.procedureList,listType):
+            this.changeProcedureList(id,{discount:event.target.value},this.state.prevProcedureList,listType);
     };
 
     scrollToBottom = () => {
@@ -149,13 +169,15 @@ class ProcedureModal extends Component {
                             return (<Procedure
                                 key={data._id}
                                 id={data._id}
-                                ProcedureDetailValue={data.procedure_fee}
+                                ProcedureDetailValue={data.procedure_details}
                                 ProcedureFeeValue={data.procedure_fee}
                                 discountValue={data.discount}
                                 procedureDetailHandler={this.handleChangeProcedureDetails}
                                 procedureFeeHandler={this.handleChangeProcedureFee}
                                 procedureDiscount={this.handleChangeDiscount}
+                                listType="prev"
                                 disableDelete={true}
+                                updateProcedure={this.updateProcedureHandler}
                                 deleteProcedure={this.deleteProcedureHandler}
                             />)
                         })
@@ -164,13 +186,14 @@ class ProcedureModal extends Component {
                     {
                         this.state.procedureList.map((data)=>{
                            return (<Procedure
-                               key={data.id}
-                               id={data.id}
+                               key={data._id}
+                               id={data._id}
                                ProcedureDetailValue={data.procedure_details}
                                ProcedureFeeValue={data.procedure_fee}
                                discountValue={data.discount}
                                procedureDetailHandler={this.handleChangeProcedureDetails}
                                procedureFeeHandler={this.handleChangeProcedureFee}
+                               listType="new"
                                procedureDiscount={this.handleChangeDiscount}
                                disableDelete={false}
                                deleteProcedure={this.deleteProcedureHandler}
@@ -211,4 +234,4 @@ class ProcedureModal extends Component {
 function map_state_to_props(notify) {
     return { notify }
 }
-export default connect(map_state_to_props)(ProcedureModal);
+export default connect(map_state_to_props, { notify })(ProcedureModal);
