@@ -218,6 +218,7 @@ class Todayspatient extends Component {
     }
 
     openProcedureModalHandler = (id) => {
+        console.log('id: '+id);
         this.setState({procedure_visibility:true,modal_visit_id:id})
     };
     closeProcedureModalHandler = () => {
