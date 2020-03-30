@@ -94,14 +94,14 @@ class Page_header extends Component {
                             <div className="breadcrumb-elements-item dropdown p-0">
                                 <Link to={`#`} className="breadcrumb-elements-item dropdown-toggle" data-toggle="dropdown">
                                     <img src={NOPICTURE} style={{height: 30, width: 30}} className="rounded-circle mr-2" alt="" />
-                                    <span className={``}>{'Farrukh'}</span>
+                                    <span className={``}>{this.props.active_user.first_name}</span>
                                 </Link>
 
                                 <div className="dropdown-menu dropdown-menu-right">
                                     <Link to={PROFILE} className="dropdown-item"><i className="icon-user-plus"></i> My profile</Link>
                                     {/* <Link to={`#`} className="dropdown-item"><i className="icon-comment-discussion"></i> Messages <span className="badge badge-pill bg-blue ml-auto">58</span></Link> */}
                                     <div className="dropdown-divider"></div>
-                                    <Link onClick={this.on_logout_button_click} to={LOGIN_URL} className="dropdown-item"><i className="icon-switch2"></i> Logout</Link>
+                                    <Link onClick={this.on_logout_button_click} to={"#"} className="dropdown-item"><i className="icon-switch2"></i> Logout</Link>
                                 </div>
                             </div>
                             {/* <div className="breadcrumb-elements-item dropdown p-0">

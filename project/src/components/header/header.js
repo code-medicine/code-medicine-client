@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { PROFILE, LOGIN_URL } from '../../shared/router_constants';
+import { LOGIN_URL } from '../../shared/router_constants';
 import Logo_light from './logo_main.png';
 import IAMC from './IAMC.png';
 import IAMC_detail from "./iffatanwarmedicalcomplex.png";
@@ -39,7 +39,7 @@ class Header extends Component {
             <div className="navbar navbar-expand-md navbar-dark fixed-top">
                 <div className="navbar-brand">
                     <Link onClick={this.on_sidebar_control_button_click} to={"#"}
-                        className="d-inline py-3">
+                        className="d-inline py-3 text-white">
                         <i className="icon-paragraph-justify2"></i>
                     </Link>
                     <img 
@@ -52,7 +52,9 @@ class Header extends Component {
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-mobile">
                         <i className="icon-tree5"></i>
                     </button>
-                    <button className="navbar-toggler sidebar-mobile-main-toggle" onClick={this.on_sidebar_control_button_click} type="button">
+                    <button className="navbar-toggler sidebar-mobile-main-toggle" 
+                        onClick={this.on_sidebar_control_button_click} 
+                        type="button">
                         <i className="icon-paragraph-justify3"></i>
                     </button>
                 </div>

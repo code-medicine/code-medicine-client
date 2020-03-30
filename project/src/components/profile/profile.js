@@ -21,17 +21,17 @@ class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            first_name: { value: '' },
-            last_name: { value: '' },
-            email: { value: '' },
-            gender: { value: '' },
-            date_of_birth: { value: '' },
-            register_date: { value: '' },
-            blood_group: { value: '' },
-            role: { value: '' },
-            phone_number: { value: '' },
-            cnic: { value: '' },
-            address: { value: '' },
+            first_name: { value: '', error: false },
+            last_name: { value: '', error: false },
+            email: { value: '', error: false },
+            gender: { value: '', error: false },
+            date_of_birth: { value: '', error: false},
+            register_date: { value: '', error: false },
+            blood_group: { value: '' , error: false},
+            role: { value: '', error: false },
+            phone_number: { value: '', error: false },
+            cnic: { value: '', error: false },
+            address: { value: '', error: false },
 
             loading_status: false,
             previous_payload: null,
@@ -46,18 +46,19 @@ class Profile extends Component {
                     }
                     else {
                         this.props.set_active_user(res.data['payload'])
+
                         this.setState({
-                            first_name: { value: res.data.payload.first_name },
-                            last_name: { value: res.data.payload.last_name },
-                            email: { value: res.data.payload.email },
-                            cnic: { value: res.data.payload.cnic },
-                            phone_number: { value: res.data.payload.phone_number },
-                            address: { value: res.data.payload.address },
-                            date_of_birth: { value: moment(res.data.payload.date_of_birth).format('ll') },
-                            register_date: { value: moment(res.data.payload.register_date).format('lll') },
-                            blood_group: { value: res.data.payload.blood_group },
-                            gender: { value: res.data.payload.gender },
-                            role: { value: res.data.payload.role },
+                            first_name: { value: res.data.payload.first_name, error: false },
+                            last_name: { value: res.data.payload.last_name, error: false },
+                            email: { value: res.data.payload.email, error: false },
+                            cnic: { value: res.data.payload.cnic, error: false },
+                            phone_number: { value: res.data.payload.phone_number, error: false },
+                            address: { value: res.data.payload.address, error: false },
+                            date_of_birth: { value: moment(res.data.payload.date_of_birth).format('ll'), error: false },
+                            register_date: { value: moment(res.data.payload.register_date).format('lll'), error: false },
+                            blood_group: { value: res.data.payload.blood_group, error: false },
+                            gender: { value: res.data.payload.gender, error: false },
+                            role: { value: res.data.payload.role, error: false },
 
                             loading_status: false
 
@@ -73,7 +74,6 @@ class Profile extends Component {
     }
 
     request_update = (data) => {
-        console.log(data)
         this.setState({ loading_status: true }, () => {
             Axios.put(PROFILE_UPDATE_USER_REQUEST, data, { headers: { 'code-medicine': localStorage.getItem('user') } }).then(res => {
                 if (res.data.status === true) {
@@ -94,7 +94,51 @@ class Profile extends Component {
 
     }
 
+    check_input = (input,required = true,only_alpha=false,only_numbers=false) => {
+        const alphabets = /^[A-Za-z]+$/;
+        const numbers = /^[0-9]+$/;
+        if (required  && input === ''){
+            return true;
+        }
+        if (only_alpha && !input.match(alphabets)){
+            return true;
+        }
+        if (only_numbers && !input.match(numbers)){
+            return true;
+        }
+    }
+
     on_click_update = () => {
+        let status = false;
+        if (this.check_input(this.state.first_name.value,true,true,false)){
+            this.setState({ first_name: { value: this.state.first_name.value, error: true}})
+            status = true
+        }
+
+        if (this.check_input(this.state.last_name.value,true,true,false)){
+            this.setState({ last_name: { value: this.state.last_name.value, error: true}})
+            status = true
+        }
+
+        if (this.check_input(this.state.email.value,true,false,false)){
+            this.setState({ email: { value: this.state.email.value, error: true}})
+            status = true
+        }
+
+        if (this.check_input(this.state.phone_number.value,true,false,true)){
+            this.setState({ phone_number: { value: this.state.phone_number.value, error: true}})
+            status = true
+        }
+
+        if (this.check_input(this.state.cnic.value,true,false,true)){
+            this.setState({ cnic: { value: this.state.cnic.value, error: true}})
+            status = true
+        }
+
+        if (status === true){
+            this.props.notify('error','','Invalid input')
+            return
+        }
         const payload = {
             first_name: this.state.first_name.value,
             last_name: this.state.last_name.value,
@@ -227,46 +271,28 @@ class Profile extends Component {
     }
 
     on_text_changed = (e) => {
-        console.log('updated', e.target.id)
-
         switch (e.target.id) {
             case 'first_name_text_input':
-                this.setState({ first_name: { value: e.target.value } });
+                this.setState({ first_name: { value: e.target.value, error: false } });
                 break;
             case 'last_name_text_input':
-                this.setState({ last_name: { value: e.target.value } });
+                this.setState({ last_name: { value: e.target.value, error: false } });
                 break;
             case 'cnic_text_input':
-                this.setState({ cnic: { value: e.target.value } });
+                this.setState({ cnic: { value: e.target.value, error: false } });
                 break;
             case 'phone_number_text_input':
-                this.setState({ phone_number: { value: e.target.value } });
+                this.setState({ phone_number: { value: e.target.value, error: false } });
                 break;
             case 'address_text_input':
-                this.setState({ address: { value: e.target.value } });
+                this.setState({ address: { value: e.target.value, error: false } });
                 break;
             case 'email_text_input':
-                this.setState({ email: { value: e.target.value } });
+                this.setState({ email: { value: e.target.value, error: false } });
                 break;
             default:
                 break;
         }
-        // const current_payload = {
-        //     first_name: this.state.first_name,
-        //     last_name: this.state.last_name,
-        //     email: this.state.email,
-        //     gender: this.state.gender,
-        //     date_of_birth: this.state.date_of_birth,
-        //     register_date: this.state.register_date,
-        //     blood_group: this.state.blood_group,
-        //     role: this.state.role,
-        //     phone_number: this.state.phone_number,
-        //     cnic: this.state.cnic,
-        //     address: this.state.address,
-        // }
-        // if (Object.toJSON(current_payload) !== Object.toJSON(this.state.previous_payload)){
-        //     this.setState({ data_changed: true })
-        // }
     }
     on_selected_changed = (e, actor) => {
         if (e !== null) {
@@ -275,9 +301,6 @@ class Profile extends Component {
                     this.setState({ blood_group: { value: e.label } })
                     break;
                 case 'gender_selection':
-                    this.setState({ gender: { value: e.label } })
-                    break;
-                case 'role_selection':
                     this.setState({ gender: { value: e.label } })
                     break;
                 default:
@@ -292,9 +315,6 @@ class Profile extends Component {
                 case 'gender_selection':
                     this.setState({ user_gender: { value: '' } })
                     break;
-                case 'role_selection':
-                    this.setState({ gender: { value: '' } })
-                    break;
                 default:
                     break;
             }
@@ -304,7 +324,6 @@ class Profile extends Component {
         const selection_value_container = ({ children, ...props }) => (
             <components.ValueContainer {...props}>
                 <div className={`input-group `}>
-
                     <div className="ml-2 my-0">
                         {
                             children
@@ -332,6 +351,7 @@ class Profile extends Component {
                         icon_class="icon-user"
                         default_value={this.state.first_name.value}
                         on_text_change_listener={this.on_text_changed}
+                        error={this.state.first_name.error}
                     />
                 </div>
                 <div className="col-lg-3 col-sm-12 px-3">
@@ -343,6 +363,7 @@ class Profile extends Component {
                         type="email"
                         default_value={this.state.last_name.value}
                         on_text_change_listener={this.on_text_changed}
+                        error={this.state.last_name.error}
                     />
                 </div>
                 <div className={`col-lg-4 col-sm-12 px-3`}>
@@ -368,6 +389,7 @@ class Profile extends Component {
                         icon_class="icon-phone2"
                         default_value={this.state.phone_number.value}
                         on_text_change_listener={this.on_text_changed}
+                        error={this.state.phone_number.error}
                     />
                 </div>
                 <div className="col-lg-3 col-sm-12 px-3">
@@ -378,6 +400,7 @@ class Profile extends Component {
                         icon_class="icon-vcard"
                         default_value={this.state.cnic.value}
                         on_text_change_listener={this.on_text_changed}
+                        error={this.state.cnic.error}
                     />
                 </div>
                 <div className="col-lg-6 col-sm-12">
@@ -394,7 +417,7 @@ class Profile extends Component {
                                     menuPosition="auto"
                                     id="blood_group_selection"
                                     onChange={this.on_selected_changed}
-                                    value={[{ id: 'blood_group_selection', label: this.state.blood_group.value }]}//this.state.blood_group}]}
+                                    value={[{ id: 'blood_group_selection', label: this.state.blood_group.value }]}
                                 />
 
                             </div>
@@ -446,6 +469,7 @@ class Profile extends Component {
                         field_type="text-area"
                         default_value={this.state.address.value}
                         on_text_change_listener={this.on_text_changed}
+                        error={this.state.address.error}
                     />
                 </div>
 
@@ -500,13 +524,11 @@ class Profile extends Component {
                     <button className={`btn bg-teal-400 btn-labeled btn-labeled-right pr-5 float-right`}
                         onClick={this.on_click_update}>
                         <b><i className={`icon-floppy-disk`}></i></b>
-                    Save
+                        Save
                 </button>
                     <button
                         className={`btn bg-dark btn-labeled btn-labeled-right pr-5 float-right mr-2`}
-                        onClick={() => this.props.history.push(BASE_URL)}
-                    >
-
+                        onClick={() => this.props.history.push(BASE_URL)}>
                         <b><i className={`icon-cross`}></i></b>
                     Leave
                 </button>
