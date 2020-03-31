@@ -44,7 +44,8 @@ class Todayspatient extends Component {
             invoice_modal_visibility: false,
 
             user_modal_props: null,
-            modal_visit_id: null,
+            procedure_visit_id: null,
+            invoice_visit_id: null,
             search_doctor: { value: '' },
             search_patient: { value: '' }
         }
@@ -212,6 +213,7 @@ class Todayspatient extends Component {
                     row_data={booking}
                     hidden_data={hidden_data}
                     open_procedure_modal={this.openProcedureModalHandler}
+                    openInvoiceModal={this.openInvoiceModalHandler}
                     open_user_view_modal={this.request_user}
                     hidden_header_elements={header_elements}
                     columns="7" />
@@ -221,7 +223,7 @@ class Todayspatient extends Component {
 
     openProcedureModalHandler = (id) => {
         console.log('id: '+id);
-        this.setState({procedure_visibility:true,modal_visit_id:id})
+        this.setState({procedure_visibility:true,procedure_visit_id:id})
     };
     closeProcedureModalHandler = () => {
         this.setState({ procedure_visibility: false })
@@ -231,6 +233,7 @@ class Todayspatient extends Component {
         this.setState({ new_appointment_modal_visibility: true })
     }
     openInvoiceModalHandler = (id) => {
+        console.log('id: '+id);
         this.setState({invoice_modal_visibility:true,invoice_visit_id:id})
     };
     closeInvoiceModalHandler = () => {
