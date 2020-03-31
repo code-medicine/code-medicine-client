@@ -25,6 +25,7 @@ class ProcedureModal extends Component {
                     headers: { 'code-medicine': localStorage.getItem('user') }
                 });
                 response.then((response)=>{
+                    console.log('Testing!!!');
                     if(response.data.status===true) {
                         this.setState({
                             prevProcedureList : response.data.payload.procedures,
