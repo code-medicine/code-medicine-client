@@ -1,0 +1,40 @@
+.modal-body {
+    height: 80vh;
+    overflow-y: auto;
+}
+#print{
+    border: 1px solid #ddd;
+}
+#print>div{
+    text-align: center;
+}
+.logo{
+    height:150px;
+}
+.patientData {
+    margin-top: 5%;
+    text-align: left;
+}
+#print thead{
+    border: 1px solid #000;
+}
+#print .table thead th {
+    font-weight: bold;
+    border-bottom: 2px solid #000;
+    font-size: 15px;
+}
+
+#print .table-bordered th, .table-bordered td {
+    border: 1px solid #000;
+}
+
+#print table td:nth-child(2) {
+    text-align: left;
+}
+
+#print table tbody tr:nth-child(5) td:nth-child(2),
+#print table tbody tr:nth-child(6) td:nth-child(2),
+#print table tbody tr:nth-child(7) td:nth-child(2){
+    text-align: right;
+    font-weight: bold;
+}

@@ -26,6 +26,7 @@ import User from '../../../shared/customs/user/user'
 import moment from 'moment';
 import TableRow from '../../../shared/customs/tablerows/tablerow';
 import ProcedureModal from '../../../shared/modals/proceduremodal';
+import InvoiceModal from '../../../shared/modals/invoiceModal';
 import TodaysPatientRow from '../../../shared/customs/tablerows/todayspatientrow';
 import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
 import Loading from '../../../shared/customs/loading/loading';
@@ -49,6 +50,7 @@ class Todayspatient extends Component {
             user_modal_loading_status: false,
             procedure_visibility: false,
             user_preview_modal_visibility: false,
+            invoice_modal_visibility: false,
 
             user_modal_props: null,
 
@@ -71,7 +73,8 @@ class Todayspatient extends Component {
             user_cnic: { value: '' },
             user_address: { value: '' },
 
-            modal_visit_id: null
+            procedure_visit_id: null,
+            invoice_visit_id: null
         }
     }
 
@@ -472,7 +475,8 @@ class Todayspatient extends Component {
                     visit_id={booking.visit_id}
                     row_data={row_data}
                     hidden_data={hidden_data}
-                    openModal={this.openProcedureModalHandler}
+                    openProcedureModal={this.openProcedureModalHandler}
+                    openInvoiceModal={this.openInvoiceModalHandler}
                     hidden_header_elements={header_elements}
                     hidden_header_color={random_color}
                     columns="7" />
@@ -481,10 +485,17 @@ class Todayspatient extends Component {
     }
 
     openProcedureModalHandler = (id) => {
-        this.setState({procedure_visibility:true,modal_visit_id:id})
+        this.setState({procedure_visibility:true,procedure_visit_id:id})
     };
     closeProcedureModalHandler = () => {
         this.setState({ procedure_visibility: false })
+    };
+
+    openInvoiceModalHandler = (id) => {
+        this.setState({invoice_modal_visibility:true,invoice_visit_id:id})
+    };
+    closeInvoiceModalHandler = () => {
+        this.setState({ invoice_modal_visibility: false })
     };
 
 
@@ -930,9 +941,16 @@ class Todayspatient extends Component {
 
                 <ProcedureModal
                     new_procedure_visibility={this.state.procedure_visibility}
-                    visit_id={this.state.modal_visit_id}
+                    visit_id={this.state.procedure_visit_id}
                     procedure_backDrop={this.closeProcedureModalHandler}
                     cancelProcedureModal={this.closeProcedureModalHandler}
+                />
+
+                <InvoiceModal
+                    modal_visibility={this.state.invoice_modal_visibility}
+                    visit_id={this.state.invoice_visit_id}
+                    invoice_backDrop={this.closeInvoiceModalHandler}
+                    cancelInvoiceModal={this.closeInvoiceModalHandler}
                 />
 
                 <UserPreviewModal visibility={this.state.user_preview_modal_visibility}

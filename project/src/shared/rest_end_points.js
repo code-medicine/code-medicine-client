@@ -25,4 +25,8 @@ export const SEARCH_TODAYS_APPOINTMENTS_URL = `${SEARCH_APPOINTMENTS_URL}/today`
 export const BASE_PROCEDURES_URL = `${BASE_URL}/procedures`;
 export const NEW_PROCEDURES_URL = `${BASE_PROCEDURES_URL}/new`;
 export const GET_PROCEDURE_BY_ID = `${BASE_PROCEDURES_URL}/search/visit/id`;
+export const GET_PROCEDURES_FEE = `${BASE_PROCEDURES_URL}/fees`;
 
+// All profit related end points
+export const BASE_PROFITS_URL = `${BASE_URL}/profits`;
+export const GET_PROFITS_BY_DOCTOR_ID = `${BASE_PROFITS_URL}/search/doctor/id`;

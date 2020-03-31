@@ -24,6 +24,7 @@ class TodaysPatientRow extends Component {
             this.setState({toggle: true, toggle_icon: 'icon-eye-minus'})
     }
     componentDidMount(){
+        console.log(this.props.row_data);
         // this.setState({row_data: this.props.data})
         this.setState({col_span: this.props.columns})
     }
@@ -69,7 +70,7 @@ class TodaysPatientRow extends Component {
                             <Popup
                                 trigger={
                                     <button className="btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 secondary btn-icon "
-                                            onClick={this.props.openModal}>
+                                            onClick={this.props.openProcedureModal}>
                                         <i className="icon-plus2"></i>
                                     </button>}
                                 content={<div className={`card card-body bg-teal-400 text-teal-white shadow mr-2 mt-3 py-1`}>View or add procedures</div>}
@@ -85,7 +86,8 @@ class TodaysPatientRow extends Component {
                         <div className={`mt-1`}>
                             <Popup
                                 trigger={
-                                    <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon`}>
+                                    <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon`}
+                                            onClick={()=>this.props.openInvoiceModal(this.props.visit_id)}>
                                         <i className={`icon-file-text2`}></i>
                                     </button>}
                                 content={<div className={`card card-body bg-teal-400 text-white shadow mr-2 mt-3 py-1`}>Generate Invoice</div>}
