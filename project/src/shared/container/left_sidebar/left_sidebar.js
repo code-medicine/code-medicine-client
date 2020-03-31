@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { BASE_URL, LOGIN_URL, RECEPTION_TODAYSPATIIENT, RECEPTION_VISITS } from '../router_constants';
+import { BASE_URL, LOGIN_URL, RECEPTION_TODAYSPATIIENT, RECEPTION_VISITS } from '../../router_constants';
 import { connect } from "react-redux";
 import { Link, withRouter } from 'react-router-dom';
-import { set_active_user,notify } from '../../actions';
-import '../customs/Animations/animations.css';
-import { LOGOUT_USER_REQUEST } from '../rest_end_points';
+import { set_active_user,notify } from '../../../actions';
+import '../../customs/Animations/animations.css';
+import { LOGOUT_USER_REQUEST } from '../../rest_end_points';
 import Axios from 'axios';
+import './left_sidebar.css'
 
 class Left_sidebar extends Component {
 
@@ -19,7 +20,7 @@ class Left_sidebar extends Component {
         }
     }
     componentDidMount(){
-        // console.log(this.props.active_user);
+        // console.log('my user',this.props.active_user);
     }
 
     on_logout_button_click = () => {
@@ -73,6 +74,10 @@ class Left_sidebar extends Component {
         }
     } 
     render() {
+        const first_name_first_letter = this.props.active_user.first_name.charAt(0).toUpperCase()
+        const first_name_rest = this.props.active_user.first_name.length > 1? this.props.active_user.first_name.substring(1):''
+        const last_name_first_letter = this.props.active_user.last_name.charAt(0).toUpperCase()
+        const last_name_rest = this.props.active_user.last_name.length > 1? this.props.active_user.last_name.substring(1):''
         return (
             <div className="sidebar sidebar-dark sidebar-main sidebar-fixed sidebar-expand-md" >
 
@@ -88,7 +93,7 @@ class Left_sidebar extends Component {
                 </div>
 
                 <div className="sidebar-content">
-                    <div className="sidebar-user">
+                    <div className="sidebar-user background_custom_left_side_bar" style={{height: '25vh'}}>
                         <div className="card-body">
                             <div className="media">
                                 <div className="mr-3">
@@ -99,7 +104,7 @@ class Left_sidebar extends Component {
 
                                 <div className="media-body">
                                     <div className="media-title font-weight-semibold">
-                                        {this.props.active_user['first_name']} {this.props.active_user['last_name']}                                 
+                                        {`${first_name_first_letter}${first_name_rest} ${last_name_first_letter}${last_name_rest}`}                                 
                                     </div>
                                     <div className="font-size-xs opacity-50">
                                         <i className="icon-pin font-size-sm"></i> &nbsp;Islamabad, Pakistan

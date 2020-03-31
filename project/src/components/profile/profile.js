@@ -78,11 +78,11 @@ class Profile extends Component {
             Axios.put(PROFILE_UPDATE_USER_REQUEST, data, { headers: { 'code-medicine': localStorage.getItem('user') } }).then(res => {
                 if (res.data.status === true) {
                     this.setState({ loading_status: false })
-                    this.props.notify('success', '', 'Profile updated!')
+                    this.props.notify('success', '', res.data.message)
                 } else {
                     this.setState({ loading_status: false })
 
-                    this.props.notify('error', '', 'There was a problem updating you profile!')
+                    this.props.notify('error', '', res.data.message)
                 }
             }).
                 catch(err => {

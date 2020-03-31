@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { BASE_URL, PROFILE, LOGIN_URL } from '../router_constants'
-import NOPICTURE from '../../resources/images/placeholder.jpg'
-import { set_active_user, notify } from "../../actions";
+import { BASE_URL, PROFILE, LOGIN_URL } from '../../router_constants'
+import NOPICTURE from '../../../resources/images/placeholder.jpg'
+import { set_active_user, notify } from "../../../actions";
 import { connect } from "react-redux";
 import Axios from 'axios';
-import { LOGOUT_USER_REQUEST } from '../rest_end_points'
+import { LOGOUT_USER_REQUEST } from '../../rest_end_points'
 
 
 

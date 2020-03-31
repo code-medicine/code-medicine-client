@@ -1,4 +1,4 @@
-import { NOTIFY, LEFT_SIDEBAR, ACTIVE_USER } from "../shared/action_constants";
+import { NOTIFY, LEFT_SIDEBAR, ACTIVE_USER, ACTIVE_PAGE } from "../shared/action_constants";
 
 
 export function notify(type,title,message){
@@ -23,6 +23,13 @@ export function left_sidebar_controls(status){
 export function set_active_user(details){
     return {
         type: ACTIVE_USER,
+        payload: details
+    }
+}
+
+export function set_active_page(details){
+    return {
+        type: ACTIVE_PAGE,
         payload: details
     }
 }

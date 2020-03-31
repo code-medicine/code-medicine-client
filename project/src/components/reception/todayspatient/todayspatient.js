@@ -187,7 +187,6 @@ class Todayspatient extends Component {
         if (data === null) {
             return
         }
-        console.log('data', data)
         return (data.map((booking, i) => {
             var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
 
@@ -416,7 +415,6 @@ class Todayspatient extends Component {
                     call_back={this.call_back_new_appointment_modal}
                     bind_function={this.open_new_patient_modal}
                     state={'new'} />
-                    
 
                 <ProcedureModal
                     new_procedure_visibility={this.state.procedure_visibility}

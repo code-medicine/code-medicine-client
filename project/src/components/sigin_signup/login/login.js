@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import Container from '../../shared/container/container';
-import { BASE_URL, REGISTER_URL, LOGIN_URL } from '../../shared/router_constants';
 import Axios from 'axios';
-import { LOGIN_USER_REQUEST, PROFILE_USER_REQUEST } from '../../shared/rest_end_points';
 import { connect } from "react-redux";
-import { notify, set_active_user } from '../../actions';
 import Loader from 'react-loader-spinner';
 import { withRouter, Link } from 'react-router-dom';
-import Inputfield from '../../shared//customs/inputfield/inputfield';
+
+import Container from '../../../shared/container/container';
+import { notify, set_active_user } from '../../../actions';
+import Inputfield from '../../../shared/customs/inputfield/inputfield';
+
+import { BASE_URL, REGISTER_URL, LOGIN_URL } from '../../../shared/router_constants';
+import { LOGIN_USER_REQUEST, PROFILE_USER_REQUEST } from '../../../shared/rest_end_points';
 
 
 class Login extends Component {
@@ -15,8 +17,8 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: { value: '' },
-            password: { value: '' },
+            email: { value: '', error: false },
+            password: { value: '', error: false },
             remember_me_option: true,
             loading_status: false,
         }
@@ -35,10 +37,10 @@ class Login extends Component {
     on_text_field_change = (e) => {
         switch (e.target.id) {
             case 'email_text_input':
-                this.setState({ email: { value: e.target.value } })
+                this.setState({ email: { value: e.target.value, error: false } })
                 break;
             case 'password_text_input':
-                this.setState({ password: { value: e.target.value } })
+                this.setState({ password: { value: e.target.value, error: false } })
                 break;
             case 'remember_me_text_input':
                 this.setState({ remember_me_option: e.target.checked })
@@ -77,13 +79,17 @@ class Login extends Component {
             }
             else {
                 this.props.notify('error', '', res.data['message'])
+                this.setState({
+                    email: { value: this.state.email.value, error: true },
+                    password: { value: this.state.password.value, error: true }
+                })
             }
         }).catch(err => {
             this.props.notify('error', '', 'Server not responding! please try again later')
             this.setState({
                 loading_status: false,
-                email: '',
-                password: ''
+                email: { value: '', error: false },
+                password: { value: '', error: false }
             })
         });
     }
@@ -118,6 +124,7 @@ class Login extends Component {
                     input_type={'email'}
                     on_text_change_listener={this.on_text_field_change}
                     default_value={this.state.email.value}
+                    error={this.state.email.error}
                 />
                 <Inputfield
                     id={'password_text_input'}
@@ -127,6 +134,7 @@ class Login extends Component {
                     input_type={'password'}
                     on_text_change_listener={this.on_text_field_change}
                     default_value={this.state.password.value}
+                    error={this.state.password.error}
                 />
 
             </div>
@@ -153,7 +161,7 @@ class Login extends Component {
 
             view = <div className={``}>
                 {username_password}
-                <hr/>
+                <hr />
                 {remember_me_reset_password}
             </div>
         }
@@ -207,7 +215,7 @@ class Login extends Component {
                         </div>
                     </div>
                 </div>
-                
+
             </Container >
         );
     }

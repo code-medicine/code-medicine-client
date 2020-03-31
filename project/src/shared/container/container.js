@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Header from '../../components/header/header';
-import Footer from '../../components/footer/footer';
-import Leftsidebar from '../left_sidebar/left_sidebar';
-import Pageheader from '../page_header/page_header';
+import Header from './header/header';
+import Footer from './footer/footer';
+import Leftsidebar from './left_sidebar/left_sidebar';
+import Pageheader from './page_header/page_header';
 import { connect } from "react-redux";
 // import Axios from 'axios';
 // import { PROFILE_USER_REQUEST } from '../rest_end_points';

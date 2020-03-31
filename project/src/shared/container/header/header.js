@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { LOGIN_URL } from '../../shared/router_constants';
+import { LOGIN_URL } from '../../router_constants';
 import Logo_light from './logo_main.png';
 import IAMC from './IAMC.png';
 import IAMC_detail from "./iffatanwarmedicalcomplex.png";
 import { connect } from "react-redux";
-import { left_sidebar_controls, set_active_user} from '../../actions';
+import { left_sidebar_controls, set_active_user} from '../../../actions';
 import { Link, withRouter } from 'react-router-dom';
-import NOPICTURE from '../../resources/images/placeholder.jpg'
+// import NOPICTURE from '../../resources/images/placeholder.jpg'
 
 
 class Header extends Component {
@@ -42,9 +42,9 @@ class Header extends Component {
                         className="d-inline py-3 text-white">
                         <i className="icon-paragraph-justify2"></i>
                     </Link>
-                    <img 
-                        className="d-inline ml-3"  src={Logo_light} alt="" />
-                    <img className="d-inline ml-2" src={IAMC} alt="" />
+                    {/* <img 
+                        className="d-inline ml-3"  src={Logo_light} alt="" /> */}
+                    
                     {/* <img className="d-inline float-right m-0" src={Logo_light} alt="" /> */}
                 </div>
 
@@ -62,14 +62,9 @@ class Header extends Component {
                 <div className="collapse navbar-collapse" id="navbar-mobile">
                     <div className={`container-fluid`}>
                         <div className={`row`}>
-                            <div className={`col`}></div>
-                            <div className={`col d-flex justify-content-center pr-lg-5 mr-lg-5`}>
-                                <img 
-                                className="mr-lg-5" style={{ height: 30, width: 30 }} 
-                                    src={Logo_light} 
-                                    alt="" />
+                            <div className={`col text-right`}>
+                                <img className="border-left-light" src={IAMC_detail} alt="" style={{maxHeight: '30px'}}/>
                             </div>
-                            <div className={`col`}></div>
                         </div>
                     </div>
                     
