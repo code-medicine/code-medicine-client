@@ -44,6 +44,7 @@ class Todayspatient extends Component {
             invoice_modal_visibility: false,
 
             user_modal_props: null,
+            invoice_doctor_id: null,
             procedure_visit_id: null,
             invoice_visit_id: null,
             search_doctor: { value: '' },
@@ -232,9 +233,9 @@ class Todayspatient extends Component {
     open_new_appointment_modal = () => {
         this.setState({ new_appointment_modal_visibility: true })
     }
-    openInvoiceModalHandler = (id) => {
-        console.log('id: '+id);
-        this.setState({invoice_modal_visibility:true,invoice_visit_id:id})
+    openInvoiceModalHandler = (visitID,doctorID) => {
+        console.log('id: '+visitID+' '+ doctorID);
+        this.setState({invoice_modal_visibility:true,invoice_visit_id:visitID,invoice_doctor_id:doctorID})
     };
     closeInvoiceModalHandler = () => {
         this.setState({ invoice_modal_visibility: false })
@@ -439,6 +440,7 @@ class Todayspatient extends Component {
                 <InvoiceModal
                     modal_visibility={this.state.invoice_modal_visibility}
                     visit_id={this.state.invoice_visit_id}
+                    doctor_id={'5e31dcc3300df716580e5734'}
                     invoice_backDrop={this.closeInvoiceModalHandler}
                     cancelInvoiceModal={this.closeInvoiceModalHandler}
                 />

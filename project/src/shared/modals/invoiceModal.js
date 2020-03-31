@@ -5,6 +5,7 @@ import Select from "react-select";
 import './invoiceModal.css';
 import Axios from "axios";
 import {GET_PROCEDURES_FEE,GET_PROFITS_BY_DOCTOR_ID} from "../rest_end_points";
+import Inputfield from "../customs/inputfield/inputfield";
 
 class InvoiceModal extends Component {
 
@@ -23,23 +24,35 @@ class InvoiceModal extends Component {
             visitId:null,
             selectedInvoiceType:null,
             consultancyFee: 0,
+            consultancyDiscount: 0,
+            consultancyTotal: 0,
             addons: 0,
-            proceduresFee:0
+            proceduresFee:0,
+            procedures:null,
+            total:0,
+            totalDiscount:0,
+            payableAmount:0
         }
+    };
+
+    consultancyEditHandler = () => {
+        console.log('Edit!!');
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         console.log(this.props.visit_id);
-        if(this.props.visit_id!=null && this.props.visit_id!==this.state.visitId) {
+        if (this.props.visit_id != null && this.props.visit_id !== this.state.visitId) {
             try {
                 let response = Axios.get(`${GET_PROCEDURES_FEE}?visit_id=`+this.props.visit_id,{
                     headers: { 'code-medicine': localStorage.getItem('user') }
                 });
                 response.then((response)=>{
+                    console.log(response);
                     if(response.data.status===true) {
                         this.setState({
                             proceduresFee : response.data.payload.procedures_fees,
-                            visitId: this.props.visit_id
+                            procedures: response.data.payload.procedures,
+                            visitId: this.props.visit_id,
                         });
                     }
                 });
@@ -50,34 +63,28 @@ class InvoiceModal extends Component {
 
 
             try {
-                let response = Axios.get(`${GET_PROFITS_BY_DOCTOR_ID}?doctor_id=`+this.props.doctor_id,{
-                    headers: { 'code-medicine': localStorage.getItem('user') }
+                let response = Axios.get(`${GET_PROFITS_BY_DOCTOR_ID}?doctor_id=`+this.props.doctor_id, {
+                    headers: {'code-medicine': localStorage.getItem('user')}
                 });
-                response.then((response)=>{
-                    if(response.data.status===true) {
+                response.then((response) => {
+                    if (response.data.status === true) {
                         this.setState({
-                            proceduresFee : response.data.payload.procedures_fees,
-                            visitId: this.props.visit_id
+                            consultancyFee: response.data.payload.profits[0].consultancy_fee,
+                            consultancyDiscount: response.data.payload.profits[0].consultancy_percentage,
+                            consultancyTotal: (response.data.payload.profits[0].consultancy_fee) - (response.data.payload.profits[0].consultancy_percentage)
                         });
                     }
                 });
-            }
-            catch (err) {
+            } catch (err) {
                 this.props.notify('error', '', 'Server is not responding! Please try again later');
             }
-
 
 
         }
     }
 
-    on_selected_changed = (e) => {
-        if (e !== null) {
-            this.setState({ selectedInvoiceType: e.label });
-        }
-    };
-
     render() {
+        console.log('RENDER!!!');
         return (
             <Modal
                 visible={this.props.modal_visibility}
@@ -112,7 +119,10 @@ class InvoiceModal extends Component {
                                         <tr>
                                             <th scope="col">SR #</th>
                                             <th scope="col">Description</th>
-                                            <th scope="col">Amount</th>
+                                            <th scope="col">Price</th>
+                                            <th scope="col">Discount</th>
+                                            <th scope="col">Total</th>
+                                            <th scope="col">Action</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -120,17 +130,33 @@ class InvoiceModal extends Component {
                                             <th scope="row">1</th>
                                             <td>Consultancy Fee</td>
                                             <td>{this.state.consultancyFee}</td>
+                                            <td>{this.state.consultancyDiscount}</td>
+                                            <td>{this.state.consultancyTotal}</td>
+                                            <td><button
+                                                type="button"
+                                                className="btn btn-outline btn-sm bg-success text-success btn-icon mb-3"
+                                                style={{ textTransform: "inherit" }}
+                                                onClick={this.consultancyEditHandler}>
+                                                <i className="icon-pencil7" />
+                                            </button></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">2</th>
                                             <td>Addons</td>
                                             <td>{this.state.addons}</td>
                                         </tr>
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td>Procedures Fee</td>
-                                            <td>{this.state.proceduresFee}</td>
-                                        </tr>
+                                        {
+                                            this.state.procedures ? this.state.procedures.map((data,ikey)=>{
+                                                return (<tr key={data._id}>
+                                                    <th scope="row">{ikey+3}</th>
+                                                    <td>{data.procedure_details}</td>
+                                                    <td>{data.procedure_fee}</td>
+                                                    <td>{data.discount}</td>
+                                                    <td>{data.procedure_fee-data.discount}</td>
+                                                    <td />
+                                                </tr>);
+                                            }):''
+                                        }
                                         <tr>
                                             <td />
                                             <td />
@@ -138,18 +164,33 @@ class InvoiceModal extends Component {
                                         </tr>
                                         <tr>
                                             <th scope="row" />
+                                            <td />
+                                            <td />
                                             <td>Total</td>
-                                            <td>3400</td>
+                                            <td>{this.state.total}</td>
                                         </tr>
                                         <tr>
                                             <th scope="row" />
+                                            <td />
+                                            <td />
                                             <td>Discount</td>
-                                            <td>400</td>
+                                            <td>
+                                                <Inputfield
+                                                    label_tag={'Discount'}
+                                                    icon_class={'icon-question3'}
+                                                    placeholder="Enter Discount"
+                                                    input_type={'text'}
+                                                    field_type=""
+                                                    default_value={this.props.totalDiscount}
+                                                />
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th scope="row" />
+                                            <td />
+                                            <td />
                                             <td>Payable Amount</td>
-                                            <td>3000</td>
+                                            <td>{this.state.payableAmount}</td>
                                         </tr>
 
                                         </tbody>
@@ -160,16 +201,6 @@ class InvoiceModal extends Component {
                     </div>
                 </div>
                 <div className="modal-footer">
-                    <div className="col-md-4">
-                        <div className="form-group" style={{marginBottom:'0px'}}>
-                            <Select
-                                isClearable
-                                options={this.state.invoiceType}
-                                placeholder="Select Invoice Type Copy"
-                                onChange={e => this.on_selected_changed(e)}
-                            />
-                        </div>
-                    </div>
                     <button
                         type="button"
                         className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
