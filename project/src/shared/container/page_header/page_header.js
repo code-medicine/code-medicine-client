@@ -72,11 +72,14 @@ class Page_header extends Component {
                 <div className="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
                     <div className="d-flex">
                         <div className="breadcrumb py-0">
-                            <Link to="index.html" className="breadcrumb-item">
+                            {this.props.active_page !== null? this.props.active_page.map((item,i) => {
+                                return item
+                            }):''}
+                            {/* <Link to="index.html" className="breadcrumb-item">
                                 <i className="icon-home2 mr-2"></i> 
                                 Home
                             </Link>
-                            <span className="breadcrumb-item active">Dashboard</span>
+                            <span className="breadcrumb-item active">Dashboard</span> */}
                         </div>
 
                         <Link to={BASE_URL} className="header-elements-toggle text-default d-md-none">
@@ -139,7 +142,8 @@ class Page_header extends Component {
 }
 function map_state_to_props(state) {
     return {
-        active_user: state.active_user
+        active_user: state.active_user,
+        active_page: state.active_page
     }
 }
 export default connect(map_state_to_props, { set_active_user, notify })(withRouter(Page_header));

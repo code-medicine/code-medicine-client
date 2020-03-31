@@ -32,7 +32,7 @@ class Left_sidebar extends Component {
         }).then(res => {
             if (res.data.status === true){
                 localStorage.clear()
-                this.props.set_active_user({})
+                // this.props.set_active_user(null)
                 this.props.history.push(LOGIN_URL)
                 
                 this.props.notify('success', '', res.data.message)
@@ -96,13 +96,19 @@ class Left_sidebar extends Component {
                     <div className="sidebar-user background_custom_left_side_bar" style={{height: '25vh'}}>
                         <div className="card-body">
                             <div className="media">
-                                <div className="mr-3">
+                                {/* <div className="mr-3">
                                     <Link to={BASE_URL}>
                                         <i className="icon-user"></i>
                                     </Link>
-                                </div>
+                                </div> */}
+                                
 
-                                <div className="media-body">
+                                <div className="media-body ">
+                                    <div className={`img-fluid rounded-circle text-teal-400 bg-light h3 d-flex justify-content-center align-items-center p-2`} 
+                                        style={{height: '50px', width: '50px'}}// src={NO_PICTURE} 
+                                        >
+                                        {`${first_name_first_letter}${last_name_first_letter}`}
+                                    </div>
                                     <div className="media-title font-weight-semibold">
                                         {`${first_name_first_letter}${first_name_rest} ${last_name_first_letter}${last_name_rest}`}                                 
                                     </div>

@@ -24,15 +24,15 @@ class Login extends Component {
         }
     }
 
-    UNSAFE_componentWillMount() {
-        if (localStorage.user) {
-            Axios.get(`${PROFILE_USER_REQUEST}?tag=${localStorage.user}`).then(res => {
-                if (res.data['status']) {
-                    this.props.history.push(BASE_URL)
-                }
-            })
-        }
-    }
+    // UNSAFE_componentWillMount() {
+    //     if (localStorage.user) {
+    //         Axios.get(`${PROFILE_USER_REQUEST}?tag=${localStorage.user}`).then(res => {
+    //             if (res.data['status']) {
+    //                 this.props.history.push(BASE_URL)
+    //             }
+    //         })
+    //     }
+    // }
 
     on_text_field_change = (e) => {
         switch (e.target.id) {

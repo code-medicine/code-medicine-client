@@ -1,5 +1,5 @@
-.modal-body {
-    height: 80vh;
+.modal-body-custom {
+    height: 70vh;
     overflow-y: auto;
 }
 #print{

@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import Axios from 'axios';
 import { PROFILE_USER_REQUEST, PROFILE_UPDATE_USER_REQUEST } from '../../shared/rest_end_points';
 import { LOGIN_URL, BASE_URL } from '../../shared/router_constants';
-import { set_active_user, notify } from '../../actions'
+import { set_active_user, notify, set_active_page } from '../../actions'
 import Inputfield from '../../shared/customs/inputfield/inputfield';
 import '../../shared/customs/Animations/animations.css';
 import DateTimePicker from 'react-datetime'
@@ -37,7 +37,12 @@ class Profile extends Component {
             previous_payload: null,
         };
     }
-    componentDidMount() {
+    componentDidMount() {        
+        const routes = [<Link to={BASE_URL} className="breadcrumb-item">
+                        <i className="icon-home2 mr-2"></i> 
+                        Home
+                    </Link>,<span className="breadcrumb-item active">Profile</span>]
+        this.props.set_active_page(routes)
         if (localStorage.user) {
             this.setState({ loading_status: true }, () => {
                 Axios.get(`${PROFILE_USER_REQUEST}?tag=${localStorage.user}`).then(res => {
@@ -549,7 +554,8 @@ class Profile extends Component {
 function map_state_to_props(state) {
     return {
         active_user: state.active_user,
-        notify: state.notify
+        notify: state.notify,
+        
     }
 }
-export default connect(map_state_to_props, { set_active_user, notify })(withRouter(Profile));
+export default connect(map_state_to_props, { set_active_user, notify, set_active_page })(withRouter(Profile));

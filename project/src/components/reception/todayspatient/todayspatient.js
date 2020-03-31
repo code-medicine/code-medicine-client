@@ -6,14 +6,14 @@ import {
         BASE_USERS_URL,
         SEARCH_TODAYS_APPOINTMENTS_URL,
         SEARCH_BY_ID_USER_REQUEST,
-        SEARCH_USER_REQUEST
+        SEARCH_USER_REQUEST,
     } from '../../../shared/rest_end_points';
 import { connect } from "react-redux";
-import { notify } from '../../../actions';
+import { notify,set_active_page } from '../../../actions';
 import { Link, withRouter } from 'react-router-dom';
 import { classNameColors } from '../../../shared/constant_data'
 import './todayspatient.css';
-import { LOGIN_URL } from '../../../shared/router_constants';
+import { LOGIN_URL, BASE_URL } from '../../../shared/router_constants';
 import moment from 'moment';
 import ProcedureModal from '../../../shared/modals/proceduremodal';
 import InvoiceModal from '../../../shared/modals/invoiceModal';
@@ -122,6 +122,11 @@ class Todayspatient extends Component {
     }
 
     componentDidMount() {
+        const routes = [<Link to={BASE_URL} className="breadcrumb-item">
+                        <i className="icon-user mr-2"></i> 
+                        Reception
+                    </Link>,<span className="breadcrumb-item active">Today's Patient</span>]
+        this.props.set_active_page(routes)
         let d = new Date();
         d = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
         this.populate_appointments({ date_flag: d })
@@ -452,4 +457,4 @@ class Todayspatient extends Component {
 function map_state_to_props(notify) {
     return { notify }
 }
-export default connect(map_state_to_props, { notify })(withRouter(Todayspatient));
+export default connect(map_state_to_props, { notify, set_active_page })(withRouter(Todayspatient));

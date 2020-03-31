@@ -6,6 +6,8 @@ import ReactEcharts from 'echarts-for-react';
 import * as echarts from 'echarts/lib/echarts'
 import { Link } from 'react-router-dom';
 import { BASE_URL } from '../../shared/router_constants';
+import { PROFILE_USER_REQUEST } from '../../shared/rest_end_points';
+import Axios from 'axios';
 
 class Home extends Component {
     constructor(props) {
@@ -20,6 +22,14 @@ class Home extends Component {
                         Home
                     </Link>,<span className="breadcrumb-item active">Dashboard</span>]
         this.props.set_active_page(routes)
+        const token = localStorage.getItem('user')
+        Axios.get(`${PROFILE_USER_REQUEST}?tag=${token}`).then(res => {
+            if (res.data.status === true){
+                this.props.set_active_user(res.data['payload'])
+            }
+        }).catch(err => {
+            console.log(err)
+        })
     }
     render() {        
         return (

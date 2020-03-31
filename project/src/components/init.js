@@ -22,9 +22,9 @@ class Init extends Component {
     render() {
         return (
             <BrowserRouter >
-                <Route path={LOGIN_URL} component={Login} />
+                <Route exact path={LOGIN_URL} component={Login} />
+                <Route exact path={REGISTER_URL} component={Register} />
                 <ProtectedRoute exact path={BASE_URL} component={Home} />
-                <ProtectedRoute exact path={REGISTER_URL} component={Register} />
                 <ProtectedRoute exact path={PROFILE} component={Profile} />
                 <ProtectedRoute exact path={RECEPTION_TODAYSPATIIENT} component={Todayspatient} />
                 <ProtectedRoute exact path={RECEPTION_VISITS} component={Visits} />

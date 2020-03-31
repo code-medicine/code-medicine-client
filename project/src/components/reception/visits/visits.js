@@ -3,7 +3,7 @@ import Container from '../../../shared/container/container';
 import { SEARCH_USER_REQUEST, SEARCH_APPOINTMENTS_URL, SEARCH_BY_ID_USER_REQUEST } from '../../../shared/rest_end_points';
 import Axios from 'axios';
 import { connect } from "react-redux";
-import { notify } from '../../../actions';
+import { notify, set_active_page } from '../../../actions';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import DateTimePicker from 'react-datetime'
@@ -15,6 +15,7 @@ import TableRow from '../../../shared/customs/tablerows/tablerow';
 import '../../../shared/customs/Animations/animations.css';
 import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
 import Loading from '../../../shared/customs/loading/loading';
+import { BASE_URL } from '../../../shared/router_constants';
 
 
 class Visits extends Component {
@@ -48,6 +49,11 @@ class Visits extends Component {
     }
 
     componentDidMount() {
+        const routes = [<Link to={BASE_URL} className="breadcrumb-item">
+                        <i className="icon-user mr-2"></i> 
+                        Reception
+                    </Link>,<span className="breadcrumb-item active">All Apointments</span>]
+        this.props.set_active_page(routes)
         setInterval(() => {
             this.setState({ today: moment().format('LT') })
         }, 60000)
@@ -682,4 +688,4 @@ class Visits extends Component {
 function map_state_to_props(notify) {
     return { notify }
 }
-export default connect(map_state_to_props, { notify })(withRouter(Visits));
+export default connect(map_state_to_props, { notify,set_active_page })(withRouter(Visits));
