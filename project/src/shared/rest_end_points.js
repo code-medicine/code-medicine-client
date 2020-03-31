@@ -1,6 +1,6 @@
 const PROTOCOL = 'http';
 // const ADDRESS = '39.33.186.49';
-const ADDRESS = 'localhost'
+const ADDRESS = '192.168.1.102'
 const PORT = '5000';
 
 export const BASE_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
@@ -18,13 +18,16 @@ export const SEARCH_BY_ID_USER_REQUEST = `${BASE_USERS_URL}/search/id`;
 // All visits/reception related end points
 export const BASE_RECEPTION_URL = `${BASE_URL}/visits`;
 export const NEW_APPOINTMENT_URL = `${BASE_RECEPTION_URL}/new`;
+export const UPDATE_APPOINTMENT_URL = `${BASE_RECEPTION_URL}/update`
 export const SEARCH_APPOINTMENTS_URL = `${BASE_RECEPTION_URL}/search`;
 export const SEARCH_TODAYS_APPOINTMENTS_URL = `${SEARCH_APPOINTMENTS_URL}/today`;
+
 
 // All procedure related end points
 export const BASE_PROCEDURES_URL = `${BASE_URL}/procedures`;
 export const NEW_PROCEDURES_URL = `${BASE_PROCEDURES_URL}/new`;
 export const GET_PROCEDURE_BY_ID = `${BASE_PROCEDURES_URL}/search/visit/id`;
+export const UPDATE_PROCEDURE = `${BASE_PROCEDURES_URL}/update`;
 export const GET_PROCEDURES_FEE = `${BASE_PROCEDURES_URL}/fees`;
 
 // All profit related end points

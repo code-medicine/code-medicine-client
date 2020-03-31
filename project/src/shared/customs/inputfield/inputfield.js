@@ -6,7 +6,8 @@ class Inputfield extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            options: this.props.options
+            options: this.props.options,
+            error: this.props.error,
         }
     }
 
@@ -26,7 +27,7 @@ class Inputfield extends Component {
         
         const input_field_type = <input 
                                     type={_input_type} 
-                                    className="form-control form-control-lg" 
+                                    className={`form-control form-control-lg ${this.props.error? 'border-danger':''}`} 
                                     id={_id}
                                     placeholder={_placeholder}
                                     onChange={_on_change}
@@ -34,8 +35,8 @@ class Inputfield extends Component {
                                     disabled={_disabled}></input>
         
         const text_area_field_type = <textarea
-                                        rows={"5"}
-                                        cols={"5"}
+                                        rows={"3"}
+                                        cols={"3"}
                                         className="form-control form-control-lg"
                                         id={_id}
                                         placeholder={_placeholder}
