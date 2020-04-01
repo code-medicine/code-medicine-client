@@ -20,11 +20,11 @@ class NewAppointmentModal extends Component {
             patients: [],
             doctors: [],
 
-            appointment_patient: { value: '' },
-            appointment_doctor: { value: '' },
-            appointment_reason: { value: '' },
-            appointment_date: { value: moment().format('ll') },
-            appointment_time: { value: moment().format('LT') },
+            appointment_patient: { value: '', error: false },
+            appointment_doctor: { value: '', error: false },
+            appointment_reason: { value: '', error: false },
+            appointment_date: { value: moment().format('ll'), error: false },
+            appointment_time: { value: moment().format('LT'), error: false },
 
             new_patient_modal_visibility: false,
 
@@ -101,7 +101,7 @@ class NewAppointmentModal extends Component {
                         reference: e.reference,
                         label: e.label
                     }
-                    this.setState({ appointment_patient: { value: e.reference }, patient_select_value: val_patient })
+                    this.setState({ appointment_patient: { value: e.reference, error: false }, patient_select_value: val_patient })
                     break;
                 case 'appointment_doctor_selection':
                     const val_doctor = {
@@ -109,7 +109,7 @@ class NewAppointmentModal extends Component {
                         reference: e.reference,
                         label: e.label
                     }
-                    this.setState({ appointment_doctor: { value: e.reference }, doctor_select_value: val_doctor })
+                    this.setState({ appointment_doctor: { value: e.reference, error: false }, doctor_select_value: val_doctor })
                     break;
                 default:
                     break;
@@ -118,10 +118,10 @@ class NewAppointmentModal extends Component {
         else {
             switch (actor) {
                 case 'appointment_patient_selection':
-                    this.setState({ appointment_patient: { value: '' }, patient_select_value: '' })
+                    this.setState({ appointment_patient: { value: '', error: false }, patient_select_value: '' })
                     break;
                 case 'appointment_doctor_selection':
-                    this.setState({ appointment_doctor: { value: '' }, doctor_select_value: '' })
+                    this.setState({ appointment_doctor: { value: '', error: false }, doctor_select_value: '' })
                     break;
                 default:
                     break;
@@ -132,7 +132,7 @@ class NewAppointmentModal extends Component {
     on_text_field_change = (e) => {
         switch (e.target.id) {
             case 'appointment_reason_text_input':
-                this.setState({ appointment_reason: { value: e.target.value } })
+                this.setState({ appointment_reason: { value: e.target.value, error: false } })
                 break;
             default:
                 break;
@@ -141,7 +141,7 @@ class NewAppointmentModal extends Component {
 
     on_apointment_date_change = (e) => {
         if (e === '')
-            this.setState({ appointment_date: { value: '' } })
+            this.setState({ appointment_date: { value: '', error: false } })
         else {
             var configured_date = null;
             try {
@@ -151,7 +151,7 @@ class NewAppointmentModal extends Component {
                 configured_date = ''
             }
             finally {
-                this.setState({ appointment_date: { value: configured_date } })
+                this.setState({ appointment_date: { value: configured_date, error: false } })
             }
         }
     }
@@ -174,37 +174,74 @@ class NewAppointmentModal extends Component {
         }
     }
 
+    check_input = (input,required = true,only_alpha=false,only_numbers=false) => {
+        const alphabets = /^[A-Za-z]+$/;
+        const numbers = /^[0-9]+$/;
+        if (required  && input === ''){
+            return true;
+        }
+        if (only_alpha && !input.match(alphabets)){
+            return true;
+        }
+        if (only_numbers && !input.match(numbers)){
+            return true;
+        }
+        return false;
+    }
+
     on_submit = () => {
         this.setState({ loading_status: true })
-        const data = {
-            visit_id: this.props.payload.visit_id,
-            payload: {
-                patient_id: this.state.appointment_patient.value,
-                doctor_id: this.state.appointment_doctor.value,
-                date: this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT',
-                time: this.state.appointment_time.value,
-                reason: this.state.appointment_reason.value,
-                type: 'Admin sahab replace this with token or identification!',
-                status: 'waiting'
-            }
+        let error = false
+        if (this.check_input(this.state.appointment_patient.value,true)){
+            this.setState({appointment_patient: { value: this.state.appointment_patient.value, error: true}})
+            error = true
         }
-        Axios.put(UPDATE_APPOINTMENT_URL,data, {
+        if (this.check_input(this.state.appointment_doctor.value,true)){
+            this.setState({appointment_doctor: { value: this.state.appointment_doctor.value, error: true}})
+            error = true
+        }
+
+        if (error === true){
+            this.props.notify('error','','Invalid inputs')
+            return
+        }
+
+        const data = {
+            patient_id: this.state.appointment_patient.value,
+            doctor_id: this.state.appointment_doctor.value,
+            date: this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT',
+            time: this.state.appointment_time.value,
+            reason: this.state.appointment_reason.value,
+            type: 'Admin sahab replace this with token or identification!',
+            status: 'waiting'
+        }
+        Axios.post(NEW_APPOINTMENT_URL, data, {
             headers: {
                 'code-medicine': localStorage.getItem('user')
             }
         }).then(res => {
-            if (res.data.status === true){
+            if (res.data.status) {
                 this.props.notify('success', '', res.data.message)
-                this.setState({ loading_status: false })
-                this.props.close()
+                this.setState({
+                    appointment_patient: { value: '' },
+                    appointment_doctor: { value: '' },
+                    appointment_date: { value: '' },
+                    appointment_time: { value: '' },
+                    appointment_reason: { value: '' },
+                    loading_status: false,
+                    
+                })
+                
+                this.props.call_back()
             }
-            else{
+            else {
                 this.props.notify('error', '', res.data.message)
-                this.setState({ loading_status: false })
+                this.setState({loading_status: false})
             }
         }).catch(err => {
-            this.props.notify('error','', 'No connection')
-            this.setState({ loading_status: false })
+            this.props.notify('error', '', 'Server not responding')
+            this.setState({loading_status: false})
+            this.props.close()
         })
     }
     open_new_patient_modal = () => {
