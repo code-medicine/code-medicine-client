@@ -44,7 +44,7 @@ class ProtectedRoutes extends Component {
     render() {
         const { component: Component, ...props } = this.props
 
-        let __html = <Loading size={150}/>;
+        let __html = <div className="d-flex align-items-center justify-content-center" style={{height: '90vh'}}><Loading size={150}/></div>;
 
         /* if user is logged in */
         if (this.check_for_token()) {

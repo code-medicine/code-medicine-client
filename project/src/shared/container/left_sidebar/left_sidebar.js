@@ -93,27 +93,28 @@ class Left_sidebar extends Component {
                 </div>
 
                 <div className="sidebar-content">
-                    <div className="sidebar-user background_custom_left_side_bar" style={{height: '25vh'}}>
+                    <div className="sidebar-user background_custom_left_side_bar d-flex align-items-end" style={{height: '25vh'}}>
                         <div className="card-body">
-                            <div className="media">
-                                {/* <div className="mr-3">
-                                    <Link to={BASE_URL}>
+                            <div className="media d-flex align-items-center">
+                                <div className="mr-3">
+                                    {/* <Link to={BASE_URL}>
                                         <i className="icon-user"></i>
-                                    </Link>
-                                </div> */}
-                                
-
-                                <div className="media-body ">
+                                    </Link> */}
                                     <div className={`img-fluid rounded-circle text-teal-400 bg-light h3 d-flex justify-content-center align-items-center p-2`} 
                                         style={{height: '50px', width: '50px'}}// src={NO_PICTURE} 
                                         >
                                         {`${first_name_first_letter}${last_name_first_letter}`}
                                     </div>
+                                </div>
+                                
+
+                                <div className="media-body ">
+                                    
                                     <div className="media-title font-weight-semibold">
                                         {`${first_name_first_letter}${first_name_rest} ${last_name_first_letter}${last_name_rest}`}                                 
                                     </div>
                                     <div className="font-size-xs opacity-50">
-                                        <i className="icon-pin font-size-sm"></i> &nbsp;Islamabad, Pakistan
+                                        <i className="icon-pin font-size-sm"></i> &nbsp;Pakistan
                                     </div>
                                 </div>
                             {/* settings button in left bar */}
