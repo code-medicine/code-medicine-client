@@ -6,6 +6,7 @@ import { PROFILE_USER_REQUEST } from './rest_end_points';
 import {set_active_user} from '../actions'
 import { Route, Redirect } from 'react-router-dom';
 import _ from 'lodash'
+import Loading from './customs/loading/loading';
 
 class ProtectedRoutes extends Component {
 
@@ -19,14 +20,21 @@ class ProtectedRoutes extends Component {
         this.authorize_token(localStorage.getItem('user'))
     }
 
-    authorize_token = async (token) => {
-        await Axios.get(`${PROFILE_USER_REQUEST}?tag=${token}`).then(res => {
-            if (res.data.status === true){
-                this.props.set_active_user(res.data['payload'])
+    authorize_token = (token) => {
+        if (_.isEmpty(this.props.active_user)){
+            if (token !== null){
+                Axios.get(`${PROFILE_USER_REQUEST}?tag=${token}`).then(res => {
+                    if (res.data.status === true){
+                        this.props.set_active_user(res.data['payload'])
+                    }else{
+                        localStorage.clear()
+                        this.props.set_active_user({})
+                    }
+                }).catch(err => {
+                    console.log(err)
+                })
             }
-        }).catch(err => {
-            console.log(err)
-        })
+        }
     }
 
     check_for_token = () => {
@@ -36,7 +44,7 @@ class ProtectedRoutes extends Component {
     render() {
         const { component: Component, ...props } = this.props
 
-        let __html = <div></div>;
+        let __html = <Loading size={150}/>;
 
         /* if user is logged in */
         if (this.check_for_token()) {

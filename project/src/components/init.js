@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import {
     BASE_URL,
     LOGIN_URL,
@@ -22,12 +22,14 @@ class Init extends Component {
     render() {
         return (
             <BrowserRouter >
-                <Route exact path={LOGIN_URL} component={Login} />
-                <Route exact path={REGISTER_URL} component={Register} />
-                <ProtectedRoute exact path={BASE_URL} component={Home} />
-                <ProtectedRoute exact path={PROFILE} component={Profile} />
-                <ProtectedRoute exact path={RECEPTION_TODAYSPATIIENT} component={Todayspatient} />
-                <ProtectedRoute exact path={RECEPTION_VISITS} component={Visits} />
+                <Switch>
+                    <Route exact path={LOGIN_URL} component={Login} />
+                    <Route exact path={REGISTER_URL} component={Register} />
+                    <ProtectedRoute exact path={BASE_URL} component={Home} />
+                    <ProtectedRoute exact path={PROFILE} component={Profile} />
+                    <ProtectedRoute exact path={RECEPTION_TODAYSPATIIENT} component={Todayspatient} />
+                    <ProtectedRoute exact path={RECEPTION_VISITS} component={Visits} />
+                </Switch>
                 <ToastContainer hideProgressBar />
             </BrowserRouter>
         );

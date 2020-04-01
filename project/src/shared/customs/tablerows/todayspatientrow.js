@@ -3,7 +3,7 @@ import { Collapse } from 'reactstrap'
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Popup } from "semantic-ui-react";
-import NewAppointmentModal from '../../modals/newappointmentmodal';
+import UpdateAppointmentModal from '../../modals/update_appointment_modal';
 
 class TodaysPatientRow extends Component {
     constructor(props) {
@@ -226,7 +226,7 @@ class TodaysPatientRow extends Component {
                                 this.render_hidden_elements()
                             }
                         </Collapse>
-                        <NewAppointmentModal 
+                        <UpdateAppointmentModal 
                             visibility={this.state.update_appointment_modal_visibility}
                             close={ this.close_update_appointment_modal }
                             call_back={this.call_back_update_appointment_modal}

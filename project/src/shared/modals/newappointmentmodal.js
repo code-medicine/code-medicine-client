@@ -17,37 +17,19 @@ class NewAppointmentModal extends Component {
         this.state = {
             loading_status: false,
 
-            patients: this.props.state === 'update'? 
-                        [{
-                            id: 'appointment_patient_selection',
-                            reference: this.props.payload.patient_ref.id,
-                            label: `${this.props.payload.patient_ref.first_name} ${this.props.payload.patient_ref.last_name} | ${this.props.payload.patient_ref.phone_number} | ${this.props.payload.patient_ref.email}`
-                        }]:[],
-            doctors: this.props.state === 'update'? 
-                        [{
-                            id: 'appointment_doctor_selection',
-                            reference: this.props.payload.doctor_ref.id,
-                            label: `${this.props.payload.doctor_ref.first_name} ${this.props.payload.doctor_ref.last_name} | ${this.props.payload.doctor_ref.phone_number} | ${this.props.payload.doctor_ref.email}`
-                        }]:[],
+            patients: [],
+            doctors: [],
 
-            appointment_patient: { value: this.props.state === 'update'? this.props.payload.patient_ref.id: '' },
-            appointment_doctor: { value: this.props.state === 'update'? this.props.payload.doctor_ref.id: '' },
-            appointment_reason: { value: this.props.state === 'update'? this.props.payload.reason: '' },
-            appointment_date: { value: this.props.state === 'update'? moment(this.props.payload.date).format('ll'): moment().format('ll') },
-            appointment_time: { value: this.props.state === 'update'? this.props.payload.time: moment().format('LT') },
+            appointment_patient: { value: '' },
+            appointment_doctor: { value: '' },
+            appointment_reason: { value: '' },
+            appointment_date: { value: moment().format('ll') },
+            appointment_time: { value: moment().format('LT') },
 
             new_patient_modal_visibility: false,
 
-            patient_select_value:  this.props.state === 'update'? {
-                                        id: 'appointment_patient_selection',
-                                        reference: this.props.payload.patient_ref.id,
-                                        label: `${this.props.payload.patient_ref.first_name} ${this.props.payload.patient_ref.last_name} | ${this.props.payload.patient_ref.phone_number} | ${this.props.payload.patient_ref.email}`
-                                    }: '',
-            doctor_select_value:   this.props.state === 'update'? {
-                                        id: 'appointment_doctor_selection',
-                                        reference: this.props.payload.doctor_ref.id,
-                                        label: `${this.props.payload.doctor_ref.first_name} ${this.props.payload.doctor_ref.last_name} | ${this.props.payload.doctor_ref.phone_number} | ${this.props.payload.doctor_ref.email}`
-                                    }: '',
+            patient_select_value: '',
+            doctor_select_value: '',
 
         }
     }
@@ -71,22 +53,7 @@ class NewAppointmentModal extends Component {
         const query = `${SEARCH_USER_REQUEST}?search=${string}&role=${role}`
         const res_users = await this.request({}, query, 'get')
         let temp_users = []
-        if (this.props.state === 'update'){
-            if (role === 'patient'){
-                temp_users.push({
-                    id: 'appointment_patient_selection',
-                    reference: this.props.payload.patient_ref.id,
-                    label: `${this.props.payload.patient_ref.first_name} ${this.props.payload.patient_ref.last_name} | ${this.props.payload.patient_ref.phone_number} | ${this.props.payload.patient_ref.email}`
-                })
-            }
-            else{
-                temp_users.push( {
-                    id: 'appointment_doctor_selection',
-                    reference: this.props.payload.doctor_ref.id,
-                    label: `${this.props.payload.doctor_ref.first_name} ${this.props.payload.doctor_ref.last_name} | ${this.props.payload.doctor_ref.phone_number} | ${this.props.payload.doctor_ref.email}`
-                })
-            }
-        }
+        
         if (res_users.data['status']) {
             for (var i = 0; i < res_users.data.payload['count']; ++i) {
                 const t_user = res_users.data.payload['users'][i]
@@ -110,16 +77,7 @@ class NewAppointmentModal extends Component {
             this.render_users(string,'Patient')
         }
         else{
-            if (this.props.state === 'update'){
-                this.setState({ patients: [{
-                    id: 'appointment_patient_selection',
-                    reference: this.props.payload.patient_ref.id,
-                    label: `${this.props.payload.patient_ref.first_name} ${this.props.payload.patient_ref.last_name} | ${this.props.payload.patient_ref.phone_number} | ${this.props.payload.patient_ref.email}`
-                }] })
-            }
-            else{
-                this.setState({patients: []})
-            }
+            this.setState({patients: []})
         }
     }
 
@@ -128,16 +86,7 @@ class NewAppointmentModal extends Component {
             this.render_users(string,'Doctor')
         }
         else{
-            if(this.props.state === 'update'){
-                this.setState({ doctors: [{
-                    id: 'appointment_doctor_selection',
-                    reference: this.props.payload.doctor_ref.id,
-                    label: `${this.props.payload.doctor_ref.first_name} ${this.props.payload.doctor_ref.last_name} | ${this.props.payload.doctor_ref.phone_number} | ${this.props.payload.doctor_ref.email}`
-                }] })
-            }
-            else{
-                this.setState({ doctors: [] })
-            }
+            this.setState({ doctors: [] })
         }
     }
 
@@ -227,8 +176,9 @@ class NewAppointmentModal extends Component {
 
     on_submit = () => {
         this.setState({ loading_status: true })
-        if (this.props.state !== 'update'){
-            const data = {
+        const data = {
+            visit_id: this.props.payload.visit_id,
+            payload: {
                 patient_id: this.state.appointment_patient.value,
                 doctor_id: this.state.appointment_doctor.value,
                 date: this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT',
@@ -237,66 +187,26 @@ class NewAppointmentModal extends Component {
                 type: 'Admin sahab replace this with token or identification!',
                 status: 'waiting'
             }
-            Axios.post(NEW_APPOINTMENT_URL, data, {
-                headers: {
-                    'code-medicine': localStorage.getItem('user')
-                }
-            }).then(res => {
-                if (res.data.status) {
-                    this.props.notify('success', '', res.data.message)
-                    this.setState({
-                        appointment_patient: { value: '' },
-                        appointment_doctor: { value: '' },
-                        appointment_date: { value: '' },
-                        appointment_time: { value: '' },
-                        appointment_reason: { value: '' },
-                        loading_status: false,
-                        
-                    })
-                    
-                    this.props.call_back()
-                }
-                else {
-                    this.props.notify('error', '', res.data.message)
-                    this.setState({loading_status: false})
-                }
-            }).catch(err => {
-                this.props.notify('error', '', 'Server not responding')
-                this.setState({loading_status: false})
-                this.props.close()
-            })
         }
-        else{
-            const data = {
-                visit_id: this.props.payload.visit_id,
-                payload: {
-                    patient_id: this.state.appointment_patient.value,
-                    doctor_id: this.state.appointment_doctor.value,
-                    date: this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT',
-                    time: this.state.appointment_time.value,
-                    reason: this.state.appointment_reason.value,
-                    type: 'Admin sahab replace this with token or identification!',
-                    status: 'waiting'
-                }
+        Axios.put(UPDATE_APPOINTMENT_URL,data, {
+            headers: {
+                'code-medicine': localStorage.getItem('user')
             }
-            Axios.put(UPDATE_APPOINTMENT_URL,data).then(res => {
-                if (res.data.status === true){
-                    this.props.notify('success', '', res.data.message)
-                    this.setState({ loading_status: false })
-                    this.props.close()
-                }
-                else{
-                    this.props.notify('error', '', res.data.message)
-                    this.setState({ loading_status: false })
-                }
-            }).catch(err => {
-                this.props.notify('error','', 'No connection')
+        }).then(res => {
+            if (res.data.status === true){
+                this.props.notify('success', '', res.data.message)
                 this.setState({ loading_status: false })
-            })
-        }
-
+                this.props.close()
+            }
+            else{
+                this.props.notify('error', '', res.data.message)
+                this.setState({ loading_status: false })
+            }
+        }).catch(err => {
+            this.props.notify('error','', 'No connection')
+            this.setState({ loading_status: false })
+        })
     }
-
     open_new_patient_modal = () => {
         this.setState({ new_patient_modal_visibility: true })
     }
@@ -337,8 +247,7 @@ class NewAppointmentModal extends Component {
                             type="button"
                             className="btn bg-teal-400 btn-labeled btn-labeled-right btn-block pr-5"
                             style={{ textTransform: "inherit" }}
-                            onClick={this.open_new_patient_modal}
-                            disabled={this.props.state === 'update'? true: false}>
+                            onClick={this.open_new_patient_modal}>
                             <b><i className="icon-plus3"></i></b>
                             New Patient
                         </button>
@@ -447,7 +356,7 @@ class NewAppointmentModal extends Component {
                             style={{ textTransform: "inherit" }}
                             onClick={this.on_submit}>
                             <b><i className="icon-plus3"></i></b>
-                            {this.props.state === 'update'? 'Update':'Add'}
+                            Add
                         </button>
                     </div>
                 </Modal>
