@@ -38,3 +38,15 @@
     text-align: right;
     font-weight: bold;
 }
+#ifmcontentstoprint {
+    height: 0px;
+    width: 0px;
+    position: absolute
+}
+
+@media print {
+    #print table tbody tr td:last-child,
+    #print table thead tr td:last-child{
+        display: none;
+    }
+}

@@ -171,7 +171,7 @@ class TodaysPatientRow extends Component {
                             <Popup
                                 trigger={
                                     <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon`}
-                                            onClick={()=>this.props.openInvoiceModal(this.props.row_data.visit_id,this.props.row_data.doctor.id)}>
+                                            onClick={()=>this.props.openInvoiceModal(this.props.row_data)}>
                                         <i className={`icon-file-text2`}></i>
                                     </button>}
                                 content={<div className={`card card-body bg-teal-400 text-white shadow mr-2 mt-3 py-1`}>Generate Invoice</div>}

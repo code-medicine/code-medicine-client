@@ -44,9 +44,8 @@ class Todayspatient extends Component {
             invoice_modal_visibility: false,
 
             user_modal_props: null,
-            invoice_doctor_id: null,
+            invoice_data: null,
             procedure_visit_id: null,
-            invoice_visit_id: null,
             search_doctor: { value: '' },
             search_patient: { value: '' }
         }
@@ -232,10 +231,10 @@ class Todayspatient extends Component {
 
     open_new_appointment_modal = () => {
         this.setState({ new_appointment_modal_visibility: true })
-    }
-    openInvoiceModalHandler = (visitID,doctorID) => {
-        console.log('id: '+visitID+' '+ doctorID);
-        this.setState({invoice_modal_visibility:true,invoice_visit_id:visitID,invoice_doctor_id:doctorID})
+    };
+    openInvoiceModalHandler = (object) => {
+        console.log('Data: ' + JSON.stringify(object));
+        this.setState({invoice_modal_visibility:true,invoice_data:object})
     };
     closeInvoiceModalHandler = () => {
         this.setState({ invoice_modal_visibility: false })
@@ -243,7 +242,7 @@ class Todayspatient extends Component {
 
     close_new_appointment_modal = () => {
         this.setState({ new_appointment_modal_visibility: false })
-    }
+    };
 
     call_back_new_appointment_modal = () => {
         this.setState({ new_appointment_modal_visibility: false, data: null}, () => {
@@ -251,7 +250,7 @@ class Todayspatient extends Component {
             d = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
             this.populate_appointments({ date_flag: d })
         })
-    }
+    };
     
     set_filters = () => {
         this.setState({ filtered_data: null }, () => {
@@ -439,8 +438,7 @@ class Todayspatient extends Component {
 
                 <InvoiceModal
                     modal_visibility={this.state.invoice_modal_visibility}
-                    visit_id={this.state.invoice_visit_id}
-                    doctor_id={'5e31dcc3300df716580e5734'}
+                    data={this.state.invoice_data}
                     invoice_backDrop={this.closeInvoiceModalHandler}
                     cancelInvoiceModal={this.closeInvoiceModalHandler}
                 />
