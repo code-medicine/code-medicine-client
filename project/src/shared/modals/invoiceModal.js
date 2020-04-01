@@ -25,6 +25,7 @@ class InvoiceModal extends Component {
             selectedInvoiceType:null,
             consultancyFee: 0,
             consultancyDiscount: 0,
+            consultancyDiscountEditable: false,
             consultancyTotal: 0,
             addons: 0,
             proceduresFee:0,
@@ -36,7 +37,27 @@ class InvoiceModal extends Component {
     };
 
     consultancyEditHandler = () => {
-        console.log('Edit!!');
+        this.setState({
+            consultancyDiscountEditable:true
+        })
+    };
+
+    totalDiscountHandler = (event) => {
+        this.setState({
+            totalDiscount:event.target.value
+        })
+    };
+
+    consultancyDiscountHandler = (event) => {
+        this.setState({
+            consultancyDiscount:event.target.value
+        })
+    };
+
+    consultancyDiscountSaveHandler =() => {
+        this.setState({
+            consultancyDiscountEditable:false
+        })
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -68,11 +89,17 @@ class InvoiceModal extends Component {
                 });
                 response.then((response) => {
                     if (response.data.status === true) {
-                        this.setState({
-                            consultancyFee: response.data.payload.profits[0].consultancy_fee,
-                            consultancyDiscount: response.data.payload.profits[0].consultancy_percentage,
-                            consultancyTotal: (response.data.payload.profits[0].consultancy_fee) - (response.data.payload.profits[0].consultancy_percentage)
+
+                        this.setState((state, props) => {
+                            const ct = (response.data.payload.profits[0].consultancy_fee) - (response.data.payload.profits[0].consultancy_percentage);
+                            return {
+                                consultancyFee: response.data.payload.profits[0].consultancy_fee,
+                                consultancyDiscount: response.data.payload.profits[0].consultancy_percentage,
+                                consultancyTotal: ct,
+                                total: state.proceduresFee + ct
+                            };
                         });
+
                     }
                 });
             } catch (err) {
@@ -130,20 +157,39 @@ class InvoiceModal extends Component {
                                             <th scope="row">1</th>
                                             <td>Consultancy Fee</td>
                                             <td>{this.state.consultancyFee}</td>
-                                            <td>{this.state.consultancyDiscount}</td>
+                                            <td>{this.state.consultancyDiscountEditable ? <input
+                                                    type='text'
+                                                    className={`form-control form-control-lg`}
+                                                    placeholder='Discount'
+                                                    onChange={(e)=>this.consultancyDiscountHandler(e)}
+                                                    value={this.state.consultancyDiscount}
+                                                />: this.state.consultancyDiscount}
+                                            </td>
                                             <td>{this.state.consultancyTotal}</td>
-                                            <td><button
-                                                type="button"
-                                                className="btn btn-outline btn-sm bg-success text-success btn-icon mb-3"
-                                                style={{ textTransform: "inherit" }}
-                                                onClick={this.consultancyEditHandler}>
-                                                <i className="icon-pencil7" />
-                                            </button></td>
+                                            <td>{ this.state.consultancyDiscountEditable ?
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline btn-sm bg-success text-success btn-icon mb-3"
+                                                    style={{ textTransform: "inherit" }}
+                                                    onClick={this.consultancyDiscountSaveHandler}>
+                                                    <i className="icon-floppy-disk" />
+                                                </button> :
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline btn-sm bg-success text-success btn-icon mb-3"
+                                                    style={{ textTransform: "inherit" }}
+                                                    onClick={this.consultancyEditHandler}>
+                                                    <i className="icon-pencil7" />
+                                                </button>
+                                            }</td>
                                         </tr>
                                         <tr>
                                             <th scope="row">2</th>
                                             <td>Addons</td>
                                             <td>{this.state.addons}</td>
+                                            <td />
+                                            <td />
+                                            <td />
                                         </tr>
                                         {
                                             this.state.procedures ? this.state.procedures.map((data,ikey)=>{
@@ -161,6 +207,9 @@ class InvoiceModal extends Component {
                                             <td />
                                             <td />
                                             <td />
+                                            <td />
+                                            <td />
+                                            <td />
                                         </tr>
                                         <tr>
                                             <th scope="row" />
@@ -168,6 +217,7 @@ class InvoiceModal extends Component {
                                             <td />
                                             <td>Total</td>
                                             <td>{this.state.total}</td>
+                                            <td />
                                         </tr>
                                         <tr>
                                             <th scope="row" />
@@ -175,22 +225,23 @@ class InvoiceModal extends Component {
                                             <td />
                                             <td>Discount</td>
                                             <td>
-                                                <Inputfield
-                                                    label_tag={'Discount'}
-                                                    icon_class={'icon-question3'}
-                                                    placeholder="Enter Discount"
-                                                    input_type={'text'}
-                                                    field_type=""
-                                                    default_value={this.props.totalDiscount}
+                                                <input
+                                                    type='text'
+                                                    className={`form-control form-control-lg`}
+                                                    placeholder='Discount'
+                                                    onChange={(e)=>this.totalDiscountHandler(e)}
+                                                    value={this.state.totalDiscount}
                                                 />
                                             </td>
+                                            <td />
                                         </tr>
                                         <tr>
                                             <th scope="row" />
                                             <td />
                                             <td />
                                             <td>Payable Amount</td>
-                                            <td>{this.state.payableAmount}</td>
+                                            <td>{this.state.total-this.state.totalDiscount}</td>
+                                            <td />
                                         </tr>
 
                                         </tbody>
