@@ -3,9 +3,11 @@ import Modal from "react-bootstrap4-modal";
 import LOGO from '../../resources/images/LOGO.png';
 import './invoiceModal.css';
 import Axios from "axios";
-import {GET_PROCEDURES_FEE,GET_PROFITS_BY_DOCTOR_ID} from "../rest_end_points";
+import {GET_PROCEDURES_FEE, GET_PROFITS_BY_DOCTOR_ID, UPDATE_APPOINTMENT_URL, PROFITS_UPDATE} from "../rest_end_points";
 import ReactToPrint from 'react-to-print';
 import ComponentToPrint from './ComponentToPrint';
+import {connect} from "react-redux";
+import {notify} from "../../actions";
 class InvoiceModal extends Component {
 
     constructor(props) {
@@ -33,7 +35,8 @@ class InvoiceModal extends Component {
             total:0,
             totalDiscount:0,
             totalDiscountEditable: false,
-            payableAmount:0
+            payableAmount:0,
+            profitID:0
         }
     };
 
@@ -44,6 +47,7 @@ class InvoiceModal extends Component {
     };
 
     consultancyDiscountSaveHandler =() => {
+        this.updateVisit();
         this.setState({
             consultancyDiscountEditable:false
         })
@@ -56,9 +60,34 @@ class InvoiceModal extends Component {
     };
 
     addonsSaveHandler =() => {
-        this.setState({
-            addonsEditable:false
-        });
+
+        const data = {
+            '_id':this.state.profitID,
+            'addons':this.state.addons,
+            'consultancy_fee': this.state.consultancyFee
+        };
+
+        try {
+            let response = Axios.post(`${PROFITS_UPDATE}`, data,{
+                headers: { 'code-medicine': localStorage.getItem('user') }
+            });
+            response.then((response)=>{
+                if(response.data.status===true) {
+
+                    this.setState((state, props) => {
+                        return {
+                            addonsEditable:false,
+                            total: this.state.total + this.state.addons
+                        };
+                    });
+
+                    this.props.notify('success', '', 'Addons Updated!');
+                }
+            });
+        }
+        catch (err) {
+            this.props.notify('error', '', 'Server is not responding! Please try again later');
+        }
     };
 
     totalDiscountEditHandler = () => {
@@ -68,6 +97,7 @@ class InvoiceModal extends Component {
     };
 
     totalDiscountSaveHandler =() => {
+        this.updateVisit();
         this.setState({
             totalDiscountEditable:false
         })
@@ -91,8 +121,45 @@ class InvoiceModal extends Component {
         })
     };
 
+    updateVisit = () => {
+
+        const data = {
+            visit_id: this.props.data.visit_id,
+            payload: {
+                patient_id: this.props.data.patient.id,
+                doctor_id: this.props.data.doctor.id,
+                date: this.props.data.date,
+                time: this.props.data.time,
+                reason: this.props.data['description'],
+                type: 'Admin sahab replace this with token or identification!',
+                status: this.props.data.status,
+                consultancy_discount: this.state.consultancyDiscount,
+                overall_discount: this.state.totalDiscount
+            }
+        };
+
+        try {
+            let response = Axios.put(`${UPDATE_APPOINTMENT_URL}`, data,{
+                headers: { 'code-medicine': localStorage.getItem('user') }
+            });
+            response.then((response)=>{
+                if(response.data.status===true) {
+                    this.setState((state, props) => {
+                        return {
+                            total: this.state.total - (this.state.consultancyDiscount + this.state.totalDiscount)
+                        };
+                    });
+                    this.props.notify('success', '', 'Visit Updated!');
+                }
+            });
+        }
+        catch (err) {
+            this.props.notify('error', '', 'Server is not responding! Please try again later');
+        }
+    };
+
     componentDidUpdate(prevProps, prevState, snapshot) {
-        //console.log(this.props.data);
+        console.log(this.props.data);
         if (this.props.data!==null && this.props.data.visit_id !== this.state.visitId) {
             try {
                 let response = Axios.get(`${GET_PROCEDURES_FEE}?visit_id=`+this.props.data.visit_id,{
@@ -125,6 +192,7 @@ class InvoiceModal extends Component {
                         this.setState((state, props) => {
                             const ct = (response.data.payload.profits[0].consultancy_fee);
                             return {
+                                profitID:response.data.payload.profits[0]._id,
                                 consultancyFee: response.data.payload.profits[0].consultancy_fee,
                                 consultancyTotal: ct,
                                 addons: response.data.payload.profits[0].addons,
@@ -349,4 +417,4 @@ class InvoiceModal extends Component {
     }
 }
 
-export default InvoiceModal;
+export default connect(null, { notify })(InvoiceModal);
