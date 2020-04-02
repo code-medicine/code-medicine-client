@@ -93,7 +93,7 @@ class Left_sidebar extends Component {
                 </div>
 
                 <div className="sidebar-content">
-                    <div className="sidebar-user background_custom_left_side_bar d-flex align-items-end" style={{height: '25vh'}}>
+                    <div className="sidebar-user background_custom_left_side_bar d-flex align-items-center" style={{height: '25vh'}}>
                         <div className="card-body">
                             <div className="media d-flex align-items-center">
                                 <div className="mr-3">
@@ -110,10 +110,10 @@ class Left_sidebar extends Component {
 
                                 <div className="media-body ">
                                     
-                                    <div className="media-title font-weight-semibold">
-                                        {`${first_name_first_letter}${first_name_rest} ${last_name_first_letter}${last_name_rest}`}                                 
+                                    <div className="media-title font-weight-semibold ">
+                                        <span className="text-shadow">{`${first_name_first_letter}${first_name_rest} ${last_name_first_letter}${last_name_rest}`}</span>                                 
                                     </div>
-                                    <div className="font-size-xs opacity-50">
+                                    <div className="font-size-xs opacity-50 text-shadow">
                                         <i className="icon-pin font-size-sm"></i> &nbsp;Pakistan
                                     </div>
                                 </div>

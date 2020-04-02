@@ -366,11 +366,11 @@ class Todayspatient extends Component {
                     </div>
                     <div className={`col-md-3`}>
                         <div className="form-group">
-                            <label className="font-weight-semibold">Location</label>
+                            <label className="font-weight-semibold">Branch</label>
                             <Select
                                 isClearable
                                 // options={this.state.search_options}
-                                placeholder="Location"
+                                placeholder="Branch"
                             // value={this.state.selectedOption}
                             // onChange={this.handleSelectChange}
                             // onClick={()=>this.get}
