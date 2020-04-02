@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import Modal from "react-bootstrap4-modal";
 import LOGO from '../../resources/images/LOGO.png';
-import Select from "react-select";
 import './invoiceModal.css';
 import Axios from "axios";
-import { GET_PROCEDURES_FEE, GET_PROFITS_BY_DOCTOR_ID } from "../rest_end_points";
-
+import {GET_PROCEDURES_FEE, GET_PROFITS_BY_DOCTOR_ID, UPDATE_APPOINTMENT_URL, PROFITS_UPDATE} from "../rest_end_points";
+import ReactToPrint from 'react-to-print';
+import ComponentToPrint from './ComponentToPrint';
+import {connect} from "react-redux";
+import {notify} from "../../actions";
 class InvoiceModal extends Component {
 
     constructor(props) {
@@ -20,26 +22,157 @@ class InvoiceModal extends Component {
                 reference: 'hospital',
                 label: `Hospital Copy`
             }],
-            visitId: null,
-            selectedInvoiceType: null,
+            visitId:null,
+            selectedInvoiceType:'Hospital Copy',
             consultancyFee: 0,
+            consultancyDiscount: 0,
+            consultancyDiscountEditable: false,
+            consultancyTotal: 0,
             addons: 0,
-            proceduresFee: 0
+            addonsEditable: false,
+            proceduresFee:0,
+            procedures:null,
+            total:0,
+            totalDiscount:0,
+            totalDiscountEditable: false,
+            payableAmount:0,
+            profitID:0
+        }
+    };
+
+    consultancyEditHandler = () => {
+        this.setState({
+            consultancyDiscountEditable:true
+        })
+    };
+
+    consultancyDiscountSaveHandler =() => {
+        this.updateVisit();
+        this.setState({
+            consultancyDiscountEditable:false
+        })
+    };
+
+    addonsEditHandler = () => {
+        this.setState({
+            addonsEditable:true
+        })
+    };
+
+    addonsSaveHandler =() => {
+
+        const data = {
+            '_id':this.state.profitID,
+            'addons':this.state.addons,
+            'consultancy_fee': this.state.consultancyFee
+        };
+
+        try {
+            let response = Axios.post(`${PROFITS_UPDATE}`, data,{
+                headers: { 'code-medicine': localStorage.getItem('user') }
+            });
+            response.then((response)=>{
+                if(response.data.status===true) {
+
+                    this.setState((state, props) => {
+                        return {
+                            addonsEditable:false,
+                            total: this.state.total + this.state.addons
+                        };
+                    });
+
+                    this.props.notify('success', '', 'Addons Updated!');
+                }
+            });
+        }
+        catch (err) {
+            this.props.notify('error', '', 'Server is not responding! Please try again later');
+        }
+    };
+
+    totalDiscountEditHandler = () => {
+        this.setState({
+            totalDiscountEditable:true
+        })
+    };
+
+    totalDiscountSaveHandler =() => {
+        this.updateVisit();
+        this.setState({
+            totalDiscountEditable:false
+        })
+    };
+
+    addonsHandler = (event) => {
+        this.setState({
+            addons:event.target.value
+        })
+    };
+
+    totalDiscountHandler = (event) => {
+        this.setState({
+            totalDiscount:event.target.value
+        })
+    };
+
+    consultancyDiscountHandler = (event) => {
+        this.setState({
+            consultancyDiscount:event.target.value
+        })
+    };
+
+    updateVisit = () => {
+
+        const data = {
+            visit_id: this.props.data.visit_id,
+            payload: {
+                patient_id: this.props.data.patient.id,
+                doctor_id: this.props.data.doctor.id,
+                date: this.props.data.date,
+                time: this.props.data.time,
+                reason: this.props.data['description'],
+                type: 'Admin sahab replace this with token or identification!',
+                status: this.props.data.status,
+                consultancy_discount: this.state.consultancyDiscount,
+                overall_discount: this.state.totalDiscount
+            }
+        };
+
+        try {
+            let response = Axios.put(`${UPDATE_APPOINTMENT_URL}`, data,{
+                headers: { 'code-medicine': localStorage.getItem('user') }
+            });
+            response.then((response)=>{
+                if(response.data.status===true) {
+                    this.setState((state, props) => {
+                        return {
+                            total: this.state.total - (this.state.consultancyDiscount + this.state.totalDiscount)
+                        };
+                    });
+                    this.props.notify('success', '', 'Visit Updated!');
+                }
+            });
+        }
+        catch (err) {
+            this.props.notify('error', '', 'Server is not responding! Please try again later');
         }
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log(this.props.visit_id);
-        if (this.props.visit_id != null && this.props.visit_id !== this.state.visitId) {
+        console.log(this.props.data);
+        if (this.props.data!==null && this.props.data.visit_id !== this.state.visitId) {
             try {
-                let response = Axios.get(`${GET_PROCEDURES_FEE}?visit_id=` + this.props.visit_id, {
+                let response = Axios.get(`${GET_PROCEDURES_FEE}?visit_id=`+this.props.data.visit_id,{
                     headers: { 'code-medicine': localStorage.getItem('user') }
                 });
                 response.then((response) => {
                     if (response.data.status === true) {
                         this.setState({
-                            proceduresFee: response.data.payload.procedures_fees,
-                            visitId: this.props.visit_id
+                            proceduresFee : response.data.payload.procedures_fees,
+                            procedures: response.data.payload.procedures,
+                            visitId: this.props.data.visit_id,
+                            consultancyDiscount: this.props.data.consultancy_discount,
+                            totalDiscount: this.props.data.overall_discount
                         });
                     }
                 });
@@ -50,35 +183,44 @@ class InvoiceModal extends Component {
 
 
             try {
-                let response = Axios.get(`${GET_PROFITS_BY_DOCTOR_ID}?doctor_id=` + this.props.doctor_id, {
-                    headers: { 'code-medicine': localStorage.getItem('user') }
+                let response = Axios.get(`${GET_PROFITS_BY_DOCTOR_ID}?visit_id=`+this.props.data.visit_id, {
+                    headers: {'code-medicine': localStorage.getItem('user')}
                 });
                 response.then((response) => {
-                    if (response.data.status === true) {
-                        this.setState({
-                            proceduresFee: response.data.payload.procedures_fees,
-                            visitId: this.props.visit_id
+                    if (response.data.status === true  && response.data.payload.profits.length>0) {
+
+                        this.setState((state, props) => {
+                            const ct = (response.data.payload.profits[0].consultancy_fee);
+                            return {
+                                profitID:response.data.payload.profits[0]._id,
+                                consultancyFee: response.data.payload.profits[0].consultancy_fee,
+                                consultancyTotal: ct,
+                                addons: response.data.payload.profits[0].addons,
+                                total: state.proceduresFee + ct + response.data.payload.profits[0].addons
+                            };
                         });
+
                     }
                 });
-            }
-            catch (err) {
+            } catch (err) {
                 this.props.notify('error', '', 'Server is not responding! Please try again later');
             }
-
-
-
-        }
+         }
     }
 
-    on_selected_changed = (e) => {
-        if (e !== null) {
-            this.setState({ selectedInvoiceType: e.label });
-        }
+    print = () => {
+        var content = document.getElementById("print").innerHTML;
+        var pri = document.getElementById("ifmcontentstoprint").contentWindow;
+        pri.document.open();
+        pri.document.write(content);
+        pri.document.close();
+        pri.focus();
+        pri.print();
     };
 
     render() {
         return (
+
             <Modal
                 visible={this.props.modal_visibility}
                 onClickBackdrop={this.props.invoice_backDrop}
@@ -104,70 +246,169 @@ class InvoiceModal extends Component {
                     >
                         <b><i className="icon-printer2" /></b>Print</button>
                 </div>
-                <div className="modal-body modal-body-custom">
+                <div className="modal-body">
+
+                    <iframe id="ifmcontentstoprint"></iframe>
+
                     <div className="container-fluid">
-                        <div className="row" id="print">
+                        <div className="row d-print-flex" id="print">
                             <div className="col-md-12">
                                 <img src={LOGO} className="logo" alt="logo" />
                                 <div className="row patientData">
                                     <div className="offset-md-1 col-md-5">
-                                        <p><b>MRN#:</b> 100123</p>
-                                        <p><b>Patient:</b> Muhammad Ammad Hassan</p>
-                                        <p><b>Age:</b> 26 years, Male</p>
-                                        <p><b>Doctor:</b> Dr. Waqas Asad</p>
-                                        <p><b>Visit Description:</b> Acupuncture</p>
+                                        {
+                                            this.props.data ? (<>
+                                                <p><b>MRN#:</b> {this.props.data.patient.id}</p>
+                                                <p><b>Patient:</b>{this.props.data.patient.first_name +" "+ this.props.data.patient.last_name}</p>
+                                                <p><b>Age:</b> {this.props.data.patient.dob}, {this.props.data.patient.gender}</p>
+                                                <p><b>Doctor:</b> {this.props.data.doctor.first_name +" "+ this.props.data.doctor.last_name}</p>
+                                                <p><b>Visit Description:</b> {this.props.data ? this.props.data['description']:''}</p>
+                                            </>):''
+                                        }
                                     </div>
                                     <div className="offset-md-1 col-md-5">
                                         <p><b>{this.state.selectedInvoiceType}</b></p>
-                                        <p><b>Date:</b> 1/12/19</p>
+                                        <p><b>Date:</b> {this.props.data ? this.props.data.date:''}</p>
                                     </div>
                                 </div>
                                 <div className="table-responsive">
-                                    <table className="table table-bordered">
+                                    <table className="table table-bordered d-print-table">
                                         <thead>
-                                            <tr>
-                                                <th scope="col">SR #</th>
-                                                <th scope="col">Description</th>
-                                                <th scope="col">Amount</th>
-                                            </tr>
+                                        <tr>
+                                            <th scope="col">SR #</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Price</th>
+                                            <th scope="col">Discount</th>
+                                            <th scope="col">Total</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <th scope="row">1</th>
-                                                <td>Consultancy Fee</td>
-                                                <td>{this.state.consultancyFee}</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">2</th>
-                                                <td>Addons</td>
-                                                <td>{this.state.addons}</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">3</th>
-                                                <td>Procedures Fee</td>
-                                                <td>{this.state.proceduresFee}</td>
-                                            </tr>
-                                            <tr>
-                                                <td />
-                                                <td />
-                                                <td />
-                                            </tr>
-                                            <tr>
-                                                <th scope="row" />
-                                                <td>Total</td>
-                                                <td>3400</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row" />
-                                                <td>Discount</td>
-                                                <td>400</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row" />
-                                                <td>Payable Amount</td>
-                                                <td>3000</td>
-                                            </tr>
-
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>Consultancy Fee</td>
+                                            <td>{this.state.consultancyFee}</td>
+                                            <td>{this.state.consultancyDiscountEditable ? <input
+                                                    type='text'
+                                                    className={`form-control form-control-lg`}
+                                                    placeholder='Discount'
+                                                    onChange={(e)=>this.consultancyDiscountHandler(e)}
+                                                    value={this.state.consultancyDiscount}
+                                                />: this.state.consultancyDiscount}
+                                            </td>
+                                            <td>{this.state.consultancyTotal}</td>
+                                            <td>{ this.state.consultancyDiscountEditable ?
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline btn-sm bg-success text-success btn-icon mb-3"
+                                                    style={{ textTransform: "inherit" }}
+                                                    onClick={this.consultancyDiscountSaveHandler}>
+                                                    <i className="icon-floppy-disk" />
+                                                </button> :
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline btn-sm bg-success text-success btn-icon mb-3"
+                                                    style={{ textTransform: "inherit" }}
+                                                    onClick={this.consultancyEditHandler}>
+                                                    <i className="icon-pencil7" />
+                                                </button>
+                                            }</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">2</th>
+                                            <td>Addons</td>
+                                            <td />
+                                            <td />
+                                            <td>{this.state.addonsEditable? <input
+                                                type='text'
+                                                className={`form-control form-control-lg`}
+                                                placeholder='Discount'
+                                                onChange={(e)=>this.addonsHandler(e)}
+                                                value={this.state.addons}
+                                            />:this.state.addons}</td>
+                                            <td>{ this.state.addonsEditable ?
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline btn-sm bg-success text-success btn-icon mb-3"
+                                                    style={{ textTransform: "inherit" }}
+                                                    onClick={this.addonsSaveHandler}>
+                                                    <i className="icon-floppy-disk" />
+                                                </button> :
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline btn-sm bg-success text-success btn-icon mb-3"
+                                                    style={{ textTransform: "inherit" }}
+                                                    onClick={this.addonsEditHandler}>
+                                                    <i className="icon-pencil7" />
+                                                </button>
+                                            }</td>
+                                        </tr>
+                                        {
+                                            this.state.procedures ? this.state.procedures.map((data,ikey)=>{
+                                                return (<tr key={data._id}>
+                                                    <th scope="row">{ikey+3}</th>
+                                                    <td>{data.procedure_details}</td>
+                                                    <td>{data.procedure_fee}</td>
+                                                    <td>{data.discount}</td>
+                                                    <td>{data.procedure_fee-data.discount}</td>
+                                                    <td />
+                                                </tr>);
+                                            }):''
+                                        }
+                                        <tr>
+                                            <td />
+                                            <td />
+                                            <td />
+                                            <td />
+                                            <td />
+                                            <td />
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" />
+                                            <td />
+                                            <td />
+                                            <td>Total</td>
+                                            <td>{this.state.total}</td>
+                                            <td />
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" />
+                                            <td />
+                                            <td />
+                                            <td>Discount</td>
+                                            <td>{ this.state.totalDiscountEditable ? (<input
+                                                type='text'
+                                                className={`form-control form-control-lg`}
+                                                placeholder='Discount'
+                                                onChange={(e)=>this.totalDiscountHandler(e)}
+                                                value={this.state.totalDiscount}
+                                            />):this.state.totalDiscount}
+                                            </td>
+                                            <td>{ this.state.totalDiscountEditable ?
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline btn-sm bg-success text-success btn-icon mb-3"
+                                                    style={{ textTransform: "inherit" }}
+                                                    onClick={this.totalDiscountSaveHandler}>
+                                                    <i className="icon-floppy-disk" />
+                                                </button> :
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline btn-sm bg-success text-success btn-icon mb-3"
+                                                    style={{ textTransform: "inherit" }}
+                                                    onClick={this.totalDiscountEditHandler}>
+                                                    <i className="icon-pencil7" />
+                                                </button>
+                                            }</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row" />
+                                            <td />
+                                            <td />
+                                            <td>Payable Amount</td>
+                                            <td>{this.state.total-this.state.totalDiscount}</td>
+                                            <td />
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -175,11 +416,21 @@ class InvoiceModal extends Component {
                         </div>
                     </div>
                 </div>
-                <div className={`modal-footer`}>
-
+                <div className="modal-footer">
+                    <ReactToPrint
+                        trigger={() => <button
+                            type="button"
+                            className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
+                            style={{ textTransform: "inherit" }}
+                            onClick={this.print}
+                        >
+                            <b><i className="icon-printer2" /></b>Print</button>}
+                        content={() => this.componentRef}
+                    />
+                    <div style={{ display: "none" }}><ComponentToPrint ref={el => (this.componentRef = el)}/></div>
                 </div>
             </Modal>);
     }
 }
 
-export default InvoiceModal;
+export default connect(null, { notify })(InvoiceModal);
