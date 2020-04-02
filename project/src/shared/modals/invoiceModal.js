@@ -8,6 +8,9 @@ import ReactToPrint from 'react-to-print';
 import ComponentToPrint from './ComponentToPrint';
 import {connect} from "react-redux";
 import {notify} from "../../actions";
+import Select from 'react-select';
+
+
 class InvoiceModal extends Component {
 
     constructor(props) {
