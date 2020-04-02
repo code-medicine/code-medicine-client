@@ -8,6 +8,7 @@ import Modal from 'react-bootstrap4-modal';
 import DateTimePicker from 'react-datetime';
 import { notify } from '../../actions';
 import { connect } from "react-redux";
+import Inputfield from '../customs/inputfield/inputfield';
 
 class UpdateAppointmentModal extends Component {
     constructor(props){
@@ -23,11 +24,11 @@ class UpdateAppointmentModal extends Component {
                             reference: this.props.payload.doctor_ref.id,
                             label: `${this.props.payload.doctor_ref.first_name} ${this.props.payload.doctor_ref.last_name} | ${this.props.payload.doctor_ref.phone_number} | ${this.props.payload.doctor_ref.email}`
                         }],
-            appointment_patient: { value: this.props.payload.patient_ref.id },
-            appointment_doctor: { value: this.props.payload.doctor_ref.id },
-            appointment_reason: { value: this.props.payload.reason },
-            appointment_date: { value: moment.utc(this.props.payload.date).format('ll') },
-            appointment_time: { value: this.props.payload.time },
+            appointment_patient: { value: this.props.payload.patient_ref.id, error: false },
+            appointment_doctor: { value: this.props.payload.doctor_ref.id, error: false },
+            appointment_reason: { value: this.props.payload.reason, error: false },
+            appointment_date: { value: moment.utc(this.props.payload.date).format('ll'), error: false },
+            appointment_time: { value: this.props.payload.time, error: false },
             
             patient_select_value: {
                 id: 'appointment_patient_selection',
@@ -132,7 +133,7 @@ class UpdateAppointmentModal extends Component {
                         reference: e.reference,
                         label: e.label
                     }
-                    this.setState({ appointment_patient: { value: e.reference }, patient_select_value: val_patient })
+                    this.setState({ appointment_patient: { value: e.reference, error: false }, patient_select_value: val_patient })
                     break;
                 case 'appointment_doctor_selection':
                     const val_doctor = {
@@ -140,7 +141,7 @@ class UpdateAppointmentModal extends Component {
                         reference: e.reference,
                         label: e.label
                     }
-                    this.setState({ appointment_doctor: { value: e.reference }, doctor_select_value: val_doctor })
+                    this.setState({ appointment_doctor: { value: e.reference, error: false }, doctor_select_value: val_doctor })
                     break;
                 default:
                     break;
@@ -149,10 +150,10 @@ class UpdateAppointmentModal extends Component {
         else {
             switch (actor) {
                 case 'appointment_patient_selection':
-                    this.setState({ appointment_patient: { value: '' }, patient_select_value: '' })
+                    this.setState({ appointment_patient: { value: '', error: false }, patient_select_value: '' })
                     break;
                 case 'appointment_doctor_selection':
-                    this.setState({ appointment_doctor: { value: '' }, doctor_select_value: '' })
+                    this.setState({ appointment_doctor: { value: '', error: false }, doctor_select_value: '' })
                     break;
                 default:
                     break;
@@ -163,7 +164,7 @@ class UpdateAppointmentModal extends Component {
     on_text_field_change = (e) => {
         switch (e.target.id) {
             case 'appointment_reason_text_input':
-                this.setState({ appointment_reason: { value: e.target.value } })
+                this.setState({ appointment_reason: { value: e.target.value, error: false } })
                 break;
             default:
                 break;
@@ -172,7 +173,7 @@ class UpdateAppointmentModal extends Component {
 
     on_apointment_date_change = (e) => {
         if (e === '')
-            this.setState({ appointment_date: { value: '' } })
+            this.setState({ appointment_date: { value: '', error: false } })
         else {
             var configured_date = null;
             try {
@@ -182,7 +183,7 @@ class UpdateAppointmentModal extends Component {
                 configured_date = ''
             }
             finally {
-                this.setState({ appointment_date: { value: configured_date } })
+                this.setState({ appointment_date: { value: configured_date, error: false } })
             }
         }
     }
@@ -190,7 +191,7 @@ class UpdateAppointmentModal extends Component {
     on_apointment_time_change = (e) => {
 
         if (e === '')
-            this.setState({ appointment_time: { value: '' } })
+            this.setState({ appointment_time: { value: '', error: false } })
         else {
             var configured_date = null;
             try {
@@ -200,13 +201,55 @@ class UpdateAppointmentModal extends Component {
                 configured_date = ''
             }
             finally {
-                this.setState({ appointment_time: { value: configured_date } })
+                this.setState({ appointment_time: { value: configured_date, error: false } })
             }
         }
     }
 
+    check_input = (input,required = true,only_alpha=false,only_numbers=false) => {
+        const alphabets = /^[A-Za-z]+$/;
+        const numbers = /^[0-9]+$/;
+        if (required  && input === ''){
+            return true;
+        }
+        if (only_alpha && input !== '' && !input.match(alphabets)){
+            return true;
+        }
+        if (only_numbers && input !== '' && !input.match(numbers)){
+            return true;
+        }
+        return false;
+    }
+
     on_submit = () => {
         this.setState({ loading_status: true })
+        let error = false
+        if (this.check_input(this.state.appointment_patient.value,true)){
+            this.setState({appointment_patient: { value: this.state.appointment_patient.value, error: true}})
+            error = true
+        }
+        if (this.check_input(this.state.appointment_doctor.value,true)){
+            this.setState({appointment_doctor: { value: this.state.appointment_doctor.value, error: true}})
+            error = true
+        }
+        if (this.check_input(this.state.appointment_reason.value)){
+            this.setState({appointment_reason: { value: this.state.appointment_reason.value, error: true}})
+            error = true
+        }
+        if (this.check_input(this.state.appointment_date.value,true)){
+            this.setState({appointment_date: { value: this.state.appointment_date.value, error: true}})
+            error = true
+        }
+        if (this.check_input(this.state.appointment_time.value,true)){
+            this.setState({appointment_time: { value: this.state.appointment_time.value, error: true}})
+            error = true
+        }
+
+        if (error === true){
+            this.props.notify('error','','Invalid inputs')
+            this.setState({ loading_status: false })
+            return
+        }
         const data = {
             visit_id: this.props.payload.visit_id,
             payload: {
@@ -245,12 +288,6 @@ class UpdateAppointmentModal extends Component {
             .format('ll'),typeof(this.props.payload.date));
         const add_appointment_modal_body = 
             <div className="modal-body">
-                <div className="row mb-1">
-                    <div className="col-md-6">
-                        
-                    </div>
-                    <div className="col-md-6"></div>
-                </div>
                 <div className="row">
                     <div className="col-md-6">
                         Select or add user
@@ -265,6 +302,14 @@ class UpdateAppointmentModal extends Component {
                                 onInputChange={e => this.populate_patients(e)}
                                 onChange={e => this.on_selected_changed(e, "appointment_patient_selection")}
                                 value={this.state.patient_select_value}
+                                styles={{
+                                    container: base => ({
+                                    ...base,
+                                    backgroundColor: this.state.appointment_patient.error? '#FF0000':'',
+                                    padding: 1,
+                                    borderRadius: 5
+                                    }),
+                                }}
                             />
                             <div className="form-control-feedback">
                                 <i className="icon-user-check text-muted"></i>
@@ -285,6 +330,14 @@ class UpdateAppointmentModal extends Component {
                                 onInputChange={e => this.populate_doctors(e)}
                                 onChange={e => this.on_selected_changed(e, 'appointment_doctor_selection')}
                                 value={this.state.doctor_select_value}
+                                styles={{
+                                    container: base => ({
+                                    ...base,
+                                    backgroundColor: this.state.appointment_doctor.error? '#FF0000':'',
+                                    padding: 1,
+                                    borderRadius: 5
+                                    }),
+                                }}
                             />
                             <div className="form-control-feedback">
                                 <i className="icon-user-tie text-muted"></i>
@@ -294,7 +347,18 @@ class UpdateAppointmentModal extends Component {
                 </div>
                 <div className="row">
                     <div className="col-md-12">
-                        <div className="form-group form-group-float">
+                        <Inputfield 
+                            id="appointment_reason_text_input"
+                            label_tag={'What is the reason for the visit'}
+                            icon_class={'icon-user-check'}
+                            input_type={'text'}
+                            placeholder="Enter visit reason"
+                            field_type="text-area"
+                            on_text_change_listener={this.on_text_field_change}
+                            default_value={this.state.appointment_reason.value}
+                            error={this.state.appointment_reason.error}
+                        />
+                        {/* <div className="form-group form-group-float">
                             <div className="form-group-float-label is-visible mb-1">
                                 What is the reason for the visit
                             </div>
@@ -304,7 +368,7 @@ class UpdateAppointmentModal extends Component {
                                 placeholder="Reason for visit"
                                 onChange={this.on_text_field_change}
                                 value={this.state.appointment_reason.value} />
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <div className="row mb-1">

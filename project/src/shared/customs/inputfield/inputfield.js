@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import Select, { components } from 'react-select'
+import DateTimePicker from 'react-datetime';
+
 
 class Inputfield extends Component {
 
@@ -71,13 +73,25 @@ class Inputfield extends Component {
                                         onChange={this.props.on_selected_change}
                                         className={_custom_classes}
                                     />
+        const _date_format = this.props.date_format;
+        const _time_format = this.props.time_format; 
+        const date_time_field_type = <DateTimePicker id={_id}
+                                        onChange={_on_change}
+                                        className={`clock_datatime_picker form-control form-control-lg ${this.props.error? 'border-danger':''}`}
+                                        inputProps={{ placeholder: _placeholder, className: 'border-0 w-100' }}
+                                        input={!_disabled}
+                                        dateFormat={_date_format}
+                                        timeFormat={_time_format}
+                                        closeOnSelect={true}
+                                        value={_value}
+                                    />
         let render_field = ''
 
         if (_field_type === 'text-area'){
             render_field = text_area_field_type
         }
         else if (_field_type === 'date-time'){
-
+            render_field = date_time_field_type
         }
         else if (_field_type === 'select'){
             render_field = select_field_type
@@ -92,12 +106,12 @@ class Inputfield extends Component {
         
 
         return(
-            <div className={`${_field_type !== 'select'? `form-group row ${_custom_classes}`:''}`}>
+            <div className={`form-group row ${_custom_classes}`}>
                 {input_label}
-                <div className={`${_field_type !== 'select'? `input-group`:''}`}>
-                    {_field_type !== 'select'? <span className="input-group-prepend">
+                <div className={`input-group`}>
+                    <span className="input-group-prepend">
                         <span className="input-group-text"><i className={_icon}/></span>
-                    </span>:''}
+                    </span>
                     {render_field}
                 </div>
             </div>

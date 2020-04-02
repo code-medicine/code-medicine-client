@@ -429,7 +429,7 @@ class Todayspatient extends Component {
                     visibility={this.state.new_appointment_modal_visibility}
                     close={ this.close_new_appointment_modal }
                     call_back={this.call_back_new_appointment_modal}
-                    bind_function={this.open_new_patient_modal}
+                    bind_function={this.open_new_appointment_modal}
                     state={'new'} />
 
                 <ProcedureModal

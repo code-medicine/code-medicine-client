@@ -8,6 +8,7 @@ export const BASE_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
 // All user related end points
 export const BASE_USERS_URL = `${BASE_URL}/users`;
 export const REGISTER_USER_REQUEST = `${BASE_USERS_URL}/register`;
+export const REGISTER_USER_REQUEST_BY_ADMIN = `${REGISTER_USER_REQUEST}/admin`;
 export const LOGIN_USER_REQUEST = `${BASE_USERS_URL}/login`;
 export const LOGOUT_USER_REQUEST = `${BASE_USERS_URL}/logout`;
 export const PROFILE_USER_REQUEST = `${BASE_USERS_URL}/profile`;

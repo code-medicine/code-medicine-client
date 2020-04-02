@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Loading from '../customs/loading/loading';
-import Select from 'react-select'
+import Select, {components} from 'react-select'
 import Modal from 'react-bootstrap4-modal';
 import DateTimePicker from 'react-datetime';
 import moment from 'moment';
@@ -200,9 +200,22 @@ class NewAppointmentModal extends Component {
             this.setState({appointment_doctor: { value: this.state.appointment_doctor.value, error: true}})
             error = true
         }
+        if (this.check_input(this.state.appointment_reason.value,true)){
+            this.setState({appointment_reason: { value: this.state.appointment_reason.value, error: true}})
+            error = true
+        }
+        if (this.check_input(this.state.appointment_date.value,true)){
+            this.setState({appointment_date: { value: this.state.appointment_date.value, error: true}})
+            error = true
+        }
+        if (this.check_input(this.state.appointment_time.value,true)){
+            this.setState({appointment_time: { value: this.state.appointment_time.value, error: true}})
+            error = true
+        }
 
         if (error === true){
             this.props.notify('error','','Invalid inputs')
+            this.setState({ loading_status: false })
             return
         }
 
@@ -245,6 +258,7 @@ class NewAppointmentModal extends Component {
         })
     }
     open_new_patient_modal = () => {
+        this.props.close()
         this.setState({ new_patient_modal_visibility: true })
     }
 
@@ -252,37 +266,54 @@ class NewAppointmentModal extends Component {
         this.setState({ new_patient_modal_visibility: false })
     }
 
+    call_back_new_patient_modal = () => {
+
+    }
+
     render() {
+        const controlStyles = {
+            borderRadius: '1px solid black',
+            padding: '5px',
+            background: '#c4f',
+            color: 'white',
+        };
+        const ControlComponent = props => (
+            <div style={controlStyles}>
+              <components.Control {...props} />
+            </div>
+        );
         const add_appointment_modal_body = 
             <div className="modal-body">
-                <div className="row mb-1">
-                    <div className="col-12">
-                        Select or add user
-                    </div>
-                </div>
                 <div className="row">
                     <div className="col-md-10">
-                        <div className="form-group form-group-feedback form-group-feedback-right">
+                        <div className="form-group">
+                            <label className="font-weight-semibold">Select or add user</label>
                             <Select
                                 id="appointment_patient_selection"
                                 isClearable
                                 menuPlacement="auto"
                                 options={this.state.patients}
+                                // components={{ Control: ControlComponent }}
                                 classNamePrefix={`form-control`}
                                 placeholder="Select Patient"
                                 onInputChange={e => this.populate_patients(e)}
                                 onChange={e => this.on_selected_changed(e, "appointment_patient_selection")}
                                 value={this.state.patient_select_value}
+                                styles={{
+                                    container: base => ({
+                                      ...base,
+                                      backgroundColor: this.state.appointment_patient.error? '#FF0000':'',
+                                      padding: 1,
+                                      borderRadius: 5
+                                    }),
+                                }}
                             />
-                            <div className="form-control-feedback">
-                                <i className="icon-user-check text-muted"></i>
-                            </div>
                         </div>
                     </div>
-                    <div className="col-md-2">
+                    <div className="col-md-2 d-flex align-items-end">
                         <button
                             type="button"
-                            className="btn bg-teal-400 btn-labeled btn-labeled-right btn-block pr-5"
+                            className="btn bg-teal-400 btn-labeled btn-labeled-right btn-block pr-5 mb-3"
                             style={{ textTransform: "inherit" }}
                             onClick={this.open_new_patient_modal}>
                             <b><i className="icon-plus3"></i></b>
@@ -326,6 +357,14 @@ class NewAppointmentModal extends Component {
                                 onInputChange={e => this.populate_doctors(e)}
                                 onChange={e => this.on_selected_changed(e, 'appointment_doctor_selection')}
                                 value={this.state.doctor_select_value}
+                                styles={{
+                                    container: base => ({
+                                      ...base,
+                                      backgroundColor: this.state.appointment_doctor.error? '#FF0000':'',
+                                      padding: 1,
+                                      borderRadius: 5
+                                    }),
+                                }}
                             />
                             <div className="form-control-feedback">
                                 <i className="icon-user-tie text-muted"></i>
@@ -336,7 +375,7 @@ class NewAppointmentModal extends Component {
                         <DateTimePicker id="dob_text_input"
                             onChange={this.on_apointment_date_change}
                             className="clock_datatime_picker"
-                            inputProps={{ placeholder: 'Select Date', width: '100%', className: 'form-control' }}
+                            inputProps={{ placeholder: 'Select Date', width: '100%', className: `form-control ${this.state.appointment_date.error? 'border-danger':''}` }}
                             input={true}
                             dateFormat={'ll'}
                             timeFormat={false}
@@ -348,7 +387,7 @@ class NewAppointmentModal extends Component {
                         <DateTimePicker id="dob_text_input"
                             onChange={this.on_apointment_time_change}
                             className="clock_datatime_picker"
-                            inputProps={{ placeholder: 'Select Time', width: '100%', className: 'form-control' }}
+                            inputProps={{ placeholder: 'Select Time', width: '100%', className: `form-control ${this.state.appointment_time.error? 'border-danger':''}` }}
                             input={true}
                             dateFormat={false}
                             timeFormat={true}
@@ -366,7 +405,7 @@ class NewAppointmentModal extends Component {
                 <NewUserModal 
                     visibility={this.state.new_patient_modal_visibility}
                     close={this.close_new_patient_modal}
-                    call_back={this.call_back_new_patient_modal} />
+                    call_back={this.props.bind_function} />
                     
                 <Modal
                     visible={this.props.visibility}
