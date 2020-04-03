@@ -250,6 +250,7 @@ class UpdateAppointmentModal extends Component {
             this.setState({ loading_status: false })
             return
         }
+        localStorage.setItem('h7vjys8yyd12',this.props.id)
         const data = {
             visit_id: this.props.payload.visit_id,
             payload: {
@@ -271,6 +272,7 @@ class UpdateAppointmentModal extends Component {
                 this.props.notify('success', '', res.data.message)
                 this.setState({ loading_status: false })
                 this.props.close()
+                this.props.call_back()
             }
             else{
                 this.props.notify('error', '', res.data.message)
@@ -282,10 +284,7 @@ class UpdateAppointmentModal extends Component {
         })
     }
 
-    render(){
-        console.log(moment
-            .utc(this.props.payload.date)
-            .format('ll'),typeof(this.props.payload.date));
+    render(){ 
         const add_appointment_modal_body = 
             <div className="modal-body">
                 <div className="row">

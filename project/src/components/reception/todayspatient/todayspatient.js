@@ -111,7 +111,19 @@ class Todayspatient extends Component {
         let res_visits = await this.request(data, SEARCH_TODAYS_APPOINTMENTS_URL)
         if (res_visits === null) return
         if (res_visits.data.status) {
-            this.setState({ data: res_visits.data.payload, filtered_data: res_visits.data.payload, totalRecords: res_visits.data.payload.length })
+            this.setState({ data: res_visits.data.payload, 
+                filtered_data: res_visits.data.payload, 
+                totalRecords: res_visits.data.payload.length }, () => {
+                    if (localStorage.getItem('h7vjys8yyd12')){
+                        const reference = `element_${localStorage.getItem('h7vjys8yyd12')}_ref`
+                        setTimeout(() => {
+                            this[reference].scrollIntoView({ behavior: "smooth" });
+                            localStorage.removeItem('h7vjys8yyd12')
+                        },500)
+
+                    }
+                        
+                })
         }
         else {
             this.props.notify('info', '', res_visits.data.message)
@@ -199,7 +211,7 @@ class Todayspatient extends Component {
             var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
 
             const hidden_data = {
-                visit_description: booking.description
+                visit_description: booking.description 
             }
             let header_elements = [
                 moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY, hh:mm a'),
@@ -210,9 +222,13 @@ class Todayspatient extends Component {
                     </div>
                 </div>
             ]
+            let d = new Date();
+            d = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
             return (
                 <TodaysPatientRow
                     key={i}
+                    id={i}
+                    reference={<div ref={(el) => { this[`element_${i}_ref`] = el; }}></div>}
                     visit_id={booking.visit_id}
                     row_data={booking}
                     hidden_data={hidden_data}

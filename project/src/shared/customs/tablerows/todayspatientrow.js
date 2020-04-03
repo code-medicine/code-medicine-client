@@ -16,6 +16,7 @@ class TodaysPatientRow extends Component {
             hidden_header_elements: this.props.hidden_header_elements,
             hidden_header_color: this.props.hidden_header_color,
             col_span: '',
+            appointment_time_difference_from_now: moment(this.props.row_data.date, "YYYY-MM-DDThh:mm:ss").fromNow(),
 
             update_appointment_modal_visibility: false,
         }
@@ -30,6 +31,9 @@ class TodaysPatientRow extends Component {
         console.log(this.props.row_data);
         // this.setState({row_data: this.props.data})
         this.setState({col_span: this.props.columns})
+        setInterval(() => {
+            this.setState({appointment_time_difference_from_now: moment(this.state.row_data.date, "YYYY-MM-DDThh:mm:ss").fromNow()})
+        },60000)
     }
 
     view_user = (id) => {
@@ -39,7 +43,8 @@ class TodaysPatientRow extends Component {
     render_read_only_cols = () => {
         return (
             // <div>{this.state.row_data}</div>
-            <div className={`container-fluid`}>
+            <div className={`container-fluid`} >
+                {this.props.reference}
                 <div className={`row`}>
                     {/* Patient name and phone number */}
                     <div className={`col-lg-3 col-md-6 col-sm-6 mt-0 text-teal-400 border-left-2 border-left-teal-400 btn-block d-flex align-items-center justify-content-center text-center`}>
@@ -57,7 +62,7 @@ class TodaysPatientRow extends Component {
                     <div className={`col-lg-3 col-md-6 col-sm-6 mt-0 text-teal-400 border-left-2 border-bottom-sm-2 border-left-teal-400 border-right-teal-400 border-right-2 btn-block d-flex align-items-center justify-content-center text-center`} >
                         <div className={` zoomIn animated`} >
                             <h1 className="mb-0">{moment(this.state.row_data.date, "YYYY-MM-DDThh:mm:ss").format('hh:mm a')}</h1>
-                            <p>{moment(this.state.row_data.date, "YYYY-MM-DDThh:mm:ss").fromNow()}</p>
+                            <p>{this.state.appointment_time_difference_from_now}</p>
                         </div>
                     </div>
                     {/* appointment details */}
@@ -125,6 +130,10 @@ class TodaysPatientRow extends Component {
 
     open_update_appointment_modal = () => {
         this.setState({update_appointment_modal_visibility: true})
+    }
+
+    call_back_update_appointment_modal = () => {
+        
     }
 
     render () {
@@ -227,6 +236,7 @@ class TodaysPatientRow extends Component {
                             }
                         </Collapse>
                         <UpdateAppointmentModal 
+                            id={this.props.id}
                             visibility={this.state.update_appointment_modal_visibility}
                             close={ this.close_update_appointment_modal }
                             call_back={this.call_back_update_appointment_modal}

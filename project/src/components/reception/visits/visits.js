@@ -160,6 +160,8 @@ class Visits extends Component {
                 total_records_on_this_page: res_visits.data.payload.visits.length,
                 total_pages: res_visits.data.payload.total_pages,
                 loading_status: false
+            }, () => {
+                // this['element_7_ref'].scrollIntoView({ behavior: "smooth" });
             })
         }
         else {
@@ -317,8 +319,8 @@ class Visits extends Component {
             var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
 
             const row_data = {
-                date_of_booking: <span className="bounceInRight animated">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}</span>,// date of booking
-                time_of_booking: <span className="bounceInRight animated">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LT')}`}</span>,// time of booking
+                date_of_booking: <div ref={(el) => { this[`element_${i}_ref`] = el; }} className="bounceInLeft animated">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}</div>,// date of booking
+                time_of_booking: <div className="bounceInRight animated">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LT')}`}</div>,// time of booking
                 patient_name: <button className="btn btn-outline bg-teal-400 border-teal-400 text-teal-400 btn-sm btn-block jackInTheBox animated" 
                                     onClick={() => this.request_user(booking.patient['id']) }>
                                 {booking.patient['first_name'] + ' ' + booking.patient['last_name']}
