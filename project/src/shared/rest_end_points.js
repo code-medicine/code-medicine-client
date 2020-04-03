@@ -35,3 +35,7 @@ export const GET_PROCEDURES_FEE = `${BASE_PROCEDURES_URL}/fees`;
 export const BASE_PROFITS_URL = `${BASE_URL}/profits`;
 export const GET_PROFITS_BY_DOCTOR_ID = `${BASE_PROFITS_URL}/search/visit/id`;
 export const PROFITS_UPDATE = `${BASE_PROFITS_URL}/update`;
+
+// All profit related end points
+export const BASE_DOCTORDETAILS__URL = `${BASE_URL}/doctordetails`;
+export const DOCTORDETAILS_SEARCH = `${BASE_DOCTORDETAILS__URL}/search`;
