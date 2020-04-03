@@ -3,7 +3,7 @@ import Modal from "react-bootstrap4-modal";
 import LOGO from '../../resources/images/LOGO.png';
 import './invoiceModal.css';
 import Axios from "axios";
-import {GET_PROCEDURES_FEE, GET_PROFITS_BY_DOCTOR_ID, UPDATE_APPOINTMENT_URL, PROFITS_UPDATE} from "../rest_end_points";
+import {GET_PROCEDURES_FEE, GET_PROFITS_BY_DOCTOR_ID, UPDATE_APPOINTMENT_URL, PROFITS_UPDATE,DOCTORDETAILS_SEARCH} from "../rest_end_points";
 import ReactToPrint from 'react-to-print';
 import ComponentToPrint from './ComponentToPrint';
 import {connect} from "react-redux";
@@ -196,13 +196,29 @@ class InvoiceModal extends Component {
                             const ct = (response.data.payload.profits[0].consultancy_fee);
                             return {
                                 profitID:response.data.payload.profits[0]._id,
-                                consultancyFee: response.data.payload.profits[0].consultancy_fee,
                                 consultancyTotal: ct,
                                 addons: response.data.payload.profits[0].addons,
                                 total: state.proceduresFee + ct + response.data.payload.profits[0].addons
                             };
                         });
 
+                    }
+                });
+            } catch (err) {
+                this.props.notify('error', '', 'Server is not responding! Please try again later');
+            }
+
+
+            try {
+                let response = Axios.get(`${DOCTORDETAILS_SEARCH}?doctor_id=`+this.props.data.doctor.id, {
+                    headers: {'code-medicine': localStorage.getItem('user')}
+                });
+                response.then((response) => {
+                    console.log(response);
+                    if (response.data.status === true && response.data.payload.doctor_details.length>0) {
+                        this.setState({
+                            consultancyFee: response.data.payload.doctor_details[0].consultancy_fee
+                        })
                     }
                 });
             } catch (err) {
