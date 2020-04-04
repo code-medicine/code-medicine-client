@@ -1,0 +1,32 @@
+.print {
+    text-align: center;
+    margin: 2% 5%;
+}
+
+
+.row{
+    display: flex !important;
+    flex-wrap: wrap;
+    margin: 2% 0;
+}
+.column {
+    max-width: 41.66667%;
+    margin-left: 20%;
+    text-align: left;
+}
+.table-bordered th, .table-bordered td {
+    border: 1px solid #000 !important;
+}
+.signature {
+    text-align: left;
+    display: flex;
+}
+.signature>h3{
+    font-weight: bold;
+    margin-bottom: 0px;
+}
+.signature>input{
+    border: 0;
+    border-bottom: 1px solid #000;
+}
+

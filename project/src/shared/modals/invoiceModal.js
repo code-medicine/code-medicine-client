@@ -5,7 +5,7 @@ import './invoiceModal.css';
 import Axios from "axios";
 import {GET_PROCEDURES_FEE, GET_PROFITS_BY_DOCTOR_ID, UPDATE_APPOINTMENT_URL, PROFITS_UPDATE,DOCTORDETAILS_SEARCH} from "../rest_end_points";
 import ReactToPrint from 'react-to-print';
-import ComponentToPrint from './ComponentToPrint';
+import PrintInvoice from './PrintInvoice';
 import {connect} from "react-redux";
 import {notify} from "../../actions";
 import Select from 'react-select';
@@ -17,12 +17,8 @@ class InvoiceModal extends Component {
         super(props);
         this.state = {
             invoiceType: [{
-                id: 'customer',
-                reference: 'customer',
                 label: `Customer Copy`
             }, {
-                id: 'hospital',
-                reference: 'hospital',
                 label: `Hospital Copy`
             }],
             visitId:null,
@@ -149,7 +145,8 @@ class InvoiceModal extends Component {
                 if(response.data.status===true) {
                     this.setState((state, props) => {
                         return {
-                            total: this.state.total - (this.state.consultancyDiscount + this.state.totalDiscount)
+                            total: state.total - (state.consultancyDiscount + state.totalDiscount),
+                            consultancyTotal: state.consultancyFee - state.consultancyDiscount
                         };
                     });
                     this.props.notify('success', '', 'Visit Updated!');
@@ -162,20 +159,22 @@ class InvoiceModal extends Component {
     };
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        console.log(this.props.data);
+        // console.log(this.props.data);
         if (this.props.data!==null && this.props.data.visit_id !== this.state.visitId) {
             try {
                 let response = Axios.get(`${GET_PROCEDURES_FEE}?visit_id=`+this.props.data.visit_id,{
                     headers: { 'code-medicine': localStorage.getItem('user') }
                 });
                 response.then((response) => {
+                    console.log(response);
                     if (response.data.status === true) {
                         this.setState({
                             proceduresFee : response.data.payload.procedures_fees,
                             procedures: response.data.payload.procedures,
                             visitId: this.props.data.visit_id,
                             consultancyDiscount: this.props.data.consultancy_discount,
-                            totalDiscount: this.props.data.overall_discount
+                            totalDiscount: this.props.data.overall_discount,
+                            total:response.data.payload.procedures_fees
                         });
                     }
                 });
@@ -196,9 +195,8 @@ class InvoiceModal extends Component {
                             const ct = (response.data.payload.profits[0].consultancy_fee);
                             return {
                                 profitID:response.data.payload.profits[0]._id,
-                                consultancyTotal: ct,
                                 addons: response.data.payload.profits[0].addons,
-                                total: state.proceduresFee + ct + response.data.payload.profits[0].addons
+                                total: state.total + ct + response.data.payload.profits[0].addons
                             };
                         });
 
@@ -214,11 +212,15 @@ class InvoiceModal extends Component {
                     headers: {'code-medicine': localStorage.getItem('user')}
                 });
                 response.then((response) => {
-                    console.log(response);
+                    // console.log(response);
                     if (response.data.status === true && response.data.payload.doctor_details.length>0) {
-                        this.setState({
-                            consultancyFee: response.data.payload.doctor_details[0].consultancy_fee
-                        })
+
+                        this.setState((state, props) => {
+                            return {
+                                consultancyFee: response.data.payload.doctor_details[0].consultancy_fee,
+                                consultancyTotal: response.data.payload.doctor_details[0].consultancy_fee - state.consultancyDiscount
+                            };
+                        });
                     }
                 });
             } catch (err) {
@@ -227,15 +229,15 @@ class InvoiceModal extends Component {
          }
     }
 
-    print = () => {
-        var content = document.getElementById("print").innerHTML;
-        var pri = document.getElementById("ifmcontentstoprint").contentWindow;
-        pri.document.open();
-        pri.document.write(content);
-        pri.document.close();
-        pri.focus();
-        pri.print();
-    };
+    // print = () => {
+    //     var content = document.getElementById("print").innerHTML;
+    //     var pri = document.getElementById("ifmcontentstoprint").contentWindow;
+    //     pri.document.open();
+    //     pri.document.write(content);
+    //     pri.document.close();
+    //     pri.focus();
+    //     pri.print();
+    // };
 
     render() {
         return (
@@ -266,9 +268,6 @@ class InvoiceModal extends Component {
                         <b><i className="icon-printer2" /></b>Print</button>
                 </div>
                 <div className="modal-body">
-
-                    <iframe id="ifmcontentstoprint"></iframe>
-
                     <div className="container-fluid">
                         <div className="row d-print-flex" id="print">
                             <div className="col-md-12">
@@ -433,12 +432,25 @@ class InvoiceModal extends Component {
                             type="button"
                             className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
                             style={{ textTransform: "inherit" }}
-                            onClick={this.print}
                         >
                             <b><i className="icon-printer2" /></b>Print</button>}
                         content={() => this.componentRef}
                     />
-                    <div style={{ display: "none" }}><ComponentToPrint ref={el => (this.componentRef = el)}/></div>
+                    <div style={{ display: "none" }}>
+                        <PrintInvoice
+                            invoiceType={this.state.invoiceType}
+                            data = {this.props.data}
+                            total={this.state.total}
+                            totalDiscount={this.state.totalDiscount}
+                            payableAmount={this.state.total-this.state.totalDiscount}
+                            procedures={this.state.procedures}
+                            consultancyFee={this.state.consultancyFee}
+                            consultancyDiscount={this.state.consultancyDiscount}
+                            consultancyTotal={this.state.consultancyTotal}
+                            addons={this.state.addons}
+                            ref={el => (this.componentRef = el)
+                            }/>
+                    </div>
                 </div>
             </Modal>);
     }
