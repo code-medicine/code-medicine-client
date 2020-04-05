@@ -9,7 +9,7 @@ import {
         SEARCH_USER_REQUEST,
     } from '../../../shared/rest_end_points';
 import { connect } from "react-redux";
-import { notify,set_active_page } from '../../../actions';
+import { notify, set_active_page, set_todays_appointments } from '../../../actions';
 import { Link, withRouter } from 'react-router-dom';
 import { classNameColors } from '../../../shared/constant_data'
 import './todayspatient.css';
@@ -111,17 +111,18 @@ class Todayspatient extends Component {
         let res_visits = await this.request(data, SEARCH_TODAYS_APPOINTMENTS_URL)
         if (res_visits === null) return
         if (res_visits.data.status) {
-            this.setState({ data: res_visits.data.payload, 
-                filtered_data: res_visits.data.payload, 
+            this.props.set_todays_appointments(res_visits.data.payload)
+            this.setState({ filtered_data: res_visits.data.payload, 
                 totalRecords: res_visits.data.payload.length }, () => {
-                    if (localStorage.getItem('h7vjys8yyd12')){
-                        const reference = `element_${localStorage.getItem('h7vjys8yyd12')}_ref`
-                        setTimeout(() => {
-                            this[reference].scrollIntoView({ behavior: "smooth" });
-                            localStorage.removeItem('h7vjys8yyd12')
-                        },500)
+                    // if (localStorage.getItem('h7vjys8yyd12')){
+                    //     const reference = `element_${localStorage.getItem('h7vjys8yyd12')}_ref`
+                    //     setTimeout(() => {
+                    //         this[reference].scrollIntoView({ behavior: "smooth" });
+                    //         localStorage.removeItem('h7vjys8yyd12')
+                    //     },500)
 
-                    }
+                    // }
+
                         
                 })
         }
@@ -307,9 +308,8 @@ class Todayspatient extends Component {
 
     render() {
         var table = <Loading size={150} />
-        if (this.state.data != null) {
-            if (this.state.totalRecords > 0) {
-                console.log(this.state.data)
+        if (this.props.todays_patient != null) {
+            if (this.props.todays_patient.length > 0) {
                 table = <div className="table-responsive mt-2 card mb-0 pb-0"><table className="table table-hover">
                     <thead className="table-header-bg bg-dark">
                         <tr>
@@ -322,7 +322,7 @@ class Todayspatient extends Component {
                     </thead>
                     <tbody>
                         {
-                            this.renderDataInRows(this.state.filtered_data)
+                            this.renderDataInRows(this.props.todays_patient)
                         }
                     </tbody>
                 </table></div>
@@ -470,7 +470,10 @@ class Todayspatient extends Component {
         )
     }
 }
-function map_state_to_props(notify) {
-    return { notify }
+function map_state_to_props(state) {
+    return { 
+        notify: state.notify,
+        todays_patient: state.todays_patient
+    }
 }
-export default connect(map_state_to_props, { notify, set_active_page })(withRouter(Todayspatient));
+export default connect(map_state_to_props, { notify, set_active_page, set_todays_appointments })(withRouter(Todayspatient));

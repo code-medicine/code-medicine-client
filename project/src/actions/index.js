@@ -1,4 +1,4 @@
-import { NOTIFY, LEFT_SIDEBAR, ACTIVE_USER, ACTIVE_PAGE } from "../shared/action_constants";
+import { NOTIFY, LEFT_SIDEBAR, ACTIVE_USER, ACTIVE_PAGE, TODAYS_PATIENT } from "../shared/action_constants";
 
 
 export function notify(type,title,message){
@@ -31,5 +31,12 @@ export function set_active_page(details){
     return {
         type: ACTIVE_PAGE,
         payload: details
+    }
+}
+
+export function set_todays_appointments(records){
+    return {
+        type: TODAYS_PATIENT,
+        payload: records
     }
 }
