@@ -50,9 +50,11 @@ class TableRow extends Component {
             <Fragment>
                 <tr>
                     <td onClick={this.toggle_row}>
-                        <Link className="" to="#" onClick={this.toggle_row}>
-                            <i className={this.state.toggle_icon}></i>
-                        </Link>
+                        <div className="bounceInLeft animated">
+                            <Link className="" to="#" onClick={this.toggle_row}>
+                                <i className={this.state.toggle_icon}></i>
+                            </Link>
+                        </div>
                     </td>
                     {
                         this.render_read_only_cols()

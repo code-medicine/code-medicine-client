@@ -6,7 +6,7 @@ import DateTimePicker from 'react-datetime';
 import moment from 'moment';
 import Axios from 'axios';
 import { NEW_APPOINTMENT_URL, SEARCH_USER_REQUEST, UPDATE_APPOINTMENT_URL } from '../rest_end_points';
-import { notify } from '../../actions';
+import { notify, load_todays_appointments, clear_todays_appointments } from '../../actions';
 import { connect } from "react-redux";
 import NewUserModal from './newusermodal';
 
@@ -241,11 +241,14 @@ class NewAppointmentModal extends Component {
                     appointment_date: { value: '' },
                     appointment_time: { value: '' },
                     appointment_reason: { value: '' },
+                    patient_select_value: '',
+                    doctor_select_value: '',
                     loading_status: false,
                     
                 })
-                
-                this.props.call_back()
+                this.props.clear_todays_appointments()
+                this.props.load_todays_appointments()
+                this.props.close()
             }
             else {
                 this.props.notify('error', '', res.data.message)
@@ -441,7 +444,10 @@ class NewAppointmentModal extends Component {
         )
     }
 }
-function map_state_to_props(notify) {
-    return { notify }
+function map_state_to_props(state) {
+    return { 
+        notify: state.notify,
+        todays_patient: state.todays_patient 
+    }
 }
-export default connect(map_state_to_props, { notify })(NewAppointmentModal);
+export default connect(map_state_to_props, { notify, load_todays_appointments, clear_todays_appointments })(NewAppointmentModal);

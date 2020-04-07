@@ -1,4 +1,6 @@
-import { NOTIFY, LEFT_SIDEBAR, ACTIVE_USER, ACTIVE_PAGE, TODAYS_PATIENT } from "../shared/action_constants";
+import { NOTIFY, LEFT_SIDEBAR, ACTIVE_USER, ACTIVE_PAGE, TODAYS_PATIENT, TODAYS_PATIENT_CLEAR } from "../shared/action_constants";
+import Axios from "axios";
+import { SEARCH_APPOINTMENTS_URL, SEARCH_TODAYS_APPOINTMENTS_URL } from "../shared/rest_end_points";
 
 
 export function notify(type,title,message){
@@ -34,9 +36,29 @@ export function set_active_page(details){
     }
 }
 
-export function set_todays_appointments(records){
+export function load_todays_appointments(){
+    return function(dispatch){
+        let d = new Date();
+        d = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+        Axios.post(SEARCH_TODAYS_APPOINTMENTS_URL,{ date_flag: d },{ headers: { 'code-medicine': localStorage.getItem('user') } })
+        .then(res => {
+            dispatch({
+                type: TODAYS_PATIENT,
+                payload: res,
+                loading: false
+            })
+        })
+        .catch(err => {
+            dispatch({
+                type: TODAYS_PATIENT,
+                payload: {"data": {"status": false, "message": "Network Error", loading: false}}
+            })
+        })
+    }
+}
+
+export function clear_todays_appointments(){
     return {
-        type: TODAYS_PATIENT,
-        payload: records
+        type: TODAYS_PATIENT_CLEAR
     }
 }

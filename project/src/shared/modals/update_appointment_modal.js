@@ -6,7 +6,7 @@ import Loading from '../customs/loading/loading';
 import Select from 'react-select'
 import Modal from 'react-bootstrap4-modal';
 import DateTimePicker from 'react-datetime';
-import { notify } from '../../actions';
+import { notify, load_todays_appointments, clear_todays_appointments } from '../../actions';
 import { connect } from "react-redux";
 import Inputfield from '../customs/inputfield/inputfield';
 
@@ -263,24 +263,26 @@ class UpdateAppointmentModal extends Component {
                 status: 'waiting'
             }
         }
+        const that = this;
         Axios.put(UPDATE_APPOINTMENT_URL,data, {
             headers: {
                 'code-medicine': localStorage.getItem('user')
             }
         }).then(res => {
             if (res.data.status === true){
-                this.props.notify('success', '', res.data.message)
-                this.setState({ loading_status: false })
-                this.props.close()
-                this.props.call_back()
+                that.props.notify('success', '', res.data.message)
+                that.setState({ loading_status: false })
+                that.props.clear_todays_appointments()
+                that.props.load_todays_appointments()
+                that.props.close()
             }
             else{
-                this.props.notify('error', '', res.data.message)
-                this.setState({ loading_status: false })
+                that.props.notify('error', '', res.data.message)
+                that.setState({ loading_status: false })
             }
         }).catch(err => {
-            this.props.notify('error','', 'No connection')
-            this.setState({ loading_status: false })
+            that.props.notify('error','', 'No connection')
+            that.setState({ loading_status: false })
         })
     }
 
@@ -442,7 +444,9 @@ class UpdateAppointmentModal extends Component {
         )
     }
 }
-function map_state_to_props(notify) {
-    return { notify }
+function map_state_to_props(state) {
+    return { 
+        notify: state.notify 
+    }
 }
-export default connect(map_state_to_props, { notify })(UpdateAppointmentModal);
+export default connect(map_state_to_props, { notify, load_todays_appointments, clear_todays_appointments })(UpdateAppointmentModal);

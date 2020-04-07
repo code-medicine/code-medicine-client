@@ -20,7 +20,7 @@ class Procedure extends Component {
     render() {
         const disabled = this.props.disableDelete && this.state.editable;
         return (
-            <div className="row jackInTheBox animated">
+            <div className="row zoomIn animated">
                 <div className={`col-md-7  px-3`}>
                     <Inputfield
                         id={`procedure_reason_text_input`+this.props.id}

@@ -319,8 +319,8 @@ class Visits extends Component {
             var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
 
             const row_data = {
-                date_of_booking: <div ref={(el) => { this[`element_${i}_ref`] = el; }} className="bounceInLeft animated">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}</div>,// date of booking
-                time_of_booking: <div className="bounceInRight animated">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LT')}`}</div>,// time of booking
+                date_of_booking: <div ref={(el) => { this[`element_${i}_ref`] = el; }} className="">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}</div>,// date of booking
+                time_of_booking: <div className="">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LT')}`}</div>,// time of booking
                 patient_name: <button className="btn btn-outline bg-teal-400 border-teal-400 text-teal-400 btn-sm btn-block jackInTheBox animated" 
                                     onClick={() => this.request_user(booking.patient['id']) }>
                                 {booking.patient['first_name'] + ' ' + booking.patient['last_name']}
@@ -333,7 +333,7 @@ class Visits extends Component {
                                 {booking.doctor['first_name'] + ' ' + booking.doctor['last_name']}
                             </button>,// doctor name
                 visit_status: <span className={`badge ${booking.status === 'waiting'? 'badge-danger':'badge-primary'}`}>{booking.status}</span>,
-                visit_total_charges: 0
+                visit_total_charges: <div className="">0</div>
                 
             }
             const hidden_data = [
@@ -553,7 +553,7 @@ class Visits extends Component {
 
                     </div>
                     <div className="row">
-                        <div className="col-lg-6">
+                        <div className="col-lg-5">
                             <div className="row mb-2">
                                 <div className="col-11">
                                     <Select
@@ -564,14 +564,6 @@ class Visits extends Component {
                                         onInputChange={e => this.populate_patients(e)}
                                         onChange={e => this.on_selected_changed(e, 'patient_list')}
                                         placeholder="Search patients" />
-                                    {/* <Inputfield label_tag="Search Patient"
-                                            icon_className="icon-user"
-                                            placeholder="Enter name, Phone number or email to search"
-                                            field_type="select"
-                                            options={this.state.users_list}
-                                            on_text_change_listener={e => this.populate_users(e)}
-                                            on_selected_changed={e => this.on_selected_changed(e,'users_list')}
-                                            /> */}
                                 </div>
                                 <div className="col-1 d-flex align-items-end pr-0 mb-2 pl-0">
                                     <div className="form-check">
@@ -592,17 +584,9 @@ class Visits extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-lg-6">
+                        <div className="col-lg-5">
                             <div className="row">
                                 <div className="col-11">
-                                    {/* <Inputfield label_tag="Search Doctor"
-                                            icon_className="icon-user"
-                                            placeholder="Enter name, Phone number or email to search"
-                                            field_type="select"
-                                            options={this.state.users_list}
-                                            on_text_change_listener={e => this.populate_users(e)}
-                                            on_selected_changed={e => this.on_selected_changed(e,'users_list')}
-                                            /> */}
                                     <Select
                                         isClearable
                                         isDisabled={!this.state.doctor_checkbox}
@@ -630,8 +614,18 @@ class Visits extends Component {
                                 </div>
                             </div>
                         </div>
+                        <div className={`col-lg-2`}>
+                            <button
+                                type="button"
+                                className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5 btn-block "
+                                style={{ textTransform: "inherit" }}
+                                onClick={this.on_search_click}>
+                                <b><i className="icon-search4"></i></b>
+                                Search
+                            </button>
+                        </div>
                     </div>
-                    <div className={`row`}>
+                    {/* <div className={`row`}>
                         <div className="col">
                             <Select
                                 className=""
@@ -676,7 +670,7 @@ class Visits extends Component {
                                 Search
                             </button>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 {this.state.loading_status ? loading : table}
                 <UserPreviewModal visibility={this.state.user_preview_modal_visibility} 

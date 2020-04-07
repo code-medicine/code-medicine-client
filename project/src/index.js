@@ -5,11 +5,14 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 import Init from './components/init';
 import reducers from './reducers'
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
+import promise from 'redux-promise';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 
-export const store = createStore((reducers));
+export const store = createStore((reducers), composeWithDevTools(applyMiddleware(promise, thunk)));
 
 ReactDOM.render(<Provider store={store}>
                     <Init />

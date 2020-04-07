@@ -48,7 +48,7 @@ class TodaysPatientRow extends Component {
                 <div className={`row`}>
                     {/* Patient name and phone number */}
                     <div className={`col-lg-3 col-md-6 col-sm-6 mt-0 text-teal-400 border-left-2 border-left-teal-400 btn-block d-flex align-items-center justify-content-center text-center`}>
-                        <div className={`btn btn-outline bg-teal-400 text-teal-400 btn-block zoomIn animated`}
+                        <div className={`btn btn-outline bg-teal-400 text-teal-400 btn-block jackInTheBox animated`}
                             style={{ verticalAlign: 'center' }}
                             onClick={() => this.view_user(this.state.row_data.patient['id'])}>
                             <span className={`img-fluid rounded-circle text-white bg-teal-400 h3 p-2`} >
@@ -60,7 +60,7 @@ class TodaysPatientRow extends Component {
                     </div>
                     {/* Appointment Time column */}
                     <div className={`col-lg-3 col-md-6 col-sm-6 mt-0 text-teal-400 border-left-2 border-bottom-sm-2 border-left-teal-400 border-right-teal-400 border-right-2 btn-block d-flex align-items-center justify-content-center text-center`} >
-                        <div className={` zoomIn animated`} >
+                        <div className={` jackInTheBox animated`} >
                             <h1 className="mb-0">{moment(this.state.row_data.date, "YYYY-MM-DDThh:mm:ss").format('hh:mm a')}</h1>
                             <p>{this.state.appointment_time_difference_from_now}</p>
                         </div>
@@ -108,7 +108,7 @@ class TodaysPatientRow extends Component {
         
         return (
             <div className="">
-                <h5 className="font-weight-semibold">Reason of visit</h5>,
+                <h5 className="font-weight-semibold">Reason of visit</h5>
                 <blockquote className="blockquote blockquote-bordered py-2 pl-3 mb-0">
                     <p className="mb-1">
                         {this.state.hidden_data.visit_description}
