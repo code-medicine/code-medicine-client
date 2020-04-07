@@ -40,11 +40,11 @@ class NewUserModal extends Component {
                 this.setState({ user_last_name: { value: e.target.value, error: false } })
                 break;
             case 'user_cnic_text_input':
-                if (e.target.value <= 13)
+                if (e.target.value.length <= 13)
                     this.setState({ user_cnic: { value: e.target.value, error: false } })
                 break;
             case 'user_phone_number_text_input':
-                if (e.target.value <= 11)
+                if (e.target.value.length <= 11)
                     this.setState({ user_phone_number: { value: e.target.value, error: false } })
                 break;
             case 'user_email_text_input':
@@ -265,7 +265,7 @@ class NewUserModal extends Component {
                                 id={`user_phone_number_text_input`}
 
                                 label_tag={'Phone number'}
-                                icon_class={'icon-user-check'}
+                                icon_class={'icon-phone2'}
                                 input_type={'number'}
                                 placeholder="Enter phone number"
                                 on_text_change_listener={this.on_text_field_change}
@@ -295,7 +295,7 @@ class NewUserModal extends Component {
                                 id={`user_cnic_text_input`}
 
                                 label_tag={'CNIC'}
-                                icon_class={'icon-user-check'}
+                                icon_class={'icon-vcard'}
                                 input_type={'number'}
                                 placeholder="Enter CNIC"
                                 on_text_change_listener={this.on_text_field_change}
@@ -307,7 +307,7 @@ class NewUserModal extends Component {
                                 id={`user_email_text_input`}
 
                                 label_tag={'Enter email'}
-                                icon_class={'icon-user-check'}
+                                icon_class={'icon-envelop'}
                                 input_type={'email'}
                                 placeholder="Enter email"
                                 on_text_change_listener={this.on_text_field_change}
@@ -360,10 +360,8 @@ class NewUserModal extends Component {
                                         }),
                                     }}
                                 />
-                                <div className="form-control-feedback">
-                                    <i className="icon-user-check text-muted"></i>
-                                </div>
                             </div>
+                            <hr />
                         </div>
                         <div className={`col-12`} style={{display: 'none'}}>
                             <div className="form-group form-group-feedback form-group-feedback-right">
@@ -381,18 +379,8 @@ class NewUserModal extends Component {
                                 />
                             </div>
                         </div>
-                        <hr />
                         <div className="col-12">
-                            <button
-                                type="button"
-                                className="btn bg-danger btn-labeled btn-block btn-labeled-right pr-5"
-                                style={{ textTransform: "inherit" }}
-                                onClick={this.close_modal}>
-                                <b><i className="icon-cross"></i></b>
-                                Cancel
-                            </button>
-                        </div>
-                        <div className="col-12 mt-3">
+                        
                             <button
                                 type="button"
                                 className="btn bg-teal-400 btn-labeled btn-block btn-labeled-right pr-5"
@@ -400,6 +388,17 @@ class NewUserModal extends Component {
                                 onClick={this.on_submit}>
                                 <b><i className="icon-plus3"></i></b>
                                 Add
+                            </button>
+                        </div>
+                        <div className="col-12 mt-3">
+                            
+                            <button
+                                type="button"
+                                className="btn bg-danger btn-labeled btn-block btn-labeled-right pr-5"
+                                style={{ textTransform: "inherit" }}
+                                onClick={this.close_modal}>
+                                <b><i className="icon-cross"></i></b>
+                                Cancel
                             </button>
                         </div>
                     </div>
