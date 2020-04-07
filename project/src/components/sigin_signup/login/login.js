@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import Container from '../../shared/container/container';
-import { BASE_URL, REGISTER_URL, LOGIN_URL } from '../../shared/router_constants';
 import Axios from 'axios';
-import { LOGIN_USER_REQUEST, PROFILE_USER_REQUEST } from '../../shared/rest_end_points';
 import { connect } from "react-redux";
-import { notify, set_active_user } from '../../actions';
 import Loader from 'react-loader-spinner';
 import { withRouter, Link } from 'react-router-dom';
-import Inputfield from '../../shared/inputfield/inputfield';
+
+import Container from '../../../shared/container/container';
+import { notify, set_active_user } from '../../../actions';
+import Inputfield from '../../../shared/customs/inputfield/inputfield';
+
+import { BASE_URL, REGISTER_URL, LOGIN_URL } from '../../../shared/router_constants';
+import { LOGIN_USER_REQUEST, PROFILE_USER_REQUEST } from '../../../shared/rest_end_points';
 
 
 class Login extends Component {
@@ -15,30 +17,30 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: { value: '' },
-            password: { value: '' },
+            email: { value: '', error: false },
+            password: { value: '', error: false },
             remember_me_option: true,
             loading_status: false,
         }
     }
 
-    UNSAFE_componentWillMount() {
-        if (localStorage.user) {
-            Axios.get(`${PROFILE_USER_REQUEST}?tag=${localStorage.user}`).then(res => {
-                if (res.data['status']) {
-                    this.props.history.push(BASE_URL)
-                }
-            })
-        }
-    }
+    // UNSAFE_componentWillMount() {
+    //     if (localStorage.user) {
+    //         Axios.get(`${PROFILE_USER_REQUEST}?tag=${localStorage.user}`).then(res => {
+    //             if (res.data['status']) {
+    //                 this.props.history.push(BASE_URL)
+    //             }
+    //         })
+    //     }
+    // }
 
     on_text_field_change = (e) => {
         switch (e.target.id) {
             case 'email_text_input':
-                this.setState({ email: { value: e.target.value } })
+                this.setState({ email: { value: e.target.value, error: false } })
                 break;
             case 'password_text_input':
-                this.setState({ password: { value: e.target.value } })
+                this.setState({ password: { value: e.target.value, error: false } })
                 break;
             case 'remember_me_text_input':
                 this.setState({ remember_me_option: e.target.checked })
@@ -77,13 +79,17 @@ class Login extends Component {
             }
             else {
                 this.props.notify('error', '', res.data['message'])
+                this.setState({
+                    email: { value: this.state.email.value, error: true },
+                    password: { value: this.state.password.value, error: true }
+                })
             }
         }).catch(err => {
             this.props.notify('error', '', 'Server not responding! please try again later')
             this.setState({
                 loading_status: false,
-                email: '',
-                password: ''
+                email: { value: '', error: false },
+                password: { value: '', error: false }
             })
         });
     }
@@ -109,98 +115,6 @@ class Login extends Component {
             </div>
         }
         else {
-            const form_group = "form-group form-group-float mb-1"
-            // view = <form className="login-form" style={{background: 'white', height: '100vh'}} method="post" action={this.on_submit}>
-            //     <div className="card-body">
-            //         <div className="text-center mb-0">
-            //             <i className="icon-people icon-2x text-warning-400 border-warning-400 border-3 rounded-round p-3 mb-3 mt-1"></i>
-            //             <h5 className="mb-0 text-muted">Login to your account</h5>
-            //         </div>
-
-            //         <div className={form_group}>
-            //             <label className={`form-group-float-label animate ${this.state.email.label_visibility ? 'is-visible' : ''}`}>Username or phone number</label>
-            //             <div className="input-group">
-            //                 <span className="input-group-prepend">
-            //                     <span className="input-group-text">
-            //                         <i className="icon-user text-muted"></i>
-            //                     </span>
-            //                 </span>
-            //                 <input type="text"
-            //                     className="form-control"
-            //                     placeholder="Username or phone number"
-            //                     id="email_text_input"
-            //                     onChange={this.on_text_field_change}/>
-            //             </div>
-            //         </div>
-
-            //         <div className={form_group}>
-            //             <label className={`form-group-float-label animate ${this.state.password.label_visibility ? 'is-visible' : ''}`}>Password</label>
-            //             <div className="input-group">
-            //                 <span className="input-group-prepend">
-            //                     <span className="input-group-text">
-            //                         <i className="icon-lock2 text-muted"></i>
-            //                     </span>
-            //                 </span>
-            //                 <input type="password"
-            //                     className="form-control"
-            //                     placeholder="Password"
-            //                     id="password_text_input"
-            //                     onChange={this.on_text_field_change} />
-            //             </div>
-            //         </div>
-
-            //         <hr/>
-
-            //         <div className="form-group d-flex align-items-center">
-            //             <div className="form-check mb-0">
-            //                 <label className="form-check-label">
-            //                     <div className="uniform-checker">
-            //                         <span className={this.state.remember_me_option? 'checked':''}>
-            //                             <input type="checkbox" 
-            //                                 name="remember"
-            //                                 id="remember_me_text_input"
-            //                                 defaultChecked={this.state.remember_me_option}
-            //                                 value={this.state.remember_me_option}
-            //                                 onChange={this.on_text_field_change}
-            //                                 className="form-input-styled"/>
-            //                         </span>
-            //                     </div>
-            //                     Remember
-            //                 </label>
-            //             </div>
-
-            //             <a href="login_password_recover.html" className="ml-auto">Forgot password?</a>
-            //         </div>
-
-            //         <div className="form-group ">
-            //             <button 
-            //                 type="submit" 
-            //                 className="btn btn-block bg-teal-400 btn-labeled btn-labeled-right ml-auto"
-            //                 style={{textTransform: "inherit"}}
-            //                 onClick={this.on_submit}>
-            //                 <b><i className="icon-circle-right2"></i></b>
-            //                 Sign in
-            //             </button>
-            //         </div>
-
-            //         <div className="form-group text-center text-muted content-divider">
-            //             <span className="px-2">Don't have an account?</span>
-            //         </div>
-
-            //         <div className="form-group">
-            //             <button 
-            //                 type="button" 
-            //                 className="btn btn-block bg-dark btn-labeled btn-labeled-right ml-auto"
-            //                 style={{textTransform: "inherit"}}
-            //                 onClick={() => this.props.history.push(REGISTER_URL)}>
-            //                 <b><i className="icon-plus2"></i></b>
-            //                 Sign up
-            //             </button>
-            //         </div>
-
-            //         <span className="form-text text-center text-muted">By continuing, you're confirming that you've read our <Link to={LOGIN_URL}>Terms &amp; Conditions</Link> and <Link to={LOGIN_URL}>Cookie Policy</Link></span>
-            //     </div>
-            // </form>
             const username_password = <div className={``}>
                 <Inputfield
                     id={'email_text_input'}
@@ -210,6 +124,7 @@ class Login extends Component {
                     input_type={'email'}
                     on_text_change_listener={this.on_text_field_change}
                     default_value={this.state.email.value}
+                    error={this.state.email.error}
                 />
                 <Inputfield
                     id={'password_text_input'}
@@ -219,6 +134,7 @@ class Login extends Component {
                     input_type={'password'}
                     on_text_change_listener={this.on_text_field_change}
                     default_value={this.state.password.value}
+                    error={this.state.password.error}
                 />
 
             </div>
@@ -245,7 +161,7 @@ class Login extends Component {
 
             view = <div className={``}>
                 {username_password}
-                <hr/>
+                <hr />
                 {remember_me_reset_password}
             </div>
         }
@@ -255,7 +171,7 @@ class Login extends Component {
                 <div className={`container-fluid`}>
                     <div className={`row`}>
                         <div className={`col-lg-4 col-md-6 p-0`}>
-                            <form method="post" action={this.on_submit}>
+                            <form method="post" onSubmit={this.on_submit}>
                                 <div className={`card m-0`} style={{ height: '100vh' }}>
                                     <div className={`card-header text-center h4 font-weight-light`}>
                                         <span>Sign in</span>
@@ -299,7 +215,7 @@ class Login extends Component {
                         </div>
                     </div>
                 </div>
-                
+
             </Container >
         );
     }

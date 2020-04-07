@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { BASE_URL, PROFILE, LOGIN_URL } from '../../shared/router_constants';
-import Logo_light from './logo_light_iffat_anwar.png';
-// import Logo_dark from './logo_dark.png';
+import { LOGIN_URL } from '../../router_constants';
+import Logo_light from './logo_main.png';
+import IAMC from './IAMC.png';
+import IAMC_detail from "./iffatanwarmedicalcomplex.png";
 import { connect } from "react-redux";
-import { left_sidebar_controls, set_active_user} from '../../actions';
+import { left_sidebar_controls, set_active_user} from '../../../actions';
 import { Link, withRouter } from 'react-router-dom';
-import NOPICTURE from '../../resources/images/placeholder.jpg'
+// import NOPICTURE from '../../resources/images/placeholder.jpg'
 
 
 class Header extends Component {
@@ -38,23 +39,37 @@ class Header extends Component {
             <div className="navbar navbar-expand-md navbar-dark fixed-top">
                 <div className="navbar-brand">
                     <Link onClick={this.on_sidebar_control_button_click} to={"#"}
-                                className="d-inline">
+                        className="d-inline py-3 text-white">
                         <i className="icon-paragraph-justify2"></i>
                     </Link>
-                    <img className="d-inline ml-3" src={Logo_light} alt="" />
+                    {/* <img 
+                        className="d-inline ml-3"  src={Logo_light} alt="" /> */}
+                    
+                    {/* <img className="d-inline float-right m-0" src={Logo_light} alt="" /> */}
                 </div>
 
                 <div className="d-md-none">
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-mobile">
                         <i className="icon-tree5"></i>
                     </button>
-                    <button className="navbar-toggler sidebar-mobile-main-toggle" onClick={this.on_sidebar_control_button_click} type="button">
+                    <button className="navbar-toggler sidebar-mobile-main-toggle" 
+                        onClick={this.on_sidebar_control_button_click} 
+                        type="button">
                         <i className="icon-paragraph-justify3"></i>
                     </button>
                 </div>
 
                 <div className="collapse navbar-collapse" id="navbar-mobile">
-                    <ul className="navbar-nav">
+                    <div className={`container-fluid`}>
+                        <div className={`row`}>
+                            <div className={`col text-right`}>
+                                <img className="border-left-light" src={IAMC_detail} alt="" style={{maxHeight: '30px'}}/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {/* <ul className="navbar-nav"> */}
+                        
                         {/* <li className="nav-item">
                             <Link onClick={this.on_sidebar_control_button_click} to={"#"}
                                 className="navbar-nav-link sidebar-control sidebar-main-toggle d-none d-md-block">
@@ -143,13 +158,13 @@ class Header extends Component {
                                 </div>
                             </div>
                         </li> */}
-                    </ul>
+                    {/* </ul>s */}
 
                     <span className="navbar-text ml-md-3 mr-md-auto">
                         <span className="badge bg-transparent"></span>
                     </span>
 
-                    <ul className="navbar-nav">
+                    {/* <ul className="navbar-nav">
                         <li className="nav-item dropdown dropdown-user">
                             <Link to={`#`} className="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
                                 <img src={NOPICTURE} className="rounded-circle" alt="" />
@@ -163,7 +178,7 @@ class Header extends Component {
                                 <Link onClick={this.on_logout_button_click} to={LOGIN_URL} className="dropdown-item"><i className="icon-switch2"></i> Logout</Link>
                             </div>
                         </li>
-                    </ul>
+                    </ul> */}
                 </div>
             </div>
         );

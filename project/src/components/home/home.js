@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import Container from '../../shared/container/container';
-import { LOGIN_URL } from '../../shared/router_constants';
-import Axios from 'axios';
-import { PROFILE_USER_REQUEST } from '../../shared/rest_end_points';
 import { connect } from "react-redux";
-import { notify, set_active_user } from '../../actions';
+import { notify, set_active_user, set_active_page } from '../../actions';
 import ReactEcharts from 'echarts-for-react';
 import * as echarts from 'echarts/lib/echarts'
-
+import { Link } from 'react-router-dom';
+import { BASE_URL } from '../../shared/router_constants';
+import { PROFILE_USER_REQUEST } from '../../shared/rest_end_points';
+import Axios from 'axios';
 
 class Home extends Component {
     constructor(props) {
@@ -16,38 +16,22 @@ class Home extends Component {
         }
     }
 
-    UNSAFE_componentWillMount(){
-        if (!localStorage.user){
-            this.props.history.push(LOGIN_URL)
-        }
-        else {
-            Axios.get(`${PROFILE_USER_REQUEST}?tag=${localStorage.user}`).then(res => {
-                if (!res.data['status']) {
-                    this.props.notify('default', '', res.data['message'])
-                    this.props.history.push(LOGIN_URL)
-                }
-                else {
-                    // this.props.notify('success','',res.data['message'])
-                    // console.log(res.data['payload']);
-                    // -----------------todo: data received! do what ever with this data now!
-                    this.props.set_active_user(res.data['payload'])
-                    // this.props.notify('success','','Welcome back ' + res.data['payload'].first_name)
-                }
-            }).catch(err => {
-                // call for server not responding
-                // todo make a page witth not responding message
-                // todo ask redux to save the connection status
-                // todo ask redux to tell if connection is there or not.
-                // if not show the message
-                this.props.history.push(LOGIN_URL)
-            })
-        }
-    }
     componentDidMount(){
-        
+        const routes = [<Link to={BASE_URL} className="breadcrumb-item">
+                        <i className="icon-home2 mr-2"></i> 
+                        Home
+                    </Link>,<span className="breadcrumb-item active">Dashboard</span>]
+        this.props.set_active_page(routes)
+        const token = localStorage.getItem('user')
+        Axios.get(`${PROFILE_USER_REQUEST}?tag=${token}`).then(res => {
+            if (res.data.status === true){
+                this.props.set_active_user(res.data['payload'])
+            }
+        }).catch(err => {
+            console.log(err)
+        })
     }
-
-    render() {
+    render() {        
         return (
             <Container container_type={'home'}>
 
@@ -56,37 +40,36 @@ class Home extends Component {
                 {/* <script src="../../echart/echarts.min.js" async></script>
                 <script src="../../echart/bars_tornados.js" async></script> */}
 
-
-                <div class="row">
-                    <div class="col-sm-4" >
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col-sm-8" >
+                <div className="row">
+                    <div className="col-sm-4" >
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-sm-8" >
 
                                             <h1 style={{ color: "#1D67E9", fontSize: '40px' }} >5</h1>
                                             <h5 style={{ marginTop: '-20px' }}>Doctors</h5>
                                         </div>
-                                        <div class="col-sm-3" >
-                                            <i class="fa fa-stethoscope fa-5x" style={{ paddingTop: "12px", color: '#1D67E9' }}></i>
+                                        <div className="col-sm-3" >
+                                            <i className="fa fa-stethoscope fa-5x" style={{ paddingTop: "12px", color: '#1D67E9' }}></i>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4" >
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col-sm-8" >
+                    <div className="col-sm-4" >
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-sm-8" >
                                             <h1 style={{ color: "#D80B0B", fontSize: '40px' }}>28</h1>
                                             <h5 style={{ marginTop: '-20px' }}>Patients Left</h5>
                                         </div>
-                                        <div class="col-sm-3" >
-                                            <i class="fa fa-heartbeat fa-5x" style={{ paddingTop: "12px", color: '#D80B0B' }}></i>
+                                        <div className="col-sm-3" >
+                                            <i className="fa fa-heartbeat fa-5x" style={{ paddingTop: "12px", color: '#D80B0B' }}></i>
                                         </div>
                                     </div>
                                 </div>
@@ -94,17 +77,17 @@ class Home extends Component {
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4" >
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col-sm-8" >
+                    <div className="col-sm-4" >
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-sm-8" >
                                             <h1 style={{ color: "#249A1A", fontSize: '40px' }}>12</h1>
                                             <h5 style={{ marginTop: '-20px' }}>Patients Attended</h5>
                                         </div>
-                                        <div class="col-sm-3" >
-                                            <i class="fa fa-heartbeat fa-5x" style={{ paddingTop: "12px", color: '#249A1A' }}></i>
+                                        <div className="col-sm-3" >
+                                            <i className="fa fa-heartbeat fa-5x" style={{ paddingTop: "12px", color: '#249A1A' }}></i>
                                         </div>
                                     </div>
                                 </div>
@@ -113,22 +96,22 @@ class Home extends Component {
                         </div>
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="col-sm-8" >
-                        <div class="card">
-                            <div class="card-header header-elements-inline">
-                                <h5 class="card-title" style={{ fontSize: '20px' }}>Patients per doctor</h5>
-                                <div class="header-elements">
-                                    <div class="list-icons">
-                                        <a class="list-icons-item" data-action="collapse"></a>
-                                        <a class="list-icons-item" data-action="remove"></a>
+               
+                <div className="row">
+                    <div className="col-sm-8" >
+                        <div className="card">
+                            <div className="card-header header-elements-inline">
+                                <h5 className="card-title" style={{ fontSize: '20px' }}>Patients per doctor</h5>
+                                <div className="header-elements">
+                                    <div className="list-icons">
+                                        <Link to={"#"} className="list-icons-item" data-action="collapse"></Link>
+                                        <Link to={"#"} className="list-icons-item" data-action="remove"></Link>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="card-body">
-                                <div class="chart-container">
+                            <div className="card-body">
+                                <div className="chart-container">
                                     <ReactEcharts
                                         option={option_patients_per_doctor}
                                     />
@@ -136,20 +119,20 @@ class Home extends Component {
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4" >
-                        <div class="card">
-                            <div class="card-header header-elements-inline">
-                                <h5 class="card-title" style={{ fontSize: '20px' }}>Patients Attended</h5>
-                                <div class="header-elements">
-                                    <div class="list-icons">
-                                        <a class="list-icons-item" data-action="collapse"></a>
-                                        <a class="list-icons-item" data-action="remove"></a>
+                    <div className="col-sm-4" >
+                        <div className="card">
+                            <div className="card-header header-elements-inline">
+                                <h5 className="card-title" style={{ fontSize: '20px' }}>Patients Attended</h5>
+                                <div className="header-elements">
+                                    <div className="list-icons">
+                                        <Link to={"#"} className="list-icons-item" data-action="collapse"></Link>
+                                        <Link to={"#"} className="list-icons-item" data-action="remove"></Link>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="card-body">
-                                <div class="chart-container">
+                            <div className="card-body">
+                                <div className="chart-container">
                                     <ReactEcharts
                                         option={option_patients_attended_percentage}
                                     />
@@ -157,20 +140,20 @@ class Home extends Component {
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-4" >
-                        <div class="card">
-                            <div class="card-header header-elements-inline">
-                                <h5 class="card-title" style={{ fontSize: '20px' }}>Procedures</h5>
-                                <div class="header-elements">
-                                    <div class="list-icons">
-                                        <a class="list-icons-item" data-action="collapse"></a>
-                                        <a class="list-icons-item" data-action="remove"></a>
+                    <div className="col-sm-4" >
+                        <div className="card">
+                            <div className="card-header header-elements-inline">
+                                <h5 className="card-title" style={{ fontSize: '20px' }}>Procedures</h5>
+                                <div className="header-elements">
+                                    <div className="list-icons">
+                                        <Link to={"#"} className="list-icons-item" data-action="collapse"></Link>
+                                        <Link to={"#"} className="list-icons-item" data-action="remove"></Link>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="card-body">
-                                <div class="chart-container">
+                            <div className="card-body">
+                                <div className="chart-container">
                                     <ReactEcharts
                                         option={option_procedures}
                                     />
@@ -178,20 +161,20 @@ class Home extends Component {
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-8" >
-                        <div class="card">
-                            <div class="card-header header-elements-inline">
-                                <h5 class="card-title" style={{ fontSize: '20px' }}>Patients Attendence History</h5>
-                                <div class="header-elements">
-                                    <div class="list-icons">
-                                        <a class="list-icons-item" data-action="collapse"></a>
-                                        <a class="list-icons-item" data-action="remove"></a>
+                    <div className="col-sm-8" >
+                        <div className="card">
+                            <div className="card-header header-elements-inline">
+                                <h5 className="card-title" style={{ fontSize: '20px' }}>Patients Attendence History</h5>
+                                <div className="header-elements">
+                                    <div className="list-icons">
+                                        <Link to={"#"} className="list-icons-item" data-action="collapse"></Link>
+                                        <Link to={"#"} className="list-icons-item" data-action="remove"></Link>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="card-body">
-                                <div class="chart-container">
+                            <div className="card-body">
+                                <div className="chart-container">
                                     <ReactEcharts
                                         option={option_patients_attended_history}
                                     />
@@ -200,7 +183,7 @@ class Home extends Component {
                         </div>
                     </div>
                 </div>
-
+                
             </Container >
         );
     }
@@ -208,10 +191,11 @@ class Home extends Component {
 function map_state_to_props(state) {
     return {
         notify: state.notify,
-        active_user: state.active_user
+        active_user: state.active_user,
+        active_page: state.active_page,
     }
 }
-export default connect(map_state_to_props, { notify, set_active_user })(Home);
+export default connect(map_state_to_props, { notify, set_active_user, set_active_page })(Home);
 
 
 var option_patients_per_doctor = {

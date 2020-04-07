@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import Loader from 'react-loader-spinner';
 import Axios from 'axios';
-import { REGISTER_USER_REQUEST } from '../../shared/rest_end_points';
+import { REGISTER_USER_REQUEST } from '../../../shared/rest_end_points';
 import { connect } from "react-redux";
-import { notify } from '../../actions'
+import { notify } from '../../../actions'
 import 'react-toastify/dist/ReactToastify.css';
-import { LOGIN_URL } from '../../shared/router_constants';
-import Container from '../../shared/container/container';
+import { LOGIN_URL } from '../../../shared/router_constants';
+import Container from '../../../shared/container/container';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import './register.css'
 // import Modal from 'react-bootstrap4-modal';
 import DateTimePicker from 'react-datetime'
 import { withRouter } from 'react-router-dom';
-import Inputfield from '../../shared/inputfield/inputfield';
-import { BLOOD_GROUPS_OPTIONS, GENDER_OPTIONS, ROLES_OPTIONS } from '../../shared/constant_data';
+import Inputfield from '../../../shared/customs/inputfield/inputfield';
+import { BLOOD_GROUPS_OPTIONS, GENDER_OPTIONS, ROLES_OPTIONS } from '../../../shared/constant_data';
 // import ScrollArea from 'react-scrollbar'
 
 
@@ -22,18 +22,18 @@ class Register extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            first_name: { value: '' },
-            last_name: { value: '' },
-            email: { value: '' },
-            password: { value: '' },
-            verify_password: { value: '' },
-            gender: { value: '' },
-            dob: { value: '' },
-            blood_group: { value: '' },
-            role: { value: '' },
-            phone_number: { value: '' },
-            cnic: { value: '' },
-            address: { value: '' },
+            first_name: { value: '', error: false },
+            last_name: { value: '', error: false },
+            email: { value: '', error: false },
+            password: { value: '', error: false },
+            verify_password: { value: '', error: false },
+            gender: { value: '', error: false },
+            dob: { value: '', error: false },
+            blood_group: { value: '', error: false },
+            role: { value: '', error: false },
+            phone_number: { value: '', error: false },
+            cnic: { value: '', error: false },
+            address: { value: '', error: false },
             loading_status: false,
             role_select_modal_visibility: false,
 
@@ -43,28 +43,30 @@ class Register extends Component {
     on_text_field_change = (e) => {
         switch (e.target.id) {
             case 'first_name_text_input':
-                this.setState({ first_name: { value: e.target.value } })
+                this.setState({ first_name: { value: e.target.value, error: false } })
                 break;
             case 'last_name_text_input':
-                this.setState({ last_name: { value: e.target.value } })
+                this.setState({ last_name: { value: e.target.value, error: false } })
                 break;
             case 'cnic_text_input':
-                this.setState({ cnic: { value: e.target.value } })
+                if (e.target.value.length <= 13)
+                    this.setState({ cnic: { value: e.target.value, error: false } })
                 break;
             case 'phone_number_text_input':
-                this.setState({ phone_number: { value: e.target.value } })
+                if (e.target.value.length <= 11)
+                    this.setState({ phone_number: { value: e.target.value, error: false } })
                 break;
             case 'email_text_input':
-                this.setState({ email: { value: e.target.value } })
+                this.setState({ email: { value: e.target.value, error: false } })
                 break;
             case 'password_text_input':
-                this.setState({ password: { value: e.target.value } })
+                this.setState({ password: { value: e.target.value, error: false } })
                 break;
             case 'verify_password_text_input':
-                this.setState({ verify_password: { value: e.target.value } })
+                this.setState({ verify_password: { value: e.target.value, error: false } })
                 break;
             case 'address_text_input':
-                this.setState({ address: { value: e.target.value } })
+                this.setState({ address: { value: e.target.value, error: false } })
                 break;
             default:
                 break;
@@ -74,7 +76,7 @@ class Register extends Component {
     on_date_of_birth_change = (e) => {
 
         if (e === '')
-            this.setState({ dob: { value: '' } })
+            this.setState({ dob: { value: '', error: false } })
         else {
             var configured_date = null;
             try {
@@ -91,105 +93,121 @@ class Register extends Component {
     on_selected_changed = (e) => {
         switch (e.id) {
             case 'blood_group_selection':
-                this.setState({ blood_group: { value: e.label } })
+                this.setState({ blood_group: { value: e.label, error: false } })
                 break;
             case 'gender_selection':
-                this.setState({ gender: { value: e.label } })
+                this.setState({ gender: { value: e.label, error: false } })
                 break;
             case 'role_selection':
-                this.setState({ role: { value: e.label } })
+                this.setState({ role: { value: e.label, error: false } })
                 break;
             default:
                 break;
         }
     }
-    __check_soft_constraints = (data) => {
-        var alphabets = /^[A-Za-z]+$/;
-        var numbers = /^[0-9]+$/;
-        if (data.first_name === '') {
-            this.props.notify('error', '', 'First Name is required!');
-            return false;
+
+    check_input = (input,required = true,only_alpha=false,only_numbers=false) => {
+        const alphabets = /^[A-Za-z]+$/;
+        const numbers = /^[0-9]+$/;
+        if (required  && input === ''){
+            return true;
         }
-        else {
-            if (!data.first_name.match(alphabets)) {
-                this.props.notify('error', '', "First Name can only have alphabets!");
-                return false;
-            }
+        if (only_alpha && !input.match(alphabets)){
+            return true;
         }
-        if (data.last_name === '') {
-            this.props.notify('error', '', 'Last Name is required!');
-            return false;
+        if (only_numbers && !input.match(numbers)){
+            return true;
         }
-        else {
-            if (!data.last_name.match(alphabets)) {
-                this.props.notify('error', '', "Last Name can only have alphabets!");
-                return false
-            }
-        }
-        if (data.email === '') {
-            this.props.notify('error', '', 'Email is required!');
-            return false;
-        }
-        if (data.password === '') {
-            this.props.notify('error', '', 'Please specify a password to secure your account!')
-            return false
-        }
-        if (data.cnic === '') {
-            this.props.notify('error', '', 'Please specify your CNIC!');
-            return false;
-        }
-        if (data.phone_number === '') {
-            this.props.notify('error', '', 'Please specify your phone number!');
-            return false;
-        }
-        else {
-            if (!data.phone_number.match(numbers)) {
-                this.props.notify('error', '', 'Phone number is invalid!');
-                return false;
-            }
-        }
-        if (data.role === '') {
-            this.props.notify('error', '', 'Please select one of the roles!');
-            return false
-        }
-        if (data.dob === '') {
-            this.props.notify('error', '', 'Choose your date of birth correctly!');
-            return false;
-        }
-        return true; // all clear. no false condition :)
+        return false;
     }
-    __check_hard_constraints = (data) => {
-        if (!data.email.includes('@')) {
-            this.props.notify('error', '', data.email + ' Invalid email!');
-            return false;
+
+    check_hard_constraints = (input,include="",length_check="default",val=-1) => {
+        if (!input.includes(include)) {
+            return true;
         }
-        if (data.password.length < 8) {
-            this.props.notify('error', '', 'Password must have atleast 8 characters!');
-            return false;
+        switch(length_check){
+            case 'eq':
+                if (input.length !== val){
+                    return true
+                }
+                break;
+            case 'min':
+                if (input.length < val){
+                    return true
+                }
+                break;
+            case 'max':
+                if (input.length > val){
+                    return true
+                }
+                break;
+            default:
+                break
         }
-        if (data.password !== data.verify_password) {
-            this.props.notify('error', '', 'Password do not match!');
-            return false;
-        }
-        if (data.phone_number.length < 11) {
-            this.props.notify('error', '', 'Invalid Phone number!');
-            return false;
-        }
-        if (data.cnic.length < 13) {
-            this.props.notify('error', '', 'Invalid CNIC number!');
-            return false;
-        }
-        var configured_date = null;
-        try {
-            configured_date = new Date(data.dob)
-        }
-        catch (err) {
-            this.props.notify('error', '', 'Please specify the Date of birth as per given format')
-            return false;
-        }
-        return true;
+        return false;
     }
+
     on_submit = async (e) => {
+        this.setState({ loading_status: true })
+            
+        let error = false
+        if(this.check_input(this.state.first_name.value,true,true,false)){
+            this.setState({ current_page: 0, first_name: { value: this.state.first_name.value, error: true}})
+            error = true;
+        }
+        if(this.check_input(this.state.last_name.value,true,true,false)){
+            this.setState({ current_page: 0, last_name: { value: this.state.last_name.value, error: true}})
+            error = true;
+        }
+        if(this.check_input(this.state.email.value,true,false,false) || this.check_hard_constraints(this.state.email.value,"@")){
+            this.setState({ current_page: 0, email: { value: this.state.email.value, error: true}})
+            error = true;
+        }
+        if(this.check_input(this.state.phone_number.value,true,false,true) || this.check_hard_constraints(this.state.phone_number.value,"","eq",11)){
+            this.setState({ current_page: 0, phone_number: { value: this.state.phone_number.value, error: true}})
+            error = true;
+        }
+        if(this.check_input(this.state.password.value,true,false,false) || this.check_hard_constraints(this.state.password.value,"","min",8)){
+            this.setState({ current_page: 1, password: { value: this.state.password.value, error: true}})
+            error = true;
+        }
+        if (this.state.password.value !== this.state.verify_password.value){
+            this.setState({ 
+                password: { value: this.state.password.value, error: true },
+                verify_password: { value: this.state.verify_password.value, error: true },
+                current_page: 1, 
+            })
+            error = true;
+        }
+        if(this.check_input(this.state.cnic.value,true,false,true) || this.check_hard_constraints(this.state.cnic.value,"","eq",13)){
+            this.setState({ current_page: 2, cnic: { value: this.state.cnic.value, error: true}})
+            error = true;
+        }
+        if(this.check_input(this.state.dob.value,true,false,false)){
+            this.setState({ current_page: 2, dob: { value: this.state.dob.value, error: true}})
+            error = true;
+        }
+        if(this.check_input(this.state.address.value,true,false,false)){
+            this.setState({ current_page: 2, address: { value: this.state.address.value, error: true}})
+            error = true;
+        }
+        if(this.check_input(this.state.role.value,true,true,false)){
+            this.setState({ current_page: 3, role: { value: this.state.role.value, error: true}})
+            error = true;
+        }
+        if(this.check_input(this.state.gender.value,true,true,false)){
+            this.setState({ current_page: 3, gender: { value: this.state.gender.value, error: true}})
+            error = true;
+        }
+        if(this.check_input(this.state.blood_group.value,true,false,false)){
+            this.setState({ current_page: 3, blood_group: { value: this.state.blood_group.value, error: true}})
+            error = true;
+        }
+        if (error === true){
+            this.props.notify('error','','Invalid info')
+            this.setState({ loading_status: false })
+            return
+        }
         const data = {
             first_name: this.state.first_name.value.trim(),
             last_name: this.state.last_name.value.trim(),
@@ -204,27 +222,20 @@ class Register extends Component {
             blood_group: this.state.blood_group.value.trim(),
             address: this.state.address.value.trim()
         }
-        if (this.__check_soft_constraints(data) && this.__check_hard_constraints(data)) {
-            this.setState({ loading_status: true })
-            var response = await Axios.post(`${REGISTER_USER_REQUEST}`, data);
-
-            try {
-                if (response.data['status']) {
-                    this.props.notify('success', '', response.data['message']);
-                    this.props.history.push(LOGIN_URL);
-                }
-                else {
-                    this.props.notify('error', '', response.data['message'])
-                    this.setState({ loading_status: false })
-                }
+        const response = await Axios.post(`${REGISTER_USER_REQUEST}`, data);
+        try {
+            if (response.data['status']) {
+                this.props.notify('success', '', response.data['message']);
+                this.props.history.push(LOGIN_URL);
             }
-            catch (err) {
-                this.props.notify('error', '', 'We are sorry for invonvenience. Server is not responding! please try again later')
+            else {
+                this.props.notify('error', '', response.data['message'])
                 this.setState({ loading_status: false })
             }
         }
-        else {
-            this.props.notify('info', '', 'Registartion unsuccessfull!');
+        catch (err) {
+            this.props.notify('error', '', 'We are sorry for invonvenience. Server is not responding! please try again later')
+            this.setState({ loading_status: false })
         }
     }
 
@@ -236,7 +247,6 @@ class Register extends Component {
         }
         else if (this.state.current_page === 3){
             this.on_submit()
-            // console.log('submit')
         } 
     }
     back_button_click = (e) => {
@@ -274,6 +284,7 @@ class Register extends Component {
                             input_type={'email'}
                             on_text_change_listener={this.on_text_field_change}
                             default_value={this.state.email.value}
+                            error={this.state.email.error}
                         />
                     <Inputfield
                             id={`first_name_text_input`}
@@ -283,6 +294,7 @@ class Register extends Component {
                             input_type={'text'}
                             on_text_change_listener={this.on_text_field_change}
                             default_value={this.state.first_name.value}
+                            error={this.state.first_name.error}
                         />
                     <Inputfield
                             id={`last_name_text_input`}
@@ -292,6 +304,7 @@ class Register extends Component {
                             input_type={'text'}
                             on_text_change_listener={this.on_text_field_change}
                             default_value={this.state.last_name.value}
+                            error={this.state.last_name.error}
                         />
                     <Inputfield
                             id={`phone_number_text_input`}
@@ -301,6 +314,7 @@ class Register extends Component {
                             input_type={'number'}
                             on_text_change_listener={this.on_text_field_change}
                             default_value={this.state.phone_number.value}
+                            error={this.state.phone_number.error}
                         />
                 </div>      
             const password_and_verification = <div className={``}>
@@ -312,6 +326,7 @@ class Register extends Component {
                                 input_type={'password'}
                                 on_text_change_listener={this.on_text_field_change}
                                 default_value={this.state.password.value}
+                                error={this.state.password.error}
                             />
                         <Inputfield
                                 id={`verify_password_text_input`}
@@ -321,6 +336,7 @@ class Register extends Component {
                                 input_type={'password'}
                                 on_text_change_listener={this.on_text_field_change}
                                 default_value={this.state.verify_password.value}
+                                error={this.state.verify_password.error}
                             />
                 </div>
             const date_of_birth_and_cnic_address = <div className={``}>
@@ -332,6 +348,7 @@ class Register extends Component {
                         input_type={'text'}
                         on_text_change_listener={this.on_text_field_change}
                         default_value={this.state.cnic.value}
+                        error={this.state.cnic.error}
                         />
                     <div className="form-group row">
                         <label className="col-form-label-lg">Date of birth</label>
@@ -359,6 +376,7 @@ class Register extends Component {
                         input_type={'text'}
                         on_text_change_listener={this.on_text_field_change}
                         default_value={this.state.address.value}
+                        error={this.state.address.error}
                         field_type={'text-area'}
                     />
                     

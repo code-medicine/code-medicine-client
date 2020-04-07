@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Header from '../../components/header/header';
-import Footer from '../../components/footer/footer';
-import Leftsidebar from '../left_sidebar/left_sidebar';
-import Pageheader from '../page_header/page_header';
+import Header from './header/header';
+import Footer from './footer/footer';
+import Leftsidebar from './left_sidebar/left_sidebar';
+import Pageheader from './page_header/page_header';
 import { connect } from "react-redux";
 // import Axios from 'axios';
 // import { PROFILE_USER_REQUEST } from '../rest_end_points';
@@ -10,6 +10,7 @@ import { connect } from "react-redux";
 import { withRouter } from 'react-router-dom';
 import { set_active_user,notify } from '../../actions';
 import './container.css'
+import '../customs/Animations/animations.css'
 // import BACKGROUND from '../../resources/images/background_image.jpg'
 
 
@@ -79,7 +80,7 @@ class Container extends Component {
 
                     <div className="content-wrapper">
                         
-                        {/* {page_header? <Pageheader /> : ''} */}
+                        {page_header? <Pageheader /> : ''}
 
                         <div className={`content ${this.state.type === 'login'? 'p-0':this.state.type === 'register'? 'p-0':'' }`}>
                             {
