@@ -9,6 +9,7 @@ import PrintInvoice from './PrintInvoice';
 import {connect} from "react-redux";
 import {notify} from "../../actions";
 import Select from 'react-select';
+import moment from 'moment';
 
 
 class InvoiceModal extends Component {
@@ -252,20 +253,20 @@ class InvoiceModal extends Component {
                     <h5 className="modal-title">Generate Invoice</h5>
                     <div className="col-md-4">
                         <div className="form-group" style={{ marginBottom: '0px' }}>
-                            <Select
+                            {/* <Select
                                 isClearable
                                 options={this.state.invoiceType}
                                 placeholder="Select Invoice Type Copy"
                                 onChange={e => this.on_selected_changed(e)}
-                            />
+                            /> */}
                         </div>
                     </div>
-                    <button
+                    {/* <button
                         type="button"
                         className="btn bg-secondary btn-labeled btn-labeled-right pr-5"
                         style={{ textTransform: "inherit" }}
                     >
-                        <b><i className="icon-printer2" /></b>Print</button>
+                        <b><i className="icon-printer2" /></b>Print</button> */}
                 </div>
                 <div className="modal-body">
                     <div className="container-fluid">
@@ -277,8 +278,8 @@ class InvoiceModal extends Component {
                                         {
                                             this.props.data ? (<>
                                                 <p><b>MRN#:</b> {this.props.data.patient.id}</p>
-                                                <p><b>Patient:</b>{this.props.data.patient.first_name +" "+ this.props.data.patient.last_name}</p>
-                                                <p><b>Age:</b> {this.props.data.patient.dob}, {this.props.data.patient.gender}</p>
+                                                <p><b>Patient:</b> {this.props.data.patient.first_name +" "+ this.props.data.patient.last_name}</p>
+                                                <p><b>Age:</b> {moment.utc(this.props.data.patient.dob).fromNow()}, {this.props.data.patient.gender}</p>
                                                 <p><b>Doctor:</b> {this.props.data.doctor.first_name +" "+ this.props.data.doctor.last_name}</p>
                                                 <p><b>Visit Description:</b> {this.props.data ? this.props.data['description']:''}</p>
                                             </>):''
@@ -286,7 +287,7 @@ class InvoiceModal extends Component {
                                     </div>
                                     <div className="offset-md-1 col-md-5">
                                         <p><b>{this.state.selectedInvoiceType}</b></p>
-                                        <p><b>Date:</b> {this.props.data ? this.props.data.date:''}</p>
+                                        <p><b>Date:</b> {this.props.data ? moment.utc(this.props.data.date).format('lll'):''}</p>
                                     </div>
                                 </div>
                                 <div className="table-responsive">

@@ -321,14 +321,14 @@ class Visits extends Component {
             const row_data = {
                 date_of_booking: <div ref={(el) => { this[`element_${i}_ref`] = el; }} className="">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}</div>,// date of booking
                 time_of_booking: <div className="">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LT')}`}</div>,// time of booking
-                patient_name: <button className="btn btn-outline bg-teal-400 border-teal-400 text-teal-400 btn-sm btn-block jackInTheBox animated" 
+                patient_name: <button className="btn btn-outline bg-teal-400 border-teal-400 text-teal-400 btn-sm btn-block zoomIn animated" 
                                     onClick={() => this.request_user(booking.patient['id']) }>
                                 {booking.patient['first_name'] + ' ' + booking.patient['last_name']}
                             </button>,// patient_name
                 visit_reason: <span className="d-inline-block text-truncate " style={{maxWidth: "150px"}}>
                                 {booking.description}
                             </span>,
-                doctor_name: <button className="btn btn-outline-secondary btn-sm btn-block jackInTheBox animated" 
+                doctor_name: <button className="btn btn-outline-secondary btn-sm btn-block zoomIn animated" 
                                     onClick={() => this.request_user(booking.doctor['id'])}>
                                 {booking.doctor['first_name'] + ' ' + booking.doctor['last_name']}
                             </button>,// doctor name

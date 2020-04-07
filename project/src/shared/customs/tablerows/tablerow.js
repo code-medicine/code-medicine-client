@@ -50,7 +50,7 @@ class TableRow extends Component {
             <Fragment>
                 <tr>
                     <td onClick={this.toggle_row}>
-                        <div className="bounceInLeft animated">
+                        <div className="slideInLeft animated">
                             <Link className="" to="#" onClick={this.toggle_row}>
                                 <i className={this.state.toggle_icon}></i>
                             </Link>

@@ -18,7 +18,7 @@ class Inputfield extends Component {
         const _label = this.props.label_tag
         const _input_type = this.props.input_type
         const _placeholder = this.props.placeholder
-        const _icon = this.props.icon_class
+        const _icon = this.props.icon_class 
         const _on_change = this.props.on_text_change_listener
         const _value = this.props.default_value
         const _field_type = this.props.field_type
@@ -39,7 +39,7 @@ class Inputfield extends Component {
         const text_area_field_type = <textarea
                                         rows={"3"}
                                         cols={"3"}
-                                        className="form-control form-control-lg"
+                                        className={`form-control form-control-lg ${this.props.error? 'border-danger':''}`}
                                         id={_id}
                                         placeholder={_placeholder}
                                         onChange={_on_change}
@@ -110,7 +110,7 @@ class Inputfield extends Component {
                 {input_label}
                 <div className={`input-group`}>
                     <span className="input-group-prepend">
-                        <span className="input-group-text"><i className={_icon}/></span>
+                        <span className={`input-group-text ${this.props.error? 'alpha-danger text-danger border-danger':''}`}><i className={_icon}/></span>
                     </span>
                     {render_field}
                 </div>

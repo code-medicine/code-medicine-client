@@ -350,7 +350,7 @@ class Register extends Component {
                         default_value={this.state.cnic.value}
                         error={this.state.cnic.error}
                         />
-                    <div className="form-group row">
+                    {/* <div className="form-group row">
                         <label className="col-form-label-lg">Date of birth</label>
                         <div className={`input-group`}>
                             <span className="input-group-prepend">
@@ -367,7 +367,20 @@ class Register extends Component {
                                 value={this.state.dob.value}
                             />
                         </div>
-                    </div>
+                    </div> */}
+                    <Inputfield 
+                        id={`dob_text_input`}
+                        label_tag={'Date of birth'}
+                        icon_class={'icon-calendar3'}
+                        placeholder="Date of birth"
+                        input_type={'text'}
+                        field_type="date-time"
+                        date_format={'ll'}
+                        time_format={false}
+                        on_text_change_listener={this.on_date_of_birth_change}
+                        default_value={this.state.dob.value}
+                        error={this.state.dob.error}
+                        />
                     <Inputfield
                         id={`address_text_input`}
                         label_tag={'What is your current address'}
@@ -467,11 +480,33 @@ class Register extends Component {
                                     </div>
 
                                     <div className={`row card-footer`}>
-                                        <div className={`col-12 d-flex flex-row-reverse`}>
-                                            
+                                        
+                                        
+                                        <div className="col-4">
+                                            <button  
+                                                id="back_button"
+                                                type="button"
+                                                className="btn btn-block bg-teal-400 btn-labeled btn-labeled-left pl-5 mr-2"                                        
+                                                style={{ textTransform: "inherit", display: this.state.current_page === 0? 'none': 'inline'}}
+                                                onClick={this.back_button_click}>
+                                                <b><i className="icon-arrow-left13"/></b>
+                                                Back
+                                            </button>
+                                        </div>
+                                        <div className="col-4">
+                                            <button
+                                                type="button"
+                                                className="btn btn-block bg-danger btn-labeled btn-labeled-right pr-5 mr-2"
+                                                style={{ textTransform: "inherit" }}
+                                                onClick={() => this.props.history.push(LOGIN_URL)}>
+                                                <b><i className="icon-cross"></i></b>
+                                                Cancel
+                                            </button>
+                                        </div>
+                                        <div className={`col-4`}>
                                             <button
                                                 type="submit"
-                                                className={`btn bg-teal-400 ${this.state.current_page !== 3? 'btn-icon': 'btn-labeled btn-labeled-right pr-5'}`}
+                                                className={`btn btn-block bg-teal-400 btn-labeled btn-labeled-right pr-5`}
                                                 id="next_button"
                                                 onClick={this.next_button_click}>
                                                 {
@@ -479,23 +514,8 @@ class Register extends Component {
                                                             <b><i className="icon-arrow-right14"></i></b>
                                                 }
                                                 {
-                                                    this.state.current_page === 3? "Register":''
+                                                    this.state.current_page === 3? "Register":'Next'
                                                 }
-                                            </button>
-                                            <button
-                                                type="button"
-                                                className="btn btn-danger btn-icon mr-2"
-                                                style={{ textTransform: "inherit" }}
-                                                onClick={() => this.props.history.push(LOGIN_URL)}>
-                                                <b><i className="icon-cross"></i></b>
-                                            </button>
-                                            <button  
-                                                id="back_button"
-                                                type="button"
-                                                className="btn bg-teal-400 btn-icon mr-2"                                        
-                                                style={{ textTransform: "inherit", display: this.state.current_page === 0? 'none': 'inline'}}
-                                                onClick={this.back_button_click}>
-                                                <b><i className="icon-arrow-left13"/></b>
                                             </button>
                                         </div>
                                     </div>
