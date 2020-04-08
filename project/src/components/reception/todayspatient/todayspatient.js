@@ -6,7 +6,7 @@ import {
     BASE_USERS_URL,
     SEARCH_TODAYS_APPOINTMENTS_URL,
     SEARCH_BY_ID_USER_REQUEST,
-    SEARCH_USER_REQUEST,
+    SEARCH_USER_REQUEST, GET_PROCEDURE_BY_ID,
 } from '../../../shared/rest_end_points';
 import { connect } from "react-redux";
 import { notify, set_active_page, load_todays_appointments } from '../../../actions';
@@ -16,12 +16,11 @@ import './todayspatient.css';
 import { LOGIN_URL, BASE_URL } from '../../../shared/router_constants';
 import moment from 'moment';
 import ProcedureModal from '../../../shared/modals/proceduremodal';
-import InvoiceModal from '../../../shared/modals/invoiceModal';
+import InvoiceModal from '../../../shared/modals/InvoiceModal/invoiceModal';
 import TodaysPatientRow from '../../../shared/customs/tablerows/todayspatientrow';
 import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
 import Loading from '../../../shared/customs/loading/loading';
 import NewAppointmentModal from '../../../shared/modals/newappointmentmodal';
-import NewUserModal from '../../../shared/modals/newusermodal';
 
 class Todayspatient extends Component {
 
@@ -36,12 +35,14 @@ class Todayspatient extends Component {
 
             new_appointment_modal_visibility: false,
             procedure_visibility: false,
+            prevProcedureList:[],
             user_preview_modal_visibility: false,
             new_patient_modal_visibility: false,
             invoice_modal_visibility: false,
 
             user_modal_props: null,
             invoice_data: null,
+            invoiceVisitId:0,
             procedure_visit_id: null,
             search_doctor: { value: '' },
             search_patient: { value: '' }
@@ -218,10 +219,40 @@ class Todayspatient extends Component {
     }
 
     openProcedureModalHandler = (id) => {
-        this.setState({ procedure_visibility: true, procedure_visit_id: id })
+        try {
+            let response = Axios.get(`${GET_PROCEDURE_BY_ID}?visit_id=`+id,{
+                headers: { 'code-medicine': localStorage.getItem('user') }
+            });
+            response.then((response)=>{
+                console.log('Testing!!!');
+                if(response.data.status===true) {
+                    this.setState({
+                        prevProcedureList : response.data.payload.procedures,
+                        procedure_visibility: true,
+                        procedure_visit_id: id,
+                        invoiceVisitId: 0
+                    });
+                }
+            });
+        }
+        catch (err) {
+            this.props.notify('error', '', 'Server is not responding! Please try again later');
+        }
     };
     closeProcedureModalHandler = () => {
         this.setState({ procedure_visibility: false })
+    };
+
+    invoiceVisitIdHandler = (value) => {
+        this.setState({
+            invoiceVisitId: value
+        });
+    };
+
+    UpdateProcedureListHandler = (updateProcedureList) =>{
+        this.setState({
+            prevProcedureList : updateProcedureList
+        });
     };
 
     open_new_appointment_modal = () => {
@@ -422,6 +453,8 @@ class Todayspatient extends Component {
                 <ProcedureModal
                     new_procedure_visibility={this.state.procedure_visibility}
                     visit_id={this.state.procedure_visit_id}
+                    prevProcedureList={this.state.prevProcedureList}
+                    updateProcedureList={this.UpdateProcedureListHandler}
                     procedure_backDrop={this.closeProcedureModalHandler}
                     cancelProcedureModal={this.closeProcedureModalHandler}
                 />
@@ -429,6 +462,8 @@ class Todayspatient extends Component {
                 <InvoiceModal
                     modal_visibility={this.state.invoice_modal_visibility}
                     data={this.state.invoice_data}
+                    invoiceVisitId={this.state.invoiceVisitId}
+                    changeVisitId={this.invoiceVisitIdHandler}
                     invoice_backDrop={this.closeInvoiceModalHandler}
                     cancelInvoiceModal={this.closeInvoiceModalHandler}
                 />

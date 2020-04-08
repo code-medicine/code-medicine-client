@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import Modal from "react-bootstrap4-modal";
-import LOGO from '../../resources/images/LOGO.png';
+import LOGO from '../../../resources/images/LOGO.png';
 import './invoiceModal.css';
 import Axios from "axios";
-import {GET_PROCEDURES_FEE, GET_PROFITS_BY_DOCTOR_ID, UPDATE_APPOINTMENT_URL, PROFITS_UPDATE,DOCTORDETAILS_SEARCH} from "../rest_end_points";
+import {GET_PROCEDURES_FEE, GET_PROFITS_BY_DOCTOR_ID, UPDATE_APPOINTMENT_URL, PROFITS_UPDATE,DOCTORDETAILS_SEARCH} from "../../rest_end_points";
 import ReactToPrint from 'react-to-print';
-import PrintInvoice from './PrintInvoice';
+import PrintInvoice from '../PrintInvoice/PrintInvoice';
 import {connect} from "react-redux";
-import {notify} from "../../actions";
-import Select from 'react-select';
+import {notify} from "../../../actions";
 import moment from 'moment';
 
 
@@ -161,7 +160,7 @@ class InvoiceModal extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         // console.log(this.props.data);
-        if (this.props.data!==null && this.props.data.visit_id !== this.state.visitId) {
+        if (this.props.data!==null && this.props.data.visit_id !== this.props.invoiceVisitId) {
             try {
                 let response = Axios.get(`${GET_PROCEDURES_FEE}?visit_id=`+this.props.data.visit_id,{
                     headers: { 'code-medicine': localStorage.getItem('user') }
@@ -227,18 +226,13 @@ class InvoiceModal extends Component {
             } catch (err) {
                 this.props.notify('error', '', 'Server is not responding! Please try again later');
             }
+
+
+            this.props.changeVisitId(this.props.data.visit_id);
          }
     }
 
-    // print = () => {
-    //     var content = document.getElementById("print").innerHTML;
-    //     var pri = document.getElementById("ifmcontentstoprint").contentWindow;
-    //     pri.document.open();
-    //     pri.document.write(content);
-    //     pri.document.close();
-    //     pri.focus();
-    //     pri.print();
-    // };
+
 
     render() {
         return (

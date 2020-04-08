@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './PrintInvoice.css';
-import LOGO from "../../resources/images/LOGO.png";
+import LOGO from "../../../resources/images/LOGO.png";
 
 export default class PrintInvoice extends Component {
     render() {
