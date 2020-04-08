@@ -1,9 +1,8 @@
 .print {
     text-align: center;
     margin: 2% 5%;
+    min-height: 1600px;
 }
-
-
 .print .row{
     display: flex !important;
     flex-wrap: wrap;
