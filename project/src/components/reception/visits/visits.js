@@ -319,20 +319,20 @@ class Visits extends Component {
             var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
 
             const row_data = {
-                date_of_booking: <div ref={(el) => { this[`element_${i}_ref`] = el; }} className="">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}</div>,// date of booking
-                time_of_booking: <div className="">{`${moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('LT')}`}</div>,// time of booking
+                date_of_booking: <div ref={(el) => { this[`element_${i}_ref`] = el; }} className="">{`${moment(booking.visit_date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}</div>,// date of booking
+                time_of_booking: <div className="">{`${moment(booking.visit_date, "YYYY-MM-DDThh:mm:ss").format('LT')}`}</div>,// time of booking
                 patient_name: <button className="btn btn-outline bg-teal-400 border-teal-400 text-teal-400 btn-sm btn-block zoomIn animated" 
                                     onClick={() => this.request_user(booking.patient['id']) }>
                                 {booking.patient['first_name'] + ' ' + booking.patient['last_name']}
                             </button>,// patient_name
                 visit_reason: <span className="d-inline-block text-truncate " style={{maxWidth: "150px"}}>
-                                {booking.description}
+                                {booking.visit_description}
                             </span>,
                 doctor_name: <button className="btn btn-outline-secondary btn-sm btn-block zoomIn animated" 
                                     onClick={() => this.request_user(booking.doctor['id'])}>
                                 {booking.doctor['first_name'] + ' ' + booking.doctor['last_name']}
                             </button>,// doctor name
-                visit_status: <span className={`badge ${booking.status === 'waiting'? 'badge-danger':'badge-primary'}`}>{booking.status}</span>,
+                visit_status: <span className={`badge ${booking.visit_status === 'waiting'? 'badge-danger':'badge-primary'}`}>{booking.visit_status}</span>,
                 visit_total_charges: <div className="">0</div>
                 
             }
@@ -340,17 +340,17 @@ class Visits extends Component {
                 <h5 className="font-weight-semibold">Reason of visit</h5>,
                 <blockquote className="blockquote blockquote-bordered py-2 pl-3 mb-0">
                     <p className="mb-1">
-                        {booking.description}
+                        {booking.visit_description}
                     </p>
                     <footer className="blockquote-footer">Perscription</footer>
                 </blockquote>
             ]
             let header_elements = [
-                moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY, hh:mm a'),
+                moment(booking.visit_date, "YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY, hh:mm a'),
                 <div className={`text-muted`}>{booking.visit_id}</div>,
                 <div className={`header-elements`}>
                     <div className={`list-icons`}>
-                        <span className="badge badge-danger">{booking.status}</span>
+                        <span className="badge badge-danger">{booking.visit_status}</span>
                     </div>
                 </div>
             ]
