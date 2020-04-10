@@ -127,11 +127,11 @@ class InvoiceModal extends Component {
             payload: {
                 patient_id: this.props.data.patient.id,
                 doctor_id: this.props.data.doctor.id,
-                date: this.props.data.date,
-                time: this.props.data.time,
-                reason: this.props.data['description'],
-                type: 'Admin sahab replace this with token or identification!',
-                status: this.props.data.status,
+                visit_date: this.props.data.date,
+                visit_time: this.props.data.time,
+                visit_description: this.props.data['description'],
+                visit_type: 'Admin sahab replace this with token or identification!',
+                visit_status: this.props.data.status,
                 consultancy_discount: this.state.consultancyDiscount,
                 overall_discount: this.state.totalDiscount
             }

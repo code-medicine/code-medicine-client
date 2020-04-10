@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Loading from '../customs/loading/loading';
-import Select, {components} from 'react-select'
+import Select, { components } from 'react-select'
 import Modal from 'react-bootstrap4-modal';
 import DateTimePicker from 'react-datetime';
 import moment from 'moment';
@@ -12,7 +12,7 @@ import NewUserModal from './newusermodal';
 
 
 class NewAppointmentModal extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             loading_status: false,
@@ -36,7 +36,7 @@ class NewAppointmentModal extends Component {
 
     async request(_data, _url, _method = "post") {
         try {
-            if (_method === 'post'){
+            if (_method === 'post') {
                 return await Axios.post(_url, _data, { headers: { 'code-medicine': localStorage.getItem('user') } })
             }
             else if (_method === 'get') {
@@ -49,11 +49,11 @@ class NewAppointmentModal extends Component {
         }
     }
 
-    async render_users(string,role) {
+    async render_users(string, role) {
         const query = `${SEARCH_USER_REQUEST}?search=${string}&role=${role}`
         const res_users = await this.request({}, query, 'get')
         let temp_users = []
-        
+
         if (res_users.data['status']) {
             for (var i = 0; i < res_users.data.payload['count']; ++i) {
                 const t_user = res_users.data.payload['users'][i]
@@ -63,10 +63,10 @@ class NewAppointmentModal extends Component {
                     label: `${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
                 })
             }
-            if (role === 'Patient'){
+            if (role === 'Patient') {
                 this.setState({ patients: temp_users })
             }
-            else if (role === 'Doctor'){
+            else if (role === 'Doctor') {
                 this.setState({ doctors: temp_users })
             }
         }
@@ -74,18 +74,18 @@ class NewAppointmentModal extends Component {
 
     populate_patients = (string) => {
         if (string.length >= 1) {
-            this.render_users(string,'Patient')
+            this.render_users(string, 'Patient')
         }
-        else{
-            this.setState({patients: []})
+        else {
+            this.setState({ patients: [] })
         }
     }
 
     populate_doctors = (string) => {
         if (string.length >= 1) {
-            this.render_users(string,'Doctor')
+            this.render_users(string, 'Doctor')
         }
-        else{
+        else {
             this.setState({ doctors: [] })
         }
     }
@@ -174,16 +174,16 @@ class NewAppointmentModal extends Component {
         }
     }
 
-    check_input = (input,required = true,only_alpha=false,only_numbers=false) => {
+    check_input = (input, required = true, only_alpha = false, only_numbers = false) => {
         const alphabets = /^[A-Za-z]+$/;
         const numbers = /^[0-9]+$/;
-        if (required  && input === ''){
+        if (required && input === '') {
             return true;
         }
-        if (only_alpha && !input.match(alphabets)){
+        if (only_alpha && !input.match(alphabets)) {
             return true;
         }
-        if (only_numbers && !input.match(numbers)){
+        if (only_numbers && !input.match(numbers)) {
             return true;
         }
         return false;
@@ -192,29 +192,29 @@ class NewAppointmentModal extends Component {
     on_submit = () => {
         this.setState({ loading_status: true })
         let error = false
-        if (this.check_input(this.state.appointment_patient.value,true)){
-            this.setState({appointment_patient: { value: this.state.appointment_patient.value, error: true}})
+        if (this.check_input(this.state.appointment_patient.value, true)) {
+            this.setState({ appointment_patient: { value: this.state.appointment_patient.value, error: true } })
             error = true
         }
-        if (this.check_input(this.state.appointment_doctor.value,true)){
-            this.setState({appointment_doctor: { value: this.state.appointment_doctor.value, error: true}})
+        if (this.check_input(this.state.appointment_doctor.value, true)) {
+            this.setState({ appointment_doctor: { value: this.state.appointment_doctor.value, error: true } })
             error = true
         }
-        if (this.check_input(this.state.appointment_reason.value,true)){
-            this.setState({appointment_reason: { value: this.state.appointment_reason.value, error: true}})
+        if (this.check_input(this.state.appointment_reason.value, true)) {
+            this.setState({ appointment_reason: { value: this.state.appointment_reason.value, error: true } })
             error = true
         }
-        if (this.check_input(this.state.appointment_date.value,true)){
-            this.setState({appointment_date: { value: this.state.appointment_date.value, error: true}})
+        if (this.check_input(this.state.appointment_date.value, true)) {
+            this.setState({ appointment_date: { value: this.state.appointment_date.value, error: true } })
             error = true
         }
-        if (this.check_input(this.state.appointment_time.value,true)){
-            this.setState({appointment_time: { value: this.state.appointment_time.value, error: true}})
+        if (this.check_input(this.state.appointment_time.value, true)) {
+            this.setState({ appointment_time: { value: this.state.appointment_time.value, error: true } })
             error = true
         }
 
-        if (error === true){
-            this.props.notify('error','','Invalid inputs')
+        if (error === true) {
+            this.props.notify('error', '', 'Invalid inputs')
             this.setState({ loading_status: false })
             return
         }
@@ -222,11 +222,11 @@ class NewAppointmentModal extends Component {
         const data = {
             patient_id: this.state.appointment_patient.value,
             doctor_id: this.state.appointment_doctor.value,
-            date: this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT',
-            time: this.state.appointment_time.value,
-            reason: this.state.appointment_reason.value,
-            type: 'Admin sahab replace this with token or identification!',
-            status: 'waiting'
+            visit_date: this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT',
+            visit_time: this.state.appointment_time.value,
+            visit_description: this.state.appointment_reason.value,
+            visit_type: 'Admin sahab replace this with token or identification!',
+            visit_status: 'waiting'
         }
         Axios.post(NEW_APPOINTMENT_URL, data, {
             headers: {
@@ -244,7 +244,7 @@ class NewAppointmentModal extends Component {
                     patient_select_value: '',
                     doctor_select_value: '',
                     loading_status: false,
-                    
+
                 })
                 this.props.clear_todays_appointments()
                 this.props.load_todays_appointments()
@@ -252,11 +252,11 @@ class NewAppointmentModal extends Component {
             }
             else {
                 this.props.notify('error', '', res.data.message)
-                this.setState({loading_status: false})
+                this.setState({ loading_status: false })
             }
         }).catch(err => {
             this.props.notify('error', '', 'Server not responding')
-            this.setState({loading_status: false})
+            this.setState({ loading_status: false })
             this.props.close()
         })
     }
@@ -282,10 +282,10 @@ class NewAppointmentModal extends Component {
         };
         const ControlComponent = props => (
             <div style={controlStyles}>
-              <components.Control {...props} />
+                <components.Control {...props} />
             </div>
         );
-        const add_appointment_modal_body = 
+        const add_appointment_modal_body =
             <div className="modal-body">
                 <div className="row">
                     <div className="col-md-10">
@@ -304,10 +304,10 @@ class NewAppointmentModal extends Component {
                                 value={this.state.patient_select_value}
                                 styles={{
                                     container: base => ({
-                                      ...base,
-                                      backgroundColor: this.state.appointment_patient.error? '#FF0000':'',
-                                      padding: 1,
-                                      borderRadius: 5
+                                        ...base,
+                                        backgroundColor: this.state.appointment_patient.error ? '#FF0000' : '',
+                                        padding: 1,
+                                        borderRadius: 5
                                     }),
                                 }}
                             />
@@ -342,7 +342,7 @@ class NewAppointmentModal extends Component {
                 <div className="row mb-1">
                     <div className="col-6">
                         Which doctor will be suitable
-                </div>
+                    </div>
                     <div className="col-6">
                         What is the date and time of appointment
                     </div>
@@ -362,10 +362,10 @@ class NewAppointmentModal extends Component {
                                 value={this.state.doctor_select_value}
                                 styles={{
                                     container: base => ({
-                                      ...base,
-                                      backgroundColor: this.state.appointment_doctor.error? '#FF0000':'',
-                                      padding: 1,
-                                      borderRadius: 5
+                                        ...base,
+                                        backgroundColor: this.state.appointment_doctor.error ? '#FF0000' : '',
+                                        padding: 1,
+                                        borderRadius: 5
                                     }),
                                 }}
                             />
@@ -378,7 +378,7 @@ class NewAppointmentModal extends Component {
                         <DateTimePicker id="dob_text_input"
                             onChange={this.on_apointment_date_change}
                             className="clock_datatime_picker"
-                            inputProps={{ placeholder: 'Select Date', width: '100%', className: `form-control ${this.state.appointment_date.error? 'border-danger':''}` }}
+                            inputProps={{ placeholder: 'Select Date', width: '100%', className: `form-control ${this.state.appointment_date.error ? 'border-danger' : ''}` }}
                             input={true}
                             dateFormat={'ll'}
                             timeFormat={false}
@@ -390,7 +390,7 @@ class NewAppointmentModal extends Component {
                         <DateTimePicker id="dob_text_input"
                             onChange={this.on_apointment_time_change}
                             className="clock_datatime_picker"
-                            inputProps={{ placeholder: 'Select Time', width: '100%', className: `form-control ${this.state.appointment_time.error? 'border-danger':''}` }}
+                            inputProps={{ placeholder: 'Select Time', width: '100%', className: `form-control ${this.state.appointment_time.error ? 'border-danger' : ''}` }}
                             input={true}
                             dateFormat={false}
                             timeFormat={true}
@@ -401,15 +401,15 @@ class NewAppointmentModal extends Component {
                     </div>
                 </div>
             </div>
-        return(
+        return (
             <Fragment>
-                
+
                 {/* Register new patient modal */}
-                <NewUserModal 
+                <NewUserModal
                     visibility={this.state.new_patient_modal_visibility}
                     close={this.close_new_patient_modal}
                     call_back={this.props.bind_function} />
-                    
+
                 <Modal
                     visible={this.props.visibility}
                     onClickBackdrop={this.props.close}
@@ -419,7 +419,7 @@ class NewAppointmentModal extends Component {
                     <div className="modal-header bg-teal-400">
                         <h5 className="modal-title">New Appointment</h5>
                     </div>
-                    {this.state.loading_status ? <Loading size={150}/> : add_appointment_modal_body}
+                    {this.state.loading_status ? <Loading size={150} /> : add_appointment_modal_body}
                     <div className="modal-footer">
                         <button
                             type="button"
@@ -439,15 +439,15 @@ class NewAppointmentModal extends Component {
                         </button>
                     </div>
                 </Modal>
-            
+
             </Fragment>
         )
     }
 }
 function map_state_to_props(state) {
-    return { 
+    return {
         notify: state.notify,
-        todays_patient: state.todays_patient 
+        todays_patient: state.todays_patient
     }
 }
 export default connect(map_state_to_props, { notify, load_todays_appointments, clear_todays_appointments })(NewAppointmentModal);

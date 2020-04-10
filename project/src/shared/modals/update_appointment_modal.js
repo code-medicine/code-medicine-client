@@ -256,11 +256,11 @@ class UpdateAppointmentModal extends Component {
             payload: {
                 patient_id: this.state.appointment_patient.value,
                 doctor_id: this.state.appointment_doctor.value,
-                date: this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT',
-                time: this.state.appointment_time.value,
-                reason: this.state.appointment_reason.value,
-                type: 'Admin sahab replace this with token or identification!',
-                status: 'waiting'
+                visit_date: this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT',
+                visit_time: this.state.appointment_time.value,
+                visit_description: this.state.appointment_reason.value,
+                visit_type: 'Admin sahab replace this with token or identification!',
+                visit_status: 'waiting'
             }
         }
         const that = this;

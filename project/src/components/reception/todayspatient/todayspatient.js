@@ -185,22 +185,20 @@ class Todayspatient extends Component {
             return
         }
         return (data.map((booking, i) => {
-            var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
+            // var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
 
             const hidden_data = {
-                visit_description: booking.description
+                visit_description: booking.visit_description
             }
             let header_elements = [
-                moment(booking.date, "YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY, hh:mm a'),
+                moment(booking.visit_date, "YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY, hh:mm a'),
                 <div className={`text-muted`}>{booking.visit_id}</div>,
                 <div className={`header-elements`}>
                     <div className={`list-icons`}>
-                        <span className="badge badge-danger">{booking.status}</span>
+                        <span className="badge badge-danger">{booking.visit_status}</span>
                     </div>
                 </div>
             ]
-            let d = new Date();
-            d = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
             return (
                 <TodaysPatientRow
                     key={i}

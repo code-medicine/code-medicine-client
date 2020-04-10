@@ -61,7 +61,7 @@ class TodaysPatientRow extends Component {
                     {/* Appointment Time column */}
                     <div className={`col-lg-3 col-md-6 col-sm-6 mt-0 text-teal-400 border-left-2 border-bottom-sm-2 border-left-teal-400 border-right-teal-400 border-right-2 btn-block d-flex align-items-center justify-content-center text-center`} >
                         <div className={` jackInTheBox animated`} >
-                            <h1 className="mb-0">{moment(this.state.row_data.date, "YYYY-MM-DDThh:mm:ss").format('hh:mm a')}</h1>
+                            <h1 className="mb-0">{moment(this.state.row_data.visit_date, "YYYY-MM-DDThh:mm:ss").format('hh:mm a')}</h1>
                             <p>{this.state.appointment_time_difference_from_now}</p>
                         </div>
                     </div>
@@ -71,14 +71,14 @@ class TodaysPatientRow extends Component {
                         <div className={`row`}>
                             <div className={`col-lg-4 h6 font-weight-bold`}>Reason</div>
                             <div className={`col-lg-8 h6`}>
-                                {this.state.row_data.description.length > 30 ? this.state.row_data.description.substring(0, 30) + '...' : this.state.row_data.description}
+                                {this.state.row_data.visit_description.length > 30 ? this.state.row_data.visit_description.substring(0, 30) + '...' : this.state.row_data.visit_description}
                             </div>
                         </div>
                         {/* Appointment date and time */}
                         <div className={`row`}>
                             <div className={`col-4 h6 font-weight-bold`}>Appointment</div>
                             <div className={`col-8 h6`}>
-                                <span className="">On {moment(this.state.row_data.date, "YYYY-MM-DDThh:mm:ss").format('LLL')}</span>
+                                <span className="">On {moment(this.state.row_data.visit_date, "YYYY-MM-DDThh:mm:ss").format('LLL')}</span>
                             </div>
                         </div>
                         {/* Appointment Doctor */}
@@ -96,7 +96,7 @@ class TodaysPatientRow extends Component {
                         <div className={`row`}>
                             <div className={`col-4 h6 font-weight-bold`}>Status</div>
                             <div className={`col-8 h6`}>
-                                <span className="badge badge-danger">{this.state.row_data.status}</span>
+                                <span className="badge badge-danger">{this.state.row_data.visit_status}</span>
                             </div>
                         </div>
                     </div>
@@ -245,9 +245,9 @@ class TodaysPatientRow extends Component {
                                 visit_id: this.state.row_data.visit_id,
                                 patient_ref: this.state.row_data.patient,
                                 doctor_ref: this.state.row_data.doctor,
-                                reason: this.state.row_data['description'],
-                                date: this.state.row_data.date,
-                                time: this.state.row_data.time
+                                reason: this.state.row_data['visit_description'],
+                                date: this.state.row_data.visit_date,
+                                time: this.state.row_data.visit_time
                             }} />
                     </td>
                 
