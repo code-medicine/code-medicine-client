@@ -142,11 +142,12 @@ class InvoiceModal extends Component {
                 headers: { 'code-medicine': localStorage.getItem('user') }
             });
             response.then((response)=>{
+                console.log(response.data);
                 if(response.data.status===true) {
                     this.setState((state, props) => {
                         return {
-                            total: state.total - (state.consultancyDiscount + state.totalDiscount),
-                            consultancyTotal: state.consultancyFee - state.consultancyDiscount
+                            consultancyTotal: state.consultancyFee - state.consultancyDiscount,
+                            total: state.total - state.consultancyDiscount,
                         };
                     });
                     this.props.notify('success', '', 'Visit Updated!');
@@ -218,7 +219,8 @@ class InvoiceModal extends Component {
                         this.setState((state, props) => {
                             return {
                                 consultancyFee: response.data.payload.doctor_details[0].consultancy_fee,
-                                consultancyTotal: response.data.payload.doctor_details[0].consultancy_fee - state.consultancyDiscount
+                                consultancyTotal: response.data.payload.doctor_details[0].consultancy_fee - state.consultancyDiscount,
+                                total: state.total + (response.data.payload.doctor_details[0].consultancy_fee - state.consultancyDiscount)
                             };
                         });
                     }
