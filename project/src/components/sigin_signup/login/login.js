@@ -8,7 +8,7 @@ import Container from '../../../shared/container/container';
 import { notify, set_active_user } from '../../../actions';
 import Inputfield from '../../../shared/customs/inputfield/inputfield';
 
-import { BASE_URL, REGISTER_URL, LOGIN_URL } from '../../../shared/router_constants';
+import { BASE_URL, REGISTER_URL, LOGIN_URL, FORGOT_PASSWORD } from '../../../shared/router_constants';
 import { LOGIN_USER_REQUEST, PROFILE_USER_REQUEST } from '../../../shared/rest_end_points';
 
 
@@ -156,7 +156,7 @@ class Login extends Component {
                     </label>
                 </div>
 
-                <a href="login_password_recover.html" className="ml-auto">Forgot password?</a>
+                <Link to={FORGOT_PASSWORD} className="ml-auto">Forgot password?</Link>
             </div>
 
             view = <div className={``}>

@@ -50,47 +50,63 @@ class Container extends Component {
 
         switch(this.state.type){
             case 'login':
-                header = false
-                footer = false
-                left_sidebar = false
-                page_header = false
+                header = false;
+                footer = false;
+                left_sidebar = false;
+                page_header = false;
                 break;
             case 'register':
-                header = false
-                footer = false
-                left_sidebar = false
-                page_header = false
+                header = false;
+                footer = false;
+                left_sidebar = false;
+                page_header = false;
+                break;
+            case 'darmian_me':
+                header = false;
+                footer = false;
+                left_sidebar = false;
+                page_header = false;
                 break;
             default:
-                header = true
-                footer = true
-                left_sidebar = true
-                page_header = true
+                header = true;
+                footer = true;
+                left_sidebar = true;
+                page_header = true;
                 break;
         }
 
-        return (
-            <div className={`virtual-body ${header? 'navbar-top':''} ${this.props.left_sidebar? (window.innerWidth >= 500? 'sidebar-xs':'sidebar-mobile-main'):''}`}
-                // style={{backgroundImage: `url(${BACKGROUND})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundPosition:'center'}}
-                >
-                {header? <Header /> : ''}
-                <div className="page-content">
+        const normal_flow_container =             
+        <div className={`virtual-body ${header? 'navbar-top':''} ${this.props.left_sidebar? (window.innerWidth >= 500? 'sidebar-xs':'sidebar-mobile-main'):''}`}
+            // style={{backgroundImage: `url(${BACKGROUND})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundPosition:'center'}}
+            >
+            {header? <Header /> : ''}
+            <div className="page-content">
 
-                    {left_sidebar? <Leftsidebar /> : ''}
+                {left_sidebar? <Leftsidebar /> : ''}
 
-                    <div className="content-wrapper">
-                        
-                        {page_header? <Pageheader /> : ''}
+                <div className="content-wrapper">
+                    
+                    {page_header? <Pageheader /> : ''}
 
-                        <div className={`content ${this.state.type === 'login'? 'p-0':this.state.type === 'register'? 'p-0':'' }`}>
-                            {
-                                this.props.children
-                            }
-                        </div>
-                        {footer? <Footer /> : ''}
+                    <div className={`content ${this.state.type === 'login'? 'p-0':this.state.type === 'register'? 'p-0':'' }`}>
+                        {
+                            this.props.children
+                        }
                     </div>
+                    {footer? <Footer /> : ''}
                 </div>
             </div>
+        </div>
+
+        const centered_elements = 
+        <div className={`virtual-body d-flex justify-content-center align-items-center background_custom`}>
+            {
+                this.props.children
+            }
+        </div>
+
+        return (
+            this.state.type === 'darmian_me'? centered_elements: normal_flow_container
         );
     }
 }

@@ -9,13 +9,10 @@ import { LOGIN_URL } from '../../../shared/router_constants';
 import Container from '../../../shared/container/container';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
-import './register.css'
-// import Modal from 'react-bootstrap4-modal';
-import DateTimePicker from 'react-datetime'
+import './register.css';
 import { withRouter } from 'react-router-dom';
 import Inputfield from '../../../shared/customs/inputfield/inputfield';
 import { BLOOD_GROUPS_OPTIONS, GENDER_OPTIONS, ROLES_OPTIONS } from '../../../shared/constant_data';
-// import ScrollArea from 'react-scrollbar'
 
 
 class Register extends Component {
