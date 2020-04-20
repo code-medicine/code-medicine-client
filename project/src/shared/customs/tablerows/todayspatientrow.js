@@ -2,8 +2,10 @@ import React, { Component, Fragment } from 'react';
 import { Collapse } from 'reactstrap'
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { Popup } from "semantic-ui-react";
+import { Popup, Icon } from "semantic-ui-react";
 import UpdateAppointmentModal from '../../modals/update_appointment_modal';
+
+// import '../../../../node_modules/semantic-ui-css/semantic.min.css';
 
 class TodaysPatientRow extends Component {
     constructor(props) {
@@ -16,7 +18,7 @@ class TodaysPatientRow extends Component {
             hidden_header_elements: this.props.hidden_header_elements,
             hidden_header_color: this.props.hidden_header_color,
             col_span: '',
-            appointment_time_difference_from_now: moment(this.props.row_data.visit_date, "YYYY-MM-DDThh:mm:ss").fromNow(),
+            appointment_time_difference_from_now: moment(this.props.row_data.appointment_date, "YYYY-MM-DDThh:mm:ss").fromNow(),
 
             update_appointment_modal_visibility: false,
         }
@@ -32,7 +34,7 @@ class TodaysPatientRow extends Component {
         // this.setState({row_data: this.props.data})
         this.setState({ col_span: this.props.columns })
         setInterval(() => {
-            this.setState({ appointment_time_difference_from_now: moment(this.state.row_data.visit_date, "YYYY-MM-DDThh:mm:ss").fromNow() })
+            this.setState({ appointment_time_difference_from_now: moment(this.state.row_data.appointment_date, "YYYY-MM-DDThh:mm:ss").fromNow() })
         }, 60000)
     }
 
@@ -44,13 +46,14 @@ class TodaysPatientRow extends Component {
         return (
             // <div>{this.state.row_data}</div>
             <div className={`container-fluid`} >
-                {this.props.reference}
+                {/* {this.props.reference} */}
                 <div className={`row`}>
                     {/* Patient name and phone number */}
                     <div className={`col-lg-3 col-md-6 col-sm-6 mt-0 text-teal-400 border-left-2 border-left-teal-400 btn-block d-flex align-items-center justify-content-center text-center`}>
                         <div className={`btn btn-outline bg-teal-400 text-teal-400 btn-block jackInTheBox animated`}
                             style={{ verticalAlign: 'center' }}
-                            onClick={() => this.view_user(this.state.row_data.patient['id'])}>
+                            onClick={() => this.view_user(this.state.row_data.patient['id'])}
+                            >
                             <span className={`img-fluid rounded-circle text-white bg-teal-400 h3 p-2`} >
                                 {this.state.row_data.patient['first_name'].charAt(0).toUpperCase() + this.state.row_data.patient['last_name'].charAt(0).toUpperCase()}
                             </span>
@@ -59,44 +62,105 @@ class TodaysPatientRow extends Component {
                         </div>
                     </div>
                     {/* Appointment Time column */}
-                    <div className={`col-lg-3 col-md-6 col-sm-6 mt-0 text-teal-400 border-left-2 border-bottom-sm-2 border-left-teal-400 border-right-teal-400 border-right-2 btn-block d-flex align-items-center justify-content-center text-center`} >
+                    <div className={`col-lg-2 col-md-6 col-sm-6 mt-0 text-teal-400 border-left-2 border-bottom-sm-2 border-left-teal-400 border-right-teal-400 border-right-2 btn-block d-flex align-items-center justify-content-center text-center`} >
                         <div className={` jackInTheBox animated`} >
-                            <h1 className="mb-0">{moment(this.state.row_data.visit_date, "YYYY-MM-DDThh:mm:ss").format('hh:mm a')}</h1>
+                            <h1 className="mb-0">{moment(this.state.row_data.appointment_date, "YYYY-MM-DDThh:mm:ss").format('hh:mm a')}</h1>
                             <p>{this.state.appointment_time_difference_from_now}</p>
                         </div>
                     </div>
                     {/* appointment details */}
-                    <div className={`col-lg-6 col-md-12 col-sm-12 mt-sm-2`}>
-                        {/* Appointment Reason */}
-                        <div className={`row`}>
-                            <div className={`col-lg-4 h6 font-weight-bold`}>Reason</div>
-                            <div className={`col-lg-8 h6`}>
-                                {this.state.row_data.visit_description.length > 30 ? this.state.row_data.visit_description.substring(0, 30) + '...' : this.state.row_data.visit_description}
-                            </div>
-                        </div>
+                    <div className={`col-lg-7 col-md-12 col-sm-12 mt-sm-2`}>
                         {/* Appointment date and time */}
-                        <div className={`row`}>
-                            <div className={`col-4 h6 font-weight-bold`}>Appointment</div>
-                            <div className={`col-8 h6`}>
-                                <span className="">On {moment(this.state.row_data.visit_date, "YYYY-MM-DDThh:mm:ss").format('LLL')}</span>
+                        <div className="row">
+                            <div className="col-12 font-weight-bold h6">
+                                Appointment on <span className="text-muted">{` ${moment(this.state.row_data.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LLL')}`}</span> 
+                                
+                                <span className="badge badge-danger float-right">{` ${this.state.row_data.appointment_status[this.state.row_data.appointment_status.length - 1].info}`}</span>
                             </div>
                         </div>
-                        {/* Appointment Doctor */}
+                        {/* Appointment credentials */}
                         <div className={`row`}>
-                            <div className={`col-4 h6 font-weight-bold`}>Doctor</div>
-                            <div className={`col-8 h6`}>
+                            <div className={`col-12 h6`}>
                                 <Link className="text-teal-400 font-weight-bold" to={"#"}
                                     onClick={() => this.view_user(this.state.row_data.doctor['id'])}>
                                     <i className="icon-user-tie mr-2"></i>
                                     {this.state.row_data.doctor['first_name'] + ' ' + this.state.row_data.doctor['last_name']}
                                 </Link>
+                                <span className="font-weight-bold h6 text-muted">
+                                    {` for ${this.state.row_data.appointment_description.length > 30 ? this.state.row_data.appointment_description.substring(0, 30) + '...' : this.state.row_data.appointment_description}`}
+                                </span>
+                                {/* <span className="">{`On ${moment(this.state.row_data.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LLL')} for ${this.state.row_data.appointment_description.length > 30 ? this.state.row_data.appointment_description.substring(0, 30) + '...' : this.state.row_data.appointment_description}`}</span>  */}
                             </div>
                         </div>
-                        {/* Status of the appointment */}
-                        <div className={`row`}>
-                            <div className={`col-4 h6 font-weight-bold`}>Status</div>
-                            <div className={`col-8 h6`}>
-                                <span className="badge badge-danger">{this.state.row_data.visit_status}</span>
+                        {/* Appointment Reason */}
+                        {/* <div className={`row`}>
+                            <div className={`col-lg-4 h6 font-weight-bold`}>Reason</div>
+                            <div className={`col-lg-8 h6`}>
+                                {this.state.row_data.appointment_description.length > 30 ? this.state.row_data.appointment_description.substring(0, 30) + '...' : this.state.row_data.appointment_description}
+                            </div>
+                        </div> */}
+                        {/* Appointment Actions */}
+                        <div className="row">
+                            <div className="col-12">
+                                <Popup
+                                    trigger={
+                                        <button className="btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 secondary btn-icon "
+                                            onClick={() => this.props.open_procedure_modal(this.props.row_data._id)}>
+                                            <i className="icon-plus2"></i>
+                                        </button>}
+                                    content={
+                                        <div className="card card-body bg-teal-400 text-white shadow mr-1 mt-3 py-1">
+                                            View or Add procedures
+                                        </div>
+                                    }
+                                    flowing
+                                    position='left center'
+                                />
+                                <Popup
+                                    trigger={
+                                        <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon ml-2`}
+                                            onClick={() => this.props.openInvoiceModal(this.props.row_data)}>
+                                            <i className={`icon-file-text2`}></i>
+                                        </button>}
+                                    content={
+                                        <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
+                                            Generate Invoice
+                                        </div>
+                                    }
+                                    flowing
+                                    // hoverable
+                                    position='top left'
+                                />
+                                <Popup
+                                    trigger={
+                                        <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon ml-2`}
+                                            onClick={() => this.setState({ update_appointment_modal_visibility: true })}    >
+                                            <i className={`icon-pencil3`}></i>
+                                        </button>}
+                                    flowing
+                                    // hoverable
+                                    content={
+                                        <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
+                                            Edit appointment
+                                        </div>
+                                    }
+                                    position='top right'
+                                />
+                                <Popup
+                                    trigger={
+                                        <button className={`btn btn-outline btn-sm bg-dark border-dark text-dark btn-icon ml-2`}
+                                            onClick={this.toggle_row}>
+                                            <i className={this.state.toggle_icon}></i>
+                                        </button>}
+                                    flowing
+                                    // hoverable
+                                    content={
+                                        <div className={`card card-body bg-dark text-white shadow ml-1 mt-3 py-1`}>
+                                            Show more details
+                                        </div>
+                                    }
+                                    position='right center'
+                                />
                             </div>
                         </div>
                     </div>
@@ -111,7 +175,7 @@ class TodaysPatientRow extends Component {
                 <h5 className="font-weight-semibold">Reason of visit</h5>
                 <blockquote className="blockquote blockquote-bordered py-2 pl-3 mb-0">
                     <p className="mb-1">
-                        {this.state.hidden_data.visit_description}
+                        {this.state.hidden_data.appointment_description}
                     </p>
                     <footer className="blockquote-footer">Perscription</footer>
                 </blockquote>
@@ -142,7 +206,7 @@ class TodaysPatientRow extends Component {
         //     opacity: 0.7,
         //     padding: '2em',
         //   }
-        // console.log('stateeeeeee',this.state)
+        console.log('stateeeeeee',this.state)
         return (
             <Fragment>
                 <tr >
@@ -159,21 +223,19 @@ class TodaysPatientRow extends Component {
                             this.render_read_only_cols()
                         }
                     </td>
-                    <td>
+                    {/* <td>
                         <div className={``}>
-                            <Fragment>
-                                <Popup
-                                    trigger={
-                                        <button className="btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 secondary btn-icon "
-                                            onClick={() => this.props.open_procedure_modal(this.props.row_data.visit_id)}>
-                                            <i className="icon-plus2"></i>
-                                        </button>}
-                                    content={<div className={`card card-body bg-teal-400 text-teal-white shadow mr-2 mt-3 py-1`}>View or add procedures</div>}
-                                    flowing
-                                    hoverable
-                                    position='left center'
-                                />
-                            </Fragment>
+                            <Popup
+                                trigger={
+                                    <button className="btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 secondary btn-icon "
+                                        onClick={() => this.props.open_procedure_modal(this.props.row_data._id)}>
+                                        <i className="icon-plus2"></i>
+                                    </button>}
+                                content={<div className={`card card-body bg-teal-400 text-teal-white shadow mr-2 mt-3 py-1`}>View or add procedures</div>}
+                                flowing
+                                hoverable
+                                position='left center'
+                            />
                         </div>
 
                         <div className={`mt-1`}>
@@ -221,7 +283,7 @@ class TodaysPatientRow extends Component {
                                 position='left center'
                             />
                         </div>
-                    </td>
+                    </td> */}
                 </tr>
                 <tr className="">
                     <td colSpan={`${this.state.col_span + 1}`} className={`${this.state.toggle ? '' : 'py-0'}`}>
@@ -242,12 +304,12 @@ class TodaysPatientRow extends Component {
                             call_back={this.call_back_update_appointment_modal}
                             state={'update'}
                             payload={{
-                                visit_id: this.state.row_data.visit_id,
+                                visit_id: this.state.row_data.appointment_id,
                                 patient_ref: this.state.row_data.patient,
                                 doctor_ref: this.state.row_data.doctor,
-                                reason: this.state.row_data['visit_description'],
-                                date: this.state.row_data.visit_date,
-                                time: this.state.row_data.visit_time
+                                reason: this.state.row_data['appointment_description'],
+                                date: this.state.row_data.appointment_date,
+                                time: this.state.row_data.appointment_time
                             }} />
                     </td>
 

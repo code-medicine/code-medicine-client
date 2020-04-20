@@ -40,8 +40,9 @@ export function load_todays_appointments(){
     return function(dispatch){
         let d = new Date();
         d = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
-        Axios.post(SEARCH_TODAYS_APPOINTMENTS_URL,{ date_flag: d },{ headers: { 'code-medicine': localStorage.getItem('user') } })
+        Axios.get(SEARCH_TODAYS_APPOINTMENTS_URL,{ headers: { 'code-medicine': localStorage.getItem('user') } })
         .then(res => {
+            console.log("action response",res)
             dispatch({
                 type: TODAYS_PATIENT,
                 payload: res,

@@ -109,7 +109,7 @@ class Todayspatient extends Component {
         const routes = [<Link to={BASE_URL} className="breadcrumb-item">
             <i className="icon-user mr-2"></i>
             Reception
-                    </Link>, <span className="breadcrumb-item active">Today's Patient</span>]
+        </Link>, <span className="breadcrumb-item active">Today's Patient</span>]
         this.props.set_active_page(routes)
         this.props.load_todays_appointments()
     }
@@ -186,32 +186,19 @@ class Todayspatient extends Component {
         }
         return (data.map((booking, i) => {
             // var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
-
+            console.log("booking ", i, booking)
             const hidden_data = {
-                visit_description: booking.visit_description
+                appointment_description: booking.appointment_description
             }
-            let header_elements = [
-                moment(booking.visit_date, "YYYY-MM-DDThh:mm:ss").format('MMMM Do YYYY, hh:mm a'),
-                <div className={`text-muted`}>{booking.visit_id}</div>,
-                <div className={`header-elements`}>
-                    <div className={`list-icons`}>
-                        <span className="badge badge-danger">{booking.visit_status}</span>
-                    </div>
-                </div>
-            ]
             return (
                 <TodaysPatientRow
                     key={i}
-                    id={i}
-                    reference={<div ref={(el) => { this[`element_${i}_ref`] = el; }}></div>}
-                    visit_id={booking.visit_id}
                     row_data={booking}
                     hidden_data={hidden_data}
                     open_procedure_modal={this.openProcedureModalHandler}
                     openInvoiceModal={this.openInvoiceModalHandler}
                     open_user_view_modal={this.request_user}
-                    hidden_header_elements={header_elements}
-                    columns="7" />
+                    columns="8" />
             )
         }))
     }

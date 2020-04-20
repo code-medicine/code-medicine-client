@@ -220,13 +220,11 @@ class NewAppointmentModal extends Component {
         }
 
         const data = {
-            patient_id: this.state.appointment_patient.value,
-            doctor_id: this.state.appointment_doctor.value,
-            visit_date: this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT',
-            visit_time: this.state.appointment_time.value,
-            visit_description: this.state.appointment_reason.value,
-            visit_type: 'Admin sahab replace this with token or identification!',
-            visit_status: 'waiting'
+            patient: this.state.appointment_patient.value,
+            doctor: this.state.appointment_doctor.value,
+            date: this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT',
+            time: this.state.appointment_time.value,
+            description: this.state.appointment_reason.value,
         }
         Axios.post(NEW_APPOINTMENT_URL, data, {
             headers: {

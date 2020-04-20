@@ -102,7 +102,7 @@ class UpdateAppointmentModal extends Component {
             this.setState({ patients: [{
                 id: 'appointment_patient_selection',
                 reference: this.props.payload.patient_ref.id,
-                label: `${this.props.payload.patient_ref.first_name} ${this.props.payload.patient_ref.last_name} | ${this.props.payload.patient_ref.phone_number} | ${this.props.payload.patient_ref.email}`
+                label: `${this.props.payload.patient_ref.first_name} ${this.props.payload.patient_ref.last_name} | ${this.props.payload.patient_ref.phone_number}`
             }] })
             
         }
@@ -116,7 +116,7 @@ class UpdateAppointmentModal extends Component {
             this.setState({ doctors: [{
                 id: 'appointment_doctor_selection',
                 reference: this.props.payload.doctor_ref.id,
-                label: `${this.props.payload.doctor_ref.first_name} ${this.props.payload.doctor_ref.last_name} | ${this.props.payload.doctor_ref.phone_number} | ${this.props.payload.doctor_ref.email}`
+                label: `${this.props.payload.doctor_ref.first_name} ${this.props.payload.doctor_ref.last_name} | ${this.props.payload.doctor_ref.phone_number}`
             }] })
             
         }

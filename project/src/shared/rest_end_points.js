@@ -17,12 +17,17 @@ export const SEARCH_USER_REQUEST = `${BASE_USERS_URL}/search`;
 export const SEARCH_BY_ID_USER_REQUEST = `${BASE_USERS_URL}/search/id`;
 
 // All visits/reception related end points
-export const BASE_RECEPTION_URL = `${BASE_URL}/visits`;
-export const NEW_APPOINTMENT_URL = `${BASE_RECEPTION_URL}/new`;
+// export const BASE_RECEPTION_URL = `${BASE_URL}/visits`;
+// export const NEW_APPOINTMENT_URL = `${BASE_RECEPTION_URL}/new`;
+// export const UPDATE_APPOINTMENT_URL = `${BASE_RECEPTION_URL}/update`
+// export const SEARCH_APPOINTMENTS_URL = `${BASE_RECEPTION_URL}/search`;
+// export const SEARCH_TODAYS_APPOINTMENTS_URL = `${SEARCH_APPOINTMENTS_URL}/today`;
+
+export const BASE_RECEPTION_URL = `${BASE_URL}/appointments`;
+export const NEW_APPOINTMENT_URL = `${BASE_RECEPTION_URL}/create`;
 export const UPDATE_APPOINTMENT_URL = `${BASE_RECEPTION_URL}/update`
 export const SEARCH_APPOINTMENTS_URL = `${BASE_RECEPTION_URL}/search`;
 export const SEARCH_TODAYS_APPOINTMENTS_URL = `${SEARCH_APPOINTMENTS_URL}/today`;
-
 
 // All procedure related end points
 export const BASE_PROCEDURES_URL = `${BASE_URL}/procedures`;
