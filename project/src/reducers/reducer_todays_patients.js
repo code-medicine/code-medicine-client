@@ -4,10 +4,10 @@ export default function (state = {}, action) {
     switch (action.type) {
         case TODAYS_PATIENT:
             console.log(action.payload)
-            if (action.payload.data.status === true)
+            if (action.payload.status === 200)
                 return { 
                     loading: action.loading, 
-                    data: action.payload.data.payload.appointments 
+                    data: action.payload.data.payload
                 }
             else
                 return { 

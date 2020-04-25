@@ -209,7 +209,9 @@ class NewUserModal extends Component {
         try {
             if (response.data['status']) {
                 this.props.notify('success', '', response.data['message']);
-                this.setState({ loading_status: false })
+                this.setState({ loading_status: false }, () => {
+                    this.close_modal()
+                })
             }
             else {
                 this.props.notify('error', '', response.data['message'])
