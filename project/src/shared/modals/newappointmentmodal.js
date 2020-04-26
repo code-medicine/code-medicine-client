@@ -9,6 +9,7 @@ import { NEW_APPOINTMENT_URL, SEARCH_USER_REQUEST, UPDATE_APPOINTMENT_URL } from
 import { notify, load_todays_appointments, clear_todays_appointments } from '../../actions';
 import { connect } from "react-redux";
 import NewUserModal from './newusermodal';
+import { GENDER_OPTIONS } from '../constant_data';
 
 
 class NewAppointmentModal extends Component {
@@ -286,7 +287,7 @@ class NewAppointmentModal extends Component {
         const add_appointment_modal_body =
             <div className="modal-body">
                 <div className="row">
-                    <div className="col-md-10">
+                    <div className="col-md-6">
                         <div className="form-group">
                             <label className="font-weight-semibold">Select or add user</label>
                             <Select
@@ -311,7 +312,7 @@ class NewAppointmentModal extends Component {
                             />
                         </div>
                     </div>
-                    <div className="col-md-2 d-flex align-items-end">
+                    <div className="col-md-2 d-flex align-items-end" style={{ paddingBottom: '3px'}}>
                         <button
                             type="button"
                             className="btn bg-teal-400 btn-labeled btn-labeled-right btn-block pr-5 mb-3"
@@ -321,33 +322,26 @@ class NewAppointmentModal extends Component {
                             New Patient
                         </button>
                     </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className="form-group form-group-float">
-                            <div className="form-group-float-label is-visible mb-1">
-                                What is the reason for the visit
-                            </div>
-                            <textarea rows={5} cols={5}
-                                id="appointment_reason_text_input"
-                                className="form-control"
-                                placeholder="Reason for visit"
-                                onChange={this.on_text_field_change}
-                                value={this.state.appointment_reason.value} />
+                    <div className="col-md-4">
+                        <div className="form-group">
+                            <label className="font-weight-semibold">Select Date</label>
+                            <DateTimePicker id="dob_text_input"
+                                onChange={this.on_apointment_date_change}
+                                className="clock_datatime_picker"
+                                inputProps={{ placeholder: 'Select Date', width: '100%', className: `form-control ${this.state.appointment_date.error ? 'border-danger' : ''}` }}
+                                input={true}
+                                dateFormat={'ll'}
+                                timeFormat={false}
+                                closeOnSelect={true}
+                                value={this.state.appointment_date.value}
+                            />
                         </div>
                     </div>
                 </div>
-                <div className="row mb-1">
-                    <div className="col-6">
-                        Which doctor will be suitable
-                    </div>
-                    <div className="col-6">
-                        What is the date and time of appointment
-                    </div>
-                </div>
                 <div className="row">
-                    <div className="col-md-6">
-                        <div className="form-group form-group-feedback form-group-feedback-right">
+                    <div className="col-md-8">
+                        <div className="form-group">
+                            <label className="font-weight-semibold">Which doctor to assign?</label>
                             <Select
                                 id="appointment_doctor_selection"
                                 isClearable
@@ -367,35 +361,38 @@ class NewAppointmentModal extends Component {
                                     }),
                                 }}
                             />
-                            <div className="form-control-feedback">
-                                <i className="icon-user-tie text-muted"></i>
-                            </div>
                         </div>
                     </div>
-                    <div className="col-md-3">
-                        <DateTimePicker id="dob_text_input"
-                            onChange={this.on_apointment_date_change}
-                            className="clock_datatime_picker"
-                            inputProps={{ placeholder: 'Select Date', width: '100%', className: `form-control ${this.state.appointment_date.error ? 'border-danger' : ''}` }}
-                            input={true}
-                            dateFormat={'ll'}
-                            timeFormat={false}
-                            closeOnSelect={true}
-                            value={this.state.appointment_date.value}
-                        />
+                    <div className="col-md-4">
+                        <div className="form-group">
+                            <label className="font-weight-semibold">Time</label>
+                            <DateTimePicker id="dob_text_input"
+                                onChange={this.on_apointment_time_change}
+                                className="clock_datatime_picker"
+                                inputProps={{ placeholder: 'Select Time', width: '100%', className: `form-control ${this.state.appointment_time.error ? 'border-danger' : ''}` }}
+                                input={true}
+                                dateFormat={false}
+                                timeFormat={true}
+                                closeOnSelect={true}
+                                strictParsing={true}
+                                value={this.state.appointment_time.value}
+                            />
+                        </div>
                     </div>
-                    <div className="col-md-3">
-                        <DateTimePicker id="dob_text_input"
-                            onChange={this.on_apointment_time_change}
-                            className="clock_datatime_picker"
-                            inputProps={{ placeholder: 'Select Time', width: '100%', className: `form-control ${this.state.appointment_time.error ? 'border-danger' : ''}` }}
-                            input={true}
-                            dateFormat={false}
-                            timeFormat={true}
-                            closeOnSelect={true}
-                            strictParsing={true}
-                            value={this.state.appointment_time.value}
-                        />
+                </div>
+                <div className="row">
+                    <div className="col-md-12">
+                        <div className="form-group form-group-float">
+                            <div className="form-group-float-label is-visible mb-1">
+                                What is the reason for the visit
+                            </div>
+                            <textarea rows={3} cols={3}
+                                id="appointment_reason_text_input"
+                                className="form-control"
+                                placeholder="Reason for visit"
+                                onChange={this.on_text_field_change}
+                                value={this.state.appointment_reason.value} />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -419,6 +416,29 @@ class NewAppointmentModal extends Component {
                     </div>
                     {this.state.loading_status ? <Loading size={150} /> : add_appointment_modal_body}
                     <div className="modal-footer">
+                        <Select
+                            isClearable
+                            menuPlacement="auto"
+                            options={[]}
+                            classNamePrefix={`form-control`}
+                            placeholder="Select Branch"
+                            id="branch_selection"
+                            isDisabled
+                            // onChange={e => this.on_selected_changed(e, 'gender_selection')}
+                            value={{
+                                id: 'branch_selection',
+                                label: 'Ghazi chowk'
+                            }}
+                            styles={{
+                                container: base => ({
+                                ...base,
+                                backgroundColor: '',
+                                padding: 0,
+                                borderRadius: 5,
+                                width: '200px'
+                                }),
+                            }}
+                        />
                         <button
                             type="button"
                             className="btn bg-danger btn-labeled btn-labeled-right pr-5"

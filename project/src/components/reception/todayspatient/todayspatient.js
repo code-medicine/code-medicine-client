@@ -204,25 +204,26 @@ class Todayspatient extends Component {
     }
 
     openProcedureModalHandler = (id) => {
-        try {
-            let response = Axios.get(`${GET_PROCEDURE_BY_ID}?visit_id=`+id,{
-                headers: { 'code-medicine': localStorage.getItem('user') }
-            });
-            response.then((response)=>{
-                console.log('Testing!!!');
-                if(response.data.status===true) {
-                    this.setState({
-                        prevProcedureList : response.data.payload.procedures,
-                        procedure_visibility: true,
-                        procedure_visit_id: id,
-                        invoiceVisitId: 0
-                    });
-                }
-            });
-        }
-        catch (err) {
-            this.props.notify('error', '', 'Server is not responding! Please try again later');
-        }
+        this.setState({ procedure_visibility: true }, () => {
+            try {
+                let response = Axios.get(`${GET_PROCEDURE_BY_ID}?visit_id=`+id,{
+                    headers: { 'code-medicine': localStorage.getItem('user') }
+                });
+                response.then((response)=>{
+                    console.log('Testing!!!');
+                    if(response.data.status===true) {
+                        this.setState({
+                            prevProcedureList : response.data.payload.procedures,
+                            procedure_visit_id: id,
+                            invoiceVisitId: 0
+                        });
+                    }
+                });
+            }
+            catch (err) {
+                this.props.notify('error', '', 'Server is not responding! Please try again later');
+            }
+        });
     };
     closeProcedureModalHandler = () => {
         this.setState({ procedure_visibility: false })
@@ -335,7 +336,7 @@ class Todayspatient extends Component {
         const filters = <div className="row">
             <div className="col-md-9">
                 <div className="row">
-                    <div className="col-md-3">
+                    <div className="col-md-4">
                         <div className="form-group">
                             <label className="font-weight-semibold">Doctors</label>
                             <Select
@@ -351,7 +352,7 @@ class Todayspatient extends Component {
                             />
                         </div>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-4">
                         <div className="form-group">
                             <label className="font-weight-semibold">Patients</label>
                             <Select
@@ -367,21 +368,7 @@ class Todayspatient extends Component {
                             />
                         </div>
                     </div>
-                    <div className={`col-md-3`}>
-                        <div className="form-group">
-                            <label className="font-weight-semibold">Branch</label>
-                            <Select
-                                isClearable
-                                // options={this.state.search_options}
-                                placeholder="Branch"
-                            // value={this.state.selectedOption}
-                            // onChange={this.handleSelectChange}
-                            // onClick={()=>this.get}
-                            />
-                        </div>
-
-
-                    </div>
+                    
                     <div className={`col-md-3`}>
 
                         <div className="form-group">
