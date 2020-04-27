@@ -115,7 +115,6 @@ class Todayspatient extends Component {
     }
 
     componentWillReceiveProps(new_props) {
-        console.log(new_props)
         if (new_props.todays_patient) {
             this.setState({ filtered_data: new_props.todays_patient.data, data: new_props.todays_patient.data })
         }
