@@ -30,7 +30,7 @@ class TodaysPatientRow extends Component {
             this.setState({ toggle: true, toggle_icon: 'icon-eye-minus' })
     }
     componentDidMount() {
-        console.log(this.props.row_data);
+        // console.log(this.props.row_data);
         // this.setState({row_data: this.props.data})
         this.setState({ col_span: this.props.columns })
         setInterval(() => {
@@ -73,7 +73,7 @@ class TodaysPatientRow extends Component {
                         {/* Appointment date and time */}
                         <div className="row">
                             <div className="col-12 font-weight-bold h6">
-                                Appointment on <span className="text-muted">{` ${moment(this.state.row_data.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LLL')}`}</span> 
+                                Appointment on <span className="text-muted">{` ${moment(this.state.row_data.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}</span> 
                                 
                                 <span className="badge badge-danger float-right">{` ${this.state.row_data.appointment_status[this.state.row_data.appointment_status.length - 1].info}`}</span>
                             </div>
@@ -206,7 +206,7 @@ class TodaysPatientRow extends Component {
         //     opacity: 0.7,
         //     padding: '2em',
         //   }
-        console.log('stateeeeeee',this.state)
+        // console.log('stateeeeeee',this.state)
         return (
             <Fragment>
                 <tr >

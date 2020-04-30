@@ -162,7 +162,7 @@ class InvoiceModal extends Component {
         // console.log(this.props.data);
         if (this.props.data!==null && this.props.data.visit_id !== this.props.invoiceVisitId) {
             try {
-                let response = Axios.get(`${GET_PROCEDURES_FEE}?visit_id=`+this.props.data.visit_id,{
+                let response = Axios.get(`visit_id=`+this.props.data.visit_id,{
                     headers: { 'code-medicine': localStorage.getItem('user') }
                 });
                 response.then((response) => {

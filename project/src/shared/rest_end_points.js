@@ -30,11 +30,10 @@ export const SEARCH_APPOINTMENTS_URL = `${BASE_RECEPTION_URL}/search`;
 export const SEARCH_TODAYS_APPOINTMENTS_URL = `${SEARCH_APPOINTMENTS_URL}/today`;
 
 // All procedure related end points
-export const BASE_PROCEDURES_URL = `${BASE_URL}/procedures`;
-export const NEW_PROCEDURES_URL = `${BASE_PROCEDURES_URL}/new`;
-export const GET_PROCEDURE_BY_ID = `${BASE_PROCEDURES_URL}/search/visit/id`;
-export const UPDATE_PROCEDURE = `${BASE_PROCEDURES_URL}/update`;
-export const GET_PROCEDURES_FEE = `${BASE_PROCEDURES_URL}/fees`;
+export const BASE_PROCEDURES_URL = `${BASE_RECEPTION_URL}/procedures`;
+export const NEW_PROCEDURES_URL = `${BASE_PROCEDURES_URL}/create`;
+export const UPDATE_PROCEDURE_URL = `${BASE_PROCEDURES_URL}/update`;
+export const DELETE_PROCEDURE_URL = `${BASE_PROCEDURES_URL}/delete`;
 
 // All profit related end points
 export const BASE_PROFITS_URL = `${BASE_URL}/profits`;

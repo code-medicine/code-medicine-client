@@ -24,12 +24,13 @@ class Inputfield extends Component {
         const _field_type = this.props.field_type
         const _custom_classes = this.props.custom_classes
         const _disabled = this.props.disabled
+        const _size = this.props.size? this.props.size:'form-control-lg'
 
         const input_label = <label className="col-form-label-lg">{_label}</label>
         
         const input_field_type = <input 
                                     type={_input_type} 
-                                    className={`form-control form-control-lg ${this.props.error? 'border-danger':''}`} 
+                                    className={`form-control ${_size} ${this.props.error? 'border-danger':''}`} 
                                     id={_id}
                                     placeholder={_placeholder}
                                     onChange={_on_change}

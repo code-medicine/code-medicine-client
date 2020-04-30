@@ -6,7 +6,7 @@ import {
     BASE_USERS_URL,
     SEARCH_TODAYS_APPOINTMENTS_URL,
     SEARCH_BY_ID_USER_REQUEST,
-    SEARCH_USER_REQUEST, GET_PROCEDURE_BY_ID,
+    SEARCH_USER_REQUEST, GET_PROCEDURE_BY_ID, BASE_PROCEDURES_URL,
 } from '../../../shared/rest_end_points';
 import { connect } from "react-redux";
 import { notify, set_active_page, load_todays_appointments } from '../../../actions';
@@ -15,7 +15,7 @@ import { classNameColors } from '../../../shared/constant_data'
 import './todayspatient.css';
 import { LOGIN_URL, BASE_URL } from '../../../shared/router_constants';
 import moment from 'moment';
-import ProcedureModal from '../../../shared/modals/proceduremodal';
+import ProcedureModal from './procedure_modal';
 import InvoiceModal from '../../../shared/modals/InvoiceModal/invoiceModal';
 import TodaysPatientRow from '../../../shared/customs/tablerows/todayspatientrow';
 import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
@@ -35,7 +35,7 @@ class Todayspatient extends Component {
 
             new_appointment_modal_visibility: false,
             procedure_visibility: false,
-            prevProcedureList:[],
+            prev_procedure_list: [],
             user_preview_modal_visibility: false,
             new_patient_modal_visibility: false,
             invoice_modal_visibility: false,
@@ -43,7 +43,7 @@ class Todayspatient extends Component {
             user_modal_props: null,
             invoice_data: null,
             invoiceVisitId:0,
-            procedure_visit_id: null,
+            procedure_appointment_id: null,
             search_doctor: { value: '' },
             search_patient: { value: '' }
         }
@@ -205,17 +205,19 @@ class Todayspatient extends Component {
     openProcedureModalHandler = (id) => {
         this.setState({ procedure_visibility: true }, () => {
             try {
-                let response = Axios.get(`${GET_PROCEDURE_BY_ID}?visit_id=`+id,{
+                let response = Axios.post(`${BASE_PROCEDURES_URL}`,{ appointment_id: id},{
                     headers: { 'code-medicine': localStorage.getItem('user') }
                 });
                 response.then((response)=>{
-                    console.log('Testing!!!');
-                    if(response.data.status===true) {
+                    if(response.status === 200) {
                         this.setState({
-                            prevProcedureList : response.data.payload.procedures,
-                            procedure_visit_id: id,
+                            prev_procedure_list: response.data.payload,
+                            procedure_appointment_id: id,
                             invoiceVisitId: 0
                         });
+                    }
+                    else{
+                        this.props.notify('error','',response.data.message)
                     }
                 });
             }
@@ -225,7 +227,7 @@ class Todayspatient extends Component {
         });
     };
     closeProcedureModalHandler = () => {
-        this.setState({ procedure_visibility: false })
+        this.setState({ procedure_visibility: false, prev_procedure_list: [] })
     };
 
     invoiceVisitIdHandler = (value) => {
@@ -423,8 +425,8 @@ class Todayspatient extends Component {
 
                 <ProcedureModal
                     new_procedure_visibility={this.state.procedure_visibility}
-                    visit_id={this.state.procedure_visit_id}
-                    prevProcedureList={this.state.prevProcedureList}
+                    appointment_id={this.state.procedure_appointment_id}
+                    prev_procedure_list={this.state.prev_procedure_list}
                     updateProcedureList={this.UpdateProcedureListHandler}
                     procedure_backDrop={this.closeProcedureModalHandler}
                     cancelProcedureModal={this.closeProcedureModalHandler}

@@ -132,24 +132,30 @@ class ProcedureModal extends Component {
     }
 
     handle_total_values = () => {
+        let procedure_total = 0;
+        // for (let i = 0; i < this.state.procedureList.length;++i){
+        //     procedure_total += this.state.procedureList[i].fee - this.state.procedureList[i].discount;
+        // }
+        
         const t_total = this.state.consultancy_fee_text_input.value.length > 0 ?
             parseInt(this.state.consultancy_fee_text_input.value) : 0;
         const t_discount = this.state.discount_text_input.value.length > 0 ?
             parseFloat(this.state.discount_text_input.value) : 0;
         this.setState({
-            total: t_total - t_discount,
+            total: (t_total - t_discount) + procedure_total,
             discount: t_discount
         })
     }
 
     render() {
+        console.log('procedure list',this.state.procedureList)
         return (
             <Modal
                 visible={this.props.new_procedure_visibility}
                 onClickBackdrop={this.props.procedure_backDrop}
                 fade={true}
                 dialogClassName={`modal-dialog modal-lg `}
-            >
+                >
                 <div className="modal-header bg-teal-400">
                     <h5 className="modal-title">Add New Procedures</h5>
                     <button
@@ -194,8 +200,8 @@ class ProcedureModal extends Component {
                             return (<Procedure
                                 key={data._id}
                                 id={data._id}
-                                ProcedureDetailValue={data.procedure_details}
-                                ProcedureFeeValue={data.procedure_fee}
+                                ProcedureDetailValue={data.description}
+                                ProcedureFeeValue={data.fee}
                                 discountValue={data.discount}
                                 procedureDetailHandler={this.handleChangeProcedureDetails}
                                 procedureFeeHandler={this.handleChangeProcedureFee}
@@ -213,8 +219,8 @@ class ProcedureModal extends Component {
                             return (<Procedure
                                 key={data._id}
                                 id={data._id}
-                                ProcedureDetailValue={data.procedure_details}
-                                ProcedureFeeValue={data.procedure_fee}
+                                ProcedureDetailValue={data.description}
+                                ProcedureFeeValue={data.fee}
                                 discountValue={data.discount}
                                 procedureDetailHandler={this.handleChangeProcedureDetails}
                                 procedureFeeHandler={this.handleChangeProcedureFee}
