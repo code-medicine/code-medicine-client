@@ -2,8 +2,8 @@ import React, { Component, Fragment } from 'react';
 import { Collapse } from 'reactstrap'
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { Popup, Icon } from "semantic-ui-react";
-import UpdateAppointmentModal from '../../modals/update_appointment_modal';
+import { Popup } from "semantic-ui-react";
+import UpdateAppointmentModal from './appointment/update_appointment_modal';
 
 // import '../../../../node_modules/semantic-ui-css/semantic.min.css';
 
@@ -73,32 +73,28 @@ class TodaysPatientRow extends Component {
                         {/* Appointment date and time */}
                         <div className="row">
                             <div className="col-12 font-weight-bold h6">
-                                Appointment on <span className="text-muted">{` ${moment(this.state.row_data.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}</span> 
-                                
-                                <span className="badge badge-danger float-right">{` ${this.state.row_data.appointment_status[this.state.row_data.appointment_status.length - 1].info}`}</span>
-                            </div>
-                        </div>
-                        {/* Appointment credentials */}
-                        <div className={`row`}>
-                            <div className={`col-12 h6`}>
-                                <Link className="text-teal-400 font-weight-bold" to={"#"}
+                                Appointment with <Link className="text-teal-400 font-weight-bold ml-1" to={"#"}
                                     onClick={() => this.view_user(this.state.row_data.doctor['id'])}>
-                                    <i className="icon-user-tie mr-2"></i>
                                     {this.state.row_data.doctor['first_name'] + ' ' + this.state.row_data.doctor['last_name']}
+                                    <i className="icon-user-tie ml-1"></i>
                                 </Link>
-                                <span className="font-weight-bold h6 text-muted">
-                                    {` for ${this.state.row_data.appointment_description.length > 30 ? this.state.row_data.appointment_description.substring(0, 30) + '...' : this.state.row_data.appointment_description}`}
-                                </span>
-                                {/* <span className="">{`On ${moment(this.state.row_data.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LLL')} for ${this.state.row_data.appointment_description.length > 30 ? this.state.row_data.appointment_description.substring(0, 30) + '...' : this.state.row_data.appointment_description}`}</span>  */}
+                                <span className="text-muted float-lg-right float-md-right float-left">
+                                    {`${moment(this.state.row_data.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}
+                                </span> 
                             </div>
                         </div>
                         {/* Appointment Reason */}
-                        {/* <div className={`row`}>
-                            <div className={`col-lg-4 h6 font-weight-bold`}>Reason</div>
-                            <div className={`col-lg-8 h6`}>
-                                {this.state.row_data.appointment_description.length > 30 ? this.state.row_data.appointment_description.substring(0, 30) + '...' : this.state.row_data.appointment_description}
+                        <div className={`row`}>
+                            <div className={`col-12 h6`}>
+                                <span className="font-weight-bold">Reason</span>
+                                <span className=" h6 text-muted">
+                                    {` ${this.state.row_data.appointment_description.length > 25 ? this.state.row_data.appointment_description.substring(0, 25) + '...' : this.state.row_data.appointment_description}`}
+                                </span>
+                                <span className="badge badge-danger float-right">
+                                    {` ${this.state.row_data.appointment_status[this.state.row_data.appointment_status.length - 1].info}`}
+                                </span>
                             </div>
-                        </div> */}
+                        </div>
                         {/* Appointment Actions */}
                         <div className="row">
                             <div className="col-12">
@@ -142,6 +138,21 @@ class TodaysPatientRow extends Component {
                                     content={
                                         <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
                                             Edit appointment
+                                        </div>
+                                    }
+                                    position='top center'
+                                />
+                                <Popup
+                                    trigger={
+                                        <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon ml-2`}
+                                            onClick={() => this.setState({ update_appointment_modal_visibility: true })}    >
+                                            <i className={`icon-loop`}></i>
+                                        </button>}
+                                    flowing
+                                    // hoverable
+                                    content={
+                                        <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
+                                            Follow up
                                         </div>
                                     }
                                     position='top right'

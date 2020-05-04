@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import moment from 'moment'
-import { SEARCH_USER_REQUEST, UPDATE_APPOINTMENT_URL } from '../rest_end_points';
+import { SEARCH_USER_REQUEST, UPDATE_APPOINTMENT_URL } from '../../../../shared/rest_end_points';
 import Axios from 'axios';
-import Loading from '../customs/loading/loading';
+import Loading from '../../../../shared/customs/loading/loading';
 import Select from 'react-select'
 import Modal from 'react-bootstrap4-modal';
 import DateTimePicker from 'react-datetime';
-import { notify, load_todays_appointments, clear_todays_appointments } from '../../actions';
+import { notify, load_todays_appointments, clear_todays_appointments } from '../../../../actions';
 import { connect } from "react-redux";
-import Inputfield from '../customs/inputfield/inputfield';
+import Inputfield from '../../../../shared/customs/inputfield/inputfield';
 
 class UpdateAppointmentModal extends Component {
     constructor(props){

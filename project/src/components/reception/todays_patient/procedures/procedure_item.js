@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import Inputfield from '../../../shared/customs/inputfield/inputfield';
+import Inputfield from '../../../../shared/customs/inputfield/inputfield';
 import Axios from 'axios';
-import { NEW_PROCEDURES_URL, UPDATE_PROCEDURE_URL, DELETE_PROCEDURE_URL } from '../../../shared/rest_end_points';
-import Loading from '../../../shared/customs/loading/loading';
+import { NEW_PROCEDURES_URL, UPDATE_PROCEDURE_URL, DELETE_PROCEDURE_URL } from '../../../../shared/rest_end_points';
+import Loading from '../../../../shared/customs/loading/loading';
 import { connect } from 'react-redux';
-import { notify } from '../../../actions';
+import { notify } from '../../../../actions';
 
 class ProcedureItem extends Component {
 
@@ -55,7 +55,7 @@ class ProcedureItem extends Component {
                 discount: parseInt(this.state.discount_text_input.value),
                 description: this.state.description_text_input.value
             }
-            this.props.save_opp(this.props.index)
+            this.props.save_opp(this.props.index,{ fee: parseInt(this.state.charges_text_input.value), discount: parseInt(this.state.discount_text_input.value) })
             console.log('props',this.props)
             Axios.put(NEW_PROCEDURES_URL, payload).then(res => {
                 if (res.status === 200){
@@ -82,6 +82,7 @@ class ProcedureItem extends Component {
                 discount: parseInt(this.state.discount_text_input.value),
                 description: this.state.description_text_input.value
             }
+            this.props.save_opp(this.props.index,{ fee: parseInt(this.state.charges_text_input.value), discount: parseInt(this.state.discount_text_input.value) })
             Axios.put(UPDATE_PROCEDURE_URL, payload).then(res => {
                 if (res.status === 200){
                     console.log('success');
@@ -142,7 +143,7 @@ class ProcedureItem extends Component {
         const update_button_classes = `btn btn-outline-dark btn-sm secondary btn-icon ml-1 mb-3 ${this.state.save_click_loading? 'p-0': ''}`
         return(
             <div className="row">
-                <div className={`col-md-7 pl-3 pr-3`}>
+                <div className={`col-lg-7 col-md-4 col-12 px-3`}>
                     <Inputfield
                         id={`description_text_input`}
                         label_tag={'Procedure Reason'}
@@ -159,7 +160,7 @@ class ProcedureItem extends Component {
                     />
                 </div>
 
-                <div className={`col-md-2  px-2`}>
+                <div className={`col-lg-2 col-md-3 col-6 px-3`}>
                     <Inputfield
                         id={`charges_text_input`}
                         label_tag={'Charges'}
@@ -175,7 +176,7 @@ class ProcedureItem extends Component {
                     />
                 </div>
 
-                <div className={`col-md-2 px-3`}>
+                <div className={`col-lg-2 col-md-3 col-6 px-3`}>
                     <Inputfield
                         id={`discount_text_input`}
                         label_tag={'Discount'}
@@ -191,7 +192,7 @@ class ProcedureItem extends Component {
                     />
                 </div>
 
-                <div className="col-md-1 pl-0 d-flex align-items-end">
+                <div className="col-lg-1 col-md-2 col-12 pl-0 d-flex align-items-end justify-content-center">
                     <button className="btn btn-outline btn-sm bg-danger border-danger text-danger secondary btn-icon mb-3"
                         onClick={this.on_delete_click}>
                         <i className="icon-cross" />

@@ -1,26 +1,25 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Container from '../../../shared/container/container'
 import Select, { components } from 'react-select'
 import Axios from 'axios';
 import {
-    BASE_USERS_URL,
-    SEARCH_TODAYS_APPOINTMENTS_URL,
     SEARCH_BY_ID_USER_REQUEST,
-    SEARCH_USER_REQUEST, GET_PROCEDURE_BY_ID, BASE_PROCEDURES_URL,
+    SEARCH_USER_REQUEST, BASE_PROCEDURES_URL,
 } from '../../../shared/rest_end_points';
 import { connect } from "react-redux";
 import { notify, set_active_page, load_todays_appointments } from '../../../actions';
 import { Link, withRouter } from 'react-router-dom';
-import { classNameColors } from '../../../shared/constant_data'
-import './todayspatient.css';
-import { LOGIN_URL, BASE_URL } from '../../../shared/router_constants';
+import './todays_patient.css';
+import { BASE_URL } from '../../../shared/router_constants';
 import moment from 'moment';
-import ProcedureModal from './procedure_modal';
+import ProcedureModal from './procedures/procedure_modal';
 import InvoiceModal from '../../../shared/modals/InvoiceModal/invoiceModal';
-import TodaysPatientRow from '../../../shared/customs/tablerows/todayspatientrow';
+import TodaysPatientRow from './todays_patient_row';
 import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
 import Loading from '../../../shared/customs/loading/loading';
-import NewAppointmentModal from '../../../shared/modals/newappointmentmodal';
+import NewAppointmentModal from './new_appointment/new_appointment_modal';
+import { Popup } from "semantic-ui-react";
+
 
 class Todayspatient extends Component {
 
@@ -205,6 +204,7 @@ class Todayspatient extends Component {
     openProcedureModalHandler = (id) => {
         this.setState({ procedure_visibility: true }, () => {
             try {
+
                 let response = Axios.post(`${BASE_PROCEDURES_URL}`,{ appointment_id: id},{
                     headers: { 'code-medicine': localStorage.getItem('user') }
                 });
@@ -301,11 +301,10 @@ class Todayspatient extends Component {
                     <table className="table table-hover">
                         <thead className="table-header-bg bg-dark">
                             <tr>
-                                <th colSpan="7">
+                                <th colSpan="8">
                                     Patients List for today
                                     <span className="badge badge-secondary ml-2">{moment().format('LL')}</span>
                                 </th>
-                                <th >Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -335,9 +334,9 @@ class Todayspatient extends Component {
         };
 
         const filters = <div className="row">
-            <div className="col-md-9">
+            <div className="col-md-10">
                 <div className="row">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <div className="form-group">
                             <label className="font-weight-semibold">Doctors</label>
                             <Select
@@ -353,7 +352,7 @@ class Todayspatient extends Component {
                             />
                         </div>
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <div className="form-group">
                             <label className="font-weight-semibold">Patients</label>
                             <Select
@@ -384,26 +383,64 @@ class Todayspatient extends Component {
                             />
                         </div>
                     </div>
+                    <div className={`col-md-3`}>
+
+                        <div className="form-group">
+                            <label className="font-weight-semibold">Date</label>
+                            <Select
+                                isClearable
+                                // options={this.state.search_options}
+                                placeholder="Date"
+                            // value={this.state.selectedOption}
+                            // onChange={this.handleSelectChange}
+                            // onClick={()=>this.get}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div className="col-md-3 d-inline-flex align-items-end mb-2 pb-2">
-                <button
-                    type="button"
-                    className="btn btn-dark btn-icon mr-1 float-right"
-                    style={{ textTransform: "inherit" }}
-                    onClick={this.set_filters}
-                >
-                    <i className="icon-filter4"></i>
+            <div className="col-md-2 d-flex justify-content-center align-items-end mb-2 pb-2">
+                
+                <Popup
+                    trigger={
+                        <button
+                            type="button"
+                            className="btn btn-dark btn-icon mr-1 float-right"
+                            style={{ textTransform: "inherit" }}
+                            onClick={this.set_filters}
+                        >
+                            <i className="icon-filter4"></i>
 
-                </button>
-                <button
-                    type="button"
-                    className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5 float-right"
-                    style={{ textTransform: "inherit" }}
-                    onClick={this.open_new_appointment_modal}>
-                    <b><i className="icon-plus3"></i></b>
-                    New Appointment
-                </button>
+                        </button>}
+                    content={
+                        <div className={`card card-body bg-dark text-white shadow mb-1 py-1`}>
+                            Filter records
+                        </div>
+                    }
+                    flowing
+                    // hoverable
+                    position='top center'
+                />
+                
+                <Popup
+                    trigger={
+                        <button
+                            type="button"
+                            className="btn bg-teal-400 btn-icon mr-1 float-right"
+                            style={{ textTransform: "inherit" }}
+                            onClick={this.open_new_appointment_modal}>
+                            <b><i className="icon-plus3"></i></b>
+                        </button>}
+                    content={
+                        <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
+                            New Appointment
+                        </div>
+                    }
+                    flowing
+                    // hoverable
+                    position='top center'
+                />
+                
             </div>
         </div>
 

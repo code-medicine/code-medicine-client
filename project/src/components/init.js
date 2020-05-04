@@ -16,7 +16,7 @@ import Home from './home/home';
 import Login from './sigin_signup/login/login';
 import Register from './sigin_signup/register/register';
 import Profile from './profile/profile';
-import Todayspatient from './reception/todayspatient/todayspatient';
+import Todayspatient from './reception/todays_patient/todays_patient';
 import Visits from './reception/visits/visits';
 import ForgotPassword from './sigin_signup/forgot_password/forgot_password';
 

@@ -1,15 +1,14 @@
 import React, { Component, Fragment } from 'react';
-import Loading from '../customs/loading/loading';
+import Loading from '../../../../shared/customs/loading/loading';
 import Select, { components } from 'react-select'
 import Modal from 'react-bootstrap4-modal';
 import DateTimePicker from 'react-datetime';
 import moment from 'moment';
 import Axios from 'axios';
-import { NEW_APPOINTMENT_URL, SEARCH_USER_REQUEST, UPDATE_APPOINTMENT_URL } from '../rest_end_points';
-import { notify, load_todays_appointments, clear_todays_appointments } from '../../actions';
+import { NEW_APPOINTMENT_URL, SEARCH_USER_REQUEST, UPDATE_APPOINTMENT_URL } from '../../../../shared/rest_end_points';
+import { notify, load_todays_appointments, clear_todays_appointments } from '../../../../actions';
 import { connect } from "react-redux";
-import NewUserModal from './newusermodal';
-import { GENDER_OPTIONS } from '../constant_data';
+import NewUserModal from '../../../../shared/modals/newusermodal';
 
 
 class NewAppointmentModal extends Component {
@@ -287,7 +286,7 @@ class NewAppointmentModal extends Component {
         const add_appointment_modal_body =
             <div className="modal-body">
                 <div className="row">
-                    <div className="col-md-6">
+                    <div className="col-md-8">
                         <div className="form-group">
                             <label className="font-weight-semibold">Select or add user</label>
                             <Select
@@ -312,16 +311,9 @@ class NewAppointmentModal extends Component {
                             />
                         </div>
                     </div>
-                    <div className="col-md-2 d-flex align-items-end" style={{ paddingBottom: '3px'}}>
-                        <button
-                            type="button"
-                            className="btn bg-teal-400 btn-labeled btn-labeled-right btn-block pr-5 mb-3"
-                            style={{ textTransform: "inherit" }}
-                            onClick={this.open_new_patient_modal}>
-                            <b><i className="icon-plus3"></i></b>
-                            New Patient
-                        </button>
-                    </div>
+                    {/* <div className="col-md-2 d-flex align-items-end" style={{ paddingBottom: '3px'}}>
+                        
+                    </div> */}
                     <div className="col-md-4">
                         <div className="form-group">
                             <label className="font-weight-semibold">Select Date</label>
@@ -413,6 +405,14 @@ class NewAppointmentModal extends Component {
 
                     <div className="modal-header bg-teal-400">
                         <h5 className="modal-title">New Appointment</h5>
+                        <button
+                            type="button"
+                            className="btn bg-secondary btn-labeled btn-labeled-right pr-5 "
+                            style={{ textTransform: "inherit" }}
+                            onClick={this.open_new_patient_modal}>
+                            <b><i className="icon-plus3"></i></b>
+                            New Patient
+                        </button>
                     </div>
                     {this.state.loading_status ? <Loading size={150} /> : add_appointment_modal_body}
                     <div className="modal-footer">
