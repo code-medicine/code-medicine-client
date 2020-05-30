@@ -17,7 +17,7 @@ import InvoiceModal from '../../../shared/modals/InvoiceModal/invoiceModal';
 import TodaysPatientRow from './todays_patient_row';
 import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
 import Loading from '../../../shared/customs/loading/loading';
-import NewAppointmentModal from './new_appointment/new_appointment_modal';
+import NewAppointmentModal from './appointment/new_appointment_modal';
 import { Popup } from "semantic-ui-react";
 
 
@@ -184,7 +184,6 @@ class Todayspatient extends Component {
         }
         return (data.map((booking, i) => {
             // var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
-            console.log("booking ", i, booking)
             const hidden_data = {
                 appointment_description: booking.appointment_description
             }

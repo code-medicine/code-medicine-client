@@ -3,7 +3,6 @@ import { TODAYS_PATIENT, TODAYS_PATIENT_CLEAR } from "../shared/action_constants
 export default function (state = {}, action) {
     switch (action.type) {
         case TODAYS_PATIENT:
-            console.log(action.payload)
             if (action.payload.status === 200)
                 return { 
                     loading: action.loading, 

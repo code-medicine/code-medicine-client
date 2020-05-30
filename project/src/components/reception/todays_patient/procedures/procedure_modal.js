@@ -45,7 +45,6 @@ class ProcedureModal extends Component {
         temp[key].type = 'previous';
         temp[key].procedure_fee = data.fee;
         temp[key].procedure_discount = data.discount;
-        // console.log('proc',temp,'key',key)
         this.setState({ procedures_list: temp }, () => {
             this.handle_total_values()
         })
@@ -78,9 +77,7 @@ class ProcedureModal extends Component {
     }
 
     componentWillReceiveProps(new_props) {
-        console.log('new props', new_props)
         if (new_props.prev_procedure_list.length > 0) {
-            console.log('previous')
             const prev_list = new_props.prev_procedure_list
             const temp = [];
             for (let i = 0; i < prev_list.length; ++i) {
@@ -164,6 +161,15 @@ class ProcedureModal extends Component {
         this.last_element.scrollIntoView({ behavior: "smooth" });
     };
 
+    calculate_balance = () => {
+        if (this.state.paid_text_input.value.length > 0){
+            return -1 * ((this.state.total - this.state.discount) - parseInt(this.state.paid_text_input.value))
+        }
+        else {
+            return 0
+        }
+    }
+
     render() {
         // this.handle_total_values();
         return (
@@ -175,19 +181,10 @@ class ProcedureModal extends Component {
             >
                 <div className="modal-header bg-teal-400">
                     <h5 className="modal-title">Appointment details</h5>
-                    <button
-                        type="button"
-                        className="btn bg-dark btn-sm btn-labeled btn-labeled-right pr-5"
-                        style={{ textTransform: "inherit" }}
-                        onClick={this.add_procedure_click}
-                        >
-                        <b><i className="icon-plus3" /></b>
-                        Add Procedures
-                    </button>
                 </div>
                 <div className="modal-body pt-1" style={{ height: '65vh', overflowY: 'auto', overflowX: 'hidden' }}>
                     <div className="row" >
-                        <div className="col-lg-2 col-6 px-3">
+                        <div className="col-lg-3 col-6 px-3">
                             <Inputfield
                                 id="consultancy_fee_text_input"
                                 label_tag="Consultancy Fee"
@@ -201,7 +198,7 @@ class ProcedureModal extends Component {
                                 size="form-control-sm"
                             />
                         </div>
-                        <div className="col-lg-2 col-6 px-3">
+                        <div className="col-lg-3 col-6 px-3">
                             <Inputfield
                                 id="discount_text_input"
                                 label_tag="Discount over total"
@@ -213,19 +210,7 @@ class ProcedureModal extends Component {
                                 size="form-control-sm"
                             />
                         </div>
-                        <div className="col-lg-2 col-6 px-3 border-right">
-                            <Inputfield
-                                id="follow_up_text_input"
-                                label_tag="Follow up"
-                                icon_class="icon-loop4"
-                                placeholder="Follow up"
-                                default_value={this.state.follow_up_text_input.value}
-                                error={this.state.follow_up_text_input.error}
-                                on_text_change_listener={this.handle_change}
-                                size="form-control-sm"
-                            />
-                        </div>
-                        <div className="col-lg-2 col-6 px-3">
+                        <div className="col-lg-3 col-6 px-3 border-right">
                             <Inputfield
                                 id="paid_text_input"
                                 label_tag="Paid"
@@ -239,29 +224,16 @@ class ProcedureModal extends Component {
                                 size="form-control-sm"
                             />
                         </div>
-                        <div className="col-lg-2 col-6 px-3">
-                            <Inputfield
-                                id="discount_text_input"
-                                label_tag="Discount"
-                                icon_class="icon-arrow-down132"
-                                placeholder="Discount"
-                                default_value={this.state.discount_text_input.value}
-                                error={this.state.discount_text_input.error}
-                                on_text_change_listener={this.handle_change}
-                                size="form-control-sm"
-                            />
-                        </div>
-                        <div className="col-lg-2 col-6 px-3">
-                            <Inputfield
-                                id="follow_up_text_input"
-                                label_tag="Follow up"
-                                icon_class="icon-loop4"
-                                placeholder="Follow up"
-                                default_value={this.state.follow_up_text_input.value}
-                                error={this.state.follow_up_text_input.error}
-                                on_text_change_listener={this.handle_change}
-                                size="form-control-sm"
-                            />
+                        <div className="col-lg-3 col-6 px-3 d-flex justify-content-center align-items-center ">
+                            <button
+                                type="button"
+                                className="btn bg-dark btn-sm btn-labeled btn-labeled-right pr-5"
+                                style={{ textTransform: "inherit" }}
+                                onClick={this.add_procedure_click}
+                                >
+                                <b><i className="icon-plus3" /></b>
+                                Add Procedures
+                            </button>
                         </div>
                     </div>
                     <hr className="mt-1 mb-1" />
@@ -287,10 +259,10 @@ class ProcedureModal extends Component {
                             <span className="h6 font-weight-bold mr-1">Discount: {this.state.discount}</span>
                         </span>
                         <span className="ml-2 badge badge-light badge-striped badge-striped-left border-left-teal-400">
-                            <span className="h6 font-weight-bold mr-1">Paid: {this.state.discount}</span>
+                            <span className="h6 font-weight-bold mr-1">Paid: {this.state.paid_text_input.value.length > 0? this.state.paid_text_input.value:0}</span>
                         </span>
                         <span className="ml-2 badge badge-light badge-striped badge-striped-left border-left-teal-400">
-                            <span className="h6 font-weight-bold mr-1">Balance: {this.state.discount}</span>
+                            <span className="h6 font-weight-bold mr-1">Balance: {this.calculate_balance()}</span>
                         </span>
                     </div>
                     <button

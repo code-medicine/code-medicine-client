@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { BASE_URL, PROFILE, LOGIN_URL } from '../../router_constants'
 import NOPICTURE from '../../../resources/images/placeholder.jpg'
@@ -73,7 +73,7 @@ class Page_header extends Component {
                     <div className="d-flex">
                         <div className="breadcrumb py-0">
                             {this.props.active_page !== null? this.props.active_page.map((item,i) => {
-                                return item
+                                return <Fragment key={i}>{item}</Fragment>
                             }):''}
                             {/* <Link to="index.html" className="breadcrumb-item">
                                 <i className="icon-home2 mr-2"></i> 

@@ -42,7 +42,6 @@ export function load_todays_appointments(){
         d = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
         Axios.get(SEARCH_TODAYS_APPOINTMENTS_URL,{ headers: { 'code-medicine': localStorage.getItem('user') } })
         .then(res => {
-            console.log("action response",res)
             dispatch({
                 type: TODAYS_PATIENT,
                 payload: res,

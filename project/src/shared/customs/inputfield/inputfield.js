@@ -26,7 +26,7 @@ class Inputfield extends Component {
         const _disabled = this.props.disabled
         const _size = this.props.size? this.props.size:'form-control-lg'
 
-        const input_label = <label className="col-form-label-lg">{_label}</label>
+        const input_label = <label className="col-form-label-lg mb-0 pb-1">{_label}</label>
         
         const input_field_type = <input 
                                     type={_input_type} 
