@@ -18,6 +18,7 @@ class ProcedureModal extends Component {
             paid_text_input: { value: "", error: false },
             total: 0,
             discount: 0,
+            minimum_payable: 0,
             procedures_list: []
         }
     }
@@ -117,8 +118,12 @@ class ProcedureModal extends Component {
             parseInt(this.state.consultancy_fee_text_input.value) : 0;
         const t_discount = this.state.discount_text_input.value.length > 0 ?
             parseFloat(this.state.discount_text_input.value) : 0;
+        const t_followup = this.state.follow_up_text_input.value.length > 0 ?
+            parseFloat(this.state.follow_up_text_input.value) : 0;
+
         this.setState({
-            total: (t_total - t_discount) + (procedure_total - procedure_discount),
+            total: ((t_total + t_followup) - t_discount) + (procedure_total - procedure_discount),
+            minimum_payable: (t_total - t_discount) + (procedure_total - procedure_discount),
             discount: t_discount + procedure_discount
         })
     }
@@ -141,6 +146,7 @@ class ProcedureModal extends Component {
             consultancy_fee_text_input: { value: "1500", error: false },
             discount_text_input: { value: "", error: false },
             follow_up_text_input: { value: "", error: false },
+            paid_text_input: { value: "", error: false },
             total: 0,
             discount: 0
         })
@@ -154,6 +160,11 @@ class ProcedureModal extends Component {
                 return;
             }
         }
+        const paid = parseInt(this.state.paid_text_input.value)
+        if (paid < this.state.minimum_payable){
+            this.props.notify('error','','Payment is less that minimum payable amount.')
+            return;
+        }
         this.handle_close_modal()
     }
 
@@ -162,8 +173,8 @@ class ProcedureModal extends Component {
     };
 
     calculate_balance = () => {
-        if (this.state.paid_text_input.value.length > 0){
-            return -1 * ((this.state.total - this.state.discount) - parseInt(this.state.paid_text_input.value))
+        if (this.state.paid_text_input.value.length > 0) {
+            return -1 * (this.state.total - parseInt(this.state.paid_text_input.value))
         }
         else {
             return 0
@@ -179,8 +190,34 @@ class ProcedureModal extends Component {
                 fade={true}
                 dialogClassName={`modal-dialog modal-lg `}
             >
-                <div className="modal-header bg-teal-400">
+                <div className="modal-header d-flex flex-lg-row flex-column bg-teal-400">
                     <h5 className="modal-title">Appointment details</h5>
+                    <div className="">
+                        <button
+                            type="button"
+                            className="btn bg-secondary btn-sm btn-labeled btn-labeled-right pr-5 mr-1"
+                            style={{ textTransform: "inherit" }}
+                            // onClick={this.add_procedure_click}
+                            disabled
+                        >
+                            <b>
+                                <i className="icon-plus3" />
+                            </b>
+                            Add FollowUp with appointments
+                        </button>
+                        <button
+                            type="button"
+                            className="btn bg-dark btn-sm btn-labeled btn-labeled-right pr-5"
+                            style={{ textTransform: "inherit" }}
+                            onClick={this.add_procedure_click}
+                        >
+                            <b>
+                                <i className="icon-plus3" />
+                            </b>
+                            Add Procedures
+                        </button>
+                    </div>
+                    
                 </div>
                 <div className="modal-body pt-1" style={{ height: '65vh', overflowY: 'auto', overflowX: 'hidden' }}>
                     <div className="row" >
@@ -212,6 +249,20 @@ class ProcedureModal extends Component {
                         </div>
                         <div className="col-lg-3 col-6 px-3 border-right">
                             <Inputfield
+                                id="follow_up_text_input"
+                                label_tag="Follow ups Fee"
+                                icon_class="icon-loop"
+                                placeholder="Follow ups Fee"
+                                custom_classes=""
+                                disabled={false}
+                                default_value={this.state.follow_up_text_input.value}
+                                error={this.state.follow_up_text_input.error}
+                                on_text_change_listener={this.handle_change}
+                                size="form-control-sm"
+                            />
+                        </div>
+                        <div className="col-lg-3 col-6 px-3 ">
+                            <Inputfield
                                 id="paid_text_input"
                                 label_tag="Paid"
                                 icon_class="icon-cash3"
@@ -223,17 +274,6 @@ class ProcedureModal extends Component {
                                 on_text_change_listener={this.handle_change}
                                 size="form-control-sm"
                             />
-                        </div>
-                        <div className="col-lg-3 col-6 px-3 d-flex justify-content-center align-items-center ">
-                            <button
-                                type="button"
-                                className="btn bg-dark btn-sm btn-labeled btn-labeled-right pr-5"
-                                style={{ textTransform: "inherit" }}
-                                onClick={this.add_procedure_click}
-                                >
-                                <b><i className="icon-plus3" /></b>
-                                Add Procedures
-                            </button>
                         </div>
                     </div>
                     <hr className="mt-1 mb-1" />
@@ -250,7 +290,7 @@ class ProcedureModal extends Component {
                         ref={(el) => { this.last_element = el; }}>
                     </div>
                 </div>
-                <div className="modal-footer border border-top pt-3">
+                <div className="modal-footer d-flex flex-lg-row flex-column border border-top pt-3">
                     <div className="mr-auto">
                         <span className="badge badge-light badge-striped badge-striped-left border-left-teal-400" >
                             <span className="h6 font-weight-bold mr-1">Total: {this.state.total}</span>
@@ -259,15 +299,18 @@ class ProcedureModal extends Component {
                             <span className="h6 font-weight-bold mr-1">Discount: {this.state.discount}</span>
                         </span>
                         <span className="ml-2 badge badge-light badge-striped badge-striped-left border-left-teal-400">
-                            <span className="h6 font-weight-bold mr-1">Paid: {this.state.paid_text_input.value.length > 0? this.state.paid_text_input.value:0}</span>
+                            <span className="h6 font-weight-bold mr-1">Paid: {this.state.paid_text_input.value.length > 0 ? this.state.paid_text_input.value : 0}</span>
                         </span>
                         <span className="ml-2 badge badge-light badge-striped badge-striped-left border-left-teal-400">
                             <span className="h6 font-weight-bold mr-1">Balance: {this.calculate_balance()}</span>
                         </span>
+                        <span className="ml-2 badge badge-light badge-striped badge-striped-left border-left-teal-400">
+                            <span className="h6 font-weight-bold mr-1">Min payable: {this.state.minimum_payable}</span>
+                        </span>
                     </div>
                     <button
                         type="button"
-                        className="btn bg-dark btn-labeled btn-labeled-right pr-5 "
+                        className="btn bg-dark btn-labeled btn-labeled-right pr-5 mt-1"
                         style={{ textTransform: "inherit" }}
                         onClick={this.handle_close_modal}
                     >
@@ -277,7 +320,7 @@ class ProcedureModal extends Component {
                     <button
                         disabled={this.state.procedures_list.length === 0}
                         type="button"
-                        className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
+                        className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5 mt-1"
                         style={{ textTransform: "inherit" }}
                         onClick={this.handle_submit}
                     >

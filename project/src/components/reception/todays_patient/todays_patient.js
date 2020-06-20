@@ -37,7 +37,7 @@ class Todayspatient extends Component {
             prev_procedure_list: [],
             user_preview_modal_visibility: false,
             new_patient_modal_visibility: false,
-            invoice_modal_visibility: false,
+            invoice_modal_visibility: false, 
 
             user_modal_props: null,
             invoice_data: null,
@@ -230,15 +230,11 @@ class Todayspatient extends Component {
     };
 
     invoiceVisitIdHandler = (value) => {
-        this.setState({
-            invoiceVisitId: value
-        });
+        this.setState({ invoiceVisitId: value });
     };
 
     UpdateProcedureListHandler = (updateProcedureList) =>{
-        this.setState({
-            prevProcedureList : updateProcedureList
-        });
+        this.setState({ prevProcedureList : updateProcedureList });
     };
 
     open_new_appointment_modal = () => {
