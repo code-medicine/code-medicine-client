@@ -252,8 +252,15 @@ class NewAppointmentModal extends Component {
                 this.props.notify('error', '', res.data.message)
                 this.setState({ loading_status: false })
             }
+        
         }).catch(err => {
-            this.props.notify('error', '', 'Server not responding'+ err.toString())
+            console.log('app add error', err)
+            if (err.response){
+                this.props.notify('error', '', err.response.message)
+            }
+            else{
+                this.props.notify('error', '', 'Server not responding '+ err.toString())
+            }
             this.setState({ loading_status: false })
             this.props.close()
         })

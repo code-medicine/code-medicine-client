@@ -16,6 +16,7 @@ import '../../../shared/customs/Animations/animations.css';
 import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
 import Loading from '../../../shared/customs/loading/loading';
 import { BASE_URL } from '../../../shared/router_constants';
+import { Popup } from "semantic-ui-react";
 
 
 class Visits extends Component {
@@ -316,8 +317,8 @@ class Visits extends Component {
 
     renderDataInRows = () => {
         return (this.state.data.map((booking, i) => {
-            var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
-
+            // var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
+            console.log('booking',booking)
             const row_data = {
                 date_of_booking: <div ref={(el) => { this[`element_${i}_ref`] = el; }} className="">{`${moment(booking.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}</div>,// date of booking
                 time_of_booking: <div className="">{`${moment(booking.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LT')}`}</div>,// time of booking
@@ -333,7 +334,18 @@ class Visits extends Component {
                                 {booking.doctor['first_name'] + ' ' + booking.doctor['last_name']}
                             </button>,// doctor name
                 visit_status: <span className={`badge ${booking.appointment_status.info === 'waiting'? 'badge-danger':'badge-primary'}`}>{booking.appointment_status.info}</span>,
-                visit_total_charges: <div className="">{booking.appointment_charges}</div>
+                visit_total_charges: <Popup trigger={<div className="">{booking.total_charges}</div>} flowing position='top center' 
+                    content={
+                        <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
+                            <div className={``}>Consultancy: {booking.appointment_charges['consultancy']}</div>
+                            <div className={``}>Discount: {booking.appointment_charges['discount']}</div>
+                            <div className={``}>Follow up: {booking.appointment_charges['follow_up']}</div>
+                            <div className={``}>Procedures: {booking.appointment_charges['procedures']}</div>
+                            <div className={``}>Paid Amount: {booking.appointment_charges['paid']}</div>
+                        </div>
+                    }
+                />
+                    
                 
             }
             const hidden_data = [
