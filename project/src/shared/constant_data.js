@@ -21,11 +21,10 @@ export const ROLES_OPTIONS = [
 ];
 
 export const PATIENT_VISIT_STATUSES = [
-    { id: 'visit_status_selection', label: 'Waiting'},
-    { id: 'visit_status_selection', label: 'Checkedin'},
-    { id: 'visit_status_selection', label: 'Checkedout'},
-    { id: 'visit_status_selection', label: 'Emergency'},
-    
+    { id: 'status_selection', label: 'Waiting'},
+    { id: 'status_selection', label: 'Checked in'},
+    { id: 'status_selection', label: 'Checked out'},
+    { id: 'status_selection', label: 'Emergency'},
 ]
 
 export const classNameColors = [

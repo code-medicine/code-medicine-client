@@ -31,7 +31,7 @@
   display: block;
 }
 .rdtStatic .rdtPicker {
-  box-shadow: none;
+  box-shadow: 210;
   position: static;
 }
 
@@ -243,4 +243,9 @@ td.rdtYear:hover {
 ::-webkit-scrollbar-thumb {
   background: rgb(161, 161, 161);
   border-radius: 10px;
+}
+
+.table-header-background {
+  background-color: #292b2c;
+  padding: 10px;
 }

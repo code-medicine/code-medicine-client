@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Container from '../../../shared/container/container'
 import Select, { components } from 'react-select'
 import Axios from 'axios';
@@ -7,7 +7,7 @@ import {
     SEARCH_USER_REQUEST, BASE_PROCEDURES_URL,
 } from '../../../shared/rest_end_points';
 import { connect } from "react-redux";
-import { notify, set_active_page, load_todays_appointments } from '../../../actions';
+import { notify, set_active_page, load_todays_appointments, clear_todays_appointments } from '../../../actions';
 import { Link, withRouter } from 'react-router-dom';
 import './todays_patient.css';
 import { BASE_URL } from '../../../shared/router_constants';
@@ -19,6 +19,8 @@ import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
 import Loading from '../../../shared/customs/loading/loading';
 import NewAppointmentModal from './appointment/new_appointment_modal';
 import { Popup } from "semantic-ui-react";
+import { PATIENT_VISIT_STATUSES } from '../../../shared/constant_data';
+import DateTimePicker from 'react-datetime';
 
 
 class Todayspatient extends Component {
@@ -37,24 +39,26 @@ class Todayspatient extends Component {
             prev_procedure_list: [],
             user_preview_modal_visibility: false,
             new_patient_modal_visibility: false,
-            invoice_modal_visibility: false, 
+            invoice_modal_visibility: false,
 
             user_modal_props: null,
             invoice_data: null,
-            invoiceVisitId:0,
+            invoiceVisitId: 0,
             procedure_appointment_id: null,
             search_doctor: { value: '' },
-            search_patient: { value: '' }
+            search_patient: { value: '' },
+            search_status: { value: '' },
+            search_date: { value: moment(new Date()).format('ll') }
         }
     }
 
     async request(_data, _url, _method = "post") {
         try {
             if (_method === 'post') {
-                return await Axios.post(_url, _data, { headers: { 'code-medicine': localStorage.getItem('user') } })
+                return await Axios.post(_url, _data)
             }
             else if (_method === 'get') {
-                return await Axios.get(_url, { headers: { 'code-medicine': localStorage.getItem('user') } })
+                return await Axios.get(_url)
             }
         }
         catch (err) {
@@ -115,7 +119,10 @@ class Todayspatient extends Component {
 
     componentWillReceiveProps(new_props) {
         if (new_props.todays_patient) {
-            this.setState({ filtered_data: new_props.todays_patient.data, data: new_props.todays_patient.data })
+            this.setState({
+                filtered_data: new_props.todays_patient.data,
+                data: new_props.todays_patient.data
+            })
         }
     }
 
@@ -127,7 +134,7 @@ class Todayspatient extends Component {
                     this.setState({ user_blood_group: { value: e.label } })
                     break;
                 case 'status_selection':
-                    this.setState({ user_gender: { value: e.label } })
+                    this.setState({ search_status: { value: e.label } })
                     break;
                 case 'doctor_selection':
                     this.setState({ search_doctor: { value: e.reference } })
@@ -145,7 +152,7 @@ class Todayspatient extends Component {
                     this.setState({ user_blood_group: { value: '' } })
                     break;
                 case 'status_selection':
-                    this.setState({ user_gender: { value: '' } })
+                    this.setState({ search_status: { value: '' } })
                     break;
                 case 'doctor_selection':
                     this.setState({ search_doctor: { value: '' } })
@@ -165,8 +172,6 @@ class Todayspatient extends Component {
         }, () => {
             Axios.post(SEARCH_BY_ID_USER_REQUEST, {
                 user_id: id
-            }, {
-                headers: { 'code-medicine': localStorage.getItem('user') }
             }).then(res => {
                 if (res.data.status === true) {
                     this.setState({
@@ -204,19 +209,19 @@ class Todayspatient extends Component {
         this.setState({ procedure_visibility: true }, () => {
             try {
 
-                let response = Axios.post(`${BASE_PROCEDURES_URL}`,{ appointment_id: id},{
+                let response = Axios.post(`${BASE_PROCEDURES_URL}`, { appointment_id: id }, {
                     headers: { 'code-medicine': localStorage.getItem('user') }
                 });
-                response.then((response)=>{
-                    if(response.status === 200) {
+                response.then((response) => {
+                    if (response.status === 200) {
                         this.setState({
                             prev_procedure_list: response.data.payload,
                             procedure_appointment_id: id,
                             invoiceVisitId: 0
                         });
                     }
-                    else{
-                        this.props.notify('error','',response.data.message)
+                    else {
+                        this.props.notify('error', '', response.data.message)
                     }
                 });
             }
@@ -225,16 +230,21 @@ class Todayspatient extends Component {
             }
         });
     };
-    closeProcedureModalHandler = () => {
-        this.setState({ procedure_visibility: false, prev_procedure_list: [] })
+    closeProcedureModalHandler = (type) => {
+        this.setState({ procedure_visibility: false, prev_procedure_list: [], data: null }, () => {
+            if (type === 'checkout') {
+                this.props.clear_todays_appointments()
+                this.props.load_todays_appointments()
+            }
+        })
     };
 
     invoiceVisitIdHandler = (value) => {
         this.setState({ invoiceVisitId: value });
     };
 
-    UpdateProcedureListHandler = (updateProcedureList) =>{
-        this.setState({ prevProcedureList : updateProcedureList });
+    UpdateProcedureListHandler = (updateProcedureList) => {
+        this.setState({ prevProcedureList: updateProcedureList });
     };
 
     open_new_appointment_modal = () => {
@@ -257,34 +267,104 @@ class Todayspatient extends Component {
 
     set_filters = () => {
         this.setState({ filtered_data: null }, () => {
+            /**
+             * P D S
+             * ---------
+             * 0 0 0 - 1
+             * 0 0 1 - 2
+             * 0 1 0 - 3
+             * 0 1 1 - 4
+             * 1 0 0 - 5
+             * 1 0 1 - 6
+             * 1 1 0 - 7
+             * 1 1 1 - 8
+             */
+
+            const search_with_patients = this.state.search_patient.value !== '';
+            const search_with_doctors = this.state.search_doctor.value !== '';
+            const search_with_status = this.state.search_status.value !== '';
+
+            console.log('search state', search_with_patients, search_with_doctors, search_with_status)
+
             const temp = []
             for (let i = 0; i < this.state.data.length; ++i) {
-                console.log(this.state.search_patient.value, this.state.data[i].patient.id)
-
-                if (this.state.search_patient.value === '' &&
-                    this.state.search_doctor.value === this.state.data[i].doctor.id) {
-                    temp.push(this.state.data[i])
-                }
-                else if (this.state.search_patient.value === this.state.data[i].patient.id &&
-                    this.state.search_doctor.value === '') {
-                    temp.push(this.state.data[i])
-                }
-                else if (this.state.search_patient.value === this.state.data[i].patient.id &&
-                    this.state.search_doctor.value === this.state.data[i].doctor.id) {
-                    temp.push(this.state.data[i])
-                }
-
-                if (i === this.state.data.length - 1) {
-                    if (this.state.search_patient.value !== '' || this.state.search_doctor.value !== '') {
-                        this.setState({ filtered_data: temp })
-                        return
+                // console.log(this.state.search_patient.value, this.state.data[i].patient.id)
+                // 0 0 1
+                if (!search_with_patients && !search_with_doctors && search_with_status) {
+                    if (this.state.search_status.value.toLowerCase() === this.state.data[i].appointment_status.info) {
+                        temp.push(this.state.data[i])
                     }
                 }
-
+                // 0 1 0
+                else if (!search_with_patients && search_with_doctors && !search_with_status) {
+                    if (this.state.search_doctor.value === this.state.data[i].doctor.id) {
+                        temp.push(this.state.data[i])
+                    }
+                }
+                // 0 1 1
+                else if (!search_with_patients && search_with_doctors && search_with_status) {
+                    if (this.state.search_doctor.value === this.state.data[i].doctor.id &&
+                        this.state.search_status.value.toLowerCase() === this.state.data[i].appointment_status.info) {
+                        temp.push(this.state.data[i])
+                    }
+                }
+                // 1 0 0
+                else if (search_with_patients && !search_with_doctors && !search_with_status) {
+                    if (this.state.search_patient.value === this.state.data[i].patient.id) {
+                        temp.push(this.state.data[i])
+                    }
+                }
+                // 1 0 1
+                else if (search_with_patients && !search_with_doctors && search_with_status) {
+                    if (this.state.search_patient.value === this.state.data[i].patient.id &&
+                        this.state.search_status.value.toLowerCase() === this.state.data[i].appointment_status.info) {
+                        temp.push(this.state.data[i])
+                    }
+                }
+                // 1 1 0
+                else if (search_with_patients && search_with_doctors && !search_with_status) {
+                    if (this.state.search_patient.value === this.state.data[i].patient.id &&
+                        this.state.search_doctor.value === this.state.data[i].doctor.id) {
+                        temp.push(this.state.data[i])
+                    }
+                }
+                // 1 1 1
+                else if (search_with_patients && search_with_doctors && search_with_status) {
+                    if (this.state.search_patient.value === this.state.data[i].patient.id &&
+                        this.state.search_doctor.value === this.state.data[i].doctor.id &&
+                        this.state.search_status.value.toLowerCase() === this.state.data[i].appointment_status.info) {
+                        temp.push(this.state.data[i])
+                    }
+                }
             }
-            this.setState({ filtered_data: this.state.data })
+            let reset_check = true;
+            ['search_patient', 'search_doctor', 'search_status'].map((item, i) => {
+                if (this.state[item].value !== '') {
+                    reset_check = false;
+                    this.setState({ filtered_data: temp })
+                }
+            })
+            if (reset_check)
+                this.setState({ filtered_data: this.state.data })
         })
 
+    }
+
+    todays_date_change = (e) => {
+        if (e === '')
+            this.setState({ search_date: { value: '' } })
+        else {
+            var configured_date = null;
+            try {
+                configured_date = e.format('ll');
+            }
+            catch (err) {
+                configured_date = ''
+            }
+            finally {
+                this.setState({ search_date: { value: configured_date } })
+            }
+        }
     }
 
 
@@ -292,27 +372,23 @@ class Todayspatient extends Component {
         var table = <Loading size={150} />
         if (this.state.filtered_data != null) {
             if (this.state.filtered_data.length > 0) {
-                table = <div className="table-responsive mt-2 card mb-0 pb-0">
-                    <table className="table table-hover">
-                        <thead className="table-header-bg bg-dark">
-                            <tr>
-                                <th colSpan="8">
-                                    Patients List for today
-                                    <span className="badge badge-secondary ml-2">{moment().format('LL')}</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                this.renderDataInRows(this.state.filtered_data)
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                table = <Fragment>
+
+                    <div className="table-responsive mt-2 card mb-0 pb-0">
+                        <table className="table table-hover">
+                            <tbody>
+                                {
+                                    this.renderDataInRows(this.state.filtered_data)
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </Fragment>
+
             }
             else {
                 table = <div className="alert alert-info" style={{ marginBottom: '0px' }}>
-                    <strong>Info!</strong> No visits found.
+                    <strong>Info!</strong> No Appointments found.
                 </div>;
             }
         }
@@ -331,7 +407,7 @@ class Todayspatient extends Component {
         const filters = <div className="row">
             <div className="col-md-10">
                 <div className="row">
-                    <div className="col-md-3">
+                    <div className="col-md-4">
                         <div className="form-group">
                             <label className="font-weight-semibold">Doctors</label>
                             <Select
@@ -347,7 +423,7 @@ class Todayspatient extends Component {
                             />
                         </div>
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-4">
                         <div className="form-group">
                             <label className="font-weight-semibold">Patients</label>
                             <Select
@@ -363,44 +439,29 @@ class Todayspatient extends Component {
                             />
                         </div>
                     </div>
-                    
-                    <div className={`col-md-3`}>
+
+                    <div className={`col-md-4`}>
 
                         <div className="form-group">
                             <label className="font-weight-semibold">Status</label>
                             <Select
                                 isClearable
-                                // options={this.state.search_options}
+                                options={PATIENT_VISIT_STATUSES}
                                 placeholder="Status"
-                            // value={this.state.selectedOption}
-                            // onChange={this.handleSelectChange}
-                            // onClick={()=>this.get}
-                            />
-                        </div>
-                    </div>
-                    <div className={`col-md-3`}>
-
-                        <div className="form-group">
-                            <label className="font-weight-semibold">Date</label>
-                            <Select
-                                isClearable
-                                // options={this.state.search_options}
-                                placeholder="Date"
-                            // value={this.state.selectedOption}
-                            // onChange={this.handleSelectChange}
-                            // onClick={()=>this.get}
+                                onChange={e => this.on_selected_changed(e, "status_selection")}
+                                onClick={() => console.log('visit status')}
                             />
                         </div>
                     </div>
                 </div>
             </div>
             <div className="col-md-2 d-flex justify-content-center align-items-end mb-2 pb-2">
-                
+
                 <Popup
                     trigger={
                         <button
                             type="button"
-                            className="btn btn-dark btn-icon mr-1 float-right"
+                            className="btn btn-dark btn-icon mr-1 "
                             style={{ textTransform: "inherit" }}
                             onClick={this.set_filters}
                         >
@@ -416,12 +477,12 @@ class Todayspatient extends Component {
                     // hoverable
                     position='top center'
                 />
-                
+
                 <Popup
                     trigger={
                         <button
                             type="button"
-                            className="btn bg-teal-400 btn-icon mr-1 float-right"
+                            className="btn bg-teal-400 btn-icon mr-1 btn-block"
                             style={{ textTransform: "inherit" }}
                             onClick={this.open_new_appointment_modal}>
                             <b><i className="icon-plus3"></i></b>
@@ -435,7 +496,37 @@ class Todayspatient extends Component {
                     // hoverable
                     position='top center'
                 />
-                
+
+            </div>
+        </div>
+
+        const table_header = <div className="table-header-background shadow-sw">
+            <div className="row">
+                <div className="col-lg-6 col-6 d-flex align-items-center">
+                    <span className="text-white">Patients list for date</span>
+                    <span className="badge badge-secondary ml-2">
+                        {this.state.search_date.value}
+                    </span>
+                </div>
+                <div className="col-lg-3 d-none d-lg-block col-0"></div>
+                <div className="col-lg-3 col-6 d-flex">
+                    <DateTimePicker id="dob_text_input"
+                        onChange={this.todays_date_change}
+                        className="clock_datatime_picker "
+                        inputProps={{ placeholder: 'Select Date', width: '100%', className: `form-control bg-teal-400 border-dark` }}
+                        input={true}
+                        dateFormat={'ll'}
+                        timeFormat={false}
+                        closeOnSelect={true}
+                        value={this.state.search_date.value}
+                    />
+                    <button className="btn btn-dark" onClick={() => {
+                        this.props.clear_todays_appointments()
+                        this.props.load_todays_appointments(this.state.search_date.value)
+                    }}>
+                        <i className="icon-search4" />
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -443,7 +534,7 @@ class Todayspatient extends Component {
             <Container container_type="todayspatient">
                 {/* filters panel */}
                 {filters}
-
+                {table_header}
                 {/* table of todays appointments */}
                 {this.props.todays_patient === true ? <Loading size={150} /> : table}
 
@@ -487,4 +578,4 @@ function map_state_to_props(state) {
         todays_patient: state.todays_patient
     }
 }
-export default connect(map_state_to_props, { notify, set_active_page, load_todays_appointments })(withRouter(Todayspatient));
+export default connect(map_state_to_props, { notify, set_active_page, load_todays_appointments, clear_todays_appointments })(withRouter(Todayspatient));

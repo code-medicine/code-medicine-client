@@ -1,7 +1,7 @@
 const PROTOCOL = 'http';
 // const ADDRESS = '39.33.186.49';
 const ADDRESS = 'localhost'
-const PORT = '5000';
+const PORT = 6969;
 
 export const BASE_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
 
@@ -27,7 +27,11 @@ export const BASE_RECEPTION_URL = `${BASE_URL}/appointments`;
 export const NEW_APPOINTMENT_URL = `${BASE_RECEPTION_URL}/create`;
 export const UPDATE_APPOINTMENT_URL = `${BASE_RECEPTION_URL}/update`
 export const SEARCH_APPOINTMENTS_URL = `${BASE_RECEPTION_URL}/search`;
+export const SEARCH_APPOINTMENT_BY_ID = `${SEARCH_APPOINTMENTS_URL}/id`;
 export const SEARCH_TODAYS_APPOINTMENTS_URL = `${SEARCH_APPOINTMENTS_URL}/today`;
+export const GET_APPOINTMENT_CHARGES = `${BASE_RECEPTION_URL}/charges`;
+export const UPDATE_APPOINTMENT_CHARGES = `${GET_APPOINTMENT_CHARGES}/update`;
+export const CHECKOUT_APPOINTMENT = `${BASE_RECEPTION_URL}/checkout`;
 
 // All procedure related end points
 export const BASE_PROCEDURES_URL = `${BASE_RECEPTION_URL}/procedures`;

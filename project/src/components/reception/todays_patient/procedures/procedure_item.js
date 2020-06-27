@@ -112,6 +112,8 @@ class ProcedureItem extends Component {
             const payload = {
                 appointment_id: this.props.appointment_id,
                 procedure_id: this.props.data.id,
+                charges: parseInt(this.state.charges_text_input.value),
+                discount: parseInt(this.state.discount_text_input.value)
             }
             this.props.delete_opp(this.props.index)
             Axios.post(DELETE_PROCEDURE_URL, payload).then(res => {
@@ -139,8 +141,8 @@ class ProcedureItem extends Component {
 
     render(){
 
-        const save_button_classes = `btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 secondary btn-icon ml-1 mb-3 ${this.state.save_click_loading? 'p-0': ''}`
-        const update_button_classes = `btn btn-outline-dark btn-sm secondary btn-icon ml-1 mb-3 ${this.state.save_click_loading? 'p-0': ''}`
+        const save_button_classes = `btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 secondary btn-icon ml-1 mb-1 ${this.state.save_click_loading? 'p-0': ''}`
+        const update_button_classes = `btn btn-outline-dark btn-sm secondary btn-icon ml-1 mb-1 ${this.state.save_click_loading? 'p-0': ''}`
         return(
             <div className="row">
                 <div className={`col-lg-7 col-md-4 col-12 px-3`}>
@@ -151,7 +153,7 @@ class ProcedureItem extends Component {
                         placeholder="Enter Reason"
                         disabled={this.state.save_click_loading}
                         input_type={'text'}
-                        custom_classes="py-0"
+                        custom_classes="mb-1"
                         field_type=""
                         size="form-control-sm"
                         on_text_change_listener={this.handle_change}
@@ -168,6 +170,7 @@ class ProcedureItem extends Component {
                         placeholder="Charges"
                         input_type={'text'}
                         disabled={this.state.save_click_loading}
+                        custom_classes="mb-1"
                         field_type=""
                         size="form-control-sm"
                         on_text_change_listener={this.handle_change}
@@ -184,6 +187,7 @@ class ProcedureItem extends Component {
                         placeholder="Discount"
                         input_type={'text'}
                         disabled={this.state.save_click_loading}
+                        custom_classes="mb-1"
                         field_type=""
                         size="form-control-sm"
                         on_text_change_listener={this.handle_change}
@@ -193,13 +197,13 @@ class ProcedureItem extends Component {
                 </div>
 
                 <div className="col-lg-1 col-md-2 col-12 pl-0 d-flex align-items-end justify-content-center">
-                    <button className="btn btn-outline btn-sm bg-danger border-danger text-danger secondary btn-icon mb-3"
+                    <button className="btn btn-outline btn-sm bg-danger border-danger text-danger secondary btn-icon mb-1"
                         onClick={this.on_delete_click}>
                         <i className="icon-cross" />
                     </button>
                     {this.state.edited? 
                         <button className={this.props.data.type === 'new'? save_button_classes: update_button_classes}
-                        onClick={this.on_save_click}>
+                            onClick={this.on_save_click}>
                         {this.state.save_click_loading? <Loading size="30" />:<i className="icon-floppy-disk" />}
                     </button>:''}
                 </div>

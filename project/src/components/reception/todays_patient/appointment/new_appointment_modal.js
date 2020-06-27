@@ -226,11 +226,7 @@ class NewAppointmentModal extends Component {
             time: this.state.appointment_time.value,
             description: this.state.appointment_reason.value,
         }
-        Axios.post(NEW_APPOINTMENT_URL, data, {
-            headers: {
-                'code-medicine': localStorage.getItem('user')
-            }
-        }).then(res => {
+        Axios.post(NEW_APPOINTMENT_URL, data).then(res => {
             if (res.data.status) {
                 this.props.notify('success', '', res.data.message)
                 this.setState({
