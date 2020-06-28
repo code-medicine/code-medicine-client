@@ -114,7 +114,7 @@ class Todayspatient extends Component {
             Reception
         </Link>, <span className="breadcrumb-item active">Today's Patient</span>]
         this.props.set_active_page(routes)
-        this.props.load_todays_appointments()
+        this.props.load_todays_appointments(this.state.search_date.value)
     }
 
     componentWillReceiveProps(new_props) {
@@ -284,7 +284,7 @@ class Todayspatient extends Component {
             const search_with_doctors = this.state.search_doctor.value !== '';
             const search_with_status = this.state.search_status.value !== '';
 
-            console.log('search state', search_with_patients, search_with_doctors, search_with_status)
+            // console.log('search state', search_with_patients, search_with_doctors, search_with_status)
 
             const temp = []
             for (let i = 0; i < this.state.data.length; ++i) {
