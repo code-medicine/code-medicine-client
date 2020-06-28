@@ -248,4 +248,5 @@ td.rdtYear:hover {
 .table-header-background {
   background-color: #292b2c;
   padding: 10px;
+  border-radius: 5px;
 }

@@ -189,12 +189,6 @@ class TodaysPatientRow extends Component {
                                     {options['details']}
                                 </Fragment>}
                                 
-                                {/* {this.state.row_data.appointment_status.is_paid? 
-                                <Fragment>
-                                <span className="">{options['invoice']}</span>
-                                <span>{options['follow_ups']}</span>
-                                {options['details']}</Fragment>:options['charges'],options['invoice'],options['edit'],options['follow_ups'],options['details']} */}
-                                
                             </div>
                         </div>
                     </div>
@@ -235,89 +229,15 @@ class TodaysPatientRow extends Component {
     }
 
     render() {
-        // const popup_style = {
-        //     borderRadius: 0,
-        //     opacity: 0.7,
-        //     padding: '2em',
-        //   }
-        // console.log('stateeeeeee',this.state)
         return (
             <Fragment>
                 <tr >
-                    {/* <td onClick={this.toggle_row} >
-                        <div  >
-                            <Link className="" to="#" onClick={this.toggle_row}>
-                                <i className={this.state.toggle_icon}></i>
-                            </Link>
-                        </div>
-                        
-                    </td> */}
                     <td colSpan={this.state.col_span}>
                         {
                             this.render_read_only_cols()
                         }
                     </td>
-                    {/* <td>
-                        <div className={``}>
-                            <Popup
-                                trigger={
-                                    <button className="btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 secondary btn-icon "
-                                        onClick={() => this.props.open_procedure_modal(this.props.row_data._id)}>
-                                        <i className="icon-plus2"></i>
-                                    </button>}
-                                content={<div className={`card card-body bg-teal-400 text-teal-white shadow mr-2 mt-3 py-1`}>View or add procedures</div>}
-                                flowing
-                                hoverable
-                                position='left center'
-                            />
-                        </div>
-
-                        <div className={`mt-1`}>
-                            <Popup
-                                trigger={
-                                    <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon`}
-                                        onClick={() => this.props.openInvoiceModal(this.props.row_data)}>
-                                        <i className={`icon-file-text2`}></i>
-                                    </button>}
-                                content={<div className={`card card-body bg-teal-400 text-white shadow mr-2 mt-3 py-1`}>Generate Invoice</div>}
-                                flowing
-                                hoverable
-                                // style={popup_style}
-                                position='left center'
-                            // inverted={false}
-                            />
-                        </div>
-
-                        <div className={`mt-1`}>
-
-                            <Popup
-                                trigger={
-                                    <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon`}
-                                        onClick={() => this.setState({ update_appointment_modal_visibility: true })}    >
-                                        <i className={`icon-pencil3`}></i>
-                                    </button>}
-                                flowing
-                                hoverable
-                                content={<div className={`card card-body bg-teal-400 text-white shadow mr-2 mt-3 py-1`}>Edit appointment</div>}
-                                position='left center'
-                            />
-                        </div>
-
-                        <div className={`mt-1`}>
-
-                            <Popup
-                                trigger={
-                                    <button className={`btn btn-outline btn-sm bg-dark border-dark text-dark btn-icon`}
-                                        onClick={this.toggle_row}>
-                                        <i className={this.state.toggle_icon}></i>
-                                    </button>}
-                                flowing
-                                hoverable
-                                content={<div className={`card card-body bg-dark text-white shadow mr-2 mt-3 py-1`}>Show more details</div>}
-                                position='left center'
-                            />
-                        </div>
-                    </td> */}
+                    
                 </tr>
                 <tr className="">
                     <td colSpan={`${this.state.col_span + 1}`} className={`${this.state.toggle ? '' : 'py-0'}`}>

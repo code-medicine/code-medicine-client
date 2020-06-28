@@ -351,12 +351,15 @@ class Todayspatient extends Component {
     }
 
     todays_date_change = (e) => {
-        if (e === '')
+        if (e === ''){
             this.setState({ search_date: { value: '' } })
+        }
         else {
             var configured_date = null;
             try {
                 configured_date = e.format('ll');
+                this.props.clear_todays_appointments()
+                this.props.load_todays_appointments(configured_date)
             }
             catch (err) {
                 configured_date = ''
@@ -375,7 +378,7 @@ class Todayspatient extends Component {
                 table = <Fragment>
 
                     <div className="table-responsive mt-2 card mb-0 pb-0">
-                        <table className="table table-hover">
+                        <table className="table table-hover mb-0">
                             <tbody>
                                 {
                                     this.renderDataInRows(this.state.filtered_data)
@@ -387,7 +390,7 @@ class Todayspatient extends Component {
 
             }
             else {
-                table = <div className="alert alert-info" style={{ marginBottom: '0px' }}>
+                table = <div className="alert alert-info mt-2" style={{ marginBottom: '0px' }}>
                     <strong>Info!</strong> No Appointments found.
                 </div>;
             }
@@ -502,25 +505,31 @@ class Todayspatient extends Component {
 
         const table_header = <div className="table-header-background shadow-sw">
             <div className="row">
-                <div className="col-lg-6 col-6 d-flex align-items-center">
+                <div className="col-lg-6 col-md-6 col-12 d-flex align-items-center">
                     <span className="text-white">Patients list for date</span>
-                    <span className="badge badge-secondary ml-2">
+                    <span className="badge badge-secondary ml-2 d-none d-lg-block">
                         {this.state.search_date.value}
                     </span>
                 </div>
                 <div className="col-lg-3 d-none d-lg-block col-0"></div>
-                <div className="col-lg-3 col-6 d-flex">
+                <div className="col-lg-3 col-md-6 col-12 d-flex">
                     <DateTimePicker id="dob_text_input"
                         onChange={this.todays_date_change}
                         className="clock_datatime_picker "
-                        inputProps={{ placeholder: 'Select Date', width: '100%', className: `form-control bg-teal-400 border-dark` }}
+                        inputProps={{ 
+                            placeholder: 'Select Date', 
+                            width: '100%', 
+                            className: `form-control bg-teal-400 border-teal-400`
+                        }}
                         input={true}
                         dateFormat={'ll'}
                         timeFormat={false}
                         closeOnSelect={true}
                         value={this.state.search_date.value}
+                        
+                        onClick={() => console.log('date select',this.state.search_date.value)}
                     />
-                    <button className="btn btn-dark" onClick={() => {
+                    <button className="btn bg-teal-400 border-teal-400 text-teal-400 btn-sm ml-2" onClick={() => {
                         this.props.clear_todays_appointments()
                         this.props.load_todays_appointments(this.state.search_date.value)
                     }}>
@@ -536,7 +545,7 @@ class Todayspatient extends Component {
                 {filters}
                 {table_header}
                 {/* table of todays appointments */}
-                {this.props.todays_patient === true ? <Loading size={150} /> : table}
+                {this.props.todays_patient.loading === true ? <Loading size={150} /> : table}
 
                 {/* Add new appointment modal */}
                 <NewAppointmentModal
