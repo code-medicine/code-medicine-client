@@ -1,6 +1,6 @@
 const PROTOCOL = 'http';
 // const ADDRESS = '39.33.186.49';
-const ADDRESS = 'localhost'
+const ADDRESS = 'ec2-13-211-122-241.ap-southeast-2.compute.amazonaws.com'
 const PORT = 6969;
 
 export const BASE_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
