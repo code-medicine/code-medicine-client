@@ -65,10 +65,10 @@ class Visits extends Component {
         try {
             if (_method === 'post'){
                 this.setState({ previous_query: { data: _data } })
-                return await Axios.post(_url, _data, { headers: { 'code-medicine': localStorage.getItem('user') } })
+                return await Axios.post(_url, _data)
             }
             else if (_method === 'get') {
-                return await Axios.get(_url, { headers: { 'code-medicine': localStorage.getItem('user') } })
+                return await Axios.get(_url)
             }
         }
         catch (err) {
@@ -320,8 +320,14 @@ class Visits extends Component {
             // var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
             console.log('booking',booking)
             const row_data = {
-                date_of_booking: <div ref={(el) => { this[`element_${i}_ref`] = el; }} className="">{`${moment(booking.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}</div>,// date of booking
-                time_of_booking: <div className="">{`${moment(booking.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LT')}`}</div>,// time of booking
+                date_of_booking: <div ref={(el) => { this[`element_${i}_ref`] = el; }}>
+                                    {booking.appointment_date}
+                                    {/* {`${moment(booking.appointment_date, "YYYY-MM-DDThh:mm:ss").utc().format('LL')}`} */}
+                                </div>,// date of booking
+                time_of_booking: <div>
+                                    {booking.appointment_time}
+                                    {/* {`${moment(booking.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LT')}`} */}
+                                </div>,// time of booking
                 patient_name: <button className="btn btn-outline bg-teal-400 border-teal-400 text-teal-400 btn-sm btn-block zoomIn animated" 
                                     onClick={() => this.request_user(booking.patient['id']) }>
                                 {booking.patient['first_name'] + ' ' + booking.patient['last_name']}
@@ -333,20 +339,23 @@ class Visits extends Component {
                                     onClick={() => this.request_user(booking.doctor['id'])}>
                                 {booking.doctor['first_name'] + ' ' + booking.doctor['last_name']}
                             </button>,// doctor name
-                visit_status: <span className={`badge ${booking.appointment_status.info === 'waiting'? 'badge-danger':'badge-primary'}`}>{booking.appointment_status.info}</span>,
-                visit_total_charges: <Popup trigger={<div className="">{booking.total_charges}</div>} flowing position='top center' 
-                    content={
-                        <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
-                            <div className={``}>Consultancy: {booking.appointment_charges['consultancy']}</div>
-                            <div className={``}>Discount: {booking.appointment_charges['discount']}</div>
-                            <div className={``}>Follow up: {booking.appointment_charges['follow_up']}</div>
-                            <div className={``}>Procedures: {booking.appointment_charges['procedures']}</div>
-                            <div className={``}>Paid Amount: {booking.appointment_charges['paid']}</div>
-                        </div>
-                    }
-                />
-                    
-                
+                visit_status: <span className={`badge ${booking.appointment_status.info === 'waiting'? 'badge-danger':'badge-primary'}`}>
+                                {booking.appointment_status.info}
+                            </span>,
+                visit_total_charges: <Popup 
+                                    trigger={<div className="">{booking.total_charges}</div>} 
+                                    flowing 
+                                    position='top center' 
+                                    content={
+                                        <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
+                                            <div className={``}>Consultancy: {booking.appointment_charges['consultancy']}</div>
+                                            <div className={``}>Discount: {booking.appointment_charges['discount']}</div>
+                                            <div className={``}>Follow up: {booking.appointment_charges['follow_up']}</div>
+                                            <div className={``}>Procedures: {booking.appointment_charges['procedures']}</div>
+                                            <div className={``}>Paid Amount: {booking.appointment_charges['paid']}</div>
+                                        </div>
+                                    }
+                                />
             }
             const hidden_data = [
                 <h5 className="font-weight-semibold">Reason of visit</h5>,

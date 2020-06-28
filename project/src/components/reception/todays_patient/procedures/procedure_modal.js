@@ -210,24 +210,28 @@ class ProcedureModal extends Component {
             const payload = {
                 appointment_id: this.props.appointment_id
             }
+            const that = this;
             Axios.post(CHECKOUT_APPOINTMENT,payload).then(res => {
                 this.props.notify('success','',res.data.message)
                 // this.props.update_appointment(this.props.appointment_id)
                 
                 this.props.clear_todays_appointments();
                 this.props.load_todays_appointments();
-                this.handle_close_modal();
+                setTimeout(()=>{
+                    this.handle_close_modal();
+                },1000)
             }).catch(err => {
                 if (err.response){
+                    console.log('err',err.response)
                     if (err.response.status === 400){
-                        this.props.notify('error','',err.response.message);
+                        that.props.notify('error','',err.response.data.message);
                     }
                     else {
-                        this.props.notify('error','',err.response.message);
+                        that.props.notify('error','',err.response.data.message);
                     }
                 }
                 else {
-                    this.props.notify('error','', err.toString());
+                    that.props.notify('error','', err.toString());
                 }
             })
         }

@@ -32,6 +32,7 @@ export const SEARCH_TODAYS_APPOINTMENTS_URL = `${SEARCH_APPOINTMENTS_URL}/today`
 export const GET_APPOINTMENT_CHARGES = `${BASE_RECEPTION_URL}/charges`;
 export const UPDATE_APPOINTMENT_CHARGES = `${GET_APPOINTMENT_CHARGES}/update`;
 export const CHECKOUT_APPOINTMENT = `${BASE_RECEPTION_URL}/checkout`;
+export const GET_INVOICE_DATA = `${BASE_RECEPTION_URL}/invoice`;
 
 // All procedure related end points
 export const BASE_PROCEDURES_URL = `${BASE_RECEPTION_URL}/procedures`;

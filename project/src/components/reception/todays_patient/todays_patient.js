@@ -13,7 +13,7 @@ import './todays_patient.css';
 import { BASE_URL } from '../../../shared/router_constants';
 import moment from 'moment';
 import ProcedureModal from './procedures/procedure_modal';
-import InvoiceModal from '../../../shared/modals/InvoiceModal/invoiceModal';
+import InvoiceModal from './invoice/invoice';
 import TodaysPatientRow from './todays_patient_row';
 import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
 import Loading from '../../../shared/customs/loading/loading';
@@ -43,7 +43,7 @@ class Todayspatient extends Component {
 
             user_modal_props: null,
             invoice_data: null,
-            invoiceVisitId: 0,
+            appointment_invoice_id: '',
             procedure_appointment_id: null,
             search_doctor: { value: '' },
             search_patient: { value: '' },
@@ -198,7 +198,7 @@ class Todayspatient extends Component {
                     row_data={booking}
                     hidden_data={hidden_data}
                     open_procedure_modal={this.openProcedureModalHandler}
-                    openInvoiceModal={this.openInvoiceModalHandler}
+                    open_invoice_modal={this.openInvoiceModalHandler}
                     open_user_view_modal={this.request_user}
                     columns="8" />
             )
@@ -251,7 +251,7 @@ class Todayspatient extends Component {
         this.setState({ new_appointment_modal_visibility: true })
     };
     openInvoiceModalHandler = (object) => {
-        this.setState({ invoice_modal_visibility: true, invoice_data: object })
+        this.setState({ invoice_modal_visibility: true, appointment_invoice_id: object })
     };
     closeInvoiceModalHandler = () => {
         this.setState({ invoice_modal_visibility: false })
@@ -557,11 +557,8 @@ class Todayspatient extends Component {
 
                 <InvoiceModal
                     modal_visibility={this.state.invoice_modal_visibility}
-                    data={this.state.invoice_data}
-                    invoiceVisitId={this.state.invoiceVisitId}
-                    changeVisitId={this.invoiceVisitIdHandler}
-                    invoice_backDrop={this.closeInvoiceModalHandler}
-                    cancelInvoiceModal={this.closeInvoiceModalHandler}
+                    appointment_id={this.state.appointment_invoice_id}
+                    close_modal={this.closeInvoiceModalHandler}
                 />
 
                 <UserPreviewModal visibility={this.state.user_preview_modal_visibility}
