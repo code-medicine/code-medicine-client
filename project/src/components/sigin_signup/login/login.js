@@ -9,7 +9,7 @@ import { notify, set_active_user } from '../../../actions';
 import Inputfield from '../../../shared/customs/inputfield/inputfield';
 
 import { BASE_URL, REGISTER_URL, LOGIN_URL, FORGOT_PASSWORD } from '../../../shared/router_constants';
-import { LOGIN_USER_REQUEST, PROFILE_USER_REQUEST } from '../../../shared/rest_end_points';
+import { LOGIN_USER_REQUEST } from '../../../shared/rest_end_points';
 
 
 class Login extends Component {

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import Loading from '../../../../shared/customs/loading/loading';
-import Select, { components } from 'react-select'
+import Select from 'react-select'
 import Modal from 'react-bootstrap4-modal';
 import DateTimePicker from 'react-datetime';
 import moment from 'moment';
@@ -275,17 +275,17 @@ class NewAppointmentModal extends Component {
     }
 
     render() {
-        const controlStyles = {
-            borderRadius: '1px solid black',
-            padding: '5px',
-            background: '#c4f',
-            color: 'white',
-        };
-        const ControlComponent = props => (
-            <div style={controlStyles}>
-                <components.Control {...props} />
-            </div>
-        );
+        // const controlStyles = {
+        //     borderRadius: '1px solid black',
+        //     padding: '5px',
+        //     background: '#c4f',
+        //     color: 'white',
+        // };
+        // const ControlComponent = props => (
+        //     <div style={controlStyles}>
+        //         <components.Control {...props} />
+        //     </div>
+        // );
         const add_appointment_modal_body =
             <div className="modal-body">
                 <div className="row">

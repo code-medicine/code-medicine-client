@@ -89,8 +89,7 @@ class Profile extends Component {
 
                     this.props.notify('error', '', res.data.message)
                 }
-            }).
-                catch(err => {
+            }).catch(err => {
                     console.log('request error', err)
                     this.setState({ loading_status: false })
                     this.props.notify('error', '', err.toString())

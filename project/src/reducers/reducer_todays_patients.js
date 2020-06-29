@@ -17,7 +17,7 @@ export default function (state = {}, action) {
         case TODAYS_PATIENT_CLEAR:
             return { loading: true, data: [] }
         case TODAYS_PATIENT_APPOINTMENT_UPDATE:
-            if (action.payload.new_item != undefined){
+            if (action.payload.new_item !== undefined){
                 return state.data.map((item,i) => {
                     if (item._id !== action.payload.id) {
                         // This isn't the item we care about - keep it as-is

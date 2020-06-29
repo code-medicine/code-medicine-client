@@ -1,6 +1,11 @@
-import { NOTIFY, LEFT_SIDEBAR, ACTIVE_USER, ACTIVE_PAGE, TODAYS_PATIENT, TODAYS_PATIENT_CLEAR, TODAYS_PATIENT_APPOINTMENT_UPDATE } from "../shared/action_constants";
+import { NOTIFY, LEFT_SIDEBAR, 
+    ACTIVE_USER, 
+    ACTIVE_PAGE, 
+    TODAYS_PATIENT, 
+    TODAYS_PATIENT_CLEAR, 
+    TODAYS_PATIENT_APPOINTMENT_UPDATE } from "../shared/action_constants";
 import Axios from "axios";
-import { SEARCH_APPOINTMENTS_URL, SEARCH_TODAYS_APPOINTMENTS_URL, SEARCH_APPOINTMENT_BY_ID } from "../shared/rest_end_points";
+import { SEARCH_TODAYS_APPOINTMENTS_URL, SEARCH_APPOINTMENT_BY_ID } from "../shared/rest_end_points";
 
 Axios.interceptors.request.use(request => {
     var user = localStorage.getItem('user');
@@ -45,8 +50,8 @@ export function set_active_page(details){
 
 export function load_todays_appointments(date){
     return function(dispatch){
-        let d = new Date();
-        d = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+        // let d = new Date();
+        // d = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
         Axios.get(`${SEARCH_TODAYS_APPOINTMENTS_URL}?tag=${date}`)
         .then(res => {
             dispatch({

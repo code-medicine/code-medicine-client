@@ -343,6 +343,7 @@ class Todayspatient extends Component {
                     reset_check = false;
                     this.setState({ filtered_data: temp })
                 }
+                return '';
             })
             if (reset_check)
                 this.setState({ filtered_data: this.state.data })

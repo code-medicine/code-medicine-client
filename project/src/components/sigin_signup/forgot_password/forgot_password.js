@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Container from '../../../shared/container/container';
 import Inputfield from '../../../shared/customs/inputfield/inputfield';
-import { LOGIN_URL } from '../../../shared/router_constants';
+// import { LOGIN_URL } from '../../../shared/router_constants';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { notify } from '../../../actions';

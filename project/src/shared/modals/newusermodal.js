@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { BLOOD_GROUPS_OPTIONS, ROLES_OPTIONS, GENDER_OPTIONS } from '../constant_data';
-import { REGISTER_USER_REQUEST, REGISTER_USER_REQUEST_BY_ADMIN } from '../rest_end_points';
+import { REGISTER_USER_REQUEST_BY_ADMIN } from '../rest_end_points';
 import Axios from 'axios';
 import Loading from '../customs/loading/loading';
-import DateTimePicker from 'react-datetime';
+// import DateTimePicker from 'react-datetime';
 import Select from 'react-select'
 import { connect } from "react-redux";
 import { notify } from '../../actions';
@@ -231,7 +231,6 @@ class NewUserModal extends Component {
     }
 
     render() {
-        {/* <Register/> */ }
         const add_user_modal_body = <div className="modal-body">
             <div className={`row`}>
                 <div className={`col-md-8`}>
