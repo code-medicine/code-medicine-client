@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { LOGIN_URL } from '../../router_constants';
-import Logo_light from './logo_main.png';
-import IAMC from './IAMC.png';
+// import Logo_light from './logo_main.png';
+// import IAMC from './IAMC.png';
 import IAMC_detail from "./iffatanwarmedicalcomplex.png";
 import { connect } from "react-redux";
 import { left_sidebar_controls, set_active_user} from '../../../actions';

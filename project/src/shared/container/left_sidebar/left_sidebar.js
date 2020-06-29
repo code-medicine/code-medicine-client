@@ -24,12 +24,10 @@ class Left_sidebar extends Component {
     }
 
     on_logout_button_click = () => {
-
-        Axios.post(LOGOUT_USER_REQUEST,{
+        const payload = {
             token: localStorage.getItem('user')
-        },{
-            headers: { 'code-medicine': localStorage.getItem('user') }
-        }).then(res => {
+        }
+        Axios.post(LOGOUT_USER_REQUEST, payload).then(res => {
             if (res.data.status === true){
                 localStorage.clear()
                 // this.props.set_active_user(null)
@@ -101,8 +99,8 @@ class Left_sidebar extends Component {
                                         <i className="icon-user"></i>
                                     </Link> */}
                                     <div className={`img-fluid rounded-circle text-teal-400 bg-light h3 d-flex justify-content-center align-items-center p-2`} 
-                                        style={{height: '50px', width: '50px'}}// src={NO_PICTURE} 
-                                        >
+                                        // src={NO_PICTURE} 
+                                        style={{height: '50px', width: '50px'}}>
                                         {`${first_name_first_letter}${last_name_first_letter}`}
                                     </div>
                                 </div>
@@ -117,7 +115,7 @@ class Left_sidebar extends Component {
                                         <i className="icon-pin font-size-sm"></i> &nbsp;Pakistan
                                     </div>
                                 </div>
-                            {/* settings button in left bar */}
+                                {/* settings button in left bar */}
                                 {/* <div className="ml-3 align-self-center">
                                     <Link to={BASE_URL}  className="text-white"><i className="icon-cog3"></i></Link>
                                 </div> */}

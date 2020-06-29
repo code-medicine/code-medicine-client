@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap4-modal';
 import DateTimePicker from 'react-datetime';
 import moment from 'moment';
 import Axios from 'axios';
-import { NEW_APPOINTMENT_URL, SEARCH_USER_REQUEST, UPDATE_APPOINTMENT_URL } from '../../../../shared/rest_end_points';
+import { NEW_APPOINTMENT_URL, SEARCH_USER_REQUEST } from '../../../../shared/rest_end_points';
 import { notify, load_todays_appointments, clear_todays_appointments } from '../../../../actions';
 import { connect } from "react-redux";
 import NewUserModal from '../../../../shared/modals/newusermodal';

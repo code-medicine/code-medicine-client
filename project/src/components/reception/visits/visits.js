@@ -8,8 +8,8 @@ import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import DateTimePicker from 'react-datetime'
 import "./visits.css"
-import { BLOOD_GROUPS_OPTIONS, PATIENT_VISIT_STATUSES, classNameColors } from '../../../shared/constant_data';
-import makeAnimated from 'react-select/animated';
+import { PATIENT_VISIT_STATUSES } from '../../../shared/constant_data';
+// import makeAnimated from 'react-select/animated';
 import Select from 'react-select';
 import TableRow from '../../../shared/customs/tablerows/tablerow';
 import '../../../shared/customs/Animations/animations.css';
