@@ -264,16 +264,12 @@ class UpdateAppointmentModal extends Component {
             }
         }
         const that = this;
-        Axios.put(UPDATE_APPOINTMENT_URL,data, {
-            headers: {
-                'code-medicine': localStorage.getItem('user')
-            }
-        }).then(res => {
+        Axios.put(UPDATE_APPOINTMENT_URL,data).then(res => {
             if (res.data.status === true){
                 that.props.notify('success', '', res.data.message)
                 that.setState({ loading_status: false })
                 that.props.clear_todays_appointments()
-                that.props.load_todays_appointments()
+                that.props.load_todays_appointments(this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT')
                 that.props.close()
             }
             else{

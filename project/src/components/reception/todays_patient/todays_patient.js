@@ -52,6 +52,16 @@ class Todayspatient extends Component {
         }
     }
 
+    componentDidMount() {
+        const routes = [<Link to={BASE_URL} className="breadcrumb-item">
+            <i className="icon-user mr-2"></i>
+            Reception
+        </Link>, <span className="breadcrumb-item active">Today's Patient</span>]
+        this.props.set_active_page(routes)
+        this.props.load_todays_appointments(this.state.search_date.value)
+        localStorage.setItem('Gh65$p3a008#2C',this.state.search_date.value)
+    }
+
     async request(_data, _url, _method = "post") {
         try {
             if (_method === 'post') {
@@ -108,14 +118,7 @@ class Todayspatient extends Component {
         }
     }
 
-    componentDidMount() {
-        const routes = [<Link to={BASE_URL} className="breadcrumb-item">
-            <i className="icon-user mr-2"></i>
-            Reception
-        </Link>, <span className="breadcrumb-item active">Today's Patient</span>]
-        this.props.set_active_page(routes)
-        this.props.load_todays_appointments(this.state.search_date.value)
-    }
+    
 
     componentWillReceiveProps(new_props) {
         if (new_props.todays_patient) {
@@ -231,12 +234,7 @@ class Todayspatient extends Component {
         });
     };
     closeProcedureModalHandler = (type) => {
-        this.setState({ procedure_visibility: false, prev_procedure_list: [], data: null }, () => {
-            if (type === 'checkout') {
-                this.props.clear_todays_appointments()
-                this.props.load_todays_appointments()
-            }
-        })
+        this.setState({ procedure_visibility: false, prev_procedure_list: [], data: null })
     };
 
     invoiceVisitIdHandler = (value) => {
@@ -361,6 +359,7 @@ class Todayspatient extends Component {
                 configured_date = e.format('ll');
                 this.props.clear_todays_appointments()
                 this.props.load_todays_appointments(configured_date)
+                localStorage.setItem('Gh65$p3a008#2C',configured_date)
             }
             catch (err) {
                 configured_date = ''
@@ -532,7 +531,7 @@ class Todayspatient extends Component {
                     />
                     <button className="btn bg-teal-400 border-teal-400 text-teal-400 btn-sm ml-2" onClick={() => {
                         this.props.clear_todays_appointments()
-                        this.props.load_todays_appointments(this.state.search_date.value)
+                        this.props.load_todays_appointments(localStorage.getItem('Gh65$p3a008#2C'))
                     }}>
                         <i className="icon-search4" />
                     </button>

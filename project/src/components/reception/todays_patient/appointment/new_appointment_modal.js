@@ -241,7 +241,7 @@ class NewAppointmentModal extends Component {
 
                 })
                 this.props.clear_todays_appointments()
-                this.props.load_todays_appointments()
+                this.props.load_todays_appointments(new Date())
                 this.props.close()
             }
             else {
