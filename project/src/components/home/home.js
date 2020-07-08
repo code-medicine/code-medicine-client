@@ -14,6 +14,9 @@ class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            doctors: 0,
+            patient_left: 0,
+            patient_attended: 0
         }
     }
 
@@ -28,11 +31,12 @@ class Home extends Component {
             if (res.data.status === true) {
 
                 this.props.set_active_user(res.data['payload'])
-                this.socket = socketIOClient(`${rc.BASE_URL}/dashboard`)
-                this.socket.on('chatmessage', function(msg){
-                    console.log("Socket conection", msg);
-                    this.socket.emit('other','hello')
-                });
+                this.socket = socketIOClient(`${rc.BASE_URL}`)
+                this.socket.on("FromAPI", data => this.setState({ 
+                    doctors: data.doctors,
+                    patient_left: data.patient_left,
+                    patient_attended: data.patient_attended 
+                }));
 
             }
         }).catch(err => {
@@ -43,6 +47,7 @@ class Home extends Component {
         this.socket.disconnect()
     }
     render() {
+        console.log('response',this.state)
         return (
             <Container container_type={'home'}>
 
@@ -59,7 +64,7 @@ class Home extends Component {
                                     <div className="row">
                                         <div className="col-sm-8" >
 
-                                            <h1 style={{ color: "#1D67E9", fontSize: '40px' }} >5</h1>
+                                            <h1 style={{ color: "#1D67E9", fontSize: '40px' }} >{this.state.doctors}</h1>
                                             <h5 style={{ marginTop: '-20px' }}>Doctors</h5>
                                         </div>
                                         <div className="col-sm-3" >
@@ -76,7 +81,7 @@ class Home extends Component {
                                 <div className="container">
                                     <div className="row">
                                         <div className="col-sm-8" >
-                                            <h1 style={{ color: "#D80B0B", fontSize: '40px' }}>28</h1>
+                                            <h1 style={{ color: "#D80B0B", fontSize: '40px' }}>{this.state.patient_left}</h1>
                                             <h5 style={{ marginTop: '-20px' }}>Patients Left</h5>
                                         </div>
                                         <div className="col-sm-3" >
@@ -94,7 +99,7 @@ class Home extends Component {
                                 <div className="container">
                                     <div className="row">
                                         <div className="col-sm-8" >
-                                            <h1 style={{ color: "#249A1A", fontSize: '40px' }}>12</h1>
+                                            <h1 style={{ color: "#249A1A", fontSize: '40px' }}>{this.state.patient_attended}</h1>
                                             <h5 style={{ marginTop: '-20px' }}>Patients Attended</h5>
                                         </div>
                                         <div className="col-sm-3" >
