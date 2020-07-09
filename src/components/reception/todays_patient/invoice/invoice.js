@@ -87,7 +87,7 @@ class Invoice extends Component {
                     </div>
                 </div>}
         </div>
-        const procedures_table = <div className="table-responsive card">
+        const procedures_table = this.state.data !== null && this.state.data.appointment_procedures.length > 0 ? <div className="table-responsive card">
             <table className="table table-hover mb-0">
                 <thead>
                     <tr>
@@ -122,7 +122,7 @@ class Invoice extends Component {
                     }
                 </tbody>
             </table>
-        </div>
+        </div>:''
         const appointment_charges_table = <div className="table-responsive card">
             <table className="table table-hover mb-0">
                 <tbody>
@@ -179,10 +179,10 @@ class Invoice extends Component {
                         {table_header}
                         <div className="row">
                             <div className="col-12">
-                                <h4 className="font-weight-bold">Procedures</h4>
-                                {procedures_table}
+                                {this.state.data !== null && this.state.data.appointment_procedures.length > 0 ?<h4 className="font-weight-bold">Procedures</h4>:''}
+                                { procedures_table }
                                 <h4 className="font-weight-bold">Appointment Charges</h4>
-                                {appointment_charges_table}
+                                { appointment_charges_table }
                             </div>
                         </div>
 

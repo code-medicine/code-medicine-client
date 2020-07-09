@@ -418,7 +418,7 @@ class NewAppointmentModal extends Component {
                         </button>
                     </div>
                     {this.state.loading_status ? <Loading size={150} /> : add_appointment_modal_body}
-                    <div className="modal-footer">
+                    {this.state.loading_status ? '':<div className="modal-footer">
                         <Select
                             isClearable
                             menuPlacement="auto"
@@ -458,7 +458,7 @@ class NewAppointmentModal extends Component {
                             <b><i className="icon-plus3"></i></b>
                             Add
                         </button>
-                    </div>
+                    </div>}
                 </Modal>
 
             </Fragment>
