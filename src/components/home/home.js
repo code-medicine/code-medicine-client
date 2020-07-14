@@ -22,10 +22,13 @@ class Home extends Component {
             patient_attended: 0,
             total_attended: 0,
             total_appointments: 0,
-            
+            checkout_percentage: 100,
+
             loading_status: true,
 
             patients_per_day: [],
+
+            current_date_time: moment(new Date()).format("LLLL"),
         }
     }
 
@@ -47,7 +50,7 @@ class Home extends Component {
         })
     }
 
-    compare_dates(a,b) {
+    compare_dates(a, b) {
         const dateA = new Date(a.date), dateB = new Date(b.date);
         return dateA - dateB;
     }
@@ -55,33 +58,38 @@ class Home extends Component {
     order_data = (data) => {
         const patients_per_day_raw_data = data.patients_per_day;
         const temp = []
-        for(let i = 0; i < patients_per_day_raw_data.length; ++i) {
+        for (let i = 0; i < patients_per_day_raw_data.length; ++i) {
             const current_patient = patients_per_day_raw_data[i]
             temp.push({
                 date: moment(`${current_patient._id.month}/${current_patient._id.day}/${current_patient._id.year}`).format('LL'),
                 count: current_patient.count
             })
-            if (i === patients_per_day_raw_data.length - 1){
+            if (i === patients_per_day_raw_data.length - 1) {
+                const numenator = data.patient_attended
+                const denomenator = data.patient_left + data.patient_attended
+
                 this.setState({
                     doctors: data.doctors,
                     patient_left: data.patient_left,
                     patient_attended: data.patient_attended,
                     total_attended: data.total_patients_attended,
                     total_appointments: data.total_patients_appointments_registered,
+                    checkout_percentage: Math.ceil(( numenator/(denomenator === 0? 1:denomenator) ) * 100),
+                    current_date_time: moment(new Date()).format("LLLL"),
                     loading_status: false,
                     patients_per_day: temp.sort(this.compare_dates),
-                    
+
                 })
             }
         }
-        
+
     }
 
     componentWillUnmount() {
         this.socket.disconnect()
     }
     render() {
-        console.log('response', this.state)
+        // console.log('response', this.state)
         const option_patients_per_doctor = {
             tooltip: {
                 trigger: 'axis',
@@ -120,7 +128,7 @@ class Home extends Component {
             ]
         };
 
-        var option_patients_attended_percentage = {
+        const option_patients_attended_percentage = {
             tooltip: {
                 formatter: '{a} <br/>{b} : {c}%'
             },
@@ -128,12 +136,12 @@ class Home extends Component {
                 {
                     type: 'gauge',
                     detail: { formatter: '{value}%' },
-                    data: [{ value: Math.ceil((this.state.patient_attended/(this.state.patient_left + this.state.patient_attended)) * 100) }]
+                    data: [{ value: this.state.checkout_percentage }]
                 }
             ]
         };
 
-        var option_patients_attended_history = {
+        const option_patients_attended_history = {
             tooltip: {
                 trigger: 'axis',
                 position: function (pt) {
@@ -143,7 +151,7 @@ class Home extends Component {
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
-                data: this.state.patients_per_day.map(function(a){ return a.date } )
+                data: this.state.patients_per_day.map(function (a) { return a.date })
             },
             yAxis: {
                 type: 'value',
@@ -183,12 +191,12 @@ class Home extends Component {
                             color: '#6198F7'
                         }])
                     },
-                    data: this.state.patients_per_day.map(function(a){ return a.count } )
+                    data: this.state.patients_per_day.map(function (a) { return a.count })
                 }
             ]
         };
 
-        var option_procedures = {
+        const option_procedures = {
             tooltip: {
                 trigger: 'item',
                 formatter: '{a} <br/>{b}: {c} ({d}%)'
@@ -196,7 +204,7 @@ class Home extends Component {
             legend: {
                 orient: 'horizontal',
                 left: 10,
-                data: ['Attended', 'Unattended']
+                data: ['Attended', 'Waiting']
             },
             series: [
                 {
@@ -224,29 +232,25 @@ class Home extends Component {
                     },
                     data: [
                         { value: this.state.total_attended, name: 'Attended' },
-                        { value: this.state.total_appointments - this.state.total_attended, name: 'Unattended' },
+                        { value: this.state.total_appointments - this.state.total_attended, name: 'Waiting' },
                     ]
                 }
             ]
         };
         return (
             <Container container_type={'home'}>
-
-
-                {/* <link href="../../echart/assets/css/components.min.css" rel="stylesheet" type="text/css"></link> */}
-                {/* <script src="../../echart/echarts.min.js" async></script>
-                <script src="../../echart/bars_tornados.js" async></script> */}
-
                 <div className="row">
                     <div className="col-lg-4 d-flex align-items-stretch " >
-                        <div className="card w-100">
-                            <div className="card-body d-flex justify-content-around align-items-center">
+                        <div className="card w-100  border-left-3 border-top-0 border-bottom-0 border-right-0 border-info ">
+                            <div className="card-body d-flex justify-content-around align-items-center py-1">
                                 <div className="">
-                                {
-                                    this.state.loading_status ? 
-                                    <Loading size={55} custom={{ color: '#5bc0de' }}/> : 
-                                    <h1 className="font-weight-bold text-center values-text mb-0 text-info">{this.state.doctors}</h1>
-                                }
+                                    {
+                                        this.state.loading_status ?
+                                            <Loading size={55} custom={{ color: '#5bc0de' }} /> :
+                                            <h1 className="font-weight-bold text-center values-text mb-0 text-info">
+                                                {this.state.doctors}
+                                            </h1>
+                                    }
                                     <h5>Doctors</h5>
                                 </div>
                                 <i className="fa fa-stethoscope fa-5x text-info"></i>
@@ -254,43 +258,55 @@ class Home extends Component {
                         </div>
                     </div>
                     <div className="col-lg-8" >
-                        <div className="h5">
-                            Patients
-                        </div>
-                        <div className="card ">
+
+                        <div className="card border-left-3 border-top-0 border-bottom-0 border-right-0 border-info ">
+                            <div className={`card-header pb-0`}>
+                                <div className="h6 mb-0 d-flex w-100  justify-content-center">
+                                    <div className={`heading`}>
+                                        <span className={`filter font-weight-bold `}>
+                                            Patients Today
+                                        </span>
+                                    </div>
+                                    {/* <div className={`badge badge-dark d-block`}>
+                                        {this.state.current_date_time}
+                                    </div> */}
+                                </div>
+                            </div>
                             <div className="card-body d-flex justify-content-around align-items-center py-1">
                                 <div className="">
                                     {
-                                        this.state.loading_status ? 
-                                        <Loading size={55} custom={{ color: '#d9534f' }}/> : 
-                                        <h1 className="font-weight-bold text-center values-text mb-0 text-danger">{this.state.patient_left}</h1>
+                                        this.state.loading_status ?
+                                            <Loading size={55} custom={{ color: '#d9534f' }} /> :
+                                            <h1 className="font-weight-bold text-center values-text mb-0 text-danger">
+                                                {this.state.patient_left}
+                                            </h1>
                                     }
                                     <h5>Waiting</h5>
                                 </div>
                                 <i className="fa fa-heartbeat fa-5x text-danger" />
                                 <div className="border-left mx-3"></div>
                                 <div >
-                                {
-                                    this.state.loading_status ? 
-                                    <Loading size={55} custom={{ color: '#5cb85c' }}/> : 
-                                    <h1 className="font-weight-bold text-center values-text mb-0 text-success">{this.state.patient_attended}</h1>
-                                }
+                                    {
+                                        this.state.loading_status ?
+                                            <Loading size={55} custom={{ color: '#5cb85c' }} /> :
+                                            <h1 className="font-weight-bold text-center values-text mb-0 text-success">
+                                                {this.state.patient_attended}
+                                            </h1>
+                                    }
                                     <h5>Checked out</h5>
                                 </div>
                                 <i className="fa fa-heartbeat fa-5x text-success"></i>
                             </div>
                         </div>
                     </div>
-                    <div className="col-lg-4" >
-                        
-                    </div>
                 </div>
 
                 <div className="row">
-                    <div className="col-sm-8" >
+                    <div className="col-lg-8" >
                         <div className="card">
                             <div className="card-header header-elements-inline">
                                 <h5 className="card-title" style={{ fontSize: '20px' }}>Patients per doctor</h5>
+
                             </div>
 
                             <div className="card-body">
@@ -301,7 +317,7 @@ class Home extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-sm-4" >
+                    <div className="col-lg-4" >
                         <div className="card">
                             <div className="card-header header-elements-inline">
                                 <h5 className="card-title" style={{ fontSize: '20px' }}>Patients Attended</h5>
@@ -315,7 +331,9 @@ class Home extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-sm-4" >
+                </div>
+                <div className={`row`}>
+                    <div className="col-lg-4" >
                         <div className="card">
                             <div className="card-header header-elements-inline">
                                 <h5 className="card-title" style={{ fontSize: '20px' }}>Patients Attended history</h5>
@@ -329,7 +347,7 @@ class Home extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-sm-8" >
+                    <div className="col-lg-8" >
                         <div className="card">
                             <div className="card-header header-elements-inline">
                                 <h5 className="card-title" style={{ fontSize: '20px' }}>Patients Attendence History</h5>
