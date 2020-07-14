@@ -252,25 +252,21 @@ class UpdateAppointmentModal extends Component {
         }
         localStorage.setItem('h7vjys8yyd12',this.props.id)
         const data = {
-            visit_id: this.props.payload.visit_id,
-            payload: {
-                patient_id: this.state.appointment_patient.value,
-                doctor_id: this.state.appointment_doctor.value,
-                visit_date: this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT',
-                visit_time: this.state.appointment_time.value,
-                visit_description: this.state.appointment_reason.value,
-                visit_type: 'Admin sahab replace this with token or identification!',
-                visit_status: 'waiting'
-            }
+            appointment_id: this.props.payload.visit_id,
+            doctor_id: this.state.appointment_doctor.value,
+            appointment_date: this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT',
+            appointment_time: this.state.appointment_time.value,
+            appointment_description: this.state.appointment_reason.value,
         }
+        console.log('data update', data)
         const that = this;
         Axios.put(UPDATE_APPOINTMENT_URL,data).then(res => {
             if (res.data.status === true){
                 that.props.notify('success', '', res.data.message)
                 that.setState({ loading_status: false })
                 that.props.clear_todays_appointments()
-                that.props.load_todays_appointments(this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT')
-                that.props.close()
+                that.props.load_todays_appointments(localStorage.getItem('Gh65$p3a008#2C'))
+                setTimeout(() => that.props.close(),2000);
             }
             else{
                 that.props.notify('error', '', res.data.message)
@@ -293,6 +289,7 @@ class UpdateAppointmentModal extends Component {
                                 id="appointment_patient_selection"
                                 isClearable
                                 menuPlacement="auto"
+                                isDisabled
                                 options={this.state.patients}
                                 classNamePrefix={`form-control`}
                                 placeholder="Select Patient"

@@ -191,6 +191,7 @@ class Todayspatient extends Component {
             return
         }
         return (data.map((booking, i) => {
+            console.log('booking',booking)
             // var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
             const hidden_data = {
                 appointment_description: booking.appointment_description

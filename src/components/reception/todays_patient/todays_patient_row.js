@@ -258,7 +258,7 @@ class TodaysPatientRow extends Component {
                             call_back={this.call_back_update_appointment_modal}
                             state={'update'}
                             payload={{
-                                visit_id: this.state.row_data.appointment_id,
+                                visit_id: this.state.row_data._id,
                                 patient_ref: this.state.row_data.patient,
                                 doctor_ref: this.state.row_data.doctor,
                                 reason: this.state.row_data['appointment_description'],
