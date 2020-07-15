@@ -55,8 +55,12 @@ class ProcedureItem extends Component {
                 discount: parseInt(this.state.discount_text_input.value),
                 description: this.state.description_text_input.value
             }
-            this.props.save_opp(this.props.index, { fee: parseInt(this.state.charges_text_input.value), discount: parseInt(this.state.discount_text_input.value) })
-            console.log('props', this.props)
+            this.props.save_opp(this.props.index,{ 
+                id: this.props.data.id,
+                fee: parseInt(this.state.charges_text_input.value), 
+                discount: parseInt(this.state.discount_text_input.value), 
+                description: this.state.description_text_input.value 
+            })
             Axios.put(NEW_PROCEDURES_URL, payload).then(res => {
                 if (res.status === 200) {
                     console.log('success', res);
@@ -82,7 +86,12 @@ class ProcedureItem extends Component {
                 discount: parseInt(this.state.discount_text_input.value),
                 description: this.state.description_text_input.value
             }
-            this.props.save_opp(this.props.index, { fee: parseInt(this.state.charges_text_input.value), discount: parseInt(this.state.discount_text_input.value) })
+            this.props.save_opp(this.props.index,{ 
+                id: this.props.data.id,
+                fee: parseInt(this.state.charges_text_input.value), 
+                discount: parseInt(this.state.discount_text_input.value), 
+                description: this.state.description_text_input.value
+            })
             Axios.put(UPDATE_PROCEDURE_URL, payload).then(res => {
                 if (res.status === 200) {
                     console.log('success');
