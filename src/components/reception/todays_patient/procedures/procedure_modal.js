@@ -48,6 +48,8 @@ class ProcedureModal extends Component {
         temp[key].type = 'previous';
         temp[key].procedure_fee = data.fee;
         temp[key].procedure_discount = data.discount;
+        temp[key].procedure_description = data.description;
+        temp[key].id = data.id
         this.setState({ procedures_list: temp }, () => {
             this.handle_total_values()
         })
@@ -68,11 +70,13 @@ class ProcedureModal extends Component {
     add_procedure_click = () => {
         if ((this.state.procedures_list.filter((data) => { return data.type === 'new' })).length === 0) {
             this.add_procedure({
+                id: Math.max.apply(Math, this.state.procedures_list.map(function(obj) { return obj.id })),
                 procedure_fee: 0,
                 procedure_discount: 0,
                 procedure_description: '',
                 type: 'new',
             })
+
         }
         else {
             this.props.notify('info', '', 'There is an unsaved procedure. Please save it first')
@@ -93,28 +97,24 @@ class ProcedureModal extends Component {
                         procedure_description: new_props.prev_procedure_list[i].description,
                         type: 'previous'
                     })
+                    if (i === prev_list.length - 1) {
+                        this.setState({ procedures_list: temp }, () => this.handle_total_values())
+                    }
                 }
-                if (new_props.appointment_id){
-                    Axios.get(`${GET_APPOINTMENT_CHARGES}?tag=${new_props.appointment_id}`).then(res => {
-                        console.log('charges',res)
-                        this.setState({
-                            procedures_list: temp,
-                            consultancy_fee_text_input: { value: res.data.payload.consultancy === 0? "":res.data.payload.consultancy.toString(), error: false },
-                            discount_text_input: { value: res.data.payload.discount === 0? "":res.data.payload.discount.toString(), error: false },
-                            follow_up_text_input: { value: res.data.payload.follow_up === 0? "":res.data.payload.follow_up.toString(), error: false },
-                            paid_text_input: { value: res.data.payload.paid === 0? "":res.data.payload.paid.toString(), error: false }
-                        }, () => {
-                            this.handle_total_values()
-                        })
-                    }).catch(err => {
-                        this.props.notify('error','',err.toString())
+            }
+            if (new_props.appointment_id){
+                Axios.get(`${GET_APPOINTMENT_CHARGES}?tag=${new_props.appointment_id}`).then(res => {
+                    this.setState({
+                        consultancy_fee_text_input: { value: res.data.payload.consultancy === 0? "":res.data.payload.consultancy.toString(), error: false },
+                        discount_text_input: { value: res.data.payload.discount === 0? "":res.data.payload.discount.toString(), error: false },
+                        follow_up_text_input: { value: res.data.payload.follow_up === 0? "":res.data.payload.follow_up.toString(), error: false },
+                        paid_text_input: { value: res.data.payload.paid === 0? "":res.data.payload.paid.toString(), error: false }
+                    }, () => {
+                        this.handle_total_values()
                     })
-                }
-                // this.setState({
-                    
-                // }, () => {
-                //     this.handle_total_values()
-                // })
+                }).catch(err => {
+                    this.props.notify('error','',err.toString())
+                })
             }
 
         }
