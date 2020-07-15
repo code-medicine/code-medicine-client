@@ -3,7 +3,7 @@ import ProcedureItem from './procedure_item';
 import Modal from "react-bootstrap4-modal";
 import Inputfield from '../../../../shared/customs/inputfield/inputfield';
 import { connect } from 'react-redux';
-import { notify, update_appointment,load_todays_appointments, clear_todays_appointments } from '../../../../actions';
+import { notify, update_appointment, load_todays_appointments, clear_todays_appointments } from '../../../../actions';
 import Axios from 'axios';
 import { UPDATE_APPOINTMENT_CHARGES, GET_APPOINTMENT_CHARGES, CHECKOUT_APPOINTMENT } from '../../../../shared/rest_end_points';
 
@@ -80,7 +80,7 @@ class ProcedureModal extends Component {
     }
 
     componentWillReceiveProps(new_props) {
-        console.log('willReceiveProps',new_props)
+        console.log('willReceiveProps', new_props)
         if (new_props.new_procedure_visibility) {
             if (new_props.prev_procedure_list.length > 0) {
                 const prev_list = new_props.prev_procedure_list
@@ -94,24 +94,24 @@ class ProcedureModal extends Component {
                         type: 'previous'
                     })
                 }
-                if (new_props.appointment_id){
+                if (new_props.appointment_id) {
                     Axios.get(`${GET_APPOINTMENT_CHARGES}?tag=${new_props.appointment_id}`).then(res => {
-                        console.log('charges',res)
+                        console.log('charges', res)
                         this.setState({
                             procedures_list: temp,
-                            consultancy_fee_text_input: { value: res.data.payload.consultancy === 0? "":res.data.payload.consultancy.toString(), error: false },
-                            discount_text_input: { value: res.data.payload.discount === 0? "":res.data.payload.discount.toString(), error: false },
-                            follow_up_text_input: { value: res.data.payload.follow_up === 0? "":res.data.payload.follow_up.toString(), error: false },
-                            paid_text_input: { value: res.data.payload.paid === 0? "":res.data.payload.paid.toString(), error: false }
+                            consultancy_fee_text_input: { value: res.data.payload.consultancy === 0 ? "" : res.data.payload.consultancy.toString(), error: false },
+                            discount_text_input: { value: res.data.payload.discount === 0 ? "" : res.data.payload.discount.toString(), error: false },
+                            follow_up_text_input: { value: res.data.payload.follow_up === 0 ? "" : res.data.payload.follow_up.toString(), error: false },
+                            paid_text_input: { value: res.data.payload.paid === 0 ? "" : res.data.payload.paid.toString(), error: false }
                         }, () => {
                             this.handle_total_values()
                         })
                     }).catch(err => {
-                        this.props.notify('error','',err.toString())
+                        this.props.notify('error', '', err.toString())
                     })
                 }
                 // this.setState({
-                    
+
                 // }, () => {
                 //     this.handle_total_values()
                 // })
@@ -183,7 +183,7 @@ class ProcedureModal extends Component {
                 return;
             }
         }
-        
+
         const payload = {
             appointment_id: this.props.appointment_id,
             consultancy: parseInt(this.state.consultancy_fee_text_input.value),
@@ -191,19 +191,19 @@ class ProcedureModal extends Component {
             follow_up: parseInt(this.state.follow_up_text_input.value),
             paid: parseInt(this.state.paid_text_input.value),
         }
-        Axios.put(UPDATE_APPOINTMENT_CHARGES,payload).then(res => {
-            this.props.notify('success','',res.data.message);
+        Axios.put(UPDATE_APPOINTMENT_CHARGES, payload).then(res => {
+            this.props.notify('success', '', res.data.message);
             // this.handle_close_modal()
         }).catch(err => {
-            this.props.notify('error','','Changes could not be saved!'+ err.toString());
+            this.props.notify('error', '', 'Changes could not be saved!' + err.toString());
         })
         // this.handle_close_modal()
     }
 
     handle_checkout_button_click = () => {
-        const paid = parseInt(this.state.paid_text_input.value === ""? 0:this.state.paid_text_input.value)
-        if (paid < this.state.minimum_payable){
-            this.props.notify('error','','Payment is less that minimum payable amount.')
+        const paid = parseInt(this.state.paid_text_input.value === "" ? 0 : this.state.paid_text_input.value)
+        if (paid < this.state.minimum_payable) {
+            this.props.notify('error', '', 'Payment is less that minimum payable amount.')
             return;
         }
         else {
@@ -211,26 +211,26 @@ class ProcedureModal extends Component {
                 appointment_id: this.props.appointment_id
             }
             const that = this;
-            Axios.post(CHECKOUT_APPOINTMENT,payload).then(res => {
-                this.props.notify('info','',res.data.message)
+            Axios.post(CHECKOUT_APPOINTMENT, payload).then(res => {
+                this.props.notify('info', '', res.data.message)
                 // this.props.update_appointment(this.props.appointment_id)
-                
+
                 this.props.clear_todays_appointments();
                 this.props.load_todays_appointments(localStorage.getItem('Gh65$p3a008#2C'));
-                setTimeout(()=>{
+                setTimeout(() => {
                     this.handle_close_modal();
-                },1000)
+                }, 1000)
             }).catch(err => {
-                if (err.response){
-                    if (err.response.status === 400){
-                        that.props.notify('error','',err.response.data.message);
+                if (err.response) {
+                    if (err.response.status === 400) {
+                        that.props.notify('error', '', err.response.data.message);
                     }
                     else {
-                        that.props.notify('error','',err.response.data.message);
+                        that.props.notify('error', '', err.response.data.message);
                     }
                 }
                 else {
-                    that.props.notify('error','', err.toString());
+                    that.props.notify('error', '', err.toString());
                 }
             })
         }
@@ -343,14 +343,29 @@ class ProcedureModal extends Component {
                         </div>
                     </div>
                     <hr className="mt-1 mb-1" />
+                    <div className="table-responsive">
+                        <table className="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Procedure reason</th>
+                                    <th>Charges</th>
+                                    <th>Discount</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    this.show_procedures()
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                     {/* 
                     
                     procedure modals
                     
                     */}
-                    {
-                        this.show_procedures()
-                    }
+
 
                     <div style={{ float: "left", clear: "both" }}
                         ref={(el) => { this.last_element = el; }}>
