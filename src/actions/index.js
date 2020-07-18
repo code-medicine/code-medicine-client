@@ -52,7 +52,7 @@ export function load_todays_appointments(date){
     return function(dispatch){
         // let d = new Date();
         // d = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
-        Axios.get(`${SEARCH_TODAYS_APPOINTMENTS_URL}?tag=${date}`)
+        Axios.get(`${SEARCH_TODAYS_APPOINTMENTS_URL}?tag=${new Date(date)}`)
         .then(res => {
             dispatch({
                 type: TODAYS_PATIENT,

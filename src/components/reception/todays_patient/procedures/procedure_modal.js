@@ -399,7 +399,7 @@ class ProcedureModal extends Component {
                         Cancel
                     </button>
                     <button
-                        disabled={this.state.procedures_list.length === 0}
+                        // disabled={this.state.procedures_list.length === 0}
                         type="button"
                         className="btn bg-dark btn-labeled btn-labeled-right pr-5 mt-1"
                         style={{ textTransform: "inherit" }}
@@ -409,7 +409,7 @@ class ProcedureModal extends Component {
                         Save
                     </button>
                     <button
-                        disabled={this.state.procedures_list.length === 0}
+                        // disabled={this.state.procedures_list.length === 0}
                         type="button"
                         className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5 mt-1"
                         style={{ textTransform: "inherit" }}

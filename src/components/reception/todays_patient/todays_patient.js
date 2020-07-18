@@ -58,8 +58,13 @@ class Todayspatient extends Component {
             Reception
         </Link>, <span className="breadcrumb-item active">Today's Patient</span>]
         this.props.set_active_page(routes)
-        this.props.load_todays_appointments(this.state.search_date.value)
-        localStorage.setItem('Gh65$p3a008#2C',this.state.search_date.value)
+        if (localStorage.getItem('Gh65$p3a008#2C')) {
+            this.setState({ search_date: { value: localStorage.getItem('Gh65$p3a008#2C') } }, () => this.props.load_todays_appointments(this.state.search_date.value))
+        } else {
+            this.props.load_todays_appointments(this.state.search_date.value)
+            localStorage.setItem('Gh65$p3a008#2C', this.state.search_date.value)
+        }
+
     }
 
     async request(_data, _url, _method = "post") {
@@ -118,7 +123,7 @@ class Todayspatient extends Component {
         }
     }
 
-    
+
 
     componentWillReceiveProps(new_props) {
         if (new_props.todays_patient) {
@@ -191,7 +196,7 @@ class Todayspatient extends Component {
             return
         }
         return (data.map((booking, i) => {
-            console.log('booking',booking)
+            console.log('booking', booking)
             // var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
             const hidden_data = {
                 appointment_description: booking.appointment_description
@@ -351,7 +356,7 @@ class Todayspatient extends Component {
     }
 
     todays_date_change = (e) => {
-        if (e === ''){
+        if (e === '') {
             this.setState({ search_date: { value: '' } })
         }
         else {
@@ -360,7 +365,7 @@ class Todayspatient extends Component {
                 configured_date = e.format('ll');
                 this.props.clear_todays_appointments()
                 this.props.load_todays_appointments(configured_date)
-                localStorage.setItem('Gh65$p3a008#2C',configured_date)
+                localStorage.setItem('Gh65$p3a008#2C', configured_date)
             }
             catch (err) {
                 configured_date = ''
@@ -517,9 +522,9 @@ class Todayspatient extends Component {
                     <DateTimePicker id="dob_text_input"
                         onChange={this.todays_date_change}
                         className="clock_datatime_picker "
-                        inputProps={{ 
-                            placeholder: 'Select Date', 
-                            width: '100%', 
+                        inputProps={{
+                            placeholder: 'Select Date',
+                            width: '100%',
                             className: `form-control bg-teal-400 border-teal-400`
                         }}
                         input={true}
@@ -527,8 +532,8 @@ class Todayspatient extends Component {
                         timeFormat={false}
                         closeOnSelect={true}
                         value={this.state.search_date.value}
-                        
-                        onClick={() => console.log('date select',this.state.search_date.value)}
+
+                        onClick={() => console.log('date select', this.state.search_date.value)}
                     />
                     <button className="btn bg-teal-400 border-teal-400 text-teal-400 btn-sm ml-2" onClick={() => {
                         this.props.clear_todays_appointments()
