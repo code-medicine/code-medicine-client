@@ -4,7 +4,7 @@ import Select, { components } from 'react-select'
 import Axios from 'axios';
 import {
     SEARCH_BY_ID_USER_REQUEST,
-    SEARCH_USER_REQUEST, BASE_PROCEDURES_URL,
+    SEARCH_USER_REQUEST, BASE_PROCEDURES_URL, USERS_SEARCH_BY_ID, USERS_SEARCH_BY_CREDENTIALS,
 } from '../../../shared/rest_end_points';
 import { connect } from "react-redux";
 import { notify, set_active_page, load_todays_appointments, clear_todays_appointments } from '../../../actions';
@@ -84,10 +84,10 @@ class Todayspatient extends Component {
 
     async render_users(string, role) {
 
-        const query = `${SEARCH_USER_REQUEST}?search=${string}&role=${role}`
-        const res_users = await this.request({}, query, 'get')
-        let temp_users = []
-        if (res_users.data['status']) {
+        const query = `${USERS_SEARCH_BY_CREDENTIALS}?search=${string}&role=${role}`
+        try {
+            const res_users = await this.request({}, query, 'get')
+            let temp_users = []
             for (var i = 0; i < res_users.data.payload['count']; ++i) {
                 const t_user = res_users.data.payload['users'][i]
                 temp_users.push({
@@ -102,6 +102,9 @@ class Todayspatient extends Component {
             else if (role === 'Doctor') {
                 this.setState({ doctors: temp_users })
             }
+        }
+        catch (error) {
+            console.error('error', error);
         }
     }
 
@@ -178,16 +181,10 @@ class Todayspatient extends Component {
         this.setState({
             user_preview_modal_visibility: true
         }, () => {
-            Axios.post(SEARCH_BY_ID_USER_REQUEST, {
-                user_id: id
-            }).then(res => {
-                if (res.data.status === true) {
-                    this.setState({
-                        user_modal_props: res.data.payload.user
-                    })
-                }
+            Axios.post(USERS_SEARCH_BY_ID, { user_id: id }).then(res => {
+                this.setState({ user_modal_props: res.data.payload.user })
             }).catch(err => {
-                console.log('failed to fetch user')
+                console.log('failed to fetch user', err)
             })
         })
     }
@@ -196,7 +193,6 @@ class Todayspatient extends Component {
             return
         }
         return (data.map((booking, i) => {
-            console.log('booking', booking)
             // var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
             const hidden_data = {
                 appointment_description: booking.appointment_description

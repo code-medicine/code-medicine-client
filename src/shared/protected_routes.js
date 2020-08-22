@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { LOGIN_URL } from './router_constants';
 import { connect } from 'react-redux';
 import Axios from 'axios';
-import { PROFILE_USER_REQUEST } from './rest_end_points';
+import { PROFILE_USER_REQUEST, USERS_SEARCH_BY_TOKEN } from './rest_end_points';
 import {set_active_user} from '../actions'
 import { Route, Redirect } from 'react-router-dom';
 import _ from 'lodash'
@@ -23,15 +23,12 @@ class ProtectedRoutes extends Component {
     authorize_token = (token) => {
         if (_.isEmpty(this.props.active_user)){
             if (token !== null){
-                Axios.get(`${PROFILE_USER_REQUEST}?tag=${token}`).then(res => {
-                    if (res.data.status === true){
-                        this.props.set_active_user(res.data['payload'])
-                    }else{
-                        localStorage.clear()
-                        this.props.set_active_user({})
-                    }
+                Axios.get(`${USERS_SEARCH_BY_TOKEN}?tag=${token}`).then(res => {
+                    this.props.set_active_user(res.data['payload'])
                 }).catch(err => {
                     console.log(err)
+                    localStorage.clear()
+                    this.props.set_active_user({})
                 })
             }
         }

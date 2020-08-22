@@ -5,7 +5,7 @@ import { NOTIFY, LEFT_SIDEBAR,
     TODAYS_PATIENT_CLEAR, 
     TODAYS_PATIENT_APPOINTMENT_UPDATE } from "../shared/action_constants";
 import Axios from "axios";
-import { SEARCH_TODAYS_APPOINTMENTS_URL, SEARCH_APPOINTMENT_BY_ID } from "../shared/rest_end_points";
+import { SEARCH_TODAYS_APPOINTMENTS_URL, SEARCH_APPOINTMENT_BY_ID, APPOINTMENTS_SEARCH_TODAY } from "../shared/rest_end_points";
 
 Axios.interceptors.request.use(request => {
     var user = localStorage.getItem('user');
@@ -52,7 +52,7 @@ export function load_todays_appointments(date){
     return function(dispatch){
         // let d = new Date();
         // d = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
-        Axios.get(`${SEARCH_TODAYS_APPOINTMENTS_URL}?tag=${new Date(date)}`)
+        Axios.get(`${APPOINTMENTS_SEARCH_TODAY}?tag=${new Date(date)}`)
         .then(res => {
             dispatch({
                 type: TODAYS_PATIENT,
@@ -65,8 +65,7 @@ export function load_todays_appointments(date){
                 type: TODAYS_PATIENT,
                 payload: {
                     data: {
-                        status: false, 
-                        message: "Network Error", 
+                        message: err, 
                         loading: false
                     }
                 }

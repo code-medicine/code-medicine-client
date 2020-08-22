@@ -9,7 +9,7 @@ import { notify, set_active_user } from '../../../actions';
 import Inputfield from '../../../shared/customs/inputfield/inputfield';
 
 import { BASE_URL, REGISTER_URL, LOGIN_URL, FORGOT_PASSWORD } from '../../../shared/router_constants';
-import { LOGIN_USER_REQUEST } from '../../../shared/rest_end_points';
+import { USERS_LOGIN } from '../../../shared/rest_end_points';
 
 
 class Login extends Component {
@@ -70,26 +70,18 @@ class Login extends Component {
             password: this.state.password.value.trim(),
             remember_me: this.state.remember_me_option
         }
-        Axios.post(LOGIN_USER_REQUEST, data).then(res => {
+        Axios.post(USERS_LOGIN, data).then(res => {
             this.setState({ loading_status: false })
-            if (res.data['status']) {
-                localStorage.setItem("user", res.data['token'])
-                this.props.notify('success', '', res.data['message'])
-                this.props.history.push(BASE_URL)
-            }
-            else {
-                this.props.notify('error', '', res.data['message'])
-                this.setState({
-                    email: { value: this.state.email.value, error: true },
-                    password: { value: this.state.password.value, error: true }
-                })
-            }
+            localStorage.setItem("user", res.data['token'])
+            this.props.notify('success', '', res.data['message'])
+            this.props.history.push(BASE_URL)
         }).catch(err => {
             this.props.notify('error', '', 'Server not responding! please try again later')
+            // this.props.notify('error', '', res.data['message'])
             this.setState({
                 loading_status: false,
-                email: { value: '', error: false },
-                password: { value: '', error: false }
+                email: { value: this.state.email.value, error: true },
+                password: { value: this.state.password.value, error: true }
             })
         });
     }

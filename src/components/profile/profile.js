@@ -4,7 +4,7 @@ import { Link, withRouter } from 'react-router-dom';
 import NO_PICTURE from '../../resources/images/placeholder.jpg'
 import { connect } from "react-redux";
 import Axios from 'axios';
-import { PROFILE_USER_REQUEST, PROFILE_UPDATE_USER_REQUEST } from '../../shared/rest_end_points';
+import { USERS_SEARCH_BY_TOKEN, USERS_UPDATE } from '../../shared/rest_end_points';
 import { LOGIN_URL, BASE_URL } from '../../shared/router_constants';
 import { set_active_user, notify, set_active_page } from '../../actions'
 import Inputfield from '../../shared/customs/inputfield/inputfield';
@@ -45,7 +45,7 @@ class Profile extends Component {
         this.props.set_active_page(routes)
         if (localStorage.user) {
             this.setState({ loading_status: true }, () => {
-                Axios.get(`${PROFILE_USER_REQUEST}?tag=${localStorage.user}`).then(res => {
+                Axios.get(`${USERS_SEARCH_BY_TOKEN}?tag=${localStorage.user}`).then(res => {
                     if (!res.data['status']) {
                         this.props.history.push(LOGIN_URL)
                     }
@@ -80,7 +80,7 @@ class Profile extends Component {
 
     request_update = (data) => {
         this.setState({ loading_status: true }, () => {
-            Axios.put(PROFILE_UPDATE_USER_REQUEST, data, { headers: { 'code-medicine': localStorage.getItem('user') } }).then(res => {
+            Axios.put(USERS_UPDATE, data, { headers: { 'code-medicine': localStorage.getItem('user') } }).then(res => {
                 if (res.data.status === true) {
                     this.setState({ loading_status: false })
                     this.props.notify('success', '', res.data.message)

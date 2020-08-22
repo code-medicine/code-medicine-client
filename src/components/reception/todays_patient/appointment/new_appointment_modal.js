@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap4-modal';
 import DateTimePicker from 'react-datetime';
 import moment from 'moment';
 import Axios from 'axios';
-import { NEW_APPOINTMENT_URL, SEARCH_USER_REQUEST } from '../../../../shared/rest_end_points';
+import { USERS_SEARCH_BY_CREDENTIALS, APPOINTMENTS_CREATE } from '../../../../shared/rest_end_points';
 import { notify, load_todays_appointments, clear_todays_appointments } from '../../../../actions';
 import { connect } from "react-redux";
 import NewUserModal from '../../../../shared/modals/newusermodal';
@@ -37,10 +37,10 @@ class NewAppointmentModal extends Component {
     async request(_data, _url, _method = "post") {
         try {
             if (_method === 'post') {
-                return await Axios.post(_url, _data, { headers: { 'code-medicine': localStorage.getItem('user') } })
+                return await Axios.post(_url, _data)
             }
             else if (_method === 'get') {
-                return await Axios.get(_url, { headers: { 'code-medicine': localStorage.getItem('user') } })
+                return await Axios.get(_url)
             }
         }
         catch (err) {
@@ -50,11 +50,11 @@ class NewAppointmentModal extends Component {
     }
 
     async render_users(string, role) {
-        const query = `${SEARCH_USER_REQUEST}?search=${string}&role=${role}`
-        const res_users = await this.request({}, query, 'get')
-        let temp_users = []
+        try {
+            const query = `${USERS_SEARCH_BY_CREDENTIALS}?search=${string}&role=${role}`
+            const res_users = await this.request({}, query, 'get')
+            let temp_users = []
 
-        if (res_users.data['status']) {
             for (var i = 0; i < res_users.data.payload['count']; ++i) {
                 const t_user = res_users.data.payload['users'][i]
                 temp_users.push({
@@ -69,6 +69,9 @@ class NewAppointmentModal extends Component {
             else if (role === 'Doctor') {
                 this.setState({ doctors: temp_users })
             }
+        }
+        catch(error) {
+            console.log('error',error);
         }
     }
 
@@ -226,39 +229,37 @@ class NewAppointmentModal extends Component {
             time: this.state.appointment_time.value,
             description: this.state.appointment_reason.value,
         }
-        Axios.post(NEW_APPOINTMENT_URL, data).then(res => {
-            if (res.data.status) {
-                this.props.notify('success', '', res.data.message)
-                this.setState({
-                    appointment_patient: { value: '' },
-                    appointment_doctor: { value: '' },
-                    appointment_date: { value: '' },
-                    appointment_time: { value: '' },
-                    appointment_reason: { value: '' },
-                    patient_select_value: '',
-                    doctor_select_value: '',
-                    loading_status: false,
+        Axios.post(APPOINTMENTS_CREATE, data).then(res => {
+            this.props.notify('success', '', res.data.message)
+            this.setState({
+                appointment_patient: { value: '' },
+                appointment_doctor: { value: '' },
+                appointment_date: { value: '' },
+                appointment_time: { value: '' },
+                appointment_reason: { value: '' },
+                patient_select_value: '',
+                doctor_select_value: '',
+                loading_status: false,
+            })
+            this.props.clear_todays_appointments()
+            this.props.load_todays_appointments(new Date())
+            this.props.close()
 
-                })
-                this.props.clear_todays_appointments()
-                this.props.load_todays_appointments(new Date())
-                this.props.close()
-            }
-            else {
-                this.props.notify('error', '', res.data.message)
+        }).catch(err => {
+            if (err) {
+                if (err.response.status === 200) {
+                    this.props.notify('error', '', err.response.message)
+                    // this.props.notify('error', '', res.data.message)
+                    // this.setState({ loading_status: false })
+                }
+                else {
+                    this.props.notify('error', '', 'Server not responding ' + err.toString())
+                }
+                this.setState({ loading_status: false })
+            } else {
+                this.props.notify('error', '', 'Server not responding')
                 this.setState({ loading_status: false })
             }
-        
-        }).catch(err => {
-            console.log('app add error', err)
-            if (err.response){
-                this.props.notify('error', '', err.response.message)
-            }
-            else{
-                this.props.notify('error', '', 'Server not responding '+ err.toString())
-            }
-            this.setState({ loading_status: false })
-            this.props.close()
         })
     }
     open_new_patient_modal = () => {
@@ -418,7 +419,7 @@ class NewAppointmentModal extends Component {
                         </button>
                     </div>
                     {this.state.loading_status ? <Loading size={150} /> : add_appointment_modal_body}
-                    {this.state.loading_status ? '':<div className="modal-footer">
+                    {this.state.loading_status ? '' : <div className="modal-footer">
                         <Select
                             isClearable
                             menuPlacement="auto"
@@ -434,11 +435,11 @@ class NewAppointmentModal extends Component {
                             }}
                             styles={{
                                 container: base => ({
-                                ...base,
-                                backgroundColor: '',
-                                padding: 0,
-                                borderRadius: 5,
-                                width: '200px'
+                                    ...base,
+                                    backgroundColor: '',
+                                    padding: 0,
+                                    borderRadius: 5,
+                                    width: '200px'
                                 }),
                             }}
                         />

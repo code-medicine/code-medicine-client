@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Loader from 'react-loader-spinner';
 import Axios from 'axios';
-import { REGISTER_USER_REQUEST } from '../../../shared/rest_end_points';
+import { USERS_CREATE } from '../../../shared/rest_end_points';
 import { connect } from "react-redux";
 import { notify } from '../../../actions'
 import 'react-toastify/dist/ReactToastify.css';
@@ -219,7 +219,7 @@ class Register extends Component {
             blood_group: this.state.blood_group.value.trim(),
             address: this.state.address.value.trim()
         }
-        const response = await Axios.post(`${REGISTER_USER_REQUEST}`, data);
+        const response = await Axios.post(USERS_CREATE, data);
         try {
             if (response.data['status']) {
                 this.props.notify('success', '', response.data['message']);

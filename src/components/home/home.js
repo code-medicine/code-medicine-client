@@ -39,12 +39,10 @@ class Home extends Component {
                         </Link>, <span className="breadcrumb-item active">Dashboard</span>]
         this.props.set_active_page(routes)
         const token = localStorage.getItem('user')
-        Axios.get(`${rc.PROFILE_USER_REQUEST}?tag=${token}`).then(res => {
-            if (res.data.status === true) {
-                this.props.set_active_user(res.data['payload'])
-                this.socket = socketIOClient(`${rc.BASE_URL}`)
-                this.socket.on("FromAPI", data => this.order_data(data));
-            }
+        Axios.get(`${rc.USERS_SEARCH_BY_TOKEN}?tag=${token}`).then(res => {
+            this.props.set_active_user(res.data['payload'])
+            this.socket = socketIOClient(`${rc.ROOT_URL}`)
+            this.socket.on("FromAPI", data => this.order_data(data));
         }).catch(err => {
             console.log(err)
         })
@@ -56,6 +54,7 @@ class Home extends Component {
     }
 
     order_data = (data) => {
+        console.log('socket data',data)
         const patients_per_day_raw_data = data.patients_per_day;
         const temp = []
         for (let i = 0; i < patients_per_day_raw_data.length; ++i) {

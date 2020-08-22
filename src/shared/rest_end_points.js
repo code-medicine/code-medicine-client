@@ -1,10 +1,58 @@
 const PROTOCOL = 'http';
 // const ADDRESS = 'ec2-13-211-122-241.ap-southeast-2.compute.amazonaws.com'
-const ADDRESS = '54.79.159.117'
-// const ADDRESS = 'localhost'
+// const ADDRESS = '54.79.159.117'
+const ADDRESS = 'localhost'
 const PORT = 6969;
 
-export const BASE_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
+export const ROOT_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
+
+export const BASE_URL = `${ROOT_URL}/api`;
+ 
+export const USERS_BASE_URL = `${BASE_URL}/users`;
+export const USERS_LOGIN = `${USERS_BASE_URL}/login`;
+export const USERS_CREATE = `${USERS_BASE_URL}/register`;
+export const USERS_UPDATE = `${USERS_BASE_URL}/update`;
+export const USERS_DELETE = `${USERS_BASE_URL}/delete`;
+export const USERS_LOGOUT = `${USERS_BASE_URL}/logout`;
+export const USERS_SEARCH_BY_ID = `${USERS_BASE_URL}/search/id`;
+export const USERS_SEARCH_BY_TOKEN = `${USERS_BASE_URL}/search/token`;
+export const USERS_SEARCH_BY_CREDENTIALS = `${USERS_BASE_URL}/search/credentials`;
+ 
+export const ADMIN_BASE_URL = `${BASE_URL}/admin`;
+export const ADMIN_CREATE_PATIENT = `${ADMIN_BASE_URL}/patient/create`;
+export const ADMIN_UPDATE_PATIENT = `${ADMIN_BASE_URL}/patient/update`;
+export const ADMIN_DELETE_PATIENT = `${ADMIN_BASE_URL}/patient/delete`;
+export const ADMIN_CREATE_DOCTOR =  `${ADMIN_BASE_URL}/doctor/create`;
+export const ADMIN_UPDATE_DOCTOR =  `${ADMIN_BASE_URL}/doctor/update`;
+export const ADMIN_DELETE_DOCTOR =  `${ADMIN_BASE_URL}/doctor/delete`;
+
+export const APPOINTMENTS_BASE_URL = `${BASE_URL}/appointments`;
+export const APPOINTMENTS_CREATE = `${APPOINTMENTS_BASE_URL}/create`;
+export const APPOINTMENTS_UPDATE = `${APPOINTMENTS_BASE_URL}/update`;
+export const APPOINTMENTS_DELETE = `${APPOINTMENTS_BASE_URL}/delete`;
+export const APPOINTMENTS_SEARCH = `${APPOINTMENTS_BASE_URL}/search/id`;
+export const APPOINTMENTS_SEARCH_TODAY = `${APPOINTMENTS_BASE_URL}/search/today`;
+ 
+export const PROCEDURES_BASE_URL = `${BASE_URL}/procedures`;
+export const PROCEDURES_CREATE = `${PROCEDURES_BASE_URL}/create`;
+export const PROCEDURES_UPDATE = `${PROCEDURES_BASE_URL}/update`;
+export const PROCEDURES_DELETE = `${PROCEDURES_BASE_URL}/delete`;
+export const PROCEDURES_SEARCH_BY_ID = `${PROCEDURES_BASE_URL}/search/id`;
+
+export const DOCTORDETAILS_BASE_URL = `${BASE_URL}/doctor/details`;
+export const DOCTORDETAILS_CREATE = `/create`;
+export const DOCTORDETAILS_UPDATE = `/update`;
+export const DOCTORDETAILS_DELETE = `/delete`;
+export const DOCTORDETAILS_SEARCH_BY_ID = `/search/id`;
+
+export const BRANCHES_BASE_URL = `${BASE_URL}/branches`;
+export const BRANCHES_CREATE = `/create`;
+export const BRANCHES_UPDATE = `/update`;
+export const BRANCHES_DELETE = `/delete`;
+export const BRANCHES_SEARCH_BY_ID = `/search/id`;
+
+// --------------------------------------------------------------------------------------------------------------------
+
 
 // All user related end points
 export const BASE_USERS_URL = `${BASE_URL}/users`;
