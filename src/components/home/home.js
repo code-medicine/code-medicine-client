@@ -54,32 +54,51 @@ class Home extends Component {
     }
 
     order_data = (data) => {
-        console.log('socket data',data)
+        console.log('socket data', data)
         const patients_per_day_raw_data = data.patients_per_day;
         const temp = []
-        for (let i = 0; i < patients_per_day_raw_data.length; ++i) {
-            const current_patient = patients_per_day_raw_data[i]
-            temp.push({
-                date: moment(`${current_patient._id.month}/${current_patient._id.day}/${current_patient._id.year}`).format('LL'),
-                count: current_patient.count
-            })
-            if (i === patients_per_day_raw_data.length - 1) {
-                const numenator = data.patient_attended
-                const denomenator = data.patient_left + data.patient_attended
-
-                this.setState({
-                    doctors: data.doctors,
-                    patient_left: data.patient_left,
-                    patient_attended: data.patient_attended,
-                    total_attended: data.total_patients_attended,
-                    total_appointments: data.total_patients_appointments_registered,
-                    checkout_percentage: Math.ceil(( numenator/(denomenator === 0? 1:denomenator) ) * 100),
-                    current_date_time: moment(new Date()).format("LLLL"),
-                    loading_status: false,
-                    patients_per_day: temp.sort(this.compare_dates),
-
+        if (patients_per_day_raw_data.length > 0) {
+            for (let i = 0; i < patients_per_day_raw_data.length; ++i) {
+                const current_patient = patients_per_day_raw_data[i]
+                temp.push({
+                    date: moment(`${current_patient._id.month}/${current_patient._id.day}/${current_patient._id.year}`).format('LL'),
+                    count: current_patient.count
                 })
+                if (i === patients_per_day_raw_data.length - 1) {
+                    const numenator = data.patient_attended
+                    const denomenator = data.patient_left + data.patient_attended
+
+                    this.setState({
+                        doctors: data.doctors,
+                        patient_left: data.patient_left,
+                        patient_attended: data.patient_attended,
+                        total_attended: data.total_patients_attended,
+                        total_appointments: data.total_patients_appointments_registered,
+                        checkout_percentage: Math.ceil((numenator / (denomenator === 0 ? 1 : denomenator)) * 100),
+                        current_date_time: moment(new Date()).format("LLLL"),
+                        loading_status: false,
+                        patients_per_day: temp.sort(this.compare_dates),
+
+                    })
+                }
             }
+        }
+        else {
+            const numenator = data.patient_attended
+            const denomenator = data.patient_left + data.patient_attended
+
+            this.setState({
+                doctors: data.doctors,
+                patient_left: data.patient_left,
+                patient_attended: data.patient_attended,
+                total_attended: data.total_patients_attended,
+                total_appointments: data.total_patients_appointments_registered,
+                checkout_percentage: Math.ceil((numenator / (denomenator === 0 ? 1 : denomenator)) * 100),
+                current_date_time: moment(new Date()).format("LLLL"),
+                loading_status: false,
+                patients_per_day: [],
+
+            })
         }
 
     }

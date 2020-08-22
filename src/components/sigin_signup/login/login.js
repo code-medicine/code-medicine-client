@@ -72,6 +72,7 @@ class Login extends Component {
         }
         Axios.post(USERS_LOGIN, data).then(res => {
             this.setState({ loading_status: false })
+            console.log('user login',res.data)
             localStorage.setItem("user", res.data['token'])
             this.props.notify('success', '', res.data['message'])
             this.props.history.push(BASE_URL)

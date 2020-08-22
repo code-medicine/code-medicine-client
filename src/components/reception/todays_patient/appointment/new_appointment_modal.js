@@ -247,7 +247,7 @@ class NewAppointmentModal extends Component {
 
         }).catch(err => {
             if (err) {
-                if (err.response.status === 200) {
+                if (err.response) {
                     this.props.notify('error', '', err.response.message)
                     // this.props.notify('error', '', res.data.message)
                     // this.setState({ loading_status: false })
@@ -257,7 +257,7 @@ class NewAppointmentModal extends Component {
                 }
                 this.setState({ loading_status: false })
             } else {
-                this.props.notify('error', '', 'Server not responding')
+                this.props.notify('error', '', 'Network error' + err.toString())
                 this.setState({ loading_status: false })
             }
         })

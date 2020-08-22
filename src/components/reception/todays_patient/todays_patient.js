@@ -4,7 +4,7 @@ import Select, { components } from 'react-select'
 import Axios from 'axios';
 import {
     SEARCH_BY_ID_USER_REQUEST,
-    SEARCH_USER_REQUEST, BASE_PROCEDURES_URL, USERS_SEARCH_BY_ID, USERS_SEARCH_BY_CREDENTIALS,
+    SEARCH_USER_REQUEST, BASE_PROCEDURES_URL,PROCEDURES_BASE_URL, USERS_SEARCH_BY_ID, USERS_SEARCH_BY_CREDENTIALS,
 } from '../../../shared/rest_end_points';
 import { connect } from "react-redux";
 import { notify, set_active_page, load_todays_appointments, clear_todays_appointments } from '../../../actions';
@@ -214,7 +214,7 @@ class Todayspatient extends Component {
         this.setState({ procedure_visibility: true }, () => {
             try {
 
-                let response = Axios.post(`${BASE_PROCEDURES_URL}`, { appointment_id: id }, {
+                let response = Axios.post(`${PROCEDURES_BASE_URL}`, { appointment_id: id }, {
                     headers: { 'code-medicine': localStorage.getItem('user') }
                 });
                 response.then((response) => {
