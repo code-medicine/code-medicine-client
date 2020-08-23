@@ -4,7 +4,10 @@ const ADDRESS = '3.23.100.72'
 // const ADDRESS = 'localhost'
 const PORT = 6969;
 
-export const ROOT_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
+//development port
+// export const ROOT_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
+// production url
+export const ROOT_URL = `${PROTOCOL}://${ADDRESS}`;
 
 export const BASE_URL = `${ROOT_URL}/api`;
  
