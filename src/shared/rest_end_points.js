@@ -1,6 +1,6 @@
 const PROTOCOL = 'http';
 // const ADDRESS = 'ec2-13-211-122-241.ap-southeast-2.compute.amazonaws.com'
-const ADDRESS = '3.23.100.72'
+const ADDRESS = '18.188.119.132'
 // const ADDRESS = 'localhost'
 const PORT = 6969;
 
