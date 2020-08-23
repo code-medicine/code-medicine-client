@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { notify, update_appointment, load_todays_appointments, clear_todays_appointments } from '../../../../actions';
 import Axios from 'axios';
 import { UPDATE_APPOINTMENT_CHARGES, GET_APPOINTMENT_CHARGES, CHECKOUT_APPOINTMENT } from '../../../../shared/rest_end_points';
+import Loading from '../../../../shared/customs/loading/loading';
 
 
 class ProcedureModal extends Component {
@@ -21,7 +22,8 @@ class ProcedureModal extends Component {
             total: 0,
             discount: 0,
             minimum_payable: 0,
-            procedures_list: []
+            procedures_list: [],
+            loading_status: true,
         }
     }
 
@@ -70,7 +72,7 @@ class ProcedureModal extends Component {
     add_procedure_click = () => {
         if ((this.state.procedures_list.filter((data) => { return data.type === 'new' })).length === 0) {
             this.add_procedure({
-                id: Math.max.apply(Math, this.state.procedures_list.map(function(obj) { return obj.id })),
+                id: null,//Math.max.apply(Math, this.state.procedures_list.map(function(obj) { return obj.id })),
                 procedure_fee: 0,
                 procedure_discount: 0,
                 procedure_description: '',
@@ -91,29 +93,29 @@ class ProcedureModal extends Component {
                 const temp = [];
                 for (let i = 0; i < prev_list.length; ++i) {
                     temp.push({
-                        id: new_props.prev_procedure_list[i].id,
+                        id: new_props.prev_procedure_list[i]._id,
                         procedure_fee: new_props.prev_procedure_list[i].fee,
                         procedure_discount: new_props.prev_procedure_list[i].discount,
                         procedure_description: new_props.prev_procedure_list[i].description,
                         type: 'previous'
                     })
                     if (i === prev_list.length - 1) {
-                        this.setState({ procedures_list: temp }, () => this.handle_total_values())
+                        this.setState({ procedures_list: temp, loading_status: false }, () => this.handle_total_values())
                     }
                 }
             }
-            if (new_props.appointment_id){
+            if (new_props.appointment_id) {
                 Axios.get(`${GET_APPOINTMENT_CHARGES}?tag=${new_props.appointment_id}`).then(res => {
                     this.setState({
-                        consultancy_fee_text_input: { value: res.data.payload.consultancy === 0? "":res.data.payload.consultancy.toString(), error: false },
-                        discount_text_input: { value: res.data.payload.discount === 0? "":res.data.payload.discount.toString(), error: false },
-                        follow_up_text_input: { value: res.data.payload.follow_up === 0? "":res.data.payload.follow_up.toString(), error: false },
-                        paid_text_input: { value: res.data.payload.paid === 0? "":res.data.payload.paid.toString(), error: false }
+                        consultancy_fee_text_input: { value: res.data.payload.consultancy === 0 ? "" : res.data.payload.consultancy.toString(), error: false },
+                        discount_text_input: { value: res.data.payload.discount === 0 ? "" : res.data.payload.discount.toString(), error: false },
+                        follow_up_text_input: { value: res.data.payload.follow_up === 0 ? "" : res.data.payload.follow_up.toString(), error: false },
+                        paid_text_input: { value: res.data.payload.paid === 0 ? "" : res.data.payload.paid.toString(), error: false }
                     }, () => {
                         this.handle_total_values()
                     })
                 }).catch(err => {
-                    this.props.notify('error','',err.toString())
+                    this.props.notify('error', '', err.toString())
                 })
             }
 
@@ -343,28 +345,27 @@ class ProcedureModal extends Component {
                         </div>
                     </div>
                     <hr className="mt-1 mb-1" />
-                    <div className="table-responsive">
-                        <table className="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Procedure reason</th>
-                                    <th>Charges</th>
-                                    <th>Discount</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    this.show_procedures()
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                    {/* 
-                    
-                    procedure modals
-                    
-                    */}
+
+                    {
+                        this.state.loading_status ? <div className={`d-flex justify-content-center`}><Loading size={150} /></div> :
+                            <div className="table-responsive px-1">
+                                <table className="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th className={`border-0`}>Procedure reason</th>
+                                            <th className={`border-0`}>Charges</th>
+                                            <th className={`border-0`}>Discount</th>
+                                            <th className={`border-0`}>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            this.show_procedures()
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                    }
 
 
                     <div style={{ float: "left", clear: "both" }}

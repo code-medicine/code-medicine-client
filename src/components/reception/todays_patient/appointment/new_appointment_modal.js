@@ -54,7 +54,7 @@ class NewAppointmentModal extends Component {
             const query = `${USERS_SEARCH_BY_CREDENTIALS}?search=${string}&role=${role}`
             const res_users = await this.request({}, query, 'get')
             let temp_users = []
-
+            console.log('users...',res_users)
             for (var i = 0; i < res_users.data.payload['count']; ++i) {
                 const t_user = res_users.data.payload['users'][i]
                 temp_users.push({

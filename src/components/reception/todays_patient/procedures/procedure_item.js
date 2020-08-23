@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Inputfield from '../../../../shared/customs/inputfield/inputfield';
 import Axios from 'axios';
-import { NEW_PROCEDURES_URL, UPDATE_PROCEDURE_URL, DELETE_PROCEDURE_URL } from '../../../../shared/rest_end_points';
+import { NEW_PROCEDURES_URL, UPDATE_PROCEDURE_URL, DELETE_PROCEDURE_URL, PROCEDURES_CREATE, PROCEDURES_DELETE, PROCEDURES_UPDATE } from '../../../../shared/rest_end_points';
 import Loading from '../../../../shared/customs/loading/loading';
 import { connect } from 'react-redux';
 import { notify } from '../../../../actions';
@@ -55,23 +55,19 @@ class ProcedureItem extends Component {
                 discount: parseInt(this.state.discount_text_input.value),
                 description: this.state.description_text_input.value
             }
-            this.props.save_opp(this.props.index,{ 
-                id: this.props.data.id,
-                fee: parseInt(this.state.charges_text_input.value), 
-                discount: parseInt(this.state.discount_text_input.value), 
-                description: this.state.description_text_input.value 
-            })
-            Axios.put(NEW_PROCEDURES_URL, payload).then(res => {
-                if (res.status === 200) {
-                    console.log('success', res);
-                    this.setState({ save_click_loading: false, edited: false })
-                    this.props.notify('success', '', res.data.message)
-                }
-                else {
-                    console.log('error');
-                    this.setState({ save_click_loading: false, edited: false })
-                    this.props.notify('error', '', res.data.message)
-                }
+
+            Axios.post(PROCEDURES_CREATE, payload).then(res => {
+                this.setState({ save_click_loading: false, edited: false })
+                this.props.notify('success', '', res.data.message)
+                this.props.save_opp(this.props.index, {
+                    id: res.data.payload._id,//this.props.data.id,
+                    fee: res.data.payload.fee, //parseInt(this.state.charges_text_input.value), 
+                    discount: res.data.payload.discount, //parseInt(this.state.discount_text_input.value), 
+                    description: res.data.payload.description,// this.state.description_text_input.value 
+                })
+                // console.log('error');
+                // this.setState({ save_click_loading: false, edited: false })
+                // this.props.notify('error', '', res.data.message)
             }).catch(err => {
                 console.log('error', err)
                 this.setState({ save_click_loading: false, edited: false })
@@ -86,23 +82,20 @@ class ProcedureItem extends Component {
                 discount: parseInt(this.state.discount_text_input.value),
                 description: this.state.description_text_input.value
             }
-            this.props.save_opp(this.props.index,{ 
-                id: this.props.data.id,
-                fee: parseInt(this.state.charges_text_input.value), 
-                discount: parseInt(this.state.discount_text_input.value), 
-                description: this.state.description_text_input.value
-            })
-            Axios.put(UPDATE_PROCEDURE_URL, payload).then(res => {
-                if (res.status === 200) {
-                    console.log('success');
-                    this.setState({ save_click_loading: false, edited: false })
-                    this.props.notify('success', '', res.data.message)
-                }
-                else {
-                    console.log('error');
-                    this.setState({ save_click_loading: false, edited: false })
-                    this.props.notify('error', '', res.data.message)
-                }
+            Axios.put(PROCEDURES_UPDATE, payload).then(res => {
+                console.log('success');
+                this.setState({ save_click_loading: false, edited: false })
+                this.props.notify('success', '', res.data.message)
+                this.props.save_opp(this.props.index, {
+                    id: this.props.data.id,
+                    fee: parseInt(this.state.charges_text_input.value),
+                    discount: parseInt(this.state.discount_text_input.value),
+                    description: this.state.description_text_input.value
+                })
+
+                // console.log('error');
+                // this.setState({ save_click_loading: false, edited: false })
+                // this.props.notify('error', '', res.data.message)
             }).catch(err => {
                 console.log('error', err)
                 this.setState({ save_click_loading: false, edited: false })
@@ -118,25 +111,15 @@ class ProcedureItem extends Component {
          * procedure id
          */
         if (this.props.data.type !== 'new') {
-            const payload = {
-                appointment_id: this.props.appointment_id,
-                procedure_id: this.props.data.id,
-                charges: parseInt(this.state.charges_text_input.value),
-                discount: parseInt(this.state.discount_text_input.value)
-            }
+            const payload = { procedure_id: this.props.data.id }
             this.props.delete_opp(this.props.index)
-            Axios.post(DELETE_PROCEDURE_URL, payload).then(res => {
-                console.log('response', res)
-                if (res.status === 200) {
-                    console.log('success');
-                    this.setState({ save_click_loading: false, edited: false });
-                    this.props.notify('success', '', res.data.message);
-                }
-                else {
-                    console.log('error');
-                    this.setState({ save_click_loading: false, edited: false })
-                    this.props.notify('error', '', res.data.message)
-                }
+            Axios.delete(PROCEDURES_DELETE, { data: payload }).then(res => {
+                console.log('success');
+                this.setState({ save_click_loading: false, edited: false });
+                this.props.notify('success', '', res.data.message);
+                // console.log('error');
+                // this.setState({ save_click_loading: false, edited: false })
+                // this.props.notify('error', '', res.data.message)
             }).catch(err => {
                 console.log('error', err)
                 this.setState({ save_click_loading: false, edited: false })

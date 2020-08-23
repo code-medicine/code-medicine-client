@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import moment from 'moment'
-import { SEARCH_USER_REQUEST, UPDATE_APPOINTMENT_URL } from '../../../../shared/rest_end_points';
+import { SEARCH_USER_REQUEST, UPDATE_APPOINTMENT_URL, APPOINTMENTS_UPDATE, USERS_SEARCH_BY_CREDENTIALS } from '../../../../shared/rest_end_points';
 import Axios from 'axios';
 import Loading from '../../../../shared/customs/loading/loading';
 import Select from 'react-select'
@@ -59,7 +59,7 @@ class UpdateAppointmentModal extends Component {
     }
 
     async render_users(string,role) {
-        const query = `${SEARCH_USER_REQUEST}?search=${string}&role=${role}`
+        const query = `${USERS_SEARCH_BY_CREDENTIALS}?search=${string}&role=${role}`
         const res_users = await this.request({}, query, 'get')
         let temp_users = []
         if (role === 'patient'){
@@ -76,7 +76,7 @@ class UpdateAppointmentModal extends Component {
                 label: `${this.props.payload.doctor_ref.first_name} ${this.props.payload.doctor_ref.last_name} | ${this.props.payload.doctor_ref.phone_number} | ${this.props.payload.doctor_ref.email}`
             })
         }
-        if (res_users.data['status']) {
+        if (res_users.status === 200) {
             for (var i = 0; i < res_users.data.payload['count']; ++i) {
                 const t_user = res_users.data.payload['users'][i]
                 temp_users.push({
@@ -259,22 +259,17 @@ class UpdateAppointmentModal extends Component {
             appointment_description: this.state.appointment_reason.value,
         }
         console.log('data update', data)
-        const that = this;
-        Axios.put(UPDATE_APPOINTMENT_URL,data).then(res => {
-            if (res.data.status === true){
-                that.props.notify('success', '', res.data.message)
-                that.setState({ loading_status: false })
-                that.props.clear_todays_appointments()
-                that.props.load_todays_appointments(localStorage.getItem('Gh65$p3a008#2C'))
-                setTimeout(() => that.props.close(),2000);
-            }
-            else{
-                that.props.notify('error', '', res.data.message)
-                that.setState({ loading_status: false })
-            }
+        Axios.put(APPOINTMENTS_UPDATE, data).then(res => {
+            console.log('res',res)
+            this.props.notify('success', '', res.data.message)
+            this.setState({ loading_status: false })
+            this.props.clear_todays_appointments()
+            this.props.load_todays_appointments(localStorage.getItem('Gh65$p3a008#2C'))
+            setTimeout(() => this.props.close(),2000);
         }).catch(err => {
-            that.props.notify('error','', 'No connection')
-            that.setState({ loading_status: false })
+            console.log('res err',err)
+            this.props.notify('error','', `Network error ${err.toString()}`)
+            this.setState({ loading_status: false })
         })
     }
 
@@ -407,7 +402,7 @@ class UpdateAppointmentModal extends Component {
         return(    
                 <Modal
                     visible={this.props.visibility}
-                    onClickBackdrop={this.props.close}
+                    onClickBackdrop={() => this.props.close()}
                     fade={true}
                     dialogClassName={`modal-dialog-centered modal-lg`}>
 
@@ -420,7 +415,7 @@ class UpdateAppointmentModal extends Component {
                             type="button"
                             className="btn bg-danger btn-labeled btn-labeled-right pr-5"
                             style={{ textTransform: "inherit" }}
-                            onClick={this.props.close}>
+                            onClick={() => this.props.close()}>
                             <b><i className="icon-cross"></i></b>
                             Cancel
                         </button>
@@ -437,9 +432,4 @@ class UpdateAppointmentModal extends Component {
         )
     }
 }
-function map_state_to_props(state) {
-    return { 
-        notify: state.notify 
-    }
-}
-export default connect(map_state_to_props, { notify, load_todays_appointments, clear_todays_appointments })(UpdateAppointmentModal);
+export default connect(null, { notify, load_todays_appointments, clear_todays_appointments })(UpdateAppointmentModal);

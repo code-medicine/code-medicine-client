@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BLOOD_GROUPS_OPTIONS, ROLES_OPTIONS, GENDER_OPTIONS } from '../constant_data';
-import { REGISTER_USER_REQUEST_BY_ADMIN } from '../rest_end_points';
+import { REGISTER_USER_REQUEST_BY_ADMIN, ADMIN_CREATE_PATIENT } from '../rest_end_points';
 import Axios from 'axios';
 import Loading from '../customs/loading/loading';
 // import DateTimePicker from 'react-datetime';
@@ -198,30 +198,15 @@ class NewUserModal extends Component {
             gender: this.state.user_gender.value.trim(),
             blood_group: this.state.user_blood_group.value.trim(),
         }
-
-        var response = await Axios.post(`${REGISTER_USER_REQUEST_BY_ADMIN}`, { 
-            admin_id: this.props.active_user._id, 
-            patient: data 
-        }, { 
-            headers: { 'code-medicine': localStorage.getItem('user') } 
-        });
-
-        try {
-            if (response.data['status']) {
-                this.props.notify('success', '', response.data['message']);
-                this.setState({ loading_status: false }, () => {
-                    this.close_modal()
-                })
-            }
-            else {
-                this.props.notify('error', '', response.data['message'])
-                this.setState({ loading_status: false })
-            }
-        }
-        catch (err) {
-            this.props.notify('error', '', 'No connection! Please try again later')
+        Axios.post(ADMIN_CREATE_PATIENT,{admin_id: this.props.active_user._id, patient: data}).then(response => {
+            this.props.notify('success', '', response.data['message']);
+            this.setState({ loading_status: false }, () => {
+                this.close_modal()
+            })
+        }).catch(err => {
+            this.props.notify('error', '', 'No connection!' + err.toString())
             this.setState({ loading_status: false })
-        }
+        })
     }
 
     close_modal = () => {

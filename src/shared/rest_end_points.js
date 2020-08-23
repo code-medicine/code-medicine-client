@@ -18,7 +18,7 @@ export const USERS_SEARCH_BY_ID = `${USERS_BASE_URL}/search/id`;
 export const USERS_SEARCH_BY_TOKEN = `${USERS_BASE_URL}/search/token`;
 export const USERS_SEARCH_BY_CREDENTIALS = `${USERS_BASE_URL}/search/credentials`;
  
-export const ADMIN_BASE_URL = `${BASE_URL}/admin`;
+export const ADMIN_BASE_URL = `${USERS_BASE_URL}/admin`;
 export const ADMIN_CREATE_PATIENT = `${ADMIN_BASE_URL}/patient/create`;
 export const ADMIN_UPDATE_PATIENT = `${ADMIN_BASE_URL}/patient/update`;
 export const ADMIN_DELETE_PATIENT = `${ADMIN_BASE_URL}/patient/delete`;
@@ -30,7 +30,8 @@ export const APPOINTMENTS_BASE_URL = `${BASE_URL}/appointments`;
 export const APPOINTMENTS_CREATE = `${APPOINTMENTS_BASE_URL}/create`;
 export const APPOINTMENTS_UPDATE = `${APPOINTMENTS_BASE_URL}/update`;
 export const APPOINTMENTS_DELETE = `${APPOINTMENTS_BASE_URL}/delete`;
-export const APPOINTMENTS_SEARCH = `${APPOINTMENTS_BASE_URL}/search/id`;
+export const APPOINTMENTS_SEARCH = `${APPOINTMENTS_BASE_URL}/search`;
+export const APPOINTMENTS_SEARCH_BY_ID = `${APPOINTMENTS_BASE_URL}/search/id`;
 export const APPOINTMENTS_SEARCH_TODAY = `${APPOINTMENTS_BASE_URL}/search/today`;
  
 export const PROCEDURES_BASE_URL = `${BASE_URL}/procedures`;
@@ -38,6 +39,7 @@ export const PROCEDURES_CREATE = `${PROCEDURES_BASE_URL}/create`;
 export const PROCEDURES_UPDATE = `${PROCEDURES_BASE_URL}/update`;
 export const PROCEDURES_DELETE = `${PROCEDURES_BASE_URL}/delete`;
 export const PROCEDURES_SEARCH_BY_ID = `${PROCEDURES_BASE_URL}/search/id`;
+export const PROCEDURES_SEARCH_BY_APPOINTMENT_ID = `${PROCEDURES_BASE_URL}/appointment/id`;
 
 export const DOCTORDETAILS_BASE_URL = `${BASE_URL}/doctor/details`;
 export const DOCTORDETAILS_CREATE = `/create`;

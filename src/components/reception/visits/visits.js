@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Container from '../../../shared/container/container';
-import { SEARCH_USER_REQUEST, SEARCH_APPOINTMENTS_URL, SEARCH_BY_ID_USER_REQUEST } from '../../../shared/rest_end_points';
+import { SEARCH_USER_REQUEST, SEARCH_APPOINTMENTS_URL, SEARCH_BY_ID_USER_REQUEST, USERS_SEARCH_BY_CREDENTIALS, APPOINTMENTS_SEARCH, USERS_SEARCH_BY_ID } from '../../../shared/rest_end_points';
 import Axios from 'axios';
 import { connect } from "react-redux";
 import { notify, set_active_page } from '../../../actions';
@@ -113,10 +113,10 @@ class Visits extends Component {
 
     async render_users(string,role) {
 
-        const query = `${SEARCH_USER_REQUEST}?search=${string}&role=${role}`
+        const query = `${USERS_SEARCH_BY_CREDENTIALS}?search=${string}&role=${role}`
         const res_users = await this.request({}, query, 'get')
         let temp_users = []
-        if (res_users.data['status']) {
+        if (res_users.status === 200) {
             for (var i = 0; i < res_users.data.payload['count']; ++i) {
                 const t_user = res_users.data.payload['users'][i]
                 temp_users.push({
@@ -153,9 +153,9 @@ class Visits extends Component {
 
     populate_appointments = async (data) => {
         this.setState({ loading_status: true })
-        let res_visits = await this.request(data, SEARCH_APPOINTMENTS_URL)
-        if (res_visits === null) return
-        if (res_visits.data.status) {
+        let res_visits = await this.request(data, APPOINTMENTS_SEARCH)
+        if (!res_visits) return
+        if (res_visits.status === 200) {
             this.setState({
                 data: res_visits.data.payload.appointments,
                 total_records_on_this_page: res_visits.data.payload.appointments.length,
@@ -298,13 +298,8 @@ class Visits extends Component {
         }, () => {
             
         })
-        Axios.post(SEARCH_BY_ID_USER_REQUEST, {
-            user_id: id
-        }, {
-            headers: { 'code-medicine': localStorage.getItem('user') }
-        }).then( res => {
-            if (res.data.status === true){
-                console.log(res.data.payload.user)
+        Axios.post(USERS_SEARCH_BY_ID, { user_id: id }).then( res => {
+            if (res.status === 200){
                 this.setState({
                     user_modal_props: res.data.payload.user
                 })

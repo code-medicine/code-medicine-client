@@ -44,9 +44,9 @@ class Invoice extends Component {
             <div className="col-6">
                 <img src={LOGO} className="img-fluid" alt="logo" />
             </div>
-            {this.state.data === null ? <Loading size={150} /> :
+            {this.state.data ?
                 <div className="col-6">
-                    
+
                     <div className="table-responsive card">
                         <table className="table table-hover mb-0">
                             <tbody>
@@ -85,7 +85,8 @@ class Invoice extends Component {
                             </tbody>
                         </table>
                     </div>
-                </div>}
+                </div> : <Loading size={150} />
+            }
         </div>
         const procedures_table = this.state.data !== null && this.state.data.appointment_procedures.length > 0 ? <div className="table-responsive card">
             <table className="table table-hover mb-0">
@@ -104,7 +105,7 @@ class Invoice extends Component {
                 </thead>
                 <tbody>
                     {
-                        this.state.data !== null ?
+                        this.state.data ?
                             this.state.data.appointment_procedures.map((item, i) => {
                                 return (<tr key={i} >
                                     <td className="py-1">
@@ -122,46 +123,36 @@ class Invoice extends Component {
                     }
                 </tbody>
             </table>
-        </div>:''
+        </div> : ''
         const appointment_charges_table = <div className="table-responsive card">
             <table className="table table-hover mb-0">
                 <tbody>
                     <tr>
+                        <td className="py-1">Procedures total fee</td>
                         <td className="py-1">
-                            Procedures total fee
-                </td>
-                        <td className="py-1">
-                            {this.state.data === null ? '' : this.state.data.appointment_charges.procedures}
+                            {this.state.data ? this.state.data.appointment_charges.procedures : ''}
                         </td>
                     </tr>
                     <tr>
+                        <td className="py-1">Consultancy fee</td>
                         <td className="py-1">
-                            Consultancy fee
-                </td>
-                        <td className="py-1">
-                            {this.state.data === null ? '' : this.state.data.appointment_charges.consultancy}
+                            {this.state.data ? this.state.data.appointment_charges.consultancy : ''}
                         </td>
                     </tr>
                     <tr>
+                        <td className="py-1">Follow up fee</td>
                         <td className="py-1">
-                            Follow up fee
-                </td>
-                        <td className="py-1">
-                            {this.state.data === null ? '' : this.state.data.appointment_charges.follow_up}
+                            {this.state.data ? this.state.data.appointment_charges.follow_up : ''}
                         </td>
                     </tr>
                     <tr>
+                        <td className="py-1">Discount on Appointment charges</td>
                         <td className="py-1">
-                            Discount on Appointment charges
-                </td>
-                        <td className="py-1">
-                            {this.state.data === null ? '' : this.state.data.appointment_charges.discount}
+                            {this.state.data ? this.state.data.appointment_charges.discount : ''}
                         </td>
                     </tr>
                     <tr>
-                        <td className="py-1 h5">
-                            Total
-                </td>
+                        <td className="py-1 h5">Total</td>
                         <td className="py-1 h5">
                             {this.get_total()}
                         </td>
@@ -179,10 +170,10 @@ class Invoice extends Component {
                         {table_header}
                         <div className="row">
                             <div className="col-12">
-                                {this.state.data !== null && this.state.data.appointment_procedures.length > 0 ?<h4 className="font-weight-bold">Procedures</h4>:''}
-                                { procedures_table }
+                                {this.state.data !== null && this.state.data.appointment_procedures.length > 0 ? <h4 className="font-weight-bold">Procedures</h4> : ''}
+                                {procedures_table}
                                 <h4 className="font-weight-bold">Appointment Charges</h4>
-                                { appointment_charges_table }
+                                {appointment_charges_table}
                             </div>
                         </div>
 
@@ -190,12 +181,12 @@ class Invoice extends Component {
                 </div>
                 <div className="modal-footer">
                     <button
-                            type="button"
-                            className="btn bg-danger btn-labeled btn-labeled-right btn-sm pr-5"
-                            style={{ textTransform: "inherit" }}
-                            onClick={this.props.close_modal}
-                        >
-                            <b><i className="icon-cross" /></b>Close</button>
+                        type="button"
+                        className="btn bg-danger btn-labeled btn-labeled-right btn-sm pr-5"
+                        style={{ textTransform: "inherit" }}
+                        onClick={this.props.close_modal}
+                    >
+                        <b><i className="icon-cross" /></b>Close</button>
                     <ReactToPrint
                         trigger={() => <button
                             type="button"
@@ -205,7 +196,7 @@ class Invoice extends Component {
                             <b><i className="icon-printer2" /></b>Print</button>}
                         content={() => this.componentRef}
                     />
-                    
+
                 </div>
             </Modal>
         )

@@ -4,7 +4,7 @@ import Select, { components } from 'react-select'
 import Axios from 'axios';
 import {
     SEARCH_BY_ID_USER_REQUEST,
-    SEARCH_USER_REQUEST, BASE_PROCEDURES_URL,PROCEDURES_BASE_URL, USERS_SEARCH_BY_ID, USERS_SEARCH_BY_CREDENTIALS,
+    SEARCH_USER_REQUEST, BASE_PROCEDURES_URL,PROCEDURES_BASE_URL, USERS_SEARCH_BY_ID, USERS_SEARCH_BY_CREDENTIALS, PROCEDURES_SEARCH_BY_APPOINTMENT_ID,
 } from '../../../shared/rest_end_points';
 import { connect } from "react-redux";
 import { notify, set_active_page, load_todays_appointments, clear_todays_appointments } from '../../../actions';
@@ -126,8 +126,6 @@ class Todayspatient extends Component {
         }
     }
 
-
-
     componentWillReceiveProps(new_props) {
         if (new_props.todays_patient) {
             this.setState({
@@ -136,7 +134,6 @@ class Todayspatient extends Component {
             })
         }
     }
-
 
     on_selected_changed = (e, actor) => {
         if (e !== null) {
@@ -188,6 +185,7 @@ class Todayspatient extends Component {
             })
         })
     }
+
     renderDataInRows = (data) => {
         if (data === null) {
             return
@@ -213,21 +211,13 @@ class Todayspatient extends Component {
     openProcedureModalHandler = (id) => {
         this.setState({ procedure_visibility: true }, () => {
             try {
-
-                let response = Axios.post(`${PROCEDURES_BASE_URL}`, { appointment_id: id }, {
-                    headers: { 'code-medicine': localStorage.getItem('user') }
-                });
-                response.then((response) => {
-                    if (response.status === 200) {
-                        this.setState({
-                            prev_procedure_list: response.data.payload,
-                            procedure_appointment_id: id,
-                            invoiceVisitId: 0
-                        });
-                    }
-                    else {
-                        this.props.notify('error', '', response.data.message)
-                    }
+                let response = Axios.get(`${PROCEDURES_SEARCH_BY_APPOINTMENT_ID}?tag=${id}`);
+                response.then((res) => {
+                    this.setState({
+                        prev_procedure_list: res.data.payload,
+                        procedure_appointment_id: id,
+                        invoiceVisitId: 0
+                    });
                 });
             }
             catch (err) {
