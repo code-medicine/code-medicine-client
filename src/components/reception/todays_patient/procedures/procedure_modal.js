@@ -88,7 +88,7 @@ class ProcedureModal extends Component {
     componentWillReceiveProps(new_props) {
         console.log('willReceiveProps', new_props)
         if (new_props.new_procedure_visibility) {
-            if (new_props.prev_procedure_list.length > 0) {
+            if (new_props.prev_procedure_list && new_props.prev_procedure_list.length > 0) {
                 const prev_list = new_props.prev_procedure_list
                 const temp = [];
                 for (let i = 0; i < prev_list.length; ++i) {
@@ -103,6 +103,9 @@ class ProcedureModal extends Component {
                         this.setState({ procedures_list: temp, loading_status: false }, () => this.handle_total_values())
                     }
                 }
+            }
+            else if (new_props.prev_procedure_list && new_props.prev_procedure_list.length === 0) {
+                this.setState({ procedures_list: [], loading_status: false });
             }
             if (new_props.appointment_id) {
                 Axios.get(`${GET_APPOINTMENT_CHARGES}?tag=${new_props.appointment_id}`).then(res => {
