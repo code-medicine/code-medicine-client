@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Modal from "react-bootstrap4-modal";
 import LOGO from '../../../../resources/images/LOGO.png';
 import Axios from 'axios';
-import { GET_INVOICE_DATA } from '../../../../shared/rest_end_points';
+import { APPOINTMENTS_INVOICE } from '../../../../shared/rest_end_points';
 import Loading from '../../../../shared/customs/loading/loading';
 import ReactToPrint from 'react-to-print';
 
@@ -20,7 +20,7 @@ class Invoice extends Component {
     componentWillReceiveProps(new_props, new_state) {
         if (new_props.modal_visibility === true) {
             console.log('fetching data')
-            Axios.get(`${GET_INVOICE_DATA}?tag=${new_props.appointment_id}`).then(res => {
+            Axios.get(`${APPOINTMENTS_INVOICE}?tag=${new_props.appointment_id}`).then(res => {
                 console.log('fetched', res.data)
                 this.setState({ data: res.data.payload, loading: false })
             })
