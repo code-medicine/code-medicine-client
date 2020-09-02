@@ -13,8 +13,8 @@ import Modal from 'react-bootstrap4-modal';
 // import { Link } from 'react-router-dom';
 
 class NewUserModal extends Component {
-        
-    constructor(props){
+
+    constructor(props) {
         super(props);
         this.state = {
             loading_status: false,
@@ -22,13 +22,17 @@ class NewUserModal extends Component {
             user_first_name: { value: '', error: false },
             user_last_name: { value: '', error: false },
             user_email: { value: '', error: false },
-            user_gender: { value: '', error: false },
+            user_gender: { value: 'Male', error: false },
             user_dob: { value: '', error: false },
-            user_blood_group: { value: '', error: false },
+            user_blood_group: { value: 'Unknown', error: false },
             user_role: { value: 'Patient', error: false },
             user_phone_number: { value: '', error: false },
             user_cnic: { value: '', error: false },
         }
+    }
+
+    componentDidMount() {
+
     }
 
     on_text_field_change = (e) => {
@@ -101,39 +105,31 @@ class NewUserModal extends Component {
         }
     }
 
-    check_input = (input,required = true,only_alpha=false,only_numbers=false) => {
+    check_input = (input, required = true, only_alpha = false, only_numbers = false) => {
         const alphabets = /^[A-Za-z]+$/;
         const numbers = /^[0-9]+$/;
-        if (required  && input === ''){
+        if (required && input === '') {
             return true;
         }
-        if (only_alpha && input !== '' && !input.match(alphabets)){
+        if (only_alpha && input !== '' && !input.match(alphabets)) {
             return true;
         }
-        if (only_numbers && input !== '' && !input.match(numbers)){
+        if (only_numbers && input !== '' && !input.match(numbers)) {
             return true;
         }
         return false;
     }
-    check_hard_constraints = (input,include="",length_check="default",val=-1) => {
-        if (!input.includes(include)) {
-            return true;
-        }
-        switch(length_check){
+    check_hard_constraints = (input, include = "", length_check = "default", val = -1) => {
+        if (!input.includes(include)) { return true; }
+        switch (length_check) {
             case 'eq':
-                if (input.length !== val){
-                    return true
-                }
+                if (input.length !== val) { return true }
                 break;
             case 'min':
-                if (input.length < val){
-                    return true
-                }
+                if (input.length < val) { return true }
                 break;
             case 'max':
-                if (input.length > val){
-                    return true
-                }
+                if (input.length > val) { return true }
                 break;
             default:
                 break
@@ -144,47 +140,47 @@ class NewUserModal extends Component {
     on_submit = async () => {
         this.setState({ loading_status: true })
         let error = false
-        if (this.check_input(this.state.user_first_name.value,true,true,false)){
-            this.setState({ user_first_name: { value: this.state.user_first_name.value, error: true }})
+        if (this.check_input(this.state.user_first_name.value, true, true, false)) {
+            this.setState({ user_first_name: { value: this.state.user_first_name.value, error: true } })
             error = true
             // this.props.notify('error','','First name is required')
         }
-        if (this.check_input(this.state.user_last_name.value,true,true)){
-            this.setState({ user_last_name: { value: this.state.user_last_name.value, error: true }})
+        if (this.check_input(this.state.user_last_name.value, true, true)) {
+            this.setState({ user_last_name: { value: this.state.user_last_name.value, error: true } })
             error = true
             // this.props.notify('error','','Last name is required')
         }
-        if (this.check_input(this.state.user_email.value,false,false,false) && 
-                this.check_hard_constraints(this.state.user_email.value,"@")){
-            this.setState({ user_email: { value: this.state.user_email.value, error: true }})
+        if (this.check_input(this.state.user_email.value, false, false, false) &&
+            this.check_hard_constraints(this.state.user_email.value, "@")) {
+            this.setState({ user_email: { value: this.state.user_email.value, error: true } })
             error = true
             // this.props.notify('error','','Email is required')
         }
-        if (this.check_input(this.state.user_phone_number.value,true,false,true) && 
-                this.check_hard_constraints(this.state.user_phone_number.value,"","eq",11)){
-            this.setState({ user_phone_number: { value: this.state.user_phone_number.value, error: true }})
-            error = true 
-        }
-        if (this.check_input(this.state.user_cnic.value,false,false,true) && 
-                this.check_hard_constraints(this.state.user_cnic.value,"","eq",13)){
-            this.setState({ user_cnic: { value: this.state.user_cnic.value, error: true }})
+        if (this.check_input(this.state.user_phone_number.value, true, false, true) &&
+            this.check_hard_constraints(this.state.user_phone_number.value, "", "eq", 11)) {
+            this.setState({ user_phone_number: { value: this.state.user_phone_number.value, error: true } })
             error = true
         }
-        if (this.check_input(this.state.user_dob.value,true)){
-            this.setState({ user_dob: { value: this.state.user_dob.value, error: true }})
+        if (this.check_input(this.state.user_cnic.value, false, false, true) &&
+            this.check_hard_constraints(this.state.user_cnic.value, "", "eq", 13)) {
+            this.setState({ user_cnic: { value: this.state.user_cnic.value, error: true } })
             error = true
         }
-        if (this.check_input(this.state.user_gender.value,true)){
-            this.setState({ user_gender: { value: this.state.user_gender.value, error: true }})
+        // if (this.check_input(this.state.user_dob.value)) {
+        //     this.setState({ user_dob: { value: this.state.user_dob.value, error: true } })
+        //     error = true
+        // }
+        if (this.check_input(this.state.user_gender.value, true)) {
+            this.setState({ user_gender: { value: this.state.user_gender.value, error: true } })
             error = true
         }
-        if (this.check_input(this.state.user_blood_group.value,true)){
-            this.setState({ user_blood_group: { value: this.state.user_blood_group.value, error: true }})
+        if (this.check_input(this.state.user_blood_group.value, true)) {
+            this.setState({ user_blood_group: { value: this.state.user_blood_group.value, error: true } })
             error = true
         }
 
-        if (error === true){
-            this.props.notify('error','','Invalid inputs')
+        if (error === true) {
+            this.props.notify('error', '', 'Invalid inputs')
             this.setState({ loading_status: false })
             return
         }
@@ -198,7 +194,7 @@ class NewUserModal extends Component {
             gender: this.state.user_gender.value.trim(),
             blood_group: this.state.user_blood_group.value.trim(),
         }
-        Axios.post(ADMIN_CREATE_PATIENT,{admin_id: this.props.active_user._id, patient: data}).then(response => {
+        Axios.post(ADMIN_CREATE_PATIENT, { admin_id: this.props.active_user._id, patient: data }).then(response => {
             this.props.notify('success', '', response.data['message']);
             this.setState({ loading_status: false }, () => {
                 this.close_modal()
@@ -212,7 +208,7 @@ class NewUserModal extends Component {
     close_modal = () => {
         this.props.close()
         this.props.call_back()
-        
+
     }
 
     render() {
@@ -259,7 +255,7 @@ class NewUserModal extends Component {
                                 error={this.state.user_phone_number.error} />
                         </div>
                         <div className={`col-md-6  px-3`}>
-                            <Inputfield 
+                            <Inputfield
                                 id={`user_dob_text_input`}
                                 label_tag={'Date of birth'}
                                 icon_class={'icon-calendar3'}
@@ -271,9 +267,9 @@ class NewUserModal extends Component {
                                 on_text_change_listener={this.on_user_date_of_birth_change}
                                 default_value={this.state.user_dob.value}
                                 error={this.state.user_dob.error}
-                                />
+                            />
                         </div>
-                        
+
                     </div>
                     <div className={`row`}>
                         <div className={`col-md-6 px-3`}>
@@ -315,12 +311,13 @@ class NewUserModal extends Component {
                                     id="gender_selection"
                                     onChange={e => this.on_selected_changed(e, 'gender_selection')}
                                     // value={this.state.user_gender.value}
+                                    defaultValue={{ id: 'gender_selection', label: 'Male' }}
                                     styles={{
                                         container: base => ({
-                                        ...base,
-                                        backgroundColor: this.state.user_gender.error? '#FF0000':'',
-                                        padding: 1,
-                                        borderRadius: 5
+                                            ...base,
+                                            backgroundColor: this.state.user_gender.error ? '#FF0000' : '',
+                                            padding: 1,
+                                            borderRadius: 5
                                         }),
                                     }}
                                 />
@@ -337,19 +334,20 @@ class NewUserModal extends Component {
                                     placeholder="Select blood group"
                                     id="blood_group_selection"
                                     onChange={e => this.on_selected_changed(e, 'blood_group_selection')}
+                                    defaultValue={{ id: 'blood_group_selection', label: 'Unknown' }}
                                     styles={{
                                         container: base => ({
-                                        ...base,
-                                        backgroundColor: this.state.user_gender.error? '#FF0000':'',
-                                        padding: 1,
-                                        borderRadius: 5
+                                            ...base,
+                                            backgroundColor: this.state.user_gender.error ? '#FF0000' : '',
+                                            padding: 1,
+                                            borderRadius: 5
                                         }),
                                     }}
                                 />
                             </div>
                             <hr />
                         </div>
-                        <div className={`col-12`} style={{display: 'none'}}>
+                        <div className={`col-12`} style={{ display: 'none' }}>
                             <div className="form-group form-group-feedback form-group-feedback-right">
                                 <Select
                                     isClearable
@@ -361,12 +359,12 @@ class NewUserModal extends Component {
                                     id="role_selection"
                                     value={[{ id: 'role_selection', label: 'Patient' }]}
                                     isDisabled
-                                    
+
                                 />
                             </div>
                         </div>
                         <div className="col-12">
-                        
+
                             <button
                                 type="button"
                                 className="btn bg-teal-400 btn-labeled btn-block btn-labeled-right pr-5"
@@ -377,7 +375,7 @@ class NewUserModal extends Component {
                             </button>
                         </div>
                         <div className="col-12 mt-3">
-                            
+
                             <button
                                 type="button"
                                 className="btn bg-danger btn-labeled btn-block btn-labeled-right pr-5"
@@ -402,9 +400,9 @@ class NewUserModal extends Component {
                     </div>
                 </div> */}
             </div>
-            
+
         </div>
-        return(
+        return (
             <Modal
                 visible={this.props.visibility}
                 onClickBackdrop={this.close_modal}
@@ -416,14 +414,14 @@ class NewUserModal extends Component {
                 </div>
 
                 {this.state.loading_status ? <Loading /> : add_user_modal_body}
-                
+
             </Modal>
         )
     }
 }
 function map_state_to_props(state) {
-    return { 
-        active_user: state.active_user 
+    return {
+        active_user: state.active_user
     }
 }
 export default connect(map_state_to_props, { notify })(NewUserModal)
