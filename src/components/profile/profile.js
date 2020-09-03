@@ -25,9 +25,9 @@ class Profile extends Component {
             last_name: { value: '', error: false },
             email: { value: '', error: false },
             gender: { value: '', error: false },
-            date_of_birth: { value: '', error: false},
+            date_of_birth: { value: '', error: false },
             register_date: { value: '', error: false },
-            blood_group: { value: '' , error: false},
+            blood_group: { value: '', error: false },
             role: { value: '', error: false },
             phone_number: { value: '', error: false },
             cnic: { value: '', error: false },
@@ -37,43 +37,53 @@ class Profile extends Component {
             previous_payload: null,
         };
     }
-    componentDidMount() {        
+    componentDidMount() {
         const routes = [<Link to={BASE_URL} className="breadcrumb-item">
-                        <i className="icon-home2 mr-2"></i> 
+            <i className="icon-home2 mr-2"></i>
                         Home
-                    </Link>,<span className="breadcrumb-item active">Profile</span>]
+                    </Link>, <span className="breadcrumb-item active">Profile</span>]
         this.props.set_active_page(routes)
+        console.log('profile component did mount user',localStorage.user)
         if (localStorage.user) {
             this.setState({ loading_status: true }, () => {
                 Axios.get(`${USERS_SEARCH_BY_TOKEN}?tag=${localStorage.user}`).then(res => {
-                    if (!res.data['status']) {
-                        this.props.history.push(LOGIN_URL)
-                    }
-                    else {
-                        this.props.set_active_user(res.data['payload'])
+                    console.log('res',res)
+                    this.props.set_active_user(res.data['payload'])
 
-                        this.setState({
-                            first_name: { value: res.data.payload.first_name, error: false },
-                            last_name: { value: res.data.payload.last_name, error: false },
-                            email: { value: res.data.payload.email, error: false },
-                            cnic: { value: res.data.payload.cnic, error: false },
-                            phone_number: { value: res.data.payload.phone_number, error: false },
-                            address: { value: res.data.payload.address, error: false },
-                            date_of_birth: { value: moment(res.data.payload.date_of_birth).format('ll'), error: false },
-                            register_date: { value: moment(res.data.payload.register_date).format('lll'), error: false },
-                            blood_group: { value: res.data.payload.blood_group, error: false },
-                            gender: { value: res.data.payload.gender, error: false },
-                            role: { value: res.data.payload.role, error: false },
+                    this.setState({
+                        first_name: { value: res.data.payload.first_name, error: false },
+                        last_name: { value: res.data.payload.last_name, error: false },
+                        email: { value: res.data.payload.email, error: false },
+                        cnic: { value: res.data.payload.cnic, error: false },
+                        phone_number: { value: res.data.payload.phone_number, error: false },
+                        address: { value: res.data.payload.address, error: false },
+                        date_of_birth: { value: moment(res.data.payload.date_of_birth).format('ll'), error: false },
+                        register_date: { value: moment(res.data.payload.register_date).format('lll'), error: false },
+                        blood_group: { value: res.data.payload.blood_group, error: false },
+                        gender: { value: res.data.payload.gender, error: false },
+                        role: { value: res.data.payload.role, error: false },
 
-                            loading_status: false
+                        loading_status: false
 
-                        })
+                    })
+                }).catch(err => {
+                    if (err) {
+                        console.log(err.response)
+                        if (err.response.status >= 500) {
+                            this.props.notify('error', '', `No response`)
+                            this.setState({ loading_status: false })
+                        }
+                        else if (err.response.status >= 400 && err.response.status < 500) {
+                            this.props.notify('info', '', `${err.response.status}. Please refresh the page.`)
+                            this.setState({ loading_status: false })
+                        }
                     }
                 })
             })
 
         }
         else {
+            console.log('profile component did mount','No token found')
             this.props.history.push(LOGIN_URL)
         }
     }
@@ -90,57 +100,57 @@ class Profile extends Component {
                     this.props.notify('error', '', res.data.message)
                 }
             }).catch(err => {
-                    console.log('request error', err)
-                    this.setState({ loading_status: false })
-                    this.props.notify('error', '', err.toString())
-                })
+                console.log('request error', err)
+                this.setState({ loading_status: false })
+                this.props.notify('error', '', err.toString())
+            })
         })
 
     }
 
-    check_input = (input,required = true,only_alpha=false,only_numbers=false) => {
+    check_input = (input, required = true, only_alpha = false, only_numbers = false) => {
         const alphabets = /^[A-Za-z]+$/;
         const numbers = /^[0-9]+$/;
-        if (required  && input === ''){
+        if (required && input === '') {
             return true;
         }
-        if (only_alpha && !input.match(alphabets)){
+        if (only_alpha && !input.match(alphabets)) {
             return true;
         }
-        if (only_numbers && !input.match(numbers)){
+        if (only_numbers && !input.match(numbers)) {
             return true;
         }
     }
 
     on_click_update = () => {
         let status = false;
-        if (this.check_input(this.state.first_name.value,true,true,false)){
-            this.setState({ first_name: { value: this.state.first_name.value, error: true}})
+        if (this.check_input(this.state.first_name.value, true, true, false)) {
+            this.setState({ first_name: { value: this.state.first_name.value, error: true } })
             status = true
         }
 
-        if (this.check_input(this.state.last_name.value,true,true,false)){
-            this.setState({ last_name: { value: this.state.last_name.value, error: true}})
+        if (this.check_input(this.state.last_name.value, true, true, false)) {
+            this.setState({ last_name: { value: this.state.last_name.value, error: true } })
             status = true
         }
 
-        if (this.check_input(this.state.email.value,true,false,false)){
-            this.setState({ email: { value: this.state.email.value, error: true}})
+        if (this.check_input(this.state.email.value, true, false, false)) {
+            this.setState({ email: { value: this.state.email.value, error: true } })
             status = true
         }
 
-        if (this.check_input(this.state.phone_number.value,true,false,true)){
-            this.setState({ phone_number: { value: this.state.phone_number.value, error: true}})
+        if (this.check_input(this.state.phone_number.value, true, false, true)) {
+            this.setState({ phone_number: { value: this.state.phone_number.value, error: true } })
             status = true
         }
 
-        if (this.check_input(this.state.cnic.value,true,false,true)){
-            this.setState({ cnic: { value: this.state.cnic.value, error: true}})
+        if (this.check_input(this.state.cnic.value, true, false, true)) {
+            this.setState({ cnic: { value: this.state.cnic.value, error: true } })
             status = true
         }
 
-        if (status === true){
-            this.props.notify('error','','Invalid input')
+        if (status === true) {
+            this.props.notify('error', '', 'Invalid input')
             return
         }
         const payload = {
@@ -439,7 +449,7 @@ function map_state_to_props(state) {
     return {
         active_user: state.active_user,
         notify: state.notify,
-        
+
     }
 }
 export default connect(map_state_to_props, { set_active_user, notify, set_active_page })(withRouter(Profile));

@@ -72,18 +72,25 @@ class Login extends Component {
         }
         Axios.post(USERS_LOGIN, data).then(res => {
             this.setState({ loading_status: false })
-            console.log('user login',res.data)
+            console.log('user login', res.data)
             localStorage.setItem("user", res.data['token'])
             this.props.notify('success', '', res.data['message'])
             this.props.history.push(BASE_URL)
         }).catch(err => {
-            this.props.notify('error', '', 'Server not responding! please try again later')
-            // this.props.notify('error', '', res.data['message'])
-            this.setState({
-                loading_status: false,
-                email: { value: this.state.email.value, error: true },
-                password: { value: this.state.password.value, error: true }
-            })
+            if (err) {
+                console.log('login',err.response)
+                if (err.response.status >= 500) {
+                    this.props.notify('error', '', 'Server not responding! please try again later')
+                }
+                else if (err.response.status >= 400 && err.response.status < 500) {
+                    this.props.notify('error', '', err.response.data.message)
+                }
+                this.setState({
+                    loading_status: false,
+                    email: { value: this.state.email.value, error: true },
+                    password: { value: this.state.password.value, error: true }
+                })
+            }
         });
     }
 

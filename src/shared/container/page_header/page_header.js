@@ -89,7 +89,9 @@ class Page_header extends Component {
 
                     <div className="header-elements d-none">
                         <div className="breadcrumb justify-content-center py-0">
-                            <Link to={BASE_URL} className="breadcrumb-elements-item">
+                            <Link to={"#"} onClick={() => {
+                                alert("Please mail us on codemedicine29@gmail.com");
+                            }} className="breadcrumb-elements-item">
                                 <i className="icon-comment-discussion mr-2"></i>
                                 Support
                             </Link>
