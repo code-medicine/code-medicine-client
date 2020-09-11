@@ -225,7 +225,7 @@ class NewAppointmentModal extends Component {
         const data = {
             patient: this.state.appointment_patient.value,
             doctor: this.state.appointment_doctor.value,
-            date: this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT',
+            date: `${moment(this.state.appointment_date.value).format('YYYY-MM-DD')}T${moment(this.state.appointment_time.value).format('hh:mm:ss')}Z`,
             time: this.state.appointment_time.value,
             description: this.state.appointment_reason.value,
         }
