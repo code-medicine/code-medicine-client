@@ -59,9 +59,12 @@ class Todayspatient extends Component {
         </Link>, <span className="breadcrumb-item active">Today's Patient</span>]
         this.props.set_active_page(routes)
         if (localStorage.getItem('Gh65$p3a008#2C')) {
-            this.setState({ search_date: { value: localStorage.getItem('Gh65$p3a008#2C') } }, () => this.props.load_todays_appointments(this.state.search_date.value))
+            this.setState({ 
+                search_date: { value: localStorage.getItem('Gh65$p3a008#2C') } 
+            }, () => this.props.load_todays_appointments(this.state.search_date.value))
         } else {
-            this.props.load_todays_appointments(this.state.search_date.value)
+            const app_date = new Date(this.state.search_date.value);
+            this.props.load_todays_appointments(new Date(app_date.getTime() + (app_date.getTimezoneOffset() * 60000)).toISOString())
             localStorage.setItem('Gh65$p3a008#2C', this.state.search_date.value)
         }
 

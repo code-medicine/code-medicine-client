@@ -13,28 +13,28 @@ class Page_header extends Component {
 
     on_logout_button_click = () => {
 
-        Axios.post(LOGOUT_USER_REQUEST,{
+        Axios.post(LOGOUT_USER_REQUEST, {
             token: localStorage.getItem('user')
-        },{
+        }, {
             headers: { 'code-medicine': localStorage.getItem('user') }
         }).then(res => {
-            if (res.data.status === true){
+            if (res.data.status === true) {
                 localStorage.clear()
                 this.props.set_active_user({})
                 this.props.history.push(LOGIN_URL)
-                
+
                 this.props.notify('success', '', res.data.message)
             }
-            else{
+            else {
                 this.props.notify('error', '', res.data.message)
             }
-            
-        })
-        .catch(err => {
-            this.props.notify('error','',err)
-        })
 
-        
+        })
+            .catch(err => {
+                this.props.notify('error', '', err)
+            })
+
+
     }
 
     render() {
@@ -72,9 +72,9 @@ class Page_header extends Component {
                 <div className="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
                     <div className="d-flex">
                         <div className="breadcrumb py-0">
-                            {this.props.active_page !== null? this.props.active_page.map((item,i) => {
+                            {this.props.active_page !== null ? this.props.active_page.map((item, i) => {
                                 return <Fragment key={i}>{item}</Fragment>
-                            }):''}
+                            }) : ''}
                             {/* <Link to="index.html" className="breadcrumb-item">
                                 <i className="icon-home2 mr-2"></i> 
                                 Home
@@ -98,7 +98,7 @@ class Page_header extends Component {
 
                             <div className="breadcrumb-elements-item dropdown p-0">
                                 <Link to={`#`} className="breadcrumb-elements-item dropdown-toggle" data-toggle="dropdown">
-                                    <img src={NOPICTURE} style={{height: 30, width: 30}} className="rounded-circle mr-2" alt="" />
+                                    <img src={NOPICTURE} style={{ height: 30, width: 30 }} className="rounded-circle mr-2" alt="" />
                                     <span className={``}>{this.props.active_user.first_name}</span>
                                 </Link>
 

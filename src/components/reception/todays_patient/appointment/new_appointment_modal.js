@@ -225,7 +225,7 @@ class NewAppointmentModal extends Component {
         const data = {
             patient: this.state.appointment_patient.value,
             doctor: this.state.appointment_doctor.value,
-            date: this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT',
+            date: `${moment(this.state.appointment_date.value).format('YYYY-MM-DD')}T${moment(this.state.appointment_time.value, ["h:mm A"]).format("HH:mm:ss")}Z`,
             time: this.state.appointment_time.value,
             description: this.state.appointment_reason.value,
         }
@@ -242,7 +242,7 @@ class NewAppointmentModal extends Component {
                 loading_status: false,
             })
             this.props.clear_todays_appointments()
-            this.props.load_todays_appointments(new Date())
+            this.props.load_todays_appointments(localStorage.getItem('Gh65$p3a008#2C'))
             this.props.close()
 
         }).catch(err => {
