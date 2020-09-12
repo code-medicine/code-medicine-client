@@ -77,7 +77,7 @@ class Login extends Component {
             this.props.notify('success', '', res.data['message'])
             this.props.history.push(BASE_URL)
         }).catch(err => {
-            if (err) {
+            if (err.response) {
                 console.log('login',err.response)
                 if (err.response.status >= 500) {
                     this.props.notify('error', '', 'Server not responding! please try again later')
@@ -91,6 +91,7 @@ class Login extends Component {
                     password: { value: this.state.password.value, error: true }
                 })
             }
+            console.log('login error', err) 
         });
     }
 
