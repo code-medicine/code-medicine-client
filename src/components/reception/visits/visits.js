@@ -51,9 +51,9 @@ class Visits extends Component {
 
     componentDidMount() {
         const routes = [<Link to={BASE_URL} className="breadcrumb-item">
-                        <i className="icon-user mr-2"></i> 
+            <i className="icon-user mr-2"></i>
                         Reception
-                    </Link>,<span className="breadcrumb-item active">All Apointments</span>]
+                    </Link>, <span className="breadcrumb-item active">All Apointments</span>]
         this.props.set_active_page(routes)
         setInterval(() => {
             this.setState({ today: moment().format('LT') })
@@ -63,7 +63,7 @@ class Visits extends Component {
 
     async request(_data, _url, _method = "post") {
         try {
-            if (_method === 'post'){
+            if (_method === 'post') {
                 this.setState({ previous_query: { data: _data } })
                 return await Axios.post(_url, _data)
             }
@@ -111,7 +111,7 @@ class Visits extends Component {
         }
     }
 
-    async render_users(string,role) {
+    async render_users(string, role) {
 
         const query = `${USERS_SEARCH_BY_CREDENTIALS}?search=${string}&role=${role}`
         const res_users = await this.request({}, query, 'get')
@@ -125,10 +125,10 @@ class Visits extends Component {
                     label: `${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
                 })
             }
-            if (role === 'Patient'){
+            if (role === 'Patient') {
                 this.setState({ patient_list: temp_users })
             }
-            else if (role === 'Doctor'){
+            else if (role === 'Doctor') {
                 this.setState({ doctor_list: temp_users })
             }
         }
@@ -136,17 +136,17 @@ class Visits extends Component {
 
     populate_patients = (string) => {
         if (string.length >= 3) {
-            this.render_users(string,'Patient')
+            this.render_users(string, 'Patient')
         }
-        else{
+        else {
             this.setState({ patient_list: [] })
         }
     }
     populate_doctors = (string) => {
         if (string.length >= 3) {
-            this.render_users(string,'Doctor')
+            this.render_users(string, 'Doctor')
         }
-        else{
+        else {
             this.setState({ doctor_list: [] })
         }
     }
@@ -231,7 +231,7 @@ class Visits extends Component {
             page_number: 0,
             total_records_on_this_page: 0,
             total_pages: 0,
-        },() => {
+        }, () => {
             if (this.state.date_from.value !== '' && this.state.date_to.value !== '') {
                 if (this.state.patient_checkbox === true && this.state.doctor_checkbox === true) {
                     this.populate_appointments({
@@ -280,15 +280,15 @@ class Visits extends Component {
                 this.props.notify('error', '', 'Please specify a range of dates')
             }
         })
-        
+
     }
 
     refresh_button_click = () => {
-        if (this.state.previous_query.data !== null){
+        if (this.state.previous_query.data !== null) {
             this.populate_appointments(this.state.previous_query.data)
         }
-        else{
-            this.props.notify('info','','Select dates and click search button to search')
+        else {
+            this.props.notify('info', '', 'Select dates and click search button to search')
         }
     }
 
@@ -296,10 +296,10 @@ class Visits extends Component {
         this.setState({
             user_preview_modal_visibility: true
         }, () => {
-            
+
         })
-        Axios.post(USERS_SEARCH_BY_ID, { user_id: id }).then( res => {
-            if (res.status === 200){
+        Axios.post(USERS_SEARCH_BY_ID, { user_id: id }).then(res => {
+            if (res.status === 200) {
                 this.setState({
                     user_modal_props: res.data.payload.user
                 })
@@ -307,50 +307,50 @@ class Visits extends Component {
 
         }).catch(err => {
             console.log('failed to fetch user')
-        })        
+        })
     }
 
     renderDataInRows = () => {
         return (this.state.data.map((booking, i) => {
             // var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
-            console.log('booking',booking)
+            console.log('booking', booking)
             const row_data = {
                 date_of_booking: <div ref={(el) => { this[`element_${i}_ref`] = el; }}>
-                                    {booking.appointment_date}
-                                    {/* {`${moment(booking.appointment_date, "YYYY-MM-DDThh:mm:ss").utc().format('LL')}`} */}
-                                </div>,// date of booking
+                    {booking.appointment_date}
+                    {/* {`${moment(booking.appointment_date, "YYYY-MM-DDThh:mm:ss").utc().format('LL')}`} */}
+                </div>,// date of booking
                 time_of_booking: <div>
-                                    {booking.appointment_time}
-                                    {/* {`${moment(booking.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LT')}`} */}
-                                </div>,// time of booking
-                patient_name: <button className="btn btn-outline bg-teal-400 border-teal-400 text-teal-400 btn-sm btn-block zoomIn animated" 
-                                    onClick={() => this.request_user(booking.patient['id']) }>
-                                {booking.patient['first_name'] + ' ' + booking.patient['last_name']}
-                            </button>,// patient_name
-                visit_reason: <span className="d-inline-block text-truncate " style={{maxWidth: "150px"}}>
-                                {booking.appointment_description}
-                            </span>,
-                doctor_name: <button className="btn btn-outline-secondary btn-sm btn-block zoomIn animated" 
-                                    onClick={() => this.request_user(booking.doctor['id'])}>
-                                {booking.doctor['first_name'] + ' ' + booking.doctor['last_name']}
-                            </button>,// doctor name
-                visit_status: <span className={`badge ${booking.appointment_status.info === 'waiting'? 'badge-danger':'badge-primary'}`}>
-                                {booking.appointment_status.info}
-                            </span>,
-                visit_total_charges: <Popup 
-                                    trigger={<div className="">{booking.total_charges}</div>} 
-                                    flowing 
-                                    position='top center' 
-                                    content={
-                                        <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
-                                            <div className={``}>Consultancy: {booking.appointment_charges['consultancy']}</div>
-                                            <div className={``}>Discount: {booking.appointment_charges['discount']}</div>
-                                            <div className={``}>Follow up: {booking.appointment_charges['follow_up']}</div>
-                                            <div className={``}>Procedures: {booking.appointment_charges['procedures']}</div>
-                                            <div className={``}>Paid Amount: {booking.appointment_charges['paid']}</div>
-                                        </div>
-                                    }
-                                />
+                    {booking.appointment_time}
+                    {/* {`${moment(booking.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LT')}`} */}
+                </div>,// time of booking
+                patient_name: <button className="btn btn-outline bg-teal-400 border-teal-400 text-teal-400 btn-sm btn-block zoomIn animated"
+                    onClick={() => this.request_user(booking.patient['id'])}>
+                    {booking.patient['first_name'] + ' ' + booking.patient['last_name']}
+                </button>,// patient_name
+                visit_reason: <span className="d-inline-block text-truncate " style={{ maxWidth: "150px" }}>
+                    {booking.appointment_description}
+                </span>,
+                doctor_name: <button className="btn btn-outline-secondary btn-sm btn-block zoomIn animated"
+                    onClick={() => this.request_user(booking.doctor['id'])}>
+                    {booking.doctor['first_name'] + ' ' + booking.doctor['last_name']}
+                </button>,// doctor name
+                visit_status: <span className={`badge ${booking.appointment_status.info === 'waiting' ? 'badge-danger' : 'badge-primary'}`}>
+                    {booking.appointment_status.info}
+                </span>,
+                visit_total_charges: <Popup
+                    trigger={<div className="">{booking.total_charges}</div>}
+                    flowing
+                    position='top center'
+                    content={
+                        <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
+                            <div className={``}>Consultancy: {booking.appointment_charges['consultancy']}</div>
+                            <div className={``}>Discount: {booking.appointment_charges['discount']}</div>
+                            <div className={``}>Follow up: {booking.appointment_charges['follow_up']}</div>
+                            <div className={``}>Procedures: {booking.appointment_charges['procedures']}</div>
+                            <div className={``}>Paid Amount: {booking.appointment_charges['paid']}</div>
+                        </div>
+                    }
+                />
             }
             const hidden_data = [
                 <h5 className="font-weight-semibold">Reason of visit</h5>,
@@ -374,35 +374,35 @@ class Visits extends Component {
     }
 
     on_previous_button_click = () => {
-        const to_request_page_number = this.state.page_number - 1 
+        const to_request_page_number = this.state.page_number - 1
         const updated = this.state.previous_query
         updated.data.page = to_request_page_number
-        this.setState({page_number: to_request_page_number}, () => {
+        this.setState({ page_number: to_request_page_number }, () => {
             this.populate_appointments(updated.data)
         })
     }
 
     on_page_number_click = (e) => {
-        const to_request_page_number = parseInt(e.target.innerHTML) - 1 
+        const to_request_page_number = parseInt(e.target.innerHTML) - 1
         const updated = this.state.previous_query
         updated.data.page = to_request_page_number
-        this.setState({page_number: to_request_page_number}, () => {
+        this.setState({ page_number: to_request_page_number }, () => {
             this.populate_appointments(updated.data)
         })
     }
 
     on_next_button_click = () => {
-        const to_request_page_number = this.state.page_number + 1  
+        const to_request_page_number = this.state.page_number + 1
         const updated = this.state.previous_query
         updated.data.page = to_request_page_number
-        this.setState({page_number: to_request_page_number}, () => {
+        this.setState({ page_number: to_request_page_number }, () => {
             this.populate_appointments(updated.data)
         })
     }
 
 
     render() {
-        const loading = <Loading size={150}/>
+        const loading = <Loading size={150} />
         var table = ''
         if (this.state.data != null) {
             if (this.state.total_records_on_this_page > 0) {
@@ -432,8 +432,8 @@ class Visits extends Component {
                             <td colSpan="4">
                                 <nav className="mt-2">
                                     <ul className="pagination justify-content-end">
-                                        <li className={`page-item ${this.state.page_number === 0? 'disabled':''}`}>
-                                            <Link 
+                                        <li className={`page-item ${this.state.page_number === 0 ? 'disabled' : ''}`}>
+                                            <Link
                                                 className="page-link"
                                                 to="#"
                                                 onClick={this.on_previous_button_click}>
@@ -441,15 +441,16 @@ class Visits extends Component {
                                             </Link>
                                         </li>
                                         {
-                                        Array(this.state.total_pages).fill().map((item,i) => {
-                                            return <li key={i} className="page-item">
-                                                <Link className="page-link" to="#" onClick={e => this.on_page_number_click(e)}>
-                                                    {i + 1}
-                                                </Link>
-                                            </li>
-                                        })
+                                            this.state.total_pages > 1?
+                                            Array(this.state.total_pages).fill().map((item, i) => {
+                                                return <li key={i} className="page-item">
+                                                    <Link className="page-link" to="#" onClick={e => this.on_page_number_click(e)}>
+                                                        {i + 1}
+                                                    </Link>
+                                                </li>
+                                            }):''
                                         }
-                                        <li className={`page-item ${this.state.page_number === this.state.total_pages-1? 'disabled':''}`}>
+                                        <li className={`page-item ${this.state.page_number === this.state.total_pages - 1 ? 'disabled' : ''}`}>
                                             <Link className="page-link" to="#" onClick={this.on_next_button_click}>Next</Link>
                                         </li>
                                     </ul>
@@ -514,7 +515,7 @@ class Visits extends Component {
                             </div>
                         </div>
                         <div className="col-lg-4 d-flex flex-column-reverse mb-2 pb-1">
-                            
+
                             <div className="row">
                                 <div className="col">
                                     <button
@@ -531,7 +532,7 @@ class Visits extends Component {
                                     </button>
                                 </div>
                                 <div className="col">
-                                    
+
                                     <button
                                         type="button"
                                         className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5 btn-block"
@@ -680,10 +681,10 @@ class Visits extends Component {
                     </div> */}
                 </div>
                 {this.state.loading_status ? loading : table}
-                <UserPreviewModal visibility={this.state.user_preview_modal_visibility} 
+                <UserPreviewModal visibility={this.state.user_preview_modal_visibility}
                     modal_props={this.state.user_modal_props}
-                    on_click_back_drop={() => this.setState({user_preview_modal_visibility: false, user_modal_props: null})}
-                    on_click_cancel={() => this.setState({user_preview_modal_visibility: false, user_modal_props: null})}/>
+                    on_click_back_drop={() => this.setState({ user_preview_modal_visibility: false, user_modal_props: null })}
+                    on_click_cancel={() => this.setState({ user_preview_modal_visibility: false, user_modal_props: null })} />
             </Container>
         )
     }
@@ -691,4 +692,4 @@ class Visits extends Component {
 function map_state_to_props(notify) {
     return { notify }
 }
-export default connect(map_state_to_props, { notify,set_active_page })(withRouter(Visits));
+export default connect(map_state_to_props, { notify, set_active_page })(withRouter(Visits));
