@@ -254,7 +254,7 @@ class UpdateAppointmentModal extends Component {
         const data = {
             appointment_id: this.props.payload.visit_id,
             doctor_id: this.state.appointment_doctor.value,
-            appointment_date: this.state.appointment_date.value + ' ' + this.state.appointment_time.value + ' GMT',
+            appointment_date: `${moment(this.state.appointment_date.value).format('YYYY-MM-DD')}T${moment(this.state.appointment_time.value, ["h:mm A"]).format("HH:mm:ss")}Z`,
             appointment_time: this.state.appointment_time.value,
             appointment_description: this.state.appointment_reason.value,
         }

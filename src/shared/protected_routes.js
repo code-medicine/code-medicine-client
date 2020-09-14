@@ -7,6 +7,7 @@ import {set_active_user} from '../actions'
 import { Route, Redirect } from 'react-router-dom';
 import _ from 'lodash'
 import Loading from './customs/loading/loading';
+import Skeletons from './customs/Skeletons';
 
 class ProtectedRoutes extends Component {
 
@@ -41,7 +42,7 @@ class ProtectedRoutes extends Component {
     render() {
         const { component: Component, ...props } = this.props
 
-        let __html = <div className="d-flex align-items-center justify-content-center" style={{height: '90vh'}}><Loading size={150}/></div>;
+        let __html = <Skeletons />//<div className="d-flex align-items-center justify-content-center" style={{height: '90vh'}}><Loading size={150}/></div>;
 
         /* if user is logged in */
         if (this.check_for_token()) {
