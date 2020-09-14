@@ -18,6 +18,7 @@
     "react-datetime-picker": "^2.9.0",
     "react-dom": "^16.13.1",
     "react-loader-spinner": "^3.1.14",
+    "react-loading-skeleton": "^2.1.1",
     "react-moment": "^0.9.7",
     "react-notifications": "^1.6.0",
     "react-notifications-component": "^2.4.0",
