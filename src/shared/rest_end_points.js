@@ -1,13 +1,20 @@
 const PROTOCOL = 'http';
-// const ADDRESS = 'ec2-13-211-122-241.ap-southeast-2.compute.amazonaws.com'
-// const ADDRESS = '18.188.119.132'
-const ADDRESS = 'localhost'
-const PORT = 6969;
+
+/**
+ * production address
+ */
+const ADDRESS = '18.188.119.132'
+export const ROOT_URL = `${PROTOCOL}://${ADDRESS}`;
+
+/**
+ * developement address
+ */
+// const ADDRESS = 'localhost'
+// const PORT = 6969;
+// export const ROOT_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
 
 // development port
-export const ROOT_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
 // production url
-// export const ROOT_URL = `${PROTOCOL}://${ADDRESS}`;
 
 export const BASE_URL = `${ROOT_URL}/api`;
  
