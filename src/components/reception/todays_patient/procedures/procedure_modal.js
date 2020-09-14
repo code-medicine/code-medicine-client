@@ -389,9 +389,9 @@ class ProcedureModal extends Component {
                         <span className="ml-2 badge badge-light badge-striped badge-striped-left border-left-teal-400">
                             <span className="h6 font-weight-bold mr-1">Bal: {this.calculate_balance()}</span>
                         </span>
-                        <span className="ml-2 badge badge-light badge-striped badge-striped-left border-left-teal-400">
+                        {/* <span className="ml-2 badge badge-light badge-striped badge-striped-left border-left-teal-400">
                             <span className="h6 font-weight-bold mr-1">Due: {this.state.minimum_payable}</span>
-                        </span>
+                        </span> */}
                     </div>
                     <button
                         type="button"
