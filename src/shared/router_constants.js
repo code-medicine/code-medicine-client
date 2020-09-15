@@ -5,3 +5,4 @@ export const PROFILE = '/profile';
 export const RECEPTION_TODAYSPATIIENT = '/todayspatient';
 export const RECEPTION_VISITS = '/visits';
 export const FORGOT_PASSWORD = '/forgot_password';
+export const SEARCH_DOCTORS = '/search_doctors';
