@@ -7,7 +7,7 @@ import {
     PROFILE,
     RECEPTION_TODAYSPATIIENT,
     RECEPTION_VISITS,
-    FORGOT_PASSWORD
+    FORGOT_PASSWORD, SEARCH_DOCTORS
 } from '../shared/router_constants';
 import ProtectedRoute from '../shared/protected_routes';
 import { ToastContainer } from 'react-toastify';
@@ -19,6 +19,7 @@ import Profile from './profile/profile';
 import Todayspatient from './reception/todays_patient/todays_patient';
 import Visits from './reception/visits/visits';
 import ForgotPassword from './sigin_signup/forgot_password/forgot_password';
+import SearchDoctors from './search/doctors';
 
 class Init extends Component {
     render() {
@@ -32,6 +33,8 @@ class Init extends Component {
                     <ProtectedRoute exact path={PROFILE} component={Profile} />
                     <ProtectedRoute exact path={RECEPTION_TODAYSPATIIENT} component={Todayspatient} />
                     <ProtectedRoute exact path={RECEPTION_VISITS} component={Visits} />
+
+                    <ProtectedRoute exact path={SEARCH_DOCTORS} component={SearchDoctors} />
                 </Switch>
                 <ToastContainer hideProgressBar />
             </BrowserRouter>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BASE_URL, LOGIN_URL, RECEPTION_TODAYSPATIIENT, RECEPTION_VISITS } from '../../router_constants';
+import { BASE_URL, LOGIN_URL, RECEPTION_TODAYSPATIIENT, RECEPTION_VISITS, SEARCH_DOCTORS } from '../../router_constants';
 import { connect } from "react-redux";
 import { Link, withRouter } from 'react-router-dom';
 import { set_active_user,notify } from '../../../actions';
@@ -152,7 +152,7 @@ class Left_sidebar extends Component {
                                     data-submenu-title="Home"
                                     style={{display: this.state.search_toggle === ''? 'none':'block'}}>
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Patients<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
-                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Doctors<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                    <li className="nav-item"><Link to={SEARCH_DOCTORS} className="nav-link">Doctors</Link></li>
                                 </ul>
 
                             </li>
