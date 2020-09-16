@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import Inputfield from '../../../../shared/customs/inputfield/inputfield';
 import Axios from 'axios';
-import { NEW_PROCEDURES_URL, UPDATE_PROCEDURE_URL, DELETE_PROCEDURE_URL, PROCEDURES_CREATE, PROCEDURES_DELETE, PROCEDURES_UPDATE } from '../../../../shared/rest_end_points';
+import { PROCEDURES_CREATE, PROCEDURES_DELETE, PROCEDURES_UPDATE } from '../../../../shared/rest_end_points';
 import Loading from '../../../../shared/customs/loading/loading';
 import { connect } from 'react-redux';
 import { notify } from '../../../../actions';

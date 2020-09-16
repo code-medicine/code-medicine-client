@@ -2,10 +2,7 @@ import React, { Component, Fragment } from 'react';
 import Container from '../../../shared/container/container'
 import Select, { components } from 'react-select'
 import Axios from 'axios';
-import {
-    SEARCH_BY_ID_USER_REQUEST,
-    SEARCH_USER_REQUEST, BASE_PROCEDURES_URL,PROCEDURES_BASE_URL, USERS_SEARCH_BY_ID, USERS_SEARCH_BY_CREDENTIALS, PROCEDURES_SEARCH_BY_APPOINTMENT_ID,
-} from '../../../shared/rest_end_points';
+import { USERS_SEARCH_BY_ID, USERS_SEARCH_BY_CREDENTIALS, PROCEDURES_SEARCH_BY_APPOINTMENT_ID } from '../../../shared/rest_end_points';
 import { connect } from "react-redux";
 import { notify, set_active_page, load_todays_appointments, clear_todays_appointments } from '../../../actions';
 import { Link, withRouter } from 'react-router-dom';
@@ -21,6 +18,7 @@ import NewAppointmentModal from './appointment/new_appointment_modal';
 import { Popup } from "semantic-ui-react";
 import { PATIENT_VISIT_STATUSES } from '../../../shared/constant_data';
 import DateTimePicker from 'react-datetime';
+import { Ucfirst } from '../../../shared/functions';
 
 
 class Todayspatient extends Component {
@@ -59,8 +57,8 @@ class Todayspatient extends Component {
         </Link>, <span className="breadcrumb-item active">Today's Patient</span>]
         this.props.set_active_page(routes)
         if (localStorage.getItem('Gh65$p3a008#2C')) {
-            this.setState({ 
-                search_date: { value: localStorage.getItem('Gh65$p3a008#2C') } 
+            this.setState({
+                search_date: { value: localStorage.getItem('Gh65$p3a008#2C') }
             }, () => this.props.load_todays_appointments(this.state.search_date.value))
         } else {
             const app_date = new Date(this.state.search_date.value);
@@ -96,7 +94,7 @@ class Todayspatient extends Component {
                 temp_users.push({
                     id: `${role.toLowerCase()}_selection`,
                     reference: t_user._id,
-                    label: `${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
+                    label: `${Ucfirst(t_user.first_name)} ${Ucfirst(t_user.last_name)} | ${t_user.phone_number} | ${t_user.email}`
                 })
             }
             if (role === 'Patient') {

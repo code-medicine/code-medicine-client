@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Container from '../../../shared/container/container';
-import { SEARCH_USER_REQUEST, SEARCH_APPOINTMENTS_URL, SEARCH_BY_ID_USER_REQUEST, USERS_SEARCH_BY_CREDENTIALS, APPOINTMENTS_SEARCH, USERS_SEARCH_BY_ID } from '../../../shared/rest_end_points';
+import { USERS_SEARCH_BY_CREDENTIALS, APPOINTMENTS_SEARCH, USERS_SEARCH_BY_ID } from '../../../shared/rest_end_points';
 import Axios from 'axios';
 import { connect } from "react-redux";
 import { notify, set_active_page } from '../../../actions';
@@ -17,6 +17,7 @@ import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
 import Loading from '../../../shared/customs/loading/loading';
 import { BASE_URL } from '../../../shared/router_constants';
 import { Popup } from "semantic-ui-react";
+import { Ucfirst } from '../../../shared/functions'
 
 
 class Visits extends Component {
@@ -122,7 +123,7 @@ class Visits extends Component {
                 temp_users.push({
                     id: `${role.toLowerCase()}_list`,
                     reference: t_user._id,
-                    label: `${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
+                    label: `${Ucfirst(t_user.first_name)} ${Ucfirst(t_user.last_name)} | ${t_user.phone_number} | ${t_user.email}`
                 })
             }
             if (role === 'Patient') {
@@ -325,14 +326,14 @@ class Visits extends Component {
                 </div>,// time of booking
                 patient_name: <button className="btn btn-outline bg-teal-400 border-teal-400 text-teal-400 btn-sm btn-block zoomIn animated"
                     onClick={() => this.request_user(booking.patient['id'])}>
-                    {booking.patient['first_name'] + ' ' + booking.patient['last_name']}
+                    {Ucfirst(booking.patient['first_name']) + ' ' + Ucfirst(booking.patient['last_name'])}
                 </button>,// patient_name
                 visit_reason: <span className="d-inline-block text-truncate " style={{ maxWidth: "150px" }}>
                     {booking.appointment_description}
                 </span>,
                 doctor_name: <button className="btn btn-outline-secondary btn-sm btn-block zoomIn animated"
                     onClick={() => this.request_user(booking.doctor['id'])}>
-                    {booking.doctor['first_name'] + ' ' + booking.doctor['last_name']}
+                    {Ucfirst(booking.doctor['first_name']) + ' ' + Ucfirst(booking.doctor['last_name'])}
                 </button>,// doctor name
                 visit_status: <span className={`badge ${booking.appointment_status.info === 'waiting' ? 'badge-danger' : 'badge-primary'}`}>
                     {booking.appointment_status.info}
@@ -441,14 +442,14 @@ class Visits extends Component {
                                             </Link>
                                         </li>
                                         {
-                                            this.state.total_pages > 1?
-                                            Array(this.state.total_pages).fill().map((item, i) => {
-                                                return <li key={i} className="page-item">
-                                                    <Link className="page-link" to="#" onClick={e => this.on_page_number_click(e)}>
-                                                        {i + 1}
-                                                    </Link>
-                                                </li>
-                                            }):''
+                                            this.state.total_pages > 1 ?
+                                                Array(this.state.total_pages).fill().map((item, i) => {
+                                                    return <li key={i} className="page-item">
+                                                        <Link className="page-link" to="#" onClick={e => this.on_page_number_click(e)}>
+                                                            {i + 1}
+                                                        </Link>
+                                                    </li>
+                                                }) : ''
                                         }
                                         <li className={`page-item ${this.state.page_number === this.state.total_pages - 1 ? 'disabled' : ''}`}>
                                             <Link className="page-link" to="#" onClick={this.on_next_button_click}>Next</Link>

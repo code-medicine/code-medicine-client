@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Popup } from "semantic-ui-react";
 import UpdateAppointmentModal from './appointment/update_appointment_modal';
+import { Ucfirst } from '../../../shared/functions'
 
 // import '../../../../node_modules/semantic-ui-css/semantic.min.css';
 
@@ -45,79 +46,79 @@ class TodaysPatientRow extends Component {
     render_read_only_cols = () => {
         const options = {
             charges: <Popup
-                        trigger={
-                            <button className="btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 secondary btn-icon "
-                                onClick={() => this.props.open_procedure_modal(this.props.row_data._id)}>
-                                <i className="icon-plus2"></i>
-                            </button>}
-                        content={
-                            <div className="card card-body bg-teal-400 text-white shadow mr-1 mt-3 py-1">
-                                View or Add procedures
+                trigger={
+                    <button className="btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 secondary btn-icon "
+                        onClick={() => this.props.open_procedure_modal(this.props.row_data._id)}>
+                        <i className="icon-plus2"></i>
+                    </button>}
+                content={
+                    <div className="card card-body bg-teal-400 text-white shadow mr-1 mt-3 py-1">
+                        View or Add procedures
                             </div>
-                        }
-                        flowing
-                        position='left center'
-                    />,
+                }
+                flowing
+                position='left center'
+            />,
             invoice: <Popup
-                        trigger={
-                            <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon ml-2`}
-                                onClick={() => this.props.open_invoice_modal(this.props.row_data._id)}>
-                                <i className={`icon-file-text2`}></i>
-                            </button>}
-                        content={
-                            <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
-                                Generate Invoice
+                trigger={
+                    <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon ml-2`}
+                        onClick={() => this.props.open_invoice_modal(this.props.row_data._id)}>
+                        <i className={`icon-file-text2`}></i>
+                    </button>}
+                content={
+                    <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
+                        Generate Invoice
                             </div>
-                        }
-                        flowing
-                        // hoverable
-                        position='top left'
-                    />,
+                }
+                flowing
+                // hoverable
+                position='top left'
+            />,
             edit: <Popup
-                        trigger={
-                            <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon ml-2`}
-                                onClick={() => this.setState({ update_appointment_modal_visibility: true })}    >
-                                <i className={`icon-pencil3`}></i>
-                            </button>}
-                        flowing
-                        // hoverable
-                        content={
-                            <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
-                                Edit appointment
+                trigger={
+                    <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon ml-2`}
+                        onClick={() => this.setState({ update_appointment_modal_visibility: true })}    >
+                        <i className={`icon-pencil3`}></i>
+                    </button>}
+                flowing
+                // hoverable
+                content={
+                    <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
+                        Edit appointment
                             </div>
-                        }
-                        position='top center'
-                    />,
+                }
+                position='top center'
+            />,
             follow_ups: <Popup
-                            trigger={
-                                <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon ml-2`}
-                                    onClick={() => alert('There are no follow ups')}    >
-                                    <i className={`icon-loop`}></i>
-                                </button>}
-                            flowing
-                            // hoverable
-                            content={
-                                <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
-                                    Follow ups
+                trigger={
+                    <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon ml-2`}
+                        onClick={() => alert('There are no follow ups')}    >
+                        <i className={`icon-loop`}></i>
+                    </button>}
+                flowing
+                // hoverable
+                content={
+                    <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
+                        Follow ups
                                 </div>
-                            }
-                            position='top right'
-                        />,
+                }
+                position='top right'
+            />,
             details: <Popup
-                        trigger={
-                            <button className={`btn btn-outline btn-sm bg-dark border-dark text-dark btn-icon ml-2`}
-                                onClick={this.toggle_row}>
-                                <i className={this.state.toggle_icon}></i>
-                            </button>}
-                        flowing
-                        // hoverable
-                        content={
-                            <div className={`card card-body bg-dark text-white shadow ml-1 mt-3 py-1`}>
-                                Show more details
+                trigger={
+                    <button className={`btn btn-outline btn-sm bg-dark border-dark text-dark btn-icon ml-2`}
+                        onClick={this.toggle_row}>
+                        <i className={this.state.toggle_icon}></i>
+                    </button>}
+                flowing
+                // hoverable
+                content={
+                    <div className={`card card-body bg-dark text-white shadow ml-1 mt-3 py-1`}>
+                        Show more details
                             </div>
-                        }
-                        position='right center'
-                    />
+                }
+                position='right center'
+            />
         }
 
         return (
@@ -130,11 +131,11 @@ class TodaysPatientRow extends Component {
                         <div className={`btn btn-outline bg-teal-400 text-teal-400 btn-block jackInTheBox animated`}
                             style={{ verticalAlign: 'center' }}
                             onClick={() => this.view_user(this.state.row_data.patient['id'])}
-                            >
+                        >
                             <span className={`img-fluid rounded-circle text-white bg-teal-400 h3 p-2`} >
                                 {this.state.row_data.patient['first_name'].charAt(0).toUpperCase() + this.state.row_data.patient['last_name'].charAt(0).toUpperCase()}
                             </span>
-                            <h4 className="mt-2">{this.state.row_data.patient['first_name'] + ' ' + this.state.row_data.patient['last_name']}</h4>
+                            <h4 className="mt-2">{Ucfirst(this.state.row_data.patient['first_name']) + ' ' + Ucfirst(this.state.row_data.patient['last_name'])}</h4>
                             <span><i className="icon-phone-wave mr-1"></i> {this.state.row_data.patient['phone_number']}</span>
                         </div>
                     </div>
@@ -152,12 +153,12 @@ class TodaysPatientRow extends Component {
                             <div className="col-12 font-weight-bold h6">
                                 Appointment with <Link className="text-teal-400 font-weight-bold ml-1" to={"#"}
                                     onClick={() => this.view_user(this.state.row_data.doctor['id'])}>
-                                    {this.state.row_data.doctor['first_name'] + ' ' + this.state.row_data.doctor['last_name']}
+                                    {Ucfirst(this.state.row_data.doctor['first_name']) + ' ' + Ucfirst(this.state.row_data.doctor['last_name'])}
                                     <i className="icon-user-tie ml-1"></i>
                                 </Link>
                                 <span className="text-muted float-lg-right float-md-right float-left">
                                     {`${moment(this.state.row_data.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}
-                                </span> 
+                                </span>
                             </div>
                         </div>
                         {/* Appointment Reason */}
@@ -167,7 +168,7 @@ class TodaysPatientRow extends Component {
                                 <span className=" h6 text-muted">
                                     {` ${this.state.row_data.appointment_description.length > 25 ? this.state.row_data.appointment_description.substring(0, 25) + '...' : this.state.row_data.appointment_description}`}
                                 </span>
-                                <span className={`badge badge-${this.state.row_data.appointment_status.info === 'checked out'? 'primary':'danger'} float-right`}>
+                                <span className={`badge badge-${this.state.row_data.appointment_status.info === 'checked out' ? 'primary' : 'danger'} float-right`}>
                                     {this.state.row_data.appointment_status.info}
                                 </span>
                             </div>
@@ -175,20 +176,20 @@ class TodaysPatientRow extends Component {
                         {/* Appointment Actions */}
                         <div className="row">
                             <div className="col-12">
-                                {!this.state.row_data.appointment_status.is_paid?
-                                <Fragment>
-                                    {options['charges']}
-                                    {options['invoice']}
-                                    {options['edit']}
-                                    {options['follow_ups']}
-                                    {options['details']}
-                                </Fragment>:
-                                <Fragment>
-                                    {options['invoice']}
-                                    {options['follow_ups']}
-                                    {options['details']}
-                                </Fragment>}
-                                
+                                {!this.state.row_data.appointment_status.is_paid ?
+                                    <Fragment>
+                                        {options['charges']}
+                                        {options['invoice']}
+                                        {options['edit']}
+                                        {options['follow_ups']}
+                                        {options['details']}
+                                    </Fragment> :
+                                    <Fragment>
+                                        {options['invoice']}
+                                        {options['follow_ups']}
+                                        {options['details']}
+                                    </Fragment>}
+
                             </div>
                         </div>
                     </div>
@@ -237,7 +238,7 @@ class TodaysPatientRow extends Component {
                             this.render_read_only_cols()
                         }
                     </td>
-                    
+
                 </tr>
                 <tr className="">
                     <td colSpan={`${this.state.col_span + 1}`} className={`${this.state.toggle ? '' : 'py-0'}`}>

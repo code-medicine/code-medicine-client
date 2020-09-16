@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import moment from 'moment'
-import { SEARCH_USER_REQUEST, UPDATE_APPOINTMENT_URL, APPOINTMENTS_UPDATE, USERS_SEARCH_BY_CREDENTIALS } from '../../../../shared/rest_end_points';
+import { APPOINTMENTS_UPDATE, USERS_SEARCH_BY_CREDENTIALS } from '../../../../shared/rest_end_points';
 import Axios from 'axios';
 import Loading from '../../../../shared/customs/loading/loading';
 import Select from 'react-select'
