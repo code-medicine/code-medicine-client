@@ -5,10 +5,9 @@ import { Link } from 'react-router-dom';
 import { notify, set_active_page } from '../../../actions';
 import { BASE_URL } from '../../../shared/router_constants';
 import { USERS_BASE_URL } from '../../../shared/rest_end_points';
-import {Icon } from 'semantic-ui-react';
 import CustomTable from '../../../shared/customs/CustomTable';
 import Axios from 'axios';
-import moment from 'moment'
+import { Ucfirst } from '../../../shared/functions';
 
 
 const headCells = [
@@ -38,6 +37,7 @@ class SearchDoctors extends Component {
         this.load_doctors()
     }
 
+
     load_doctors = () => {
         const query = `${USERS_BASE_URL}?role=Doctor`
         Axios.get(query).then(_doctors => {
@@ -47,12 +47,12 @@ class SearchDoctors extends Component {
                 const temp = []
                 for (let i = 0; i < _doctors.length; ++i) {
                     temp.push({
-                        name: { value: `Dr. ${_doctors[i].first_name} ${_doctors[i].last_name}`, show_status: false },
-                        phone_number: { value: _doctors[i].phone_number, show_status: false },
-                        email: { value: _doctors[i].email, show_status: false },
-                        email_confirmation: { value: _doctors[i].email_confirmation? <i className={`icon-check2 bg-success`}/>:<i className={`icon-cross2 bg-danger`}/>, show_status: true },
-                        date_of_birth: { value: _doctors[i].date_of_birth ? moment(_doctors[i].date_of_birth).format('ll') : <i className={`icon-dash`} />, show_status: false },
-                        gender: { value: _doctors[i].gender === 'Male'? <span className={`badge badge-primary`}>Male</span>:<span className={`badge bg-pink-400`}>Female</span>, show_status: false }
+                        name: `Dr. ${Ucfirst(_doctors[i].first_name)} ${Ucfirst(_doctors[i].last_name)}`,
+                        phone_number: _doctors[i].phone_number,
+                        email: _doctors[i].email,
+                        email_confirmation: _doctors[i].email_confirmation,
+                        date_of_birth: _doctors[i].date_of_birth,
+                        gender: _doctors[i].gender === 'Male' ? <span className={`badge badge-primary`}>Male</span> : <span className={`badge bg-pink-400`}>Female</span>
                     })
                     if (i === _doctors.length - 1) {
                         this.setState({ rows: temp })

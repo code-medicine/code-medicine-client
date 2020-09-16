@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { Table } from 'semantic-ui-react';
+import moment from 'moment'
 
 function customReducer(state, action) {
     switch (action.type) {
@@ -31,6 +32,31 @@ function CustomTable(props) {
     })
     const { column, data, direction } = state
 
+    function isDate(dateStr) {
+        return !isNaN(new Date(dateStr).getDate());
+    }
+    const parse_item = (item) => {
+        if (typeof(item) === 'boolean'){
+            return item? <i className={`icon-check2 bg-success`}/>:<i className={`icon-cross2 bg-danger`}/>
+        }
+        else if (typeof(item) === 'string') {
+            if (isDate(item)){
+                return moment(item).format('ll')
+            }
+            else if(item === ""){
+                return <i className={`icon-dash`} />
+            }
+            else {
+                return item;
+            }
+        }
+        else {
+            if (item === null)
+                return <i className={`icon-dash`} />
+            return item
+        }
+    }
+
     return (
         <Table sortable celled fixed>
             <Table.Header className={`bg-dark`}>
@@ -54,13 +80,16 @@ function CustomTable(props) {
                     data.map((item, i) => (
                         <Table.Row key={item.name}>
                             {
-                                Object.keys(item).map((cell,k) => {
+                                Object.keys(item).map((cell, k) => {
                                     return (
-                                        <Table.Cell 
-                                            key={k}
-                                            >
-                                            <a hred="#">{item[cell].value}</a>
-                                        </Table.Cell>            
+                                        <Table.Cell key={k}>
+                                            {
+                                                parse_item(item[cell])
+                                            }
+                                            {
+                                                console.log('object', item[cell], 'type', typeof (item[cell]))
+                                            }
+                                        </Table.Cell>
                                     )
                                 })
                             }

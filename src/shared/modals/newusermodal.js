@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BLOOD_GROUPS_OPTIONS, ROLES_OPTIONS, GENDER_OPTIONS } from '../constant_data';
-import { REGISTER_USER_REQUEST_BY_ADMIN, ADMIN_CREATE_PATIENT } from '../rest_end_points';
+import { ADMIN_CREATE_PATIENT } from '../rest_end_points';
 import Axios from 'axios';
 import Loading from '../customs/loading/loading';
 // import DateTimePicker from 'react-datetime';

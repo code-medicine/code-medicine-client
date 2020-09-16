@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import { LOGIN_URL } from './router_constants';
 import { connect } from 'react-redux';
 import Axios from 'axios';
-import { PROFILE_USER_REQUEST, USERS_SEARCH_BY_TOKEN } from './rest_end_points';
+import { USERS_SEARCH_BY_TOKEN } from './rest_end_points';
 import {set_active_user} from '../actions'
 import { Route, Redirect } from 'react-router-dom';
 import _ from 'lodash'
-import Loading from './customs/loading/loading';
 import Skeletons from './customs/Skeletons';
 
 class ProtectedRoutes extends Component {
