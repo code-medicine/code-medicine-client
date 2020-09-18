@@ -25,6 +25,9 @@ class Invoice extends Component {
                 this.setState({ data: res.data.payload, loading: false })
             })
         }
+        else {
+            this.setState({ data: null })
+        }
     }
 
     get_total = () => {
@@ -37,6 +40,20 @@ class Invoice extends Component {
             return procedures + consultancy + follow_up - discount;
         }
         return 0;
+    }
+
+    get_balance = () => {
+        if (this.state.data !== null) {
+            const total = this.get_total();
+            const paid = parseInt(this.state.data.appointment_charges.paid);
+
+            return paid - total;
+        }
+        return 0;
+    }
+
+    componentWillUnmount(){
+        this.setState({ data: null })
     }
 
     render() {
@@ -152,9 +169,28 @@ class Invoice extends Component {
                         </td>
                     </tr>
                     <tr>
-                        <td className="py-1 h5">Total</td>
-                        <td className="py-1 h5">
+                        <td className="py-1 h4">Total</td>
+                        <td className="py-1 h4">
                             {this.get_total()}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        const appointment_paid_balance = <div className={`table-responsive card`}>
+            <table className={"table table-hover mb-0"}>
+                <tbody>
+                    <tr>
+                        <td className="py-1">Paid Amount</td>
+                        <td className="py-1">
+                            {this.state.data ? this.state.data.appointment_charges.paid : ''}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td className="py-1">Balance</td>
+                        <td className="py-1">
+                            {this.state.data ? this.get_balance() : ''}
                         </td>
                     </tr>
                 </tbody>
@@ -174,6 +210,14 @@ class Invoice extends Component {
                                 {procedures_table}
                                 <h4 className="font-weight-bold">Appointment Charges</h4>
                                 {appointment_charges_table}
+                                <div className={`row`}>
+                                    <div className={`col-lg-6`}>
+
+                                    </div>
+                                    <div className={`col-lg-6`}>
+                                        {appointment_paid_balance}
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
