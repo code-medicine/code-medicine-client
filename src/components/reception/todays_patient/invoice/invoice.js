@@ -5,6 +5,7 @@ import Axios from 'axios';
 import { APPOINTMENTS_INVOICE } from '../../../../shared/rest_end_points';
 import Loading from '../../../../shared/customs/loading/loading';
 import ReactToPrint from 'react-to-print';
+import moment from 'moment'
 
 
 class Invoice extends Component {
@@ -47,7 +48,7 @@ class Invoice extends Component {
             const total = this.get_total();
             const paid = parseInt(this.state.data.appointment_charges.paid);
 
-            return paid - total;
+            return total - paid;
         }
         return 0;
     }
@@ -97,6 +98,14 @@ class Invoice extends Component {
                                     </td>
                                     <td className="py-1">
                                         <span className="">{`${this.state.data.doctor.first_name} ${this.state.data.doctor.last_name}`}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td className="py-1">
+                                        <span className="font-weight-bold">Date & Time </span>
+                                    </td>
+                                    <td className="py-1">
+                                        <span className="">{`${moment(this.state.data.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LLLL')}`}</span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -188,7 +197,7 @@ class Invoice extends Component {
                         </td>
                     </tr>
                     <tr>
-                        <td className="py-1">Balance</td>
+                        <td className="py-1">Due Amount</td>
                         <td className="py-1">
                             {this.state.data ? this.get_balance() : ''}
                         </td>
