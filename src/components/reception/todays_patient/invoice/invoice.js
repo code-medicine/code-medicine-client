@@ -5,6 +5,7 @@ import Axios from 'axios';
 import { APPOINTMENTS_INVOICE } from '../../../../shared/rest_end_points';
 import Loading from '../../../../shared/customs/loading/loading';
 import ReactToPrint from 'react-to-print';
+import { Ucfirst } from '../../../../shared/functions';
 
 
 class Invoice extends Component {
@@ -58,11 +59,11 @@ class Invoice extends Component {
 
     render() {
         const table_header = <div className="row">
-            <div className="col-6">
+            <div className="col-lg-6">
                 <img src={LOGO} className="img-fluid" alt="logo" />
             </div>
             {this.state.data ?
-                <div className="col-6">
+                <div className="col-lg-6">
 
                     <div className="table-responsive card">
                         <table className="table table-hover mb-0">
@@ -72,7 +73,7 @@ class Invoice extends Component {
                                         <span className="font-weight-bold">MRN# </span>
                                     </td>
                                     <td className="py-1">
-                                        <span className="">{this.props.appointment_id}</span>
+                                        <span className="">{this.state.data.patient.id}</span>
                                     </td>
                                 </tr>
                                 <tr>
@@ -80,7 +81,7 @@ class Invoice extends Component {
                                         <span className="font-weight-bold">Patient </span>
                                     </td>
                                     <td className="py-1">
-                                        <span className="">{`${this.state.data.patient.first_name} ${this.state.data.patient.last_name}`}</span>
+                                        <span className="">{`${Ucfirst(this.state.data.patient.first_name)} ${Ucfirst(this.state.data.patient.last_name)}`}</span>
                                     </td>
                                 </tr>
                                 <tr>
@@ -96,7 +97,7 @@ class Invoice extends Component {
                                         <span className="font-weight-bold">Doctor </span>
                                     </td>
                                     <td className="py-1">
-                                        <span className="">{`${this.state.data.doctor.first_name} ${this.state.data.doctor.last_name}`}</span>
+                                        <span className="">{`${Ucfirst(this.state.data.doctor.first_name)} ${Ucfirst(this.state.data.doctor.last_name)}`}</span>
                                     </td>
                                 </tr>
                             </tbody>

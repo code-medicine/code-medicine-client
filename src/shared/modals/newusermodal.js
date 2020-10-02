@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BLOOD_GROUPS_OPTIONS, ROLES_OPTIONS, GENDER_OPTIONS } from '../constant_data';
+import { BLOOD_GROUPS_OPTIONS, ROLES_OPTIONS, GENDER_OPTIONS, CITIES } from '../constant_data';
 import { ADMIN_CREATE_PATIENT } from '../rest_end_points';
 import Axios from 'axios';
 import Loading from '../customs/loading/loading';
@@ -71,6 +71,9 @@ class NewUserModal extends Component {
                 case 'gender_selection':
                     this.setState({ user_gender: { value: e.label, error: false } })
                     break;
+                case 'city_selection':
+                    this.setState({ user_city: { value: e.label, error: false } })
+                    break;
                 default:
                     break;
             }
@@ -82,6 +85,9 @@ class NewUserModal extends Component {
                     break;
                 case 'gender_selection':
                     this.setState({ user_gender: { value: '', error: false } })
+                    break;
+                case 'city_selection':
+                    this.setState({ user_city: { value: '', error: false } })
                     break;
                 default:
                     break;
@@ -298,70 +304,102 @@ class NewUserModal extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="col-md-4 border border-secondary border-top-0 border-bottom-0 border-right-0 d-flex align-items-center">
+                <div className="col-md-4 border border-secondary border-top-0 border-bottom-0 border-right-0 ">
                     <div className={`row`}>
-                        <div className={`col-12`}>
-                            <div className="form-group form-group-feedback form-group-feedback-right">
-                                <Select
-                                    isClearable
-                                    menuPlacement="auto"
-                                    options={GENDER_OPTIONS}
-                                    classNamePrefix={`form-control`}
-                                    placeholder="Select Gender"
-                                    id="gender_selection"
-                                    onChange={e => this.on_selected_changed(e, 'gender_selection')}
-                                    // value={this.state.user_gender.value}
-                                    defaultValue={{ id: 'gender_selection', label: 'Male' }}
-                                    styles={{
-                                        container: base => ({
-                                            ...base,
-                                            backgroundColor: this.state.user_gender.error ? '#FF0000' : '',
-                                            padding: 1,
-                                            borderRadius: 5
-                                        }),
-                                    }}
-                                />
-                            </div>
+                        <div className={`col-lg-4 d-flex align-items-center`}>
+                            <label>City</label>
                         </div>
-                        <div className={`col-12`}>
-                            <div className="form-group form-group-feedback form-group-feedback-right">
-                                <Select
-                                    isClearable
-                                    menuPlacement="auto"
-                                    options={BLOOD_GROUPS_OPTIONS}
-                                    className={`Select-option`}
-                                    classNamePrefix={`form-control`}
-                                    placeholder="Select blood group"
-                                    id="blood_group_selection"
-                                    onChange={e => this.on_selected_changed(e, 'blood_group_selection')}
-                                    defaultValue={{ id: 'blood_group_selection', label: 'Unknown' }}
-                                    styles={{
-                                        container: base => ({
-                                            ...base,
-                                            backgroundColor: this.state.user_gender.error ? '#FF0000' : '',
-                                            padding: 1,
-                                            borderRadius: 5
-                                        }),
-                                    }}
-                                />
-                            </div>
-                            <hr />
+                        <div className={`col-lg-8`}>
+                            <Select
+                                isClearable
+                                menuPlacement="auto"
+                                options={CITIES}
+                                classNamePrefix={`form-control`}
+                                placeholder="Select City"
+                                id="city_selection"
+                                onChange={e => this.on_selected_changed(e, 'city_selection')}
+                                // value={this.state.user_gender.value}
+                                defaultValue={{ id: 'city_selection', label: 'Lahore' }}
+                                styles={{
+                                    container: base => ({
+                                        ...base,
+                                        backgroundColor: this.state.user_gender.error ? '#FF0000' : '',
+                                        padding: 1,
+                                        borderRadius: 5
+                                    }),
+                                }}
+                            />
                         </div>
-                        <div className={`col-12`} style={{ display: 'none' }}>
-                            <div className="form-group form-group-feedback form-group-feedback-right">
-                                <Select
-                                    isClearable
-                                    menuPlacement="auto"
-                                    options={ROLES_OPTIONS}
-                                    className={`Select-option`}
-                                    classNamePrefix={`form-control`}
-                                    placeholder="Select roles"
-                                    id="role_selection"
-                                    value={[{ id: 'role_selection', label: 'Patient' }]}
-                                    isDisabled
+                    </div>
+                    <div className={`row`}>
+                        <div className={`col-lg-4 d-flex align-items-center`}>
+                            <label>Gender</label>
+                        </div>
+                        <div className={`col-lg-8`}>
+                            <Select
+                                isClearable
+                                menuPlacement="auto"
+                                options={GENDER_OPTIONS}
+                                classNamePrefix={`form-control`}
+                                placeholder="Select Gender"
+                                id="gender_selection"
+                                onChange={e => this.on_selected_changed(e, 'gender_selection')}
+                                // value={this.state.user_gender.value}
+                                defaultValue={{ id: 'gender_selection', label: 'Male' }}
+                                styles={{
+                                    container: base => ({
+                                        ...base,
+                                        backgroundColor: this.state.user_gender.error ? '#FF0000' : '',
+                                        padding: 1,
+                                        borderRadius: 5
+                                    }),
+                                }}
+                            />
+                        </div>
+                    </div>
+                    <div className={`row`}>
+                        <div className={`col-lg-4 d-flex align-items-center`}>
+                            <label>Blood group</label>
+                        </div>
+                        <div className={`col-lg-8`}>
+                            <Select
+                                isClearable
+                                menuPlacement="auto"
+                                options={BLOOD_GROUPS_OPTIONS}
+                                className={`Select-option`}
+                                classNamePrefix={`form-control`}
+                                placeholder="Select blood group"
+                                id="blood_group_selection"
+                                onChange={e => this.on_selected_changed(e, 'blood_group_selection')}
+                                defaultValue={{ id: 'blood_group_selection', label: 'Unknown' }}
+                                styles={{
+                                    container: base => ({
+                                        ...base,
+                                        backgroundColor: this.state.user_gender.error ? '#FF0000' : '',
+                                        padding: 1,
+                                        borderRadius: 5
+                                    }),
+                                }}
+                            />
+                        </div>
+                    </div>
 
-                                />
-                            </div>
+                    <hr />
+
+                    <div className={`row`}>
+                        <div className={`col-12`} style={{ display: 'none' }}>
+                            <Select
+                                isClearable
+                                menuPlacement="auto"
+                                options={ROLES_OPTIONS}
+                                className={`Select-option`}
+                                classNamePrefix={`form-control`}
+                                placeholder="Select roles"
+                                id="role_selection"
+                                value={[{ id: 'role_selection', label: 'Patient' }]}
+                                isDisabled
+
+                            />
                         </div>
                         <div className="col-12">
 
@@ -401,7 +439,7 @@ class NewUserModal extends Component {
                 </div> */}
             </div>
 
-        </div>
+        </div >
         return (
             <Modal
                 visible={this.props.visibility}

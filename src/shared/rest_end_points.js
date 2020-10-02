@@ -3,15 +3,15 @@ const PROTOCOL = 'http';
 /**
  * production address
  */
-const ADDRESS = '18.188.119.132'
-export const ROOT_URL = `${PROTOCOL}://${ADDRESS}`;
+// const ADDRESS = '18.188.119.132'
+// export const ROOT_URL = `${PROTOCOL}://${ADDRESS}`;
 
 /**
  * developement address
  */
-// const ADDRESS = 'localhost'
-// const PORT = 6969;
-// export const ROOT_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
+const ADDRESS = 'localhost'
+const PORT = 6969;
+export const ROOT_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
 
 // development port
 // production url
