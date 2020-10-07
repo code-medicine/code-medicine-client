@@ -44,6 +44,7 @@ class SearchDoctors extends Component {
             console.log('doctors', _doctors)
             if (_doctors.data) {
                 _doctors = _doctors.data.payload;
+                console.log('doctors', _doctors);
                 const temp = []
                 for (let i = 0; i < _doctors.length; ++i) {
                     temp.push({
