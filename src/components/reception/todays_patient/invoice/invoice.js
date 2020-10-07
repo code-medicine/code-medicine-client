@@ -74,7 +74,7 @@ class Invoice extends Component {
                                         <span className="font-weight-bold">MRN# </span>
                                     </td>
                                     <td className="py-1">
-                                        <span className="">{this.state.data.patient.id}</span>
+                                        <span className="">{this.state.data.patient.mrn}</span>
                                     </td>
                                 </tr>
                                 <tr>
