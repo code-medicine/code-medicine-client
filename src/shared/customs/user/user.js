@@ -35,7 +35,7 @@ class User extends Component {
             case 'large':
                 this.setState({
                     text_size: 'h3',
-                    icon_size: 'icon-2x',
+                    icon_size: '',
                     button_size: 'btn-lg',
                     heading_size: 'h1 font-weight-bold'
                 })

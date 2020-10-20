@@ -16,6 +16,7 @@
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
     "react-bootstrap4-modal": "^1.7.4",
+    "react-clock": "^3.0.0",
     "react-datetime": "^2.16.3",
     "react-datetime-picker": "^2.9.0",
     "react-dom": "^16.13.1",

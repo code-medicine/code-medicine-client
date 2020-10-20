@@ -103,7 +103,7 @@ class Invoice extends Component {
                                 </tr>
                                 <tr>
                                     <td className="py-1">
-                                        <span className="font-weight-bold">Date & Time </span>
+                                        <span className="font-weight-bold">Date </span>
                                     </td>
                                     <td className="py-1">
                                         <span className="">{`${moment(this.state.data.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LLLL')}`}</span>

@@ -1,0 +1,36 @@
+.react-clock__face {
+    border-color: #26A69A;
+}
+.react-clock__mark__body {
+    background-color: #26A69A;
+}
+.react-clock__minute-hand__body {
+    background-color: #26A69A;
+}
+
+td.rdtDay {
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+th.dow {
+    padding-right: 0;
+    padding-left: 0;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-weight: bold;
+}
+th.rdtSwitch {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+th.rdtNext {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+th.rdtPrev {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
