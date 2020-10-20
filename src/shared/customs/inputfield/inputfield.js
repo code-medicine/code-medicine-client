@@ -26,7 +26,7 @@ class Inputfield extends Component {
         const _disabled = this.props.disabled
         const _size = this.props.size? this.props.size:'form-control-lg'
 
-        const input_label = <label className="col-form-label-lg mb-0 pb-1">{_label}</label>
+        const input_label = <label className="col-form-label mb-0 pb-1">{_label}{this.props.required? <span className="text-danger"> * </span>:''}</label>
         
         const input_field_type = <input 
                                     type={_input_type} 
@@ -107,7 +107,7 @@ class Inputfield extends Component {
         
 
         return(
-            <div className={`form-group row ${_custom_classes}`}>
+            <div className={`form-group row ${_custom_classes} mb-1`}>
                 {input_label}
                 <div className={`input-group`}>
                     <span className="input-group-prepend">

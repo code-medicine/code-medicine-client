@@ -9,7 +9,11 @@ import { USERS_SEARCH_BY_CREDENTIALS, APPOINTMENTS_CREATE } from '../../../../sh
 import { notify, load_todays_appointments, clear_todays_appointments } from '../../../../actions';
 import { connect } from "react-redux";
 import NewUserModal from '../../../../shared/modals/newusermodal';
-
+import Clock from 'react-clock';
+import 'react-clock/dist/Clock.css';
+import { HOURS24, MINS_BY_5 } from '../../../../shared/constant_data';
+import { get_utc_date } from '../../../../shared/functions';
+import './styles.css'
 
 class NewAppointmentModal extends Component {
     constructor(props) {
@@ -22,7 +26,8 @@ class NewAppointmentModal extends Component {
 
             appointment_patient: { value: '', error: false },
             appointment_doctor: { value: '', error: false },
-            appointment_reason: { value: '', error: false },
+            appointment_referee: { value: '', error: false },
+            appointment_comments: { value: '', error: false },
             appointment_date: { value: moment().format('ll'), error: false },
             appointment_time: { value: moment().format('LT'), error: false },
 
@@ -30,6 +35,9 @@ class NewAppointmentModal extends Component {
 
             patient_select_value: '',
             doctor_select_value: '',
+
+            hours: { value: '00', error: false },
+            mins: { value: '00', error: false },
 
         }
     }
@@ -54,7 +62,7 @@ class NewAppointmentModal extends Component {
             const query = `${USERS_SEARCH_BY_CREDENTIALS}?search=${string}&role=${role}`
             const res_users = await this.request({}, query, 'get')
             let temp_users = []
-            console.log('users...',res_users)
+            console.log('users...', res_users)
             for (var i = 0; i < res_users.data.payload['count']; ++i) {
                 const t_user = res_users.data.payload['users'][i]
                 temp_users.push({
@@ -70,8 +78,8 @@ class NewAppointmentModal extends Component {
                 this.setState({ doctors: temp_users })
             }
         }
-        catch(error) {
-            console.log('error',error);
+        catch (error) {
+            console.log('error', error);
         }
     }
 
@@ -114,6 +122,13 @@ class NewAppointmentModal extends Component {
                     }
                     this.setState({ appointment_doctor: { value: e.reference, error: false }, doctor_select_value: val_doctor })
                     break;
+                case 'hour_selection':
+                    console.log('e', e)
+                    this.setState({ hours: { value: e.label, error: false } })
+                    break;
+                case 'min_selection':
+                    this.setState({ mins: { value: e.label, error: false } })
+                    break;
                 default:
                     break;
             }
@@ -126,6 +141,12 @@ class NewAppointmentModal extends Component {
                 case 'appointment_doctor_selection':
                     this.setState({ appointment_doctor: { value: '', error: false }, doctor_select_value: '' })
                     break;
+                case 'hour_selection':
+                    this.setState({ hours: { value: '12', error: false } })
+                    break;
+                case 'min_selection':
+                    this.setState({ mins: { value: '00', error: false } })
+                    break;
                 default:
                     break;
             }
@@ -134,8 +155,11 @@ class NewAppointmentModal extends Component {
 
     on_text_field_change = (e) => {
         switch (e.target.id) {
-            case 'appointment_reason_text_input':
-                this.setState({ appointment_reason: { value: e.target.value, error: false } })
+            case 'appointment_referee_text_input':
+                this.setState({ appointment_referee: { value: e.target.value, error: false } })
+                break;
+            case 'appointment_comments_text_input':
+                this.setState({ appointment_comments: { value: e.target.value, error: false } })
                 break;
             default:
                 break;
@@ -203,16 +227,21 @@ class NewAppointmentModal extends Component {
             this.setState({ appointment_doctor: { value: this.state.appointment_doctor.value, error: true } })
             error = true
         }
-        if (this.check_input(this.state.appointment_reason.value, true)) {
-            this.setState({ appointment_reason: { value: this.state.appointment_reason.value, error: true } })
-            error = true
-        }
+        // if (this.check_input(this.state.appointment_reason.value, true)) {
+        //     this.setState({ appointment_reason: { value: this.state.appointment_reason.value, error: true } })
+        //     error = true
+        // }
         if (this.check_input(this.state.appointment_date.value, true)) {
             this.setState({ appointment_date: { value: this.state.appointment_date.value, error: true } })
             error = true
         }
-        if (this.check_input(this.state.appointment_time.value, true)) {
-            this.setState({ appointment_time: { value: this.state.appointment_time.value, error: true } })
+
+        if (this.check_input(this.state.hours.value, true,false,true)){
+            this.setState({ hours: { value: this.state.hours.value, error: true } })
+            error = true
+        }
+        if (this.check_input(this.state.mins.value, true,false,true)){
+            this.setState({ mins: { value: this.state.mins.value, error: true } })
             error = true
         }
 
@@ -225,18 +254,23 @@ class NewAppointmentModal extends Component {
         const data = {
             patient: this.state.appointment_patient.value,
             doctor: this.state.appointment_doctor.value,
-            date: `${moment(this.state.appointment_date.value).format('YYYY-MM-DD')}T${moment(this.state.appointment_time.value, ["h:mm A"]).format("HH:mm:ss")}Z`,
-            time: this.state.appointment_time.value,
-            description: this.state.appointment_reason.value,
+            date: `${moment(this.state.appointment_date.value).format('YYYY-MM-DD')}T${moment(`${this.state.hours.value}:${this.state.mins.value}`, ["HH:mm"]).format("HH:mm:ss")}Z`,
+            time: moment(`${this.state.hours.value}:${this.state.mins.value}`, ["HH:mm"]).format("h:mm a"),
+            description: "",
+            comments: this.state.appointment_comments.value,
+            referee: this.state.appointment_referee.value
         }
+        // console.log('data',data)
+        // return;
         Axios.post(APPOINTMENTS_CREATE, data).then(res => {
             this.props.notify('success', '', res.data.message)
             this.setState({
-                appointment_patient: { value: '' },
-                appointment_doctor: { value: '' },
-                appointment_date: { value: '' },
-                appointment_time: { value: '' },
-                appointment_reason: { value: '' },
+                appointment_patient: { value: '', error: false },
+                appointment_doctor: { value: '', error: false },
+                appointment_date: { value: '', error: false },
+                appointment_time: { value: '', error: false },
+                appointment_comments: { value: '', error: false },
+                appointment_referee: { value: '', error: false },
                 patient_select_value: '',
                 doctor_select_value: '',
                 loading_status: false,
@@ -276,122 +310,177 @@ class NewAppointmentModal extends Component {
     }
 
     render() {
-        // const controlStyles = {
-        //     borderRadius: '1px solid black',
-        //     padding: '5px',
-        //     background: '#c4f',
-        //     color: 'white',
-        // };
-        // const ControlComponent = props => (
-        //     <div style={controlStyles}>
-        //         <components.Control {...props} />
-        //     </div>
-        // );
-        const add_appointment_modal_body =
-            <div className="modal-body">
-                <div className="row">
-                    <div className="col-md-8">
-                        <div className="form-group">
-                            <label className="font-weight-semibold">Select or add user</label>
-                            <Select
-                                id="appointment_patient_selection"
-                                isClearable
-                                menuPlacement="auto"
-                                options={this.state.patients}
-                                // components={{ Control: ControlComponent }}
-                                classNamePrefix={`form-control`}
-                                placeholder="Select Patient"
-                                onInputChange={e => this.populate_patients(e)}
-                                onChange={e => this.on_selected_changed(e, "appointment_patient_selection")}
-                                value={this.state.patient_select_value}
-                                styles={{
-                                    container: base => ({
-                                        ...base,
-                                        backgroundColor: this.state.appointment_patient.error ? '#FF0000' : '',
-                                        padding: 1,
-                                        borderRadius: 5
-                                    }),
-                                }}
-                            />
-                        </div>
+        console.log('hourse and mins', this.state.hours, this.state.mins)
+        const add_appointment_modal_body = <div className="modal-body">
+            <div className="row">
+                <div className="col-md-8">
+                    <div className="form-group">
+                        <label className="font-weight-semibold">Select or add user<span className="text-danger"> * </span></label>
+                        <Select
+                            id="appointment_patient_selection"
+                            isClearable
+                            menuPlacement="auto"
+                            options={this.state.patients}
+                            // components={{ Control: ControlComponent }}
+                            classNamePrefix={`form-control`}
+                            placeholder="Select Patient"
+                            onInputChange={e => this.populate_patients(e)}
+                            onChange={e => this.on_selected_changed(e, "appointment_patient_selection")}
+                            value={this.state.patient_select_value}
+                            styles={{
+                                container: base => ({
+                                    ...base,
+                                    backgroundColor: this.state.appointment_patient.error ? '#FF0000' : '',
+                                    padding: 1,
+                                    borderRadius: 5
+                                }),
+                            }}
+                        />
                     </div>
-                    {/* <div className="col-md-2 d-flex align-items-end" style={{ paddingBottom: '3px'}}>
-                        
-                    </div> */}
-                    <div className="col-md-4">
-                        <div className="form-group">
-                            <label className="font-weight-semibold">Select Date</label>
-                            <DateTimePicker id="dob_text_input"
-                                onChange={this.on_apointment_date_change}
-                                className="clock_datatime_picker"
-                                inputProps={{ placeholder: 'Select Date', width: '100%', className: `form-control ${this.state.appointment_date.error ? 'border-danger' : ''}` }}
-                                input={true}
-                                dateFormat={'ll'}
-                                timeFormat={false}
-                                closeOnSelect={true}
-                                value={this.state.appointment_date.value}
-                            />
-                        </div>
+
+                    <div className="form-group">
+                        <label className="font-weight-semibold">Which doctor to assign<span className="text-danger"> * </span></label>
+                        <Select
+                            id="appointment_doctor_selection"
+                            isClearable
+                            options={this.state.doctors}
+                            classNamePrefix={`form-control`}
+                            placeholder="Select a Doctor"
+                            menuPlacement="auto"
+                            onInputChange={e => this.populate_doctors(e)}
+                            onChange={e => this.on_selected_changed(e, 'appointment_doctor_selection')}
+                            value={this.state.doctor_select_value}
+                            styles={{
+                                container: base => ({
+                                    ...base,
+                                    backgroundColor: this.state.appointment_doctor.error ? '#FF0000' : '',
+                                    padding: 1,
+                                    borderRadius: 5
+                                }),
+                            }}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label className="font-weight-semibold">Refered by</label>
+                        <input 
+                            id="appointment_referee_text_input"
+                            className="form-control"
+                            value={this.state.appointment_referee.value}
+                            onChange={e => this.on_text_field_change(e)}
+                            placeholder="Reference of any doctor if any"
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Additional comments</label>
+                        <textarea rows={3} cols={3}
+                            id="appointment_comments_text_input"
+                            className="form-control"
+                            placeholder="Comments for the appointment"
+                            onChange={e => this.on_text_field_change(e)}
+                            value={this.state.appointment_comments.value} />
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-md-8">
-                        <div className="form-group">
-                            <label className="font-weight-semibold">Which doctor to assign?</label>
-                            <Select
-                                id="appointment_doctor_selection"
-                                isClearable
-                                options={this.state.doctors}
-                                classNamePrefix={`form-control`}
-                                placeholder="Select a Doctor"
-                                menuPlacement="auto"
-                                onInputChange={e => this.populate_doctors(e)}
-                                onChange={e => this.on_selected_changed(e, 'appointment_doctor_selection')}
-                                value={this.state.doctor_select_value}
-                                styles={{
-                                    container: base => ({
-                                        ...base,
-                                        backgroundColor: this.state.appointment_doctor.error ? '#FF0000' : '',
-                                        padding: 1,
-                                        borderRadius: 5
-                                    }),
-                                }}
+                <div className="col-md-4">
+                    {/** Date select */}
+                    <div className="form-group">
+                        <label className="font-weight-semibold">Select Date for the appointment<span className="text-danger"> * </span></label>
+                        <DateTimePicker id="dob_text_input"
+                            onChange={this.on_apointment_date_change}
+                            className="clock_datatime_picker"
+                            inputProps={{ placeholder: 'Select Date', width: '100%', className: `form-control ${this.state.appointment_date.error ? 'border-danger' : ''}` }}
+                            input={true}
+                            dateFormat={'ll'}
+                            timeFormat={false}
+                            closeOnSelect={true}
+                            value={this.state.appointment_date.value}
+                        />
+                    </div>
+                    {/** Time Clock and select of hours and mins */}
+                    <div className="form-group">
+                        <label className="font-weight-semibold">Time of the appointment<span className="text-danger"> * </span></label>
+                        <div className="d-flex justify-content-center">
+                            <Clock
+                                value={get_utc_date(`2020-01-01T${this.state.hours.value}:${this.state.mins.value}:00`)}
+                                renderSecondHand={false}
+                                renderNumbers={true}
+                                size={150}
                             />
                         </div>
-                    </div>
-                    <div className="col-md-4">
-                        <div className="form-group">
-                            <label className="font-weight-semibold">Time</label>
-                            <DateTimePicker id="dob_text_input"
+                        <div className="row mt-2">
+                            <div className="col-md-6">
+                                <label>Hours<span className="text-danger"> * </span></label>
+                                <Select
+                                    id="hour_selection"
+                                    isClearable
+                                    options={HOURS24}
+                                    className="text-center"
+                                    classNamePrefix={`form-control`}
+                                    placeholder="HH"
+                                    menuPlacement="auto"
+                                    onChange={e => this.on_selected_changed(e, 'hour_selection')}
+                                    value={{ id: 'hour_selection', label: this.state.hours.value }}
+                                    components={{
+                                        DropdownIndicator: null,
+                                    }}
+                                    styles={{
+                                        container: base => ({
+                                            ...base,
+                                            backgroundColor: this.state.hours.error ? '#FF0000' : '',
+                                            padding: 1,
+                                            borderRadius: 5
+                                        })
+                                    }}
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <label>Minutes<span className="text-danger"> * </span></label>
+                                <Select
+                                    id="min_selection"
+                                    isClearable
+                                    options={MINS_BY_5}
+                                    classNamePrefix={`form-control`}
+                                    placeholder="MM"
+                                    menuPlacement="auto"
+                                    onChange={e => this.on_selected_changed(e, 'min_selection')}
+                                    value={{ id: 'min_selection', label: this.state.mins.value }}
+                                    components={{
+                                        DropdownIndicator: null,
+                                    }}
+                                    styles={{
+                                        container: base => ({
+                                            ...base,
+                                            backgroundColor: this.state.mins.error ? '#FF0000' : '',
+                                            padding: 1,
+                                            borderRadius: 5
+                                        }),
+                                    }}
+                                />
+                            </div>
+
+                        </div>
+
+                        {/* <DateTimePicker id="dob_text_input"
                                 onChange={this.on_apointment_time_change}
                                 className="clock_datatime_picker"
-                                inputProps={{ placeholder: 'Select Time', width: '100%', className: `form-control ${this.state.appointment_time.error ? 'border-danger' : ''}` }}
+                                inputProps={{ 
+                                    placeholder: 'Select Time', 
+                                    width: '100%', 
+                                    className: `form-control ${this.state.appointment_time.error ? 'border-danger' : ''}` 
+                                }}
                                 input={true}
                                 dateFormat={false}
                                 timeFormat={true}
                                 closeOnSelect={true}
                                 strictParsing={true}
                                 value={this.state.appointment_time.value}
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-md-12">
-                        <div className="form-group form-group-float">
-                            <div className="form-group-float-label is-visible mb-1">
-                                What is the reason for the visit
-                            </div>
-                            <textarea rows={3} cols={3}
-                                id="appointment_reason_text_input"
-                                className="form-control"
-                                placeholder="Reason for visit"
-                                onChange={this.on_text_field_change}
-                                value={this.state.appointment_reason.value} />
-                        </div>
+                            /> */}
                     </div>
                 </div>
             </div>
+
+        </div>
         return (
             <Fragment>
 
@@ -411,7 +500,7 @@ class NewAppointmentModal extends Component {
                         <h5 className="modal-title">New Appointment</h5>
                         <button
                             type="button"
-                            className="btn bg-secondary btn-labeled btn-labeled-right pr-5 "
+                            className="btn bg-dark btn-labeled btn-labeled-right pr-5 "
                             style={{ textTransform: "inherit" }}
                             onClick={this.open_new_patient_modal}>
                             <b><i className="icon-plus3"></i></b>

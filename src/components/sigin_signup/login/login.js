@@ -17,8 +17,8 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: { value: '', error: false },
-            password: { value: '', error: false },
+            email: { value: 'x@cm.com', error: false },
+            password: { value: '111222333', error: false },
             remember_me_option: true,
             loading_status: false,
         }

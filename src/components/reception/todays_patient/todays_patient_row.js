@@ -5,6 +5,10 @@ import { Link } from 'react-router-dom';
 import { Popup } from "semantic-ui-react";
 import UpdateAppointmentModal from './appointment/update_appointment_modal';
 import { Ucfirst } from '../../../shared/functions'
+import Axios from 'axios';
+import { PROCEDURES_SEARCH_BY_APPOINTMENT_ID } from '../../../shared/rest_end_points';
+import Loading from '../../../shared/customs/loading/loading';
+import './todays_patient_row.css'
 
 // import '../../../../node_modules/semantic-ui-css/semantic.min.css';
 
@@ -22,13 +26,21 @@ class TodaysPatientRow extends Component {
             appointment_time_difference_from_now: moment(this.props.row_data.appointment_date, "YYYY-MM-DDThh:mm:ss").fromNow(),
 
             update_appointment_modal_visibility: false,
+
+            procedure_loading: false,
+            procedures_list: []
         }
     }
     toggle_row = () => {
         if (this.state.toggle)
             this.setState({ toggle: false, toggle_icon: 'icon-eye-plus' })
         else
-            this.setState({ toggle: true, toggle_icon: 'icon-eye-minus' })
+            this.setState({ toggle: true, toggle_icon: 'icon-eye-minus' }, () => {
+                Axios.get(`${PROCEDURES_SEARCH_BY_APPOINTMENT_ID}?tag=${this.state.row_data._id}`).then(_procedures => {
+                    console.log('procedures', _procedures)
+                    this.setState({ procedures_list: _procedures.data.payload })
+                })
+            })
     }
     componentDidMount() {
         // console.log(this.props.row_data);
@@ -201,12 +213,28 @@ class TodaysPatientRow extends Component {
 
         return (
             <div className="">
-                <h5 className="font-weight-semibold">Reason of visit</h5>
+                <h5>Comments</h5>
                 <blockquote className="blockquote blockquote-bordered py-2 pl-3 mb-0">
                     <p className="mb-1">
-                        {this.state.hidden_data.appointment_description}
+                        {this.state.hidden_data.appointment_comments}
                     </p>
-                    <footer className="blockquote-footer">Perscription</footer>
+                </blockquote>
+                <h5 className="font-weight-semibold">Procedures</h5>
+                <blockquote className="blockquote blockquote-bordered py-2 pl-3 mb-0">
+
+                    {
+                        this.state.procedures_list.length > 0 ?
+                            this.state.procedures_list.map((item, i) => {
+                                return (
+                                    <div className="">
+                                        <footer className="blockquote-footer text-dark">
+                                            {item.description.toUpperCase()}
+                                        </footer>
+                                        {/* <span className="text-secondary procedureslist-secondary-text">{'item'}</span> */}
+                                    </div>
+                                )
+                            }) : <Loading size={100} />
+                    }
                 </blockquote>
             </div>
         )
@@ -264,7 +292,9 @@ class TodaysPatientRow extends Component {
                                 doctor_ref: this.state.row_data.doctor,
                                 reason: this.state.row_data['appointment_description'],
                                 date: this.state.row_data.appointment_date,
-                                time: this.state.row_data.appointment_time
+                                time: this.state.row_data.appointment_time,
+                                comments: this.state.row_data.appointment_comments,
+                                referee: this.state.row_data.appointment_referee,
                             }} />
                     </td>
 
