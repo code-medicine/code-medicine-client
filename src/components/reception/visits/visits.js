@@ -8,7 +8,7 @@ import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import DateTimePicker from 'react-datetime'
 import "./visits.css"
-import { PATIENT_VISIT_STATUSES } from '../../../shared/constant_data';
+import { BLOOD_GROUPS_OPTIONS, PATIENT_VISIT_STATUSES } from '../../../shared/constant_data';
 // import makeAnimated from 'react-select/animated';
 import Select from 'react-select';
 import TableRow from '../../../shared/customs/tablerows/tablerow';
@@ -38,6 +38,7 @@ class Visits extends Component {
 
             search_patient_id: { value: '' },
             search_doctor_id: { value: '' },
+            search_status: { value: '' },
 
             patient_checkbox: false,
             doctor_checkbox: false,
@@ -79,9 +80,9 @@ class Visits extends Component {
     }
 
     on_selected_changed = (e, actor) => {
-
+        console.log('e',e)
         if (e !== null) {
-            switch (e.id) {
+            switch (actor) {
                 case 'gender_selection':
                     this.setState({ user_gender: { value: e.label } })
                     break;
@@ -90,6 +91,10 @@ class Visits extends Component {
                     break;
                 case 'doctor_list':
                     this.setState({ search_doctor_id: { value: e.reference } })
+                    break;
+                case 'status_list':
+                    console.log('sttaus select', e.label)
+                    this.setState({ search_status: { value: e.label } });
                     break;
                 default:
                     break;
@@ -105,6 +110,9 @@ class Visits extends Component {
                     break;
                 case 'doctor_list':
                     this.setState({ search_doctor_id: { value: '' } })
+                    break;
+                case 'status_list':
+                    this.setState({ search_status: { value: '' } });
                     break;
                 default:
                     break;
@@ -234,48 +242,67 @@ class Visits extends Component {
             total_pages: 0,
         }, () => {
             if (this.state.date_from.value !== '' && this.state.date_to.value !== '') {
-                if (this.state.patient_checkbox === true && this.state.doctor_checkbox === true) {
-                    this.populate_appointments({
-                        to_date: this.state.date_to.value,
-                        from_date: this.state.date_from.value,
-                        patient_id: this.state.search_patient_id.value,
-                        doctor_id: this.state.search_doctor_id.value,
-                        page: this.state.page_number
-                    })
+                const payload = {
+                    to_date: this.state.date_to.value,
+                    from_date: this.state.date_from.value,
+                    page: this.state.page_number
                 }
-                else if (this.state.patient_checkbox === false && this.state.doctor_checkbox === false) {
-                    this.populate_appointments({
-                        to_date: this.state.date_to.value,
-                        from_date: this.state.date_from.value,
-                        page: this.state.page_number
-                    })
+                console.log('state',this.state)
+
+                if (this.state.search_patient_id.value) {
+                    payload.patient_id = this.state.search_patient_id.value;
                 }
-                else if (this.state.patient_checkbox === true && this.state.doctor_checkbox === false) {
-                    if (this.state.search_patient_id.value !== '') {
-                        this.populate_appointments({
-                            to_date: this.state.date_to.value,
-                            from_date: this.state.date_from.value,
-                            patient_id: this.state.search_patient_id.value,
-                            page: this.state.page_number
-                        })
-                    }
-                    else {
-                        this.props.notify('info', '', 'Please select a patient')
-                    }
+                if (this.state.search_doctor_id.value) {
+                    payload.doctor_id = this.state.search_doctor_id.value;
                 }
-                else if (this.state.patient_checkbox === false && this.state.doctor_checkbox === true) {
-                    if (this.state.search_doctor_id.value !== '') {
-                        this.populate_appointments({
-                            to_date: this.state.date_to.value,
-                            from_date: this.state.date_from.value,
-                            doctor_id: this.state.search_doctor_id.value,
-                            page: this.state.page_number
-                        })
-                    }
-                    else {
-                        this.props.notify('info', '', 'Please select a doctor')
-                    }
+                if (this.state.search_status.value) {
+                    payload.appointment_status = this.state.search_status.value;
                 }
+
+                console.log('payload',payload)
+                this.populate_appointments(payload)
+                // if (this.state.patient_checkbox === true && this.state.doctor_checkbox === true) {
+                //     this.populate_appointments({
+                //         to_date: this.state.date_to.value,
+                //         from_date: this.state.date_from.value,
+                //         patient_id: this.state.search_patient_id.value,
+                //         doctor_id: this.state.search_doctor_id.value,
+                //         page: this.state.page_number
+                //     })
+                // }
+                // else if (this.state.patient_checkbox === false && this.state.doctor_checkbox === false) {
+                //     this.populate_appointments({
+                //         to_date: this.state.date_to.value,
+                //         from_date: this.state.date_from.value,
+                //         page: this.state.page_number
+                //     })
+                // }
+                // else if (this.state.patient_checkbox === true && this.state.doctor_checkbox === false) {
+                //     if (this.state.search_patient_id.value !== '') {
+                //         this.populate_appointments({
+                //             to_date: this.state.date_to.value,
+                //             from_date: this.state.date_from.value,
+                //             patient_id: this.state.search_patient_id.value,
+                //             page: this.state.page_number
+                //         })
+                //     }
+                //     else {
+                //         this.props.notify('info', '', 'Please select a patient')
+                //     }
+                // }
+                // else if (this.state.patient_checkbox === false && this.state.doctor_checkbox === true) {
+                //     if (this.state.search_doctor_id.value !== '') {
+                //         this.populate_appointments({
+                //             to_date: this.state.date_to.value,
+                //             from_date: this.state.date_from.value,
+                //             doctor_id: this.state.search_doctor_id.value,
+                //             page: this.state.page_number
+                //         })
+                //     }
+                //     else {
+                //         this.props.notify('info', '', 'Please select a doctor')
+                //     }
+                // }
             }
             else {
                 this.props.notify('error', '', 'Please specify a range of dates')
@@ -314,7 +341,7 @@ class Visits extends Component {
     renderDataInRows = () => {
         return (this.state.data.map((booking, i) => {
             // var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
-            console.log('booking', booking)
+            // console.log('booking', booking)
             const row_data = {
                 date_of_booking: <div ref={(el) => { this[`element_${i}_ref`] = el; }}>
                     {booking.appointment_date}
@@ -471,18 +498,108 @@ class Visits extends Component {
             <Container container_type={'visits'}>
                 <div className={`container-fluid`}>
                     <div className="row">
-                        <div className="col-lg-8">
+                        <div className="col-lg-3">
+                            <div className="form-group mb-1">
+                                <label>Select Patient</label>
+                                <Select
+                                    isClearable
+                                    // isDisabled={!this.state.patient_checkbox}
+                                    classNamePrefix={`form-control`}
+                                    id="patient_list"
+                                    options={this.state.patient_list}
+                                    onInputChange={e => this.populate_patients(e)}
+                                    onChange={e => this.on_selected_changed(e, 'patient_list')}
+                                    placeholder="Search patients"
+                                    styles={{
+                                        container: base => ({
+                                            ...base,
+                                            // backgroundColor: this.state.appointment_doctor.error ? '#FF0000' : '',
+                                            padding: 1,
+                                            borderRadius: 5
+                                        }),
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        <div className="col-lg-3">
+                            <div className="form-group mb-1">
+                                <label>Select Doctor</label>
+                                <Select
+                                    isClearable
+                                    // isDisabled={!this.state.doctor_checkbox}
+                                    options={this.state.doctor_list}
+                                    onInputChange={e => this.populate_doctors(e)}
+                                    onChange={e => this.on_selected_changed(e, 'doctor_list')}
+                                    placeholder="Search Doctor"
+                                    styles={{
+                                        container: base => ({
+                                            ...base,
+                                            // backgroundColor: this.state.appointment_doctor.error ? '#FF0000' : '',
+                                            padding: 1,
+                                            borderRadius: 5
+                                        }),
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        <div className="col-lg-3">
+                            <div className="form-group mb-1">
+                                <label>Status</label>
+                                <Select
+                                    className=""
+                                    options={PATIENT_VISIT_STATUSES}
+                                    classNamePrefix={``}
+                                    placeholder="Visit Status"
+                                    isClearable
+                                    id="status_selection"
+                                    onChange={e => this.on_selected_changed(e, 'status_list')}
+                                />
+                            </div>
+                        </div>
+                        <div className="col-lg-3">
+                            <div className="form-group mb-1">
+                                <label>Blood group</label>
+                                <Select
+                                    className=""
+                                    options={BLOOD_GROUPS_OPTIONS}
+                                    classNamePrefix={``}
+                                    placeholder="(coming soon)"
+                                    isClearable
+                                    id="blood_group_selection"
+                                    isDisabled
+                                    onChange={this.on_selected_changed}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-lg-3">
+                            <div className="form-group mb-1">
+                                <label>Branch</label>
+                                <Select
+                                    className=""
+                                    options={PATIENT_VISIT_STATUSES}
+                                    classNamePrefix={``}
+                                    placeholder="Branch (Coming soon)"
+                                    isClearable
+                                    id="branch_selection"
+                                    onChange={this.on_selected_changed}
+                                    isDisabled={true}
+                                />
+                            </div>
+                        </div>
+                        <div className="col-lg-9">
                             <div className="row">
-                                <div className="col-lg-6">
-                                    <div className="form-group row mb-2 px-2">
-                                        <label className="col-form-label-lg">From</label>
+                                <div className="col-lg-3">
+                                    <div className="form-group mb-1">
+                                        <label>From</label>
                                         <div className={`input-group`}>
                                             <span className="input-group-prepend">
                                                 <span className="input-group-text"><i className={'icon-calendar3'} /></span>
                                             </span>
                                             <DateTimePicker id="dob_text_input"
                                                 onChange={this.on_from_date_change}
-                                                className="clock_datatime_picker form-control form-control-lg "
+                                                className="clock_datatime_picker form-control"
                                                 inputProps={{ placeholder: 'Where from', className: 'border-0 w-100' }}
                                                 input={true}
                                                 dateFormat={'ll'}
@@ -493,16 +610,16 @@ class Visits extends Component {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-lg-6">
-                                    <div className="form-group row mb-2 px-2">
-                                        <label className="col-form-label-lg">To</label>
+                                <div className="col-lg-3">
+                                    <div className="form-group mb-1">
+                                        <label>To</label>
                                         <div className={`input-group`}>
                                             <span className="input-group-prepend">
                                                 <span className="input-group-text"><i className={'icon-calendar3'} /></span>
                                             </span>
                                             <DateTimePicker id="dob_text_input"
                                                 onChange={this.on_to_date_change}
-                                                className="clock_datatime_picker form-control form-control-lg "
+                                                className="clock_datatime_picker form-control "
                                                 inputProps={{ placeholder: 'Where to', className: 'border-0 w-100' }}
                                                 input={true}
                                                 dateFormat={'ll'}
@@ -513,51 +630,73 @@ class Visits extends Component {
                                         </div>
                                     </div>
                                 </div>
+                                <div className="col-lg-6">
+                                    <div className="row">
+                                        <div className="col-lg-6">
+                                            <button
+                                                type="button"
+                                                className="btn bg-dark btn-block btn-sm btn-labeled btn-labeled-right pr-5"
+                                                style={{ textTransform: "inherit" }}
+                                                onClick={() => this.setState({
+                                                    date_from: { value: '' }, date_to: { value: '' },
+                                                    patient_checkbox: false,
+                                                    doctor_checkbox: false,
+                                                })}>
+                                                <b><i className="icon-reset"></i></b>
+                                                Reset filters
+                                            </button>
+                                        </div>
+                                        <div className="col-lg-6">
+                                            <button
+                                                type="button"
+                                                className="btn bg-teal-400 btn-labeled btn-labeled-right btn-sm pr-5 btn-block"
+                                                style={{ textTransform: "inherit" }}
+                                                onClick={this.refresh_button_click}>
+                                                <b><i className="icon-reset"></i></b>
+                                                Refresh
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="row mt-1">
+                                        <div className="col-lg-12">
+                                            <button
+                                                type="button"
+                                                className="btn bg-teal-400 btn-labeled btn-labeled-right btn-sm pr-5 btn-block "
+                                                style={{ textTransform: "inherit" }}
+                                                onClick={this.on_search_click}>
+                                                <b><i className="icon-search4"></i></b>
+                                                Search
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div className="col-lg-4 d-flex flex-column-reverse mb-2 pb-1">
+                    </div>
+                </div>
+                {/* <div className="col-lg-4 d-flex flex-column-reverse mb-2 pb-1">
 
-                            <div className="row">
-                                <div className="col">
-                                    <button
-                                        type="button"
-                                        className="btn bg-dark btn-block btn-labeled btn-labeled-right pr-5"
-                                        style={{ textTransform: "inherit" }}
-                                        onClick={() => this.setState({
-                                            date_from: { value: '' }, date_to: { value: '' },
-                                            patient_checkbox: false,
-                                            doctor_checkbox: false,
-                                        })}>
-                                        <b><i className="icon-reset"></i></b>
-                                        Reset filters
-                                    </button>
-                                </div>
-                                <div className="col">
+                    <div className="row">
+                        <div className="col">
 
-                                    <button
-                                        type="button"
-                                        className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5 btn-block"
-                                        style={{ textTransform: "inherit" }}
-                                        onClick={this.refresh_button_click}>
-                                        <b><i className="icon-reset"></i></b>
-                                        Refresh
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="row mb-2">
-                                <div className="col">
-                                    <Select
-                                        className=""
-                                        options={PATIENT_VISIT_STATUSES}
-                                        classNamePrefix={``}
-                                        placeholder="Branch (Coming soon)"
-                                        isClearable
-                                        id="branch_selection"
-                                        onChange={this.on_selected_changed}
-                                        isDisabled={true}
-                                    />
-                                </div>
-                            </div>
+                        </div>
+                        <div className="col">
+
+
+                        </div>
+                    </div>
+                    <div className="row mb-2">
+                        <div className="col">
+                            <Select
+                                className=""
+                                options={PATIENT_VISIT_STATUSES}
+                                classNamePrefix={``}
+                                placeholder="Branch (Coming soon)"
+                                isClearable
+                                id="branch_selection"
+                                onChange={this.on_selected_changed}
+                                isDisabled={true}
+                            />
                         </div>
 
                     </div>
@@ -633,8 +772,8 @@ class Visits extends Component {
                                 Search
                             </button>
                         </div>
-                    </div>
-                    {/* <div className={`row`}>
+                    </div> */}
+                {/* <div className={`row`}>
                         <div className="col">
                             <Select
                                 className=""
@@ -680,7 +819,7 @@ class Visits extends Component {
                             </button>
                         </div>
                     </div> */}
-                </div>
+                {/* </div> */}
                 {this.state.loading_status ? loading : table}
                 <UserPreviewModal visibility={this.state.user_preview_modal_visibility}
                     modal_props={this.state.user_modal_props}
