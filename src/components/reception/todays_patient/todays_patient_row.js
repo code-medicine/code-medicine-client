@@ -33,12 +33,12 @@ class TodaysPatientRow extends Component {
     }
     toggle_row = () => {
         if (this.state.toggle)
-            this.setState({ toggle: false, toggle_icon: 'icon-eye-plus' })
+            this.setState({ toggle: false, procedure_loading: false, toggle_icon: 'icon-eye-plus' })
         else
-            this.setState({ toggle: true, toggle_icon: 'icon-eye-minus' }, () => {
+            this.setState({ toggle: true, procedure_loading: true, toggle_icon: 'icon-eye-minus' }, () => {
                 Axios.get(`${PROCEDURES_SEARCH_BY_APPOINTMENT_ID}?tag=${this.state.row_data._id}`).then(_procedures => {
-                    console.log('procedures', _procedures)
-                    this.setState({ procedures_list: _procedures.data.payload })
+                    // console.log('procedures', _procedures)
+                    this.setState({ procedures_list: _procedures.data.payload, procedure_loading: false })
                 })
             })
     }
@@ -223,17 +223,21 @@ class TodaysPatientRow extends Component {
                 <blockquote className="blockquote blockquote-bordered py-2 pl-3 mb-0">
 
                     {
-                        this.state.procedures_list.length > 0 ?
-                            this.state.procedures_list.map((item, i) => {
-                                return (
-                                    <div className="">
-                                        <footer className="blockquote-footer text-dark">
-                                            {item.description.toUpperCase()}
-                                        </footer>
-                                        {/* <span className="text-secondary procedureslist-secondary-text">{'item'}</span> */}
+                        this.state.procedure_loading ? <Loading size={100} /> : (
+                            this.state.procedures_list.length > 0?
+                                this.state.procedures_list.map((item, i) => {
+                                    return (
+                                        <div className="">
+                                            <footer className="blockquote-footer text-dark">
+                                                {item.description.toUpperCase()}
+                                            </footer>
+                                            {/* <span className="text-secondary procedureslist-secondary-text">{'item'}</span> */}
+                                        </div>
+                                    )
+                                }): <div className="alert alert-info mt-2" style={{ marginBottom: '0px' }}>
+                                        <strong>Info!</strong> No Procedures found.
                                     </div>
-                                )
-                            }) : <Loading size={100} />
+                            )
                     }
                 </blockquote>
             </div>

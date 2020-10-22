@@ -433,7 +433,7 @@ class Visits extends Component {
         const loading = <Loading size={150} />
         var table = ''
         if (this.state.data != null) {
-            if (this.state.total_records_on_this_page > 0) {
+            if (this.state.data.length > 0) {
                 table = <div className="table-responsive mt-2 card mb-0 pb-0"><table className="table table-hover">
                     <thead className="table-header-bg bg-dark">
                         <tr>
@@ -493,6 +493,11 @@ class Visits extends Component {
                     <strong>Info!</strong> No visits found.
                 </div>;
             }
+        }
+        else {
+            table = <div className="alert alert-info mt-2" style={{ marginBottom: '0px' }}>
+                <strong>Info!</strong> No data found.
+            </div>;
         }
         return (
             <Container container_type={'visits'}>
