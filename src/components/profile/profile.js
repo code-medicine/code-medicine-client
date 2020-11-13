@@ -9,10 +9,8 @@ import { LOGIN_URL, BASE_URL } from '../../shared/router_constants';
 import { set_active_user, notify, set_active_page } from '../../actions'
 import Inputfield from '../../shared/customs/inputfield/inputfield';
 import '../../shared/customs/Animations/animations.css';
-import DateTimePicker from 'react-datetime'
 import moment from 'moment';
-import Select, { components } from 'react-select';
-import { BLOOD_GROUPS_OPTIONS, GENDER_OPTIONS, ROLES_OPTIONS } from '../../shared/constant_data';
+import { BLOOD_GROUPS_OPTIONS, CITIES, GENDER_OPTIONS } from '../../shared/constant_data';
 import Loading from '../../shared/customs/loading/loading';
 
 
@@ -31,6 +29,7 @@ class Profile extends Component {
             role: { value: '', error: false },
             phone_number: { value: '', error: false },
             cnic: { value: '', error: false },
+            city: { value: '', error: false },
             address: { value: '', error: false },
 
             loading_status: false,
@@ -43,25 +42,23 @@ class Profile extends Component {
                         Home
                     </Link>, <span className="breadcrumb-item active">Profile</span>]
         this.props.set_active_page(routes)
-        console.log('profile component did mount user',localStorage.user)
         if (localStorage.user) {
             this.setState({ loading_status: true }, () => {
                 Axios.get(`${USERS_SEARCH_BY_TOKEN}?tag=${localStorage.user}`).then(res => {
-                    console.log('res',res)
                     this.props.set_active_user(res.data['payload'])
 
                     this.setState({
-                        first_name: { value: res.data.payload.first_name, error: false },
-                        last_name: { value: res.data.payload.last_name, error: false },
-                        email: { value: res.data.payload.email, error: false },
-                        cnic: { value: res.data.payload.cnic, error: false },
-                        phone_number: { value: res.data.payload.phone_number, error: false },
-                        address: { value: res.data.payload.address, error: false },
-                        date_of_birth: { value: moment(res.data.payload.date_of_birth).format('ll'), error: false },
-                        register_date: { value: moment(res.data.payload.register_date).format('lll'), error: false },
-                        blood_group: { value: res.data.payload.blood_group, error: false },
-                        gender: { value: res.data.payload.gender, error: false },
-                        role: { value: res.data.payload.role, error: false },
+                        first_name:     { value: res.data.payload.first_name, error: false },
+                        last_name:      { value: res.data.payload.last_name, error: false },
+                        email:          { value: res.data.payload.email, error: false },
+                        cnic:           { value: res.data.payload.cnic, error: false },
+                        phone_number:   { value: res.data.payload.phone_number, error: false },
+                        city:           { value: res.data.payload.city, error: false },
+                        address:        { value: res.data.payload.address, error: false },
+                        date_of_birth:  { value: moment(res.data.payload.date_of_birth).format('ll'), error: false },
+                        register_date:  { value: moment(res.data.payload.register_date).format('lll'), error: false },
+                        blood_group:    { value: res.data.payload.blood_group, error: false },
+                        gender:         { value: res.data.payload.gender, error: false },
 
                         loading_status: false
 
@@ -83,26 +80,21 @@ class Profile extends Component {
 
         }
         else {
-            console.log('profile component did mount','No token found')
             this.props.history.push(LOGIN_URL)
         }
     }
 
     request_update = (data) => {
         this.setState({ loading_status: true }, () => {
-            Axios.put(USERS_UPDATE, data, { headers: { 'code-medicine': localStorage.getItem('user') } }).then(res => {
-                if (res.data.status === true) {
-                    this.setState({ loading_status: false })
-                    this.props.notify('success', '', res.data.message)
-                } else {
-                    this.setState({ loading_status: false })
-
-                    this.props.notify('error', '', res.data.message)
-                }
+            Axios.put(USERS_UPDATE, data).then(res => {
+                this.setState({ loading_status: false })
+                this.props.notify('success', '', res.data.message)
             }).catch(err => {
                 console.log('request error', err)
                 this.setState({ loading_status: false })
-                this.props.notify('error', '', err.toString())
+                if (err.response){
+                    this.props.notify('error', '', err.response['message'])
+                }
             })
         })
 
@@ -161,10 +153,10 @@ class Profile extends Component {
             date_of_birth: this.state.date_of_birth.value,
             register_date: this.state.register_date.value,
             blood_group: this.state.blood_group.value,
-            role: this.state.role.value,
             phone_number: this.state.phone_number.value,
             cnic: this.state.cnic.value,
             address: this.state.address.value,
+            city: this.state.city.value,
         }
         this.request_update(payload)
     }
@@ -197,10 +189,13 @@ class Profile extends Component {
         if (e !== null) {
             switch (e.id) {
                 case 'blood_group_selection':
-                    this.setState({ blood_group: { value: e.label } })
+                    this.setState({ blood_group: { value: e.label } });
                     break;
                 case 'gender_selection':
-                    this.setState({ gender: { value: e.label } })
+                    this.setState({ gender: { value: e.label } });
+                    break;
+                case 'city_selection':
+                    this.setState({ city: { value: e.label } });
                     break;
                 default:
                     break;
@@ -209,10 +204,13 @@ class Profile extends Component {
         else {
             switch (actor) {
                 case 'blood_group_selection':
-                    this.setState({ user_blood_group: { value: '' } })
+                    this.setState({ blood_group: { value: '' } })
                     break;
                 case 'gender_selection':
-                    this.setState({ user_gender: { value: '' } })
+                    this.setState({ gender: { value: '' } })
+                    break;
+                case 'city_selection':
+                    this.setState({ city: { value: '' } });
                     break;
                 default:
                     break;
@@ -220,19 +218,10 @@ class Profile extends Component {
         }
     }
     render() {
-        const selection_value_container = ({ children, ...props }) => (
-            <components.ValueContainer {...props}>
-                <div className={`input-group `}>
-                    <div className="ml-2 my-0">
-                        {
-                            children
-                        }
-                    </div>
-                </div>
-            </components.ValueContainer>)
         const view = <div className="container-fluid">
             <div className="row">
-                <div className={`col-lg-2 col-sm-12 d-flex justify-content-center`}>
+                <div className={`col-lg-2 col-sm-0 `}></div>
+                <div className="col-lg-8 col-sm-12">
                     <div className="card-img-actions d-inline-block mb-3">
                         <img className="img-fluid rounded-circle" src={NO_PICTURE} style={{ width: 100, height: 100 }} alt="" />
                         <div className="card-img-actions-overlay card-img rounded-circle">
@@ -241,196 +230,130 @@ class Profile extends Component {
                             </Link>
                         </div>
                     </div>
-                </div>
-                <div className="col-lg-3 col-sm-12 px-3">
                     <Inputfield
                         id="first_name_text_input"
-                        label_tag="First Name"
-                        placeholder="First name"
-                        icon_class="icon-user"
-                        default_value={this.state.first_name.value}
-                        on_text_change_listener={this.on_text_changed}
+                        heading="First Name"
+                        placeholder="Enter your first name"
+                        value={this.state.first_name.value}
+                        onChange={this.on_text_changed}
                         error={this.state.first_name.error}
                     />
-                </div>
-                <div className="col-lg-3 col-sm-12 px-3">
                     <Inputfield
                         id="last_name_text_input"
-                        label_tag="Last Name"
-                        placeholder="Last name"
-                        icon_class="icon-user"
+                        heading="Last Name"
+                        placeholder="Enter your last name"
                         type="email"
-                        default_value={this.state.last_name.value}
-                        on_text_change_listener={this.on_text_changed}
+                        value={this.state.last_name.value}
+                        onChange={this.on_text_changed}
                         error={this.state.last_name.error}
                     />
-                </div>
-                <div className={`col-lg-4 col-sm-12 px-3`}>
                     <Inputfield
                         id="email_text_input"
-                        label_tag="Email"
-                        placeholder="Email"
-                        icon_class="icon-envelop4"
-                        default_value={this.state.email.value}
-                        on_text_change_listener={this.on_text_changed}
+                        heading="Email"
+                        placeholder="Enter your email"
+                        value={this.state.email.value}
+                        onChange={this.on_text_changed}
                         disabled={true}
                     />
-                </div>
-
-            </div>
-            <div className="row">
-                <div className="col-lg-3 col-sm-12 px-3">
-
                     <Inputfield
                         id="phone_number_text_input"
-                        label_tag="Phone number"
-                        placeholder="Phone number"
-                        icon_class="icon-phone2"
-                        default_value={this.state.phone_number.value}
-                        on_text_change_listener={this.on_text_changed}
+                        heading="Phone number"
+                        placeholder="Enter phone number"
+                        value={this.state.phone_number.value}
+                        onChange={this.on_text_changed}
                         error={this.state.phone_number.error}
                     />
-                </div>
-                <div className="col-lg-3 col-sm-12 px-3">
                     <Inputfield
                         id="cnic_text_input"
-                        label_tag="CNIC"
-                        placeholder="CNIC"
-                        icon_class="icon-vcard"
-                        default_value={this.state.cnic.value}
-                        on_text_change_listener={this.on_text_changed}
+                        heading="CNIC"
+                        placeholder="Enter CNIC"
+                        value={this.state.cnic.value}
+                        onChange={this.on_text_changed}
                         error={this.state.cnic.error}
                     />
-                </div>
-                <div className="col-lg-6 col-sm-12">
-                    <div className={`row `}>
-                        <div className={`col-lg-4`}>
-                            <div className={``}>
-                                <label className="col-form-label-lg">Blood Group</label>
-                                <Select
-                                    isClearable
-                                    components={{ ValueContainer: selection_value_container }}
-                                    name="color"
-                                    options={BLOOD_GROUPS_OPTIONS}
-                                    placeholder={'Blood Group'}
-                                    menuPosition="auto"
-                                    id="blood_group_selection"
-                                    onChange={this.on_selected_changed}
-                                    value={[{ id: 'blood_group_selection', label: this.state.blood_group.value }]}
-                                />
-
-                            </div>
-                        </div>
-                        <div className={`col-lg-4`}>
-                            <div className={``}>
-                                <label className="col-form-label-lg">Gender</label>
-                                <Select
-                                    isClearable
-                                    components={{ ValueContainer: selection_value_container }}
-                                    name="color"
-                                    options={GENDER_OPTIONS}
-                                    placeholder={'Gender'}
-                                    menuPosition="auto"
-                                    id="gender_selection"
-                                    onChange={this.on_selected_changed}
-                                    value={[{ id: 'gender_selection', label: this.state.gender.value }]}
-                                />
-
-                            </div>
-                        </div>
-                        <div className={`col-lg-4`}>
-                            <div className={``}>
-                                <label className="col-form-label-lg">Role</label>
-                                <Select
-                                    isClearable
-                                    components={{ ValueContainer: selection_value_container }}
-                                    name="color"
-                                    options={ROLES_OPTIONS}
-                                    placeholder={'Role'}
-                                    menuPosition="auto"
-                                    id="role_selection"
-                                    onChange={this.on_selected_changed}
-                                    value={[{ id: 'role_selection', label: this.state.role.value }]}
-                                />
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="row">
-                <div className="col-lg-6 col-sm-12 px-3">
+                    <Inputfield
+                        field_type="select"
+                        id="blood_group_selection"
+                        heading="Blood Group"
+                        placeholder={'Select blood group'}
+                        error={this.state.cnic.error}
+                        isClearable
+                        name="color"
+                        options={BLOOD_GROUPS_OPTIONS}
+                        menuPosition="auto"
+                        onChange={e => this.on_selected_changed(e, 'blood_group_selection')}
+                        value={[{ id: 'blood_group_selection', label: this.state.blood_group.value }]}
+                    />
+                    <Inputfield
+                        field_type="select"
+                        heading="Gender"
+                        isClearable
+                        name="color"
+                        options={GENDER_OPTIONS}
+                        placeholder={'Select gender'}
+                        menuPosition="auto"
+                        id="gender_selection"
+                        onChange={e => this.on_selected_changed(e, 'gender_selection')}
+                        value={[{ id: 'gender_selection', label: this.state.gender.value }]}
+                    />
+                    <Inputfield
+                        field_type="select"
+                        heading="City"
+                        isClearable
+                        options={CITIES}
+                        placeholder="Select city"
+                        menuPosition="auto"
+                        id="city_selection"
+                        onChange={e => this.on_selected_changed(e, 'city_selection')}
+                        value={[{ id: 'city_selection', label: this.state.city.value }]}
+                    />
                     <Inputfield
                         id="address_text_input"
-                        label_tag="Address"
+                        heading="Address"
                         placeholder="Address"
                         icon_class="icon-home"
                         field_type="text-area"
-                        default_value={this.state.address.value}
-                        on_text_change_listener={this.on_text_changed}
+                        value={this.state.address.value}
+                        onChange={this.on_text_changed}
                         error={this.state.address.error}
                     />
-                </div>
-
-                <div className="col-lg-3 col-sm-12 px-3">
-                    <div className={`form-group row`}>
-                        <label className={`col-form-label-lg `}>Date of birth</label>
-                        <div className="input-group">
-                            <span className="input-group-prepend">
-                                <span className="input-group-text">
-                                    <i className="icon-calendar3 text-muted"></i>
-                                </span>
-                            </span>
-                            <DateTimePicker id="user_dob_text_input"
-                                onChange={this.on_user_date_of_birth_change}
-                                className="clock_datatime_picker form-control form-control-lg"
-                                inputProps={{ placeholder: 'Date of birth', className: 'border-0 w-100' }}
-                                input={true}
-                                dateFormat={'ll'}
-                                timeFormat={false}
-                                closeOnSelect={true}
-                                value={this.state.date_of_birth.value}
-                                disabled
-                            />
-                        </div>
+                    <Inputfield
+                        id="user_dob_text_input"
+                        onChange={this.on_user_date_of_birth_change}
+                        className="clock_datatime_picker form-control form-control-lg"
+                        placeholder="Enter your date of birth"
+                        heading="Date of birth"
+                        field_type="date-time"
+                        input={true}
+                        dateFormat={'ll'}
+                        timeFormat={false}
+                        closeOnSelect={true}
+                        value={this.state.date_of_birth.value}
+                    />
+                    <Inputfield
+                        field_type="date-time"
+                        heading="Register Date"
+                        className="clock_datatime_picker form-control form-control-lg"
+                        inputProps={{ placeholder: 'Register Date', className: 'border-0 w-100', disabled: true }}
+                        input={true}
+                        dateFormat={'lll'}
+                        timeFormat={false}
+                        closeOnSelect={true}
+                        value={this.state.register_date.value}
+                    />
+                    <div className="d-flex">
+                        <button className={`btn bg-teal-400 btn-labeled btn-labeled-right pr-5 float-right`}
+                            onClick={this.on_click_update}>
+                            <b><i className={`icon-floppy-disk`}></i></b>
+                            Save
+                        </button>
+                        <button
+                            className={`btn bg-dark btn-labeled btn-labeled-right pr-5 float-right ml-2`}
+                            onClick={() => this.props.history.push(BASE_URL)}>
+                            <b><i className={`icon-cross`}></i></b>
+                            Leave
+                        </button>
                     </div>
-                </div>
-
-                <div className="col-lg-3 col-sm-12 px-3">
-                    <div className={`form-group row`}>
-                        <label className={`col-form-label-lg `}>Register Date</label>
-                        <div className="input-group">
-                            <span className="input-group-prepend">
-                                <span className="input-group-text">
-                                    <i className="icon-calendar3 text-muted"></i>
-                                </span>
-                            </span>
-                            <DateTimePicker id="user_dob_text_input"
-                                className="clock_datatime_picker form-control form-control-lg"
-                                inputProps={{ placeholder: 'Register Date', className: 'border-0 w-100', disabled: true }}
-                                input={true}
-                                dateFormat={'lll'}
-                                timeFormat={false}
-                                closeOnSelect={true}
-                                value={this.state.register_date.value}
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className={`row`}>
-                <div className={`col-12`}>
-                    <button className={`btn bg-teal-400 btn-labeled btn-labeled-right pr-5 float-right`}
-                        onClick={this.on_click_update}>
-                        <b><i className={`icon-floppy-disk`}></i></b>
-                        Save
-                </button>
-                    <button
-                        className={`btn bg-dark btn-labeled btn-labeled-right pr-5 float-right mr-2`}
-                        onClick={() => this.props.history.push(BASE_URL)}>
-                        <b><i className={`icon-cross`}></i></b>
-                    Leave
-                </button>
                 </div>
             </div>
         </div>

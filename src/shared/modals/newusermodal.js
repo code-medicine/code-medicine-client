@@ -214,20 +214,23 @@ class NewUserModal extends Component {
             return
         }
         const data = {
-            first_name: this.state.user_first_name.value.trim(),
-            last_name: this.state.user_last_name.value.trim(),
-            phone_number: this.state.user_phone_number.value.trim(),
-            date_of_birth: this.state.user_dob.value,
-            cnic: this.state.user_cnic.value.trim(),
-            email: this.state.user_email.value.trim(),
-            country: this.state.user_country.value,
-            city: this.state.user_city.value,
-            address: this.state.user_address.value.trim(),
-            gender: this.state.user_gender.value.trim(),
-            blood_group: this.state.user_blood_group.value.trim(),
-            role: this.state.user_role.value.trim(),
+            admin_id: this.props.active_user._id,
+            patient: {
+                first_name: this.state.user_first_name.value.trim(),
+                last_name: this.state.user_last_name.value.trim(),
+                phone_number: this.state.user_phone_number.value.trim(),
+                date_of_birth: this.state.user_dob.value,
+                cnic: this.state.user_cnic.value.trim(),
+                email: this.state.user_email.value.trim(),
+                country: this.state.user_country.value,
+                city: this.state.user_city.value,
+                address: this.state.user_address.value.trim(),
+                gender: this.state.user_gender.value.trim(),
+                blood_group: this.state.user_blood_group.value.trim(),
+                role: this.state.user_role.value.trim(),
+            }
         }
-        Axios.post(ADMIN_CREATE_PATIENT, { admin_id: this.props.active_user._id, patient: data }).then(response => {
+        Axios.post(ADMIN_CREATE_PATIENT, data).then(response => {
             this.props.notify('success', '', response.data['message']);
             this.setState({ loading_status: false }, () => {
                 this.close_modal()
@@ -251,13 +254,11 @@ class NewUserModal extends Component {
                     <div className="form-group">
                         <Inputfield
                             id={`user_first_name_text_input`}
-                            label_tag={'First name'}
-                            icon_class={'icon-user-check'}
-                            input_type={'text'}
+                            heading={'First name'}
                             placeholder="Enter first name"
                             required
-                            on_text_change_listener={this.on_text_field_change}
-                            default_value={this.state.user_first_name.value}
+                            onChange={this.on_text_field_change}
+                            value={this.state.user_first_name.value}
                             error={this.state.user_first_name.error} />
                     </div>
                 </div>
@@ -265,13 +266,11 @@ class NewUserModal extends Component {
                     <div className="form-group">
                         <Inputfield
                             id={`user_last_name_text_input`}
-                            label_tag={'Last name'}
-                            icon_class={'icon-user-check'}
-                            input_type={'text'}
+                            heading={'Last name'}
                             placeholder="Enter last name"
                             required
-                            on_text_change_listener={this.on_text_field_change}
-                            default_value={this.state.user_last_name.value}
+                            onChange={this.on_text_field_change}
+                            value={this.state.user_last_name.value}
                             error={this.state.user_last_name.error} />
                     </div>
                 </div>
@@ -279,13 +278,11 @@ class NewUserModal extends Component {
                     <div className="form-group">
                         <Inputfield
                             id={`user_phone_number_text_input`}
-                            label_tag={'Phone number'}
-                            icon_class={'icon-phone2'}
-                            input_type={'number'}
+                            heading={'Phone number'}
                             placeholder="Enter phone number"
                             required
-                            on_text_change_listener={this.on_text_field_change}
-                            default_value={this.state.user_phone_number.value}
+                            onChange={this.on_text_field_change}
+                            value={this.state.user_phone_number.value}
                             error={this.state.user_phone_number.error} />
                     </div>
                 </div>
@@ -295,15 +292,15 @@ class NewUserModal extends Component {
                     <div className="form-group">
                         <Inputfield
                             id={`user_dob_text_input`}
-                            label_tag={'Date of birth'}
+                            heading={'Date of birth'}
                             icon_class={'icon-calendar3'}
                             placeholder="Date of birth"
                             input_type={'text'}
                             field_type="date-time"
                             date_format={'ll'}
                             time_format={false}
-                            on_text_change_listener={this.on_user_date_of_birth_change}
-                            default_value={this.state.user_dob.value}
+                            onChange={this.on_user_date_of_birth_change}
+                            value={this.state.user_dob.value}
                             error={this.state.user_dob.error}
                         />
                     </div>
@@ -312,12 +309,12 @@ class NewUserModal extends Component {
                     <div className="form-group">
                         <Inputfield
                             id={`user_cnic_text_input`}
-                            label_tag={'CNIC'}
+                            heading={'CNIC'}
                             icon_class={'icon-vcard'}
                             input_type={'number'}
                             placeholder="Enter CNIC"
-                            on_text_change_listener={this.on_text_field_change}
-                            default_value={this.state.user_cnic.value}
+                            onChange={this.on_text_field_change}
+                            value={this.state.user_cnic.value}
                             error={this.state.user_cnic.error} />
                     </div>
                 </div>
@@ -325,12 +322,12 @@ class NewUserModal extends Component {
                     <div className="form-group">
                         <Inputfield
                             id={`user_email_text_input`}
-                            label_tag={'Enter email'}
+                            heading={'Enter email'}
                             icon_class={'icon-envelop'}
                             input_type={'email'}
                             placeholder="Enter email"
-                            on_text_change_listener={this.on_text_field_change}
-                            default_value={this.state.user_email.value}
+                            onChange={this.on_text_field_change}
+                            value={this.state.user_email.value}
                             error={this.state.user_email.error} />
                     </div>
                 </div>
@@ -340,116 +337,115 @@ class NewUserModal extends Component {
                 <div className="col-md-8">
                     <div className="row">
                         <div className="col-md-6">
-                            <div className="form-group">
-                                <div className="">Country<span className="text-danger"> * </span></div>
-                                <Select
-                                    isClearable
-                                    menuPlacement="auto"
-                                    options={COUTRIES}
-                                    classNamePrefix={`form-control`}
-                                    placeholder="Select Country"
-                                    id="country_selection"
-                                    isDisabled
-                                    onChange={e => this.on_selected_changed(e, 'country_selection')}
-                                    value={{ id: 'country_selection', label: this.state.user_country.value }}
-                                    defaultValue={{ id: 'country_selection', label: 'Pakistan' }}
-                                    styles={{
-                                        container: base => ({
-                                            ...base,
-                                            backgroundColor: this.state.user_country.error ? '#FF0000' : '',
-                                            padding: 1,
-                                            borderRadius: 5
-                                        }),
-                                    }}
-                                />
-                            </div>
+                            <Inputfield 
+                                heading={'Country'}
+                                field_type="select"
+                                required
+                                isClearable
+                                menuPlacement="auto"
+                                options={COUTRIES}
+                                classNamePrefix={`form-control`}
+                                placeholder="Select Country"
+                                id="country_selection"
+                                isDisabled
+                                onChange={e => this.on_selected_changed(e, 'country_selection')}
+                                value={{ id: 'country_selection', label: this.state.user_country.value }}
+                                defaultValue={{ id: 'country_selection', label: 'Pakistan' }}
+                                styles={{
+                                    container: base => ({
+                                        ...base,
+                                        backgroundColor: this.state.user_country.error ? '#FF0000' : '',
+                                        padding: 1,
+                                        borderRadius: 5
+                                    }),
+                                }}
+                            />
                         </div>
                         <div className="col-md-6">
-                            <div className="form-group">
-                                <div className="">City<span className="text-danger"> * </span></div>
-                                <Select
-                                    isClearable
-                                    menuPlacement="auto"
-                                    options={CITIES}
-                                    classNamePrefix={`form-control`}
-                                    placeholder="Select City"
-                                    id="city_selection"
-                                    onChange={e => this.on_selected_changed(e, 'city_selection')}
-                                    value={{ id: 'city_selection', label: this.state.user_city.value }}
-                                    defaultValue={{ id: 'city_selection', label: 'Lahore' }}
-                                    styles={{
-                                        container: base => ({
-                                            ...base,
-                                            backgroundColor: this.state.user_city.error ? '#FF0000' : '',
-                                            padding: 1,
-                                            borderRadius: 5
-                                        }),
-                                    }}
-                                />
-                            </div>
+                            <Inputfield 
+                                heading={'City'}
+                                field_type="select"
+                                required
+                                isClearable
+                                menuPlacement="auto"
+                                options={CITIES}
+                                classNamePrefix={`form-control`}
+                                placeholder="Select City"
+                                id="city_selection"
+                                onChange={e => this.on_selected_changed(e, 'city_selection')}
+                                value={{ id: 'city_selection', label: this.state.user_city.value }}
+                                defaultValue={{ id: 'city_selection', label: 'Lahore' }}
+                                styles={{
+                                    container: base => ({
+                                        ...base,
+                                        backgroundColor: this.state.user_city.error ? '#FF0000' : '',
+                                        padding: 1,
+                                        borderRadius: 5
+                                    }),
+                                }}
+                            />
                         </div>
                     </div>
                     <div className="row">
                         <div className="col-md-12">
-                            <div className="form-group">
-                                <div className="">Address/Area<span className="text-danger"> * </span></div>
-                                <input
-                                    className="form-control form-control-lg"
-                                    id="user_address_text_input"
-                                    value={this.state.user_address.value}
-                                    onChange={e => this.on_text_field_change(e)}
-                                    placeholder="Enter address / area you live in the city" />
-                            </div>
+                            <Inputfield 
+                                heading="Address/Area"
+                                required
+                                className="form-control form-control-lg"
+                                id="user_address_text_input"
+                                value={this.state.user_address.value}
+                                onChange={e => this.on_text_field_change(e)}
+                                placeholder="Enter address / area you live in the city"
+                                />
                         </div>
                     </div>
                 </div>
                 <div className="col-md-4 border-left">
-                    <div className="form-group">
-                        <div>Gender<span className="text-danger"> * </span></div>
-                        <Select
-                            isClearable
-                            menuPlacement="auto"
-                            options={GENDER_OPTIONS}
-                            classNamePrefix={`form-control`}
-                            placeholder="Select Gender"
-                            id="gender_selection"
-                            onChange={e => this.on_selected_changed(e, 'gender_selection')}
-                            // value={this.state.user_gender.value}
-                            defaultValue={{ id: 'gender_selection', label: 'Male' }}
-                            styles={{
-                                container: base => ({
-                                    ...base,
-                                    backgroundColor: this.state.user_gender.error ? '#FF0000' : '',
-                                    padding: 1,
-                                    borderRadius: 5
-                                }),
-                            }}
+                    <Inputfield 
+                        heading="Gender"
+                        field_type="select"
+                        required
+                        isClearable
+                        menuPlacement="auto"
+                        options={GENDER_OPTIONS}
+                        classNamePrefix={`form-control`}
+                        placeholder="Select Gender"
+                        id="gender_selection"
+                        onChange={e => this.on_selected_changed(e, 'gender_selection')}
+                        // value={this.state.user_gender.value}
+                        defaultValue={{ id: 'gender_selection', label: 'Male' }}
+                        styles={{
+                            container: base => ({
+                                ...base,
+                                backgroundColor: this.state.user_gender.error ? '#FF0000' : '',
+                                padding: 1,
+                                borderRadius: 5
+                            }),
+                        }}
                         />
-                    </div>
-                    <div className="form-group">
-                        <div className="">Blood group<span className="text-danger"> * </span></div>
-                        <Select
-                            isClearable
-                            menuPlacement="auto"
-                            options={BLOOD_GROUPS_OPTIONS}
-                            className={`Select-option`}
-                            classNamePrefix={`form-control`}
-                            placeholder="Select blood group"
-                            id="blood_group_selection"
-                            onChange={e => this.on_selected_changed(e, 'blood_group_selection')}
-                            defaultValue={{ id: 'blood_group_selection', label: 'Unknown' }}
-                            styles={{
-                                container: base => ({
-                                    ...base,
-                                    backgroundColor: this.state.user_gender.error ? '#FF0000' : '',
-                                    padding: 1,
-                                    borderRadius: 5
-                                }),
-                            }}
-                        />
-                    </div>
+                    <Inputfield 
+                        heading="Blood group"
+                        field_type="select"
+                        required
+                        isClearable
+                        menuPlacement="auto"
+                        options={BLOOD_GROUPS_OPTIONS}
+                        className={`Select-option`}
+                        classNamePrefix={`form-control`}
+                        placeholder="Select blood group"
+                        id="blood_group_selection"
+                        onChange={e => this.on_selected_changed(e, 'blood_group_selection')}
+                        defaultValue={{ id: 'blood_group_selection', label: 'Unknown' }}
+                        styles={{
+                            container: base => ({
+                                ...base,
+                                backgroundColor: this.state.user_gender.error ? '#FF0000' : '',
+                                padding: 1,
+                                borderRadius: 5
+                            }),
+                        }}
+                    />
                 </div>
-
             </div>
         </div>
         return (

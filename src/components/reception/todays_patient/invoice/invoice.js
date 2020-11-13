@@ -5,7 +5,7 @@ import Axios from 'axios';
 import { APPOINTMENTS_INVOICE } from '../../../../shared/rest_end_points';
 import Loading from '../../../../shared/customs/loading/loading';
 import ReactToPrint from 'react-to-print';
-import { Ucfirst } from '../../../../shared/functions';
+import { get_utc_date, shift_timezone_to_pakistan, Ucfirst } from '../../../../shared/functions';
 import moment from 'moment'
 
 
@@ -106,7 +106,7 @@ class Invoice extends Component {
                                         <span className="font-weight-bold">Date </span>
                                     </td>
                                     <td className="py-1">
-                                        <span className="">{`${moment(this.state.data.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LLLL')}`}</span>
+                                        <span className="">{`${moment(get_utc_date(this.state.data.appointment_date), "YYYY-MM-DDThh:mm:ss").format('LLLL')}`}</span>
                                     </td>
                                 </tr>
                             </tbody>

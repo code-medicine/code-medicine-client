@@ -6,11 +6,9 @@ import { connect } from "react-redux";
 import { notify, set_active_page } from '../../../actions';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
-import DateTimePicker from 'react-datetime'
 import "./visits.css"
+import { components } from 'react-select';
 import { BLOOD_GROUPS_OPTIONS, PATIENT_VISIT_STATUSES } from '../../../shared/constant_data';
-// import makeAnimated from 'react-select/animated';
-import Select from 'react-select';
 import TableRow from '../../../shared/customs/tablerows/tablerow';
 import '../../../shared/customs/Animations/animations.css';
 import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
@@ -18,6 +16,7 @@ import Loading from '../../../shared/customs/loading/loading';
 import { BASE_URL } from '../../../shared/router_constants';
 import { Popup } from "semantic-ui-react";
 import { Ucfirst } from '../../../shared/functions'
+import Inputfield from '../../../shared/customs/inputfield/inputfield';
 
 
 class Visits extends Component {
@@ -80,7 +79,7 @@ class Visits extends Component {
     }
 
     on_selected_changed = (e, actor) => {
-        console.log('e',e)
+        console.log('e', e)
         if (e !== null) {
             switch (actor) {
                 case 'gender_selection':
@@ -247,7 +246,6 @@ class Visits extends Component {
                     from_date: this.state.date_from.value,
                     page: this.state.page_number
                 }
-                console.log('state',this.state)
 
                 if (this.state.search_patient_id.value) {
                     payload.patient_id = this.state.search_patient_id.value;
@@ -259,50 +257,7 @@ class Visits extends Component {
                     payload.appointment_status = this.state.search_status.value;
                 }
 
-                console.log('payload',payload)
                 this.populate_appointments(payload)
-                // if (this.state.patient_checkbox === true && this.state.doctor_checkbox === true) {
-                //     this.populate_appointments({
-                //         to_date: this.state.date_to.value,
-                //         from_date: this.state.date_from.value,
-                //         patient_id: this.state.search_patient_id.value,
-                //         doctor_id: this.state.search_doctor_id.value,
-                //         page: this.state.page_number
-                //     })
-                // }
-                // else if (this.state.patient_checkbox === false && this.state.doctor_checkbox === false) {
-                //     this.populate_appointments({
-                //         to_date: this.state.date_to.value,
-                //         from_date: this.state.date_from.value,
-                //         page: this.state.page_number
-                //     })
-                // }
-                // else if (this.state.patient_checkbox === true && this.state.doctor_checkbox === false) {
-                //     if (this.state.search_patient_id.value !== '') {
-                //         this.populate_appointments({
-                //             to_date: this.state.date_to.value,
-                //             from_date: this.state.date_from.value,
-                //             patient_id: this.state.search_patient_id.value,
-                //             page: this.state.page_number
-                //         })
-                //     }
-                //     else {
-                //         this.props.notify('info', '', 'Please select a patient')
-                //     }
-                // }
-                // else if (this.state.patient_checkbox === false && this.state.doctor_checkbox === true) {
-                //     if (this.state.search_doctor_id.value !== '') {
-                //         this.populate_appointments({
-                //             to_date: this.state.date_to.value,
-                //             from_date: this.state.date_from.value,
-                //             doctor_id: this.state.search_doctor_id.value,
-                //             page: this.state.page_number
-                //         })
-                //     }
-                //     else {
-                //         this.props.notify('info', '', 'Please select a doctor')
-                //     }
-                // }
             }
             else {
                 this.props.notify('error', '', 'Please specify a range of dates')
@@ -324,17 +279,11 @@ class Visits extends Component {
         this.setState({
             user_preview_modal_visibility: true
         }, () => {
-
-        })
-        Axios.post(USERS_SEARCH_BY_ID, { user_id: id }).then(res => {
-            if (res.status === 200) {
-                this.setState({
-                    user_modal_props: res.data.payload.user
-                })
-            }
-
-        }).catch(err => {
-            console.log('failed to fetch user')
+            Axios.post(USERS_SEARCH_BY_ID, { user_id: id }).then(res => {
+                this.setState({ user_modal_props: res.data.payload.user })
+            }).catch(err => {
+                console.log('failed to fetch user')
+            })
         })
     }
 
@@ -429,7 +378,17 @@ class Visits extends Component {
     }
 
 
+
     render() {
+        const Menu = props => {
+            return (
+                <components.Menu {...props} >
+                    <div className={`bg-light text-teal-400`} style={{ width: '400px' }}>
+                        {props.children}
+                    </div>
+                </components.Menu>
+            );
+        };
         const loading = <Loading size={150} />
         var table = ''
         if (this.state.data != null) {
@@ -504,136 +463,126 @@ class Visits extends Component {
                 <div className={`container-fluid`}>
                     <div className="row">
                         <div className="col-lg-3">
-                            <div className="form-group mb-1">
-                                <label>Select Patient</label>
-                                <Select
-                                    isClearable
-                                    // isDisabled={!this.state.patient_checkbox}
-                                    classNamePrefix={`form-control`}
-                                    id="patient_list"
-                                    options={this.state.patient_list}
-                                    onInputChange={e => this.populate_patients(e)}
-                                    onChange={e => this.on_selected_changed(e, 'patient_list')}
-                                    placeholder="Search patients"
-                                    styles={{
-                                        container: base => ({
-                                            ...base,
-                                            // backgroundColor: this.state.appointment_doctor.error ? '#FF0000' : '',
-                                            padding: 1,
-                                            borderRadius: 5
-                                        }),
-                                    }}
-                                />
-                            </div>
+                            <Inputfield
+                                field_type="select"
+                                heading="Patient"
+                                isClearable
+                                parent_classes="mb-1"
+                                classNamePrefix={`form-control`}
+                                id="patient_list"
+                                components={{ Menu }}
+                                options={this.state.patient_list}
+                                onInputChange={e => this.populate_patients(e)}
+                                onChange={e => this.on_selected_changed(e, 'patient_list')}
+                                placeholder="Search patients"
+                                styles={{
+                                    container: base => ({
+                                        ...base,
+                                        // backgroundColor: this.state.appointment_doctor.error ? '#FF0000' : '',
+                                        padding: 1,
+                                        borderRadius: 5
+                                    }),
+                                }}
+                            />
                         </div>
                         <div className="col-lg-3">
-                            <div className="form-group mb-1">
-                                <label>Select Doctor</label>
-                                <Select
-                                    isClearable
-                                    // isDisabled={!this.state.doctor_checkbox}
-                                    options={this.state.doctor_list}
-                                    onInputChange={e => this.populate_doctors(e)}
-                                    onChange={e => this.on_selected_changed(e, 'doctor_list')}
-                                    placeholder="Search Doctor"
-                                    styles={{
-                                        container: base => ({
-                                            ...base,
-                                            // backgroundColor: this.state.appointment_doctor.error ? '#FF0000' : '',
-                                            padding: 1,
-                                            borderRadius: 5
-                                        }),
-                                    }}
-                                />
-                            </div>
+                            <Inputfield
+                                field_type="select"
+                                heading="Doctor"
+                                isClearable
+                                parent_classes="mb-1"
+                                options={this.state.doctor_list}
+                                onInputChange={e => this.populate_doctors(e)}
+                                onChange={e => this.on_selected_changed(e, 'doctor_list')}
+                                placeholder="Search Doctor"
+                                styles={{
+                                    container: base => ({
+                                        ...base,
+                                        // backgroundColor: this.state.appointment_doctor.error ? '#FF0000' : '',
+                                        padding: 1,
+                                        borderRadius: 5
+                                    }),
+                                }}
+                            />
                         </div>
                         <div className="col-lg-3">
-                            <div className="form-group mb-1">
-                                <label>Status</label>
-                                <Select
-                                    className=""
-                                    options={PATIENT_VISIT_STATUSES}
-                                    classNamePrefix={``}
-                                    placeholder="Visit Status"
-                                    isClearable
-                                    id="status_selection"
-                                    onChange={e => this.on_selected_changed(e, 'status_list')}
-                                />
-                            </div>
+                            <Inputfield
+                                field_type="select"
+                                heading="Status"
+                                className=""
+                                parent_classes="mb-1"
+                                options={PATIENT_VISIT_STATUSES}
+                                classNamePrefix={``}
+                                placeholder="Select Status"
+                                isClearable
+                                id="status_selection"
+                                onChange={e => this.on_selected_changed(e, 'status_list')}
+                            />
                         </div>
                         <div className="col-lg-3">
-                            <div className="form-group mb-1">
-                                <label>Blood group</label>
-                                <Select
-                                    className=""
-                                    options={BLOOD_GROUPS_OPTIONS}
-                                    classNamePrefix={``}
-                                    placeholder="(coming soon)"
-                                    isClearable
-                                    id="blood_group_selection"
-                                    isDisabled
-                                    onChange={this.on_selected_changed}
-                                />
-                            </div>
+                            <Inputfield
+                                field_type="select"
+                                heading="Blood group"
+                                className=""
+                                parent_classes="mb-1"
+                                options={BLOOD_GROUPS_OPTIONS}
+                                classNamePrefix={``}
+                                placeholder="(coming soon)"
+                                isClearable
+                                id="blood_group_selection"
+                                isDisabled
+                                onChange={this.on_selected_changed}
+                            />
                         </div>
                     </div>
+
                     <div className="row">
                         <div className="col-lg-3">
-                            <div className="form-group mb-1">
-                                <label>Branch</label>
-                                <Select
-                                    className=""
-                                    options={PATIENT_VISIT_STATUSES}
-                                    classNamePrefix={``}
-                                    placeholder="Branch (Coming soon)"
-                                    isClearable
-                                    id="branch_selection"
-                                    onChange={this.on_selected_changed}
-                                    isDisabled={true}
-                                />
-                            </div>
+                            <Inputfield
+                                field_type="select"
+                                heading="Branch"
+                                className=""
+                                options={PATIENT_VISIT_STATUSES}
+                                classNamePrefix={``}
+                                placeholder="Branch (Coming soon)"
+                                isClearable
+                                id="branch_selection"
+                                onChange={this.on_selected_changed}
+                                isDisabled={true}
+                            />
                         </div>
                         <div className="col-lg-9">
                             <div className="row">
                                 <div className="col-lg-3">
-                                    <div className="form-group mb-1">
-                                        <label>From</label>
-                                        <div className={`input-group`}>
-                                            <span className="input-group-prepend">
-                                                <span className="input-group-text"><i className={'icon-calendar3'} /></span>
-                                            </span>
-                                            <DateTimePicker id="dob_text_input"
-                                                onChange={this.on_from_date_change}
-                                                className="clock_datatime_picker form-control"
-                                                inputProps={{ placeholder: 'Where from', className: 'border-0 w-100' }}
-                                                input={true}
-                                                dateFormat={'ll'}
-                                                timeFormat={false}
-                                                closeOnSelect={true}
-                                                value={this.state.date_from.value}
-                                            />
-                                        </div>
-                                    </div>
+                                    <Inputfield
+                                        field_type="date-time"
+                                        heading="From"
+                                        id="dob_text_input"
+                                        onChange={this.on_from_date_change}
+                                        className="clock_datatime_picker form-control"
+                                        inputProps={{ placeholder: 'Where from', className: 'border-0 w-100' }}
+                                        input={true}
+                                        dateFormat={'ll'}
+                                        timeFormat={false}
+                                        closeOnSelect={true}
+                                        value={this.state.date_from.value}
+                                    />
+
                                 </div>
                                 <div className="col-lg-3">
-                                    <div className="form-group mb-1">
-                                        <label>To</label>
-                                        <div className={`input-group`}>
-                                            <span className="input-group-prepend">
-                                                <span className="input-group-text"><i className={'icon-calendar3'} /></span>
-                                            </span>
-                                            <DateTimePicker id="dob_text_input"
-                                                onChange={this.on_to_date_change}
-                                                className="clock_datatime_picker form-control "
-                                                inputProps={{ placeholder: 'Where to', className: 'border-0 w-100' }}
-                                                input={true}
-                                                dateFormat={'ll'}
-                                                timeFormat={false}
-                                                closeOnSelect={true}
-                                                value={this.state.date_to.value}
-                                            />
-                                        </div>
-                                    </div>
+                                    <Inputfield
+                                        field_type="date-time"
+                                        heading="To"
+                                        id="dob_text_input"
+                                        onChange={this.on_to_date_change}
+                                        className="clock_datatime_picker form-control "
+                                        inputProps={{ placeholder: 'Where to', className: 'border-0 w-100' }}
+                                        input={true}
+                                        dateFormat={'ll'}
+                                        timeFormat={false}
+                                        closeOnSelect={true}
+                                        value={this.state.date_to.value}
+                                    />
                                 </div>
                                 <div className="col-lg-6">
                                     <div className="row">
@@ -679,158 +628,12 @@ class Visits extends Component {
                         </div>
                     </div>
                 </div>
-                {/* <div className="col-lg-4 d-flex flex-column-reverse mb-2 pb-1">
-
-                    <div className="row">
-                        <div className="col">
-
-                        </div>
-                        <div className="col">
-
-
-                        </div>
-                    </div>
-                    <div className="row mb-2">
-                        <div className="col">
-                            <Select
-                                className=""
-                                options={PATIENT_VISIT_STATUSES}
-                                classNamePrefix={``}
-                                placeholder="Branch (Coming soon)"
-                                isClearable
-                                id="branch_selection"
-                                onChange={this.on_selected_changed}
-                                isDisabled={true}
-                            />
-                        </div>
-
-                    </div>
-                    <div className="row">
-                        <div className="col-lg-5">
-                            <div className="row mb-2">
-                                <div className="col-11">
-                                    <Select
-                                        isClearable
-                                        isDisabled={!this.state.patient_checkbox}
-                                        id="patient_list"
-                                        options={this.state.patient_list}
-                                        onInputChange={e => this.populate_patients(e)}
-                                        onChange={e => this.on_selected_changed(e, 'patient_list')}
-                                        placeholder="Search patients" />
-                                </div>
-                                <div className="col-1 d-flex align-items-end pr-0 mb-2 pl-0">
-                                    <div className="form-check">
-                                        <label className="form-check-label">
-                                            <div className="uniform-checker">
-                                                <span className={this.state.patient_checkbox ? 'checked' : ''}>
-                                                    <input type="checkbox"
-                                                        name="patient"
-                                                        id="patient_checkbox_input"
-                                                        defaultChecked={this.state.patient_checkbox}
-                                                        value={this.state.patient_checkbox}
-                                                        onChange={this.on_text_field_change}
-                                                        className="form-input-styled" />
-                                                </span>
-                                            </div>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-5">
-                            <div className="row">
-                                <div className="col-11">
-                                    <Select
-                                        isClearable
-                                        isDisabled={!this.state.doctor_checkbox}
-                                        options={this.state.doctor_list}
-                                        onInputChange={e => this.populate_doctors(e)}
-                                        onChange={e => this.on_selected_changed(e, 'doctor_list')}
-                                        placeholder="Search Doctor" />
-                                </div>
-                                <div className="col-1 d-flex align-items-end pr-0 mb-2 pl-0">
-                                    <div className="form-check ">
-                                        <label className="form-check-label">
-                                            <div className="uniform-checker">
-                                                <span className={this.state.doctor_checkbox ? 'checked' : ''}>
-                                                    <input type="checkbox"
-                                                        name="doctor"
-                                                        id="doctor_checkbox_input"
-                                                        defaultChecked={this.state.doctor_checkbox}
-                                                        value={this.state.doctor_checkbox}
-                                                        onChange={this.on_text_field_change}
-                                                        className="form-input-styled" />
-                                                </span>
-                                            </div>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={`col-lg-2`}>
-                            <button
-                                type="button"
-                                className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5 btn-block "
-                                style={{ textTransform: "inherit" }}
-                                onClick={this.on_search_click}>
-                                <b><i className="icon-search4"></i></b>
-                                Search
-                            </button>
-                        </div>
-                    </div> */}
-                {/* <div className={`row`}>
-                        <div className="col">
-                            <Select
-                                className=""
-                                options={PATIENT_VISIT_STATUSES}
-                                classNamePrefix={``}
-                                components={makeAnimated()}
-                                placeholder="Visit Status"
-                                isClearable
-                                id="status_selection"
-                                onChange={this.on_selected_changed}
-                            />
-                        </div>
-                        <div className={`col`}>
-                            <Select
-                                className=""
-                                options={BLOOD_GROUPS_OPTIONS}
-                                classNamePrefix={``}
-                                components={makeAnimated()}
-                                placeholder="Blood group"
-                                isClearable
-                                id="blood_group_selection"
-                                onChange={this.on_selected_changed}
-                            />
-                        </div>
-                        <div className={`col`}>
-                            <button
-                                type="button"
-                                className="btn bg-dark btn-labeled btn-labeled-right pr-5 btn-block"
-                                style={{ textTransform: "inherit" }}
-                                onClick={this.on_submit_new_patient}>
-                                <b><i className="icon-sort-alpha-asc"></i></b>
-                                Sort
-                            </button>
-                        </div>
-                        <div className={`col`}>
-                            <button
-                                type="button"
-                                className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5 btn-block "
-                                style={{ textTransform: "inherit" }}
-                                onClick={this.on_search_click}>
-                                <b><i className="icon-search4"></i></b>
-                                Search
-                            </button>
-                        </div>
-                    </div> */}
-                {/* </div> */}
-                {this.state.loading_status ? loading : table}
+                { this.state.loading_status ? loading : table}
                 <UserPreviewModal visibility={this.state.user_preview_modal_visibility}
                     modal_props={this.state.user_modal_props}
                     on_click_back_drop={() => this.setState({ user_preview_modal_visibility: false, user_modal_props: null })}
                     on_click_cancel={() => this.setState({ user_preview_modal_visibility: false, user_modal_props: null })} />
-            </Container>
+            </Container >
         )
     }
 }
