@@ -296,54 +296,51 @@ class ProcedureModal extends Component {
                         <div className="col-lg-3 col-6 px-3">
                             <Inputfield
                                 id="consultancy_fee_text_input"
-                                label_tag="Consultancy Fee"
+                                heading="Consultancy Fee"
                                 icon_class="icon-cash3"
                                 placeholder="Fee"
                                 disabled={false}
-                                default_value={this.state.consultancy_fee_text_input.value}
+                                value={this.state.consultancy_fee_text_input.value}
                                 error={this.state.consultancy_fee_text_input.error}
-                                on_text_change_listener={this.handle_change}
-                                size="form-control-sm"
+                                onChange={this.handle_change}
+                                classname="form-control-sm"
                             />
                         </div>
                         <div className="col-lg-3 col-6 px-3">
                             <Inputfield
                                 id="discount_text_input"
-                                label_tag="Discount over total"
-                                icon_class="icon-arrow-down132"
+                                heading="Discount over total"
                                 placeholder="Discount"
-                                default_value={this.state.discount_text_input.value}
+                                value={this.state.discount_text_input.value}
                                 error={this.state.discount_text_input.error}
-                                on_text_change_listener={this.handle_change}
-                                size="form-control-sm"
+                                onChnage={this.handle_change}
+                                className="form-control-sm"
                             />
                         </div>
                         <div className="col-lg-3 col-6 px-3 border-right">
                             <Inputfield
                                 id="follow_up_text_input"
-                                label_tag="Follow ups Fee"
-                                icon_class="icon-loop"
+                                heading="Follow ups Fee"
                                 placeholder="Follow ups Fee"
                                 custom_classes=""
                                 disabled={false}
-                                default_value={this.state.follow_up_text_input.value}
+                                value={this.state.follow_up_text_input.value}
                                 error={this.state.follow_up_text_input.error}
-                                on_text_change_listener={this.handle_change}
-                                size="form-control-sm"
+                                onChange={this.handle_change}
+                                classname="form-control-sm"
                             />
                         </div>
                         <div className="col-lg-3 col-6 px-3 ">
                             <Inputfield
                                 id="paid_text_input"
-                                label_tag="Paid"
-                                icon_class="icon-cash3"
+                                heading="Paid"
                                 placeholder="Fee paid"
                                 custom_classes=""
                                 disabled={false}
-                                default_value={this.state.paid_text_input.value}
+                                value={this.state.paid_text_input.value}
                                 error={this.state.paid_text_input.error}
-                                on_text_change_listener={this.handle_change}
-                                size="form-control-sm"
+                                onChange={this.handle_change}
+                                classname="form-control-sm"
                             />
                         </div>
                     </div>

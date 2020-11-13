@@ -119,22 +119,20 @@ class Login extends Component {
             const username_password = <div className={``}>
                 <Inputfield
                     id={'email_text_input'}
-                    label_tag={'Email'}
+                    heading={'Email'}
                     placeholder={"someone@hello.com"}
-                    icon_class={'icon-user'}
                     input_type={'email'}
-                    on_text_change_listener={this.on_text_field_change}
-                    default_value={this.state.email.value}
+                    onChange={this.on_text_field_change}
+                    value={this.state.email.value}
                     error={this.state.email.error}
                 />
                 <Inputfield
                     id={'password_text_input'}
-                    label_tag={'Password'}
+                    heading={'Password'}
                     placeholder={"Enter your password"}
-                    icon_class={'icon-lock2'}
-                    input_type={'password'}
-                    on_text_change_listener={this.on_text_field_change}
-                    default_value={this.state.password.value}
+                    type={'password'}
+                    onChange={this.on_text_field_change}
+                    value={this.state.password.value}
                     error={this.state.password.error}
                 />
 
