@@ -176,9 +176,9 @@ class TodaysPatientRow extends Component {
                         {/* Appointment Reason */}
                         <div className={`row`}>
                             <div className={`col-12 h6`}>
-                                <span className="font-weight-bold">Reason</span>
+                                <span className="font-weight-bold">Comments</span>
                                 <span className=" h6 text-muted">
-                                    {` ${this.state.row_data.appointment_description.length > 25 ? this.state.row_data.appointment_description.substring(0, 25) + '...' : this.state.row_data.appointment_description}`}
+                                    {` ${this.state.row_data.appointment_comments.length > 25 ? this.state.row_data.appointment_comments.substring(0, 25) + '...' : this.state.row_data.appointment_comments}`}
                                 </span>
                                 <span className={`badge badge-${this.state.row_data.appointment_status.info === 'checked out' ? 'primary' : 'danger'} float-right`}>
                                     {this.state.row_data.appointment_status.info}

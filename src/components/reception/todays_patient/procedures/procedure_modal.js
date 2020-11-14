@@ -303,7 +303,7 @@ class ProcedureModal extends Component {
                                 value={this.state.consultancy_fee_text_input.value}
                                 error={this.state.consultancy_fee_text_input.error}
                                 onChange={this.handle_change}
-                                classname="form-control-sm"
+                                className="form-control-sm"
                             />
                         </div>
                         <div className="col-lg-3 col-6 px-3">
@@ -313,7 +313,7 @@ class ProcedureModal extends Component {
                                 placeholder="Discount"
                                 value={this.state.discount_text_input.value}
                                 error={this.state.discount_text_input.error}
-                                onChnage={this.handle_change}
+                                onChange={this.handle_change}
                                 className="form-control-sm"
                             />
                         </div>
@@ -327,7 +327,7 @@ class ProcedureModal extends Component {
                                 value={this.state.follow_up_text_input.value}
                                 error={this.state.follow_up_text_input.error}
                                 onChange={this.handle_change}
-                                classname="form-control-sm"
+                                className="form-control-sm"
                             />
                         </div>
                         <div className="col-lg-3 col-6 px-3 ">
@@ -340,7 +340,7 @@ class ProcedureModal extends Component {
                                 value={this.state.paid_text_input.value}
                                 error={this.state.paid_text_input.error}
                                 onChange={this.handle_change}
-                                classname="form-control-sm"
+                                className="form-control-sm"
                             />
                         </div>
                     </div>
