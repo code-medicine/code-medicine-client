@@ -536,6 +536,11 @@ export const HOURS24 = [
     { id: 'hour_selection', label: '23' },
 ]
 
+export const TIME_PERIOD = [
+    { id: 'time_period_selection', label: 'AM' },
+    { id: 'time_period_selection', label: 'PM' },
+]
+
 export const HOURS12 = [
     { id: 'hour_selection', label: '01' },
     { id: 'hour_selection', label: '02' },

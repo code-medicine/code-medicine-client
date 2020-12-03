@@ -11,9 +11,12 @@ import { connect } from "react-redux";
 import NewUserModal from '../../../../shared/modals/newusermodal';
 import Clock from 'react-clock';
 import 'react-clock/dist/Clock.css';
-import { HOURS24, MINS_BY_5 } from '../../../../shared/constant_data';
+import { HOURS12, HOURS24, MINS_BY_5, TIME_PERIOD } from '../../../../shared/constant_data';
 import { get_utc_date } from '../../../../shared/functions';
 import './styles.css'
+import TimeKeeper from 'react-timekeeper';
+import { Height } from '@material-ui/icons';
+import { Popup } from 'semantic-ui-react';
 
 class NewAppointmentModal extends Component {
     constructor(props) {
@@ -36,8 +39,9 @@ class NewAppointmentModal extends Component {
             patient_select_value: '',
             doctor_select_value: '',
 
-            hours: { value: '00', error: false },
+            hours: { value: '12', error: false },
             mins: { value: '00', error: false },
+            time_period: { value: 'AM', error: false },
 
         }
     }
@@ -183,22 +187,24 @@ class NewAppointmentModal extends Component {
         }
     }
 
-    on_apointment_time_change = (e) => {
+    on_apointment_time_change = (time) => {
 
-        if (e === '')
-            this.setState({ appointment_time: { value: '' } })
-        else {
-            var configured_date = null;
-            try {
-                configured_date = e.format('LT');
-            }
-            catch (err) {
-                configured_date = ''
-            }
-            finally {
-                this.setState({ appointment_time: { value: configured_date } })
-            }
-        }
+        console.log('time', moment(time).format("LT"));
+        this.setState({ appointment_time: { value: moment(time).format("LT") } })
+        // if (e === '')
+        //     this.setState({ appointment_time: { value: '' } })
+        // else {
+        //     var configured_date = null;
+        //     try {
+        //         configured_date = e.format('LT');
+        //     }
+        //     catch (err) {
+        //         configured_date = ''
+        //     }
+        //     finally {
+        //         this.setState({ appointment_time: { value: configured_date } })
+        //     }
+        // }
     }
 
     check_input = (input, required = true, only_alpha = false, only_numbers = false) => {
@@ -254,8 +260,8 @@ class NewAppointmentModal extends Component {
         const data = {
             patient: this.state.appointment_patient.value,
             doctor: this.state.appointment_doctor.value,
-            date: `${moment(this.state.appointment_date.value).format('YYYY-MM-DD')}T${moment(`${this.state.hours.value}:${this.state.mins.value}`, ["HH:mm"]).format("HH:mm:ss")}Z`,
-            time: moment(`${this.state.hours.value}:${this.state.mins.value}`, ["HH:mm"]).format("h:mm a"),
+            date: `${moment(this.state.appointment_date.value).format('YYYY-MM-DD')}T${moment(this.state.appointment_time.value, ["h:mm A"]).format("HH:mm:ss")}Z`,
+            time: moment(`${moment(this.state.appointment_time.value, ["h:mm A"]).format("HH:mm:ss")}Z`),
             description: "",
             comments: this.state.appointment_comments.value,
             referee: this.state.appointment_referee.value
@@ -267,8 +273,8 @@ class NewAppointmentModal extends Component {
             this.setState({
                 appointment_patient: { value: '', error: false },
                 appointment_doctor: { value: '', error: false },
-                appointment_date: { value: '', error: false },
-                appointment_time: { value: '', error: false },
+                appointment_date: { value: moment().format('ll'), error: false },
+                appointment_time: { value: moment().format("LT"), error: false },
                 appointment_comments: { value: '', error: false },
                 appointment_referee: { value: '', error: false },
                 patient_select_value: '',
@@ -310,33 +316,56 @@ class NewAppointmentModal extends Component {
     }
 
     render() {
-        console.log('hourse and mins', this.state.hours, this.state.mins)
         const add_appointment_modal_body = <div className="modal-body">
             <div className="row">
+
                 <div className="col-md-8">
-                    <div className="form-group">
-                        <label className="font-weight-semibold">Select or add user<span className="text-danger"> * </span></label>
-                        <Select
-                            id="appointment_patient_selection"
-                            isClearable
-                            menuPlacement="auto"
-                            options={this.state.patients}
-                            // components={{ Control: ControlComponent }}
-                            classNamePrefix={`form-control`}
-                            placeholder="Select Patient"
-                            onInputChange={e => this.populate_patients(e)}
-                            onChange={e => this.on_selected_changed(e, "appointment_patient_selection")}
-                            value={this.state.patient_select_value}
-                            styles={{
-                                container: base => ({
-                                    ...base,
-                                    backgroundColor: this.state.appointment_patient.error ? '#FF0000' : '',
-                                    padding: 1,
-                                    borderRadius: 5
-                                }),
-                            }}
-                        />
+                    <div className={`row`}>
+                        <div className={`col-md-10`}>
+                            <div className="form-group">
+                                <label className="font-weight-semibold">Select or add user<span className="text-danger"> * </span></label>
+                                <Select
+                                    id="appointment_patient_selection"
+                                    isClearable
+                                    menuPlacement="auto"
+                                    options={this.state.patients}
+                                    // components={{ Control: ControlComponent }}
+                                    classNamePrefix={`form-control`}
+                                    placeholder="Select Patient"
+                                    onInputChange={e => this.populate_patients(e)}
+                                    onChange={e => this.on_selected_changed(e, "appointment_patient_selection")}
+                                    value={this.state.patient_select_value}
+                                    styles={{
+                                        container: base => ({
+                                            ...base,
+                                            backgroundColor: this.state.appointment_patient.error ? '#FF0000' : '',
+                                            padding: 1,
+                                            borderRadius: 5
+                                        }),
+                                    }}
+                                />
+
+                            </div>
+                        </div>
+                        <div className={`col-md-2 d-flex align-items-end mb-3 `}>
+                            <Popup
+                                trigger={
+                                    <button className={`btn btn-outline btn-lg bg-secondary btn-block border-secondary text-dark btn-icon`} onClick={this.open_new_patient_modal}>
+                                        <i className="icon-plus3"></i>
+                                    </button>}
+                                flowing
+                                // hoverable
+                                content={
+                                    <div className={`card card-body bg-dark text-white shadow ml-1 py-1 mt-4`}>
+                                        Add new Patient
+                                    </div>
+                                }
+                                position='top center'
+                                style={{zIndex: 15000}}
+                            />
+                        </div>
                     </div>
+                    
 
                     <div className="form-group">
                         <label className="font-weight-semibold">Which doctor to assign<span className="text-danger"> * </span></label>
@@ -382,100 +411,18 @@ class NewAppointmentModal extends Component {
                             value={this.state.appointment_comments.value} />
                     </div>
                 </div>
+            
                 <div className="col-md-4">
-                    {/** Date select */}
-                    <div className="form-group">
-                        <label className="font-weight-semibold">Select Date for the appointment<span className="text-danger"> * </span></label>
-                        <DateTimePicker id="dob_text_input"
-                            onChange={this.on_apointment_date_change}
-                            className="clock_datatime_picker"
-                            inputProps={{ placeholder: 'Select Date', width: '100%', className: `form-control ${this.state.appointment_date.error ? 'border-danger' : ''}` }}
-                            input={true}
-                            dateFormat={'ll'}
-                            timeFormat={false}
-                            closeOnSelect={true}
-                            value={this.state.appointment_date.value}
+                    
+                    <div className={`mt-1 d-flex justify-content-center`}>
+                        <TimeKeeper 
+                            time={this.state.appointment_time.value}
+                            onChange={(new_time) => this.on_apointment_time_change(new_time)}
+                            // onDoneClick={() => console.log('time set')}
+                            coarseMinutes={5}
+                            forceCoarseMinutes
+                            
                         />
-                    </div>
-                    {/** Time Clock and select of hours and mins */}
-                    <div className="form-group">
-                        <label className="font-weight-semibold">Time of the appointment<span className="text-danger"> * </span></label>
-                        <div className="d-flex justify-content-center">
-                            <Clock
-                                value={get_utc_date(`2020-01-01T${this.state.hours.value}:${this.state.mins.value}:00`)}
-                                renderSecondHand={false}
-                                renderNumbers={true}
-                                size={150}
-                            />
-                        </div>
-                        <div className="row mt-2">
-                            <div className="col-md-6">
-                                <label>Hours<span className="text-danger"> * </span></label>
-                                <Select
-                                    id="hour_selection"
-                                    isClearable
-                                    options={HOURS24}
-                                    className="text-center"
-                                    classNamePrefix={`form-control`}
-                                    placeholder="HH"
-                                    menuPlacement="auto"
-                                    onChange={e => this.on_selected_changed(e, 'hour_selection')}
-                                    value={{ id: 'hour_selection', label: this.state.hours.value }}
-                                    components={{
-                                        DropdownIndicator: null,
-                                    }}
-                                    styles={{
-                                        container: base => ({
-                                            ...base,
-                                            backgroundColor: this.state.hours.error ? '#FF0000' : '',
-                                            padding: 1,
-                                            borderRadius: 5
-                                        })
-                                    }}
-                                />
-                            </div>
-                            <div className="col-md-6">
-                                <label>Minutes<span className="text-danger"> * </span></label>
-                                <Select
-                                    id="min_selection"
-                                    isClearable
-                                    options={MINS_BY_5}
-                                    classNamePrefix={`form-control`}
-                                    placeholder="MM"
-                                    menuPlacement="auto"
-                                    onChange={e => this.on_selected_changed(e, 'min_selection')}
-                                    value={{ id: 'min_selection', label: this.state.mins.value }}
-                                    components={{
-                                        DropdownIndicator: null,
-                                    }}
-                                    styles={{
-                                        container: base => ({
-                                            ...base,
-                                            backgroundColor: this.state.mins.error ? '#FF0000' : '',
-                                            padding: 1,
-                                            borderRadius: 5
-                                        }),
-                                    }}
-                                />
-                            </div>
-
-                        </div>
-
-                        {/* <DateTimePicker id="dob_text_input"
-                                onChange={this.on_apointment_time_change}
-                                className="clock_datatime_picker"
-                                inputProps={{ 
-                                    placeholder: 'Select Time', 
-                                    width: '100%', 
-                                    className: `form-control ${this.state.appointment_time.error ? 'border-danger' : ''}` 
-                                }}
-                                input={true}
-                                dateFormat={false}
-                                timeFormat={true}
-                                closeOnSelect={true}
-                                strictParsing={true}
-                                value={this.state.appointment_time.value}
-                            /> */}
                     </div>
                 </div>
             </div>
@@ -496,16 +443,23 @@ class NewAppointmentModal extends Component {
                     fade={true}
                     dialogClassName={`modal-dialog-centered modal-lg`}>
 
-                    <div className="modal-header bg-teal-400">
+                    <div className="modal-header bg-teal-400" >
                         <h5 className="modal-title">New Appointment</h5>
-                        <button
-                            type="button"
-                            className="btn bg-dark btn-labeled btn-labeled-right pr-5 "
-                            style={{ textTransform: "inherit" }}
-                            onClick={this.open_new_patient_modal}>
-                            <b><i className="icon-plus3"></i></b>
-                            New Patient
-                        </button>
+                        {/** Date select */}
+                        <div className={`w-25`}>
+                            <DateTimePicker id="dob_text_input"
+                                onChange={this.on_apointment_date_change}
+                                className="clock_datatime_picker text-teal-400"
+                                inputProps={{ placeholder: 'Select Date', width: '100%', className: `form-control ${this.state.appointment_date.error ? 'border-danger' : ''}` }}
+                                input={true}
+                                dateFormat={'ll'}
+                                timeFormat={false}
+                                closeOnSelect={true}
+                                value={this.state.appointment_date.value}
+                            />
+                            
+                        </div>
+                        
                     </div>
                     {this.state.loading_status ? <Loading size={150} /> : add_appointment_modal_body}
                     {this.state.loading_status ? '' : <div className="modal-footer">
@@ -546,7 +500,7 @@ class NewAppointmentModal extends Component {
                             style={{ textTransform: "inherit" }}
                             onClick={this.on_submit}>
                             <b><i className="icon-plus3"></i></b>
-                            Add
+                            Create
                         </button>
                     </div>}
                 </Modal>
