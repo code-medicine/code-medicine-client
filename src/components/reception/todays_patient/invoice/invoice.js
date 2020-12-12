@@ -5,7 +5,7 @@ import Axios from 'axios';
 import { APPOINTMENTS_INVOICE } from '../../../../shared/rest_end_points';
 import Loading from '../../../../shared/customs/loading/loading';
 import ReactToPrint from 'react-to-print';
-import { get_utc_date, shift_timezone_to_pakistan, Ucfirst } from '../../../../shared/functions';
+import { get_utc_date, Ucfirst } from '../../../../shared/functions';
 import moment from 'moment'
 
 
@@ -20,7 +20,7 @@ class Invoice extends Component {
     }
 
     componentWillReceiveProps(new_props, new_state) {
-        if (new_props.modal_visibility === true) {
+        if (new_props.visibility === true) {
             console.log('fetching data')
             Axios.get(`${APPOINTMENTS_INVOICE}?tag=${new_props.appointment_id}`).then(res => {
                 console.log('fetched', res.data)
@@ -154,12 +154,12 @@ class Invoice extends Component {
         const appointment_charges_table = <div className="table-responsive card">
             <table className="table table-hover mb-0">
                 <tbody>
-                    <tr>
+                    {/* <tr>
                         <td className="py-1">Procedures total fee</td>
                         <td className="py-1">
                             {this.state.data ? this.state.data.appointment_charges.procedures : ''}
                         </td>
-                    </tr>
+                    </tr> */}
                     <tr>
                         <td className="py-1">Consultancy fee</td>
                         <td className="py-1">
@@ -207,7 +207,7 @@ class Invoice extends Component {
             </table>
         </div>
         return (
-            <Modal visible={this.props.modal_visibility}
+            <Modal visible={this.props.visibility}
                 onClickBackdrop={this.props.close_modal}
                 fade={true}
                 dialogClassName={`modal-dialog modal-lg `}>

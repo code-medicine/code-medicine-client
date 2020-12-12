@@ -9,13 +9,13 @@ import { USERS_SEARCH_BY_CREDENTIALS, APPOINTMENTS_CREATE } from '../../../../sh
 import { notify, load_todays_appointments, clear_todays_appointments } from '../../../../actions';
 import { connect } from "react-redux";
 import NewUserModal from '../../../../shared/modals/newusermodal';
-import Clock from 'react-clock';
+// import Clock from 'react-clock';
 import 'react-clock/dist/Clock.css';
-import { HOURS12, HOURS24, MINS_BY_5, TIME_PERIOD } from '../../../../shared/constant_data';
-import { get_utc_date } from '../../../../shared/functions';
+// import { HOURS12, HOURS24, MINS_BY_5, TIME_PERIOD } from '../../../../shared/constant_data';
+// import { get_utc_date } from '../../../../shared/functions';
 import './styles.css'
 import TimeKeeper from 'react-timekeeper';
-import { Height } from '@material-ui/icons';
+// import { Height } from '@material-ui/icons';
 import { Popup } from 'semantic-ui-react';
 
 class NewAppointmentModal extends Component {
@@ -242,11 +242,11 @@ class NewAppointmentModal extends Component {
             error = true
         }
 
-        if (this.check_input(this.state.hours.value, true,false,true)){
+        if (this.check_input(this.state.hours.value, true, false, true)) {
             this.setState({ hours: { value: this.state.hours.value, error: true } })
             error = true
         }
-        if (this.check_input(this.state.mins.value, true,false,true)){
+        if (this.check_input(this.state.mins.value, true, false, true)) {
             this.setState({ mins: { value: this.state.mins.value, error: true } })
             error = true
         }
@@ -315,119 +315,7 @@ class NewAppointmentModal extends Component {
 
     }
 
-    render() {
-        const add_appointment_modal_body = <div className="modal-body">
-            <div className="row">
-
-                <div className="col-md-8">
-                    <div className={`row`}>
-                        <div className={`col-md-10`}>
-                            <div className="form-group">
-                                <label className="font-weight-semibold">Select or add user<span className="text-danger"> * </span></label>
-                                <Select
-                                    id="appointment_patient_selection"
-                                    isClearable
-                                    menuPlacement="auto"
-                                    options={this.state.patients}
-                                    // components={{ Control: ControlComponent }}
-                                    classNamePrefix={`form-control`}
-                                    placeholder="Select Patient"
-                                    onInputChange={e => this.populate_patients(e)}
-                                    onChange={e => this.on_selected_changed(e, "appointment_patient_selection")}
-                                    value={this.state.patient_select_value}
-                                    styles={{
-                                        container: base => ({
-                                            ...base,
-                                            backgroundColor: this.state.appointment_patient.error ? '#FF0000' : '',
-                                            padding: 1,
-                                            borderRadius: 5
-                                        }),
-                                    }}
-                                />
-
-                            </div>
-                        </div>
-                        <div className={`col-md-2 d-flex align-items-end mb-3 `}>
-                            <Popup
-                                trigger={
-                                    <button className={`btn btn-outline btn-lg bg-secondary btn-block border-secondary text-dark btn-icon`} onClick={this.open_new_patient_modal}>
-                                        <i className="icon-plus3"></i>
-                                    </button>}
-                                flowing
-                                // hoverable
-                                content={
-                                    <div className={`card card-body bg-dark text-white shadow ml-1 py-1 mt-4`}>
-                                        Add new Patient
-                                    </div>
-                                }
-                                position='top center'
-                                style={{zIndex: 15000}}
-                            />
-                        </div>
-                    </div>
-                    
-
-                    <div className="form-group">
-                        <label className="font-weight-semibold">Which doctor to assign<span className="text-danger"> * </span></label>
-                        <Select
-                            id="appointment_doctor_selection"
-                            isClearable
-                            options={this.state.doctors}
-                            classNamePrefix={`form-control`}
-                            placeholder="Select a Doctor"
-                            menuPlacement="auto"
-                            onInputChange={e => this.populate_doctors(e)}
-                            onChange={e => this.on_selected_changed(e, 'appointment_doctor_selection')}
-                            value={this.state.doctor_select_value}
-                            styles={{
-                                container: base => ({
-                                    ...base,
-                                    backgroundColor: this.state.appointment_doctor.error ? '#FF0000' : '',
-                                    padding: 1,
-                                    borderRadius: 5
-                                }),
-                            }}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label className="font-weight-semibold">Refered by</label>
-                        <input 
-                            id="appointment_referee_text_input"
-                            className="form-control"
-                            value={this.state.appointment_referee.value}
-                            onChange={e => this.on_text_field_change(e)}
-                            placeholder="Reference of any doctor if any"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Additional comments</label>
-                        <textarea rows={3} cols={3}
-                            id="appointment_comments_text_input"
-                            className="form-control"
-                            placeholder="Comments for the appointment"
-                            onChange={e => this.on_text_field_change(e)}
-                            value={this.state.appointment_comments.value} />
-                    </div>
-                </div>
-            
-                <div className="col-md-4">
-                    
-                    <div className={`mt-1 d-flex justify-content-center`}>
-                        <TimeKeeper 
-                            time={this.state.appointment_time.value}
-                            onChange={(new_time) => this.on_apointment_time_change(new_time)}
-                            // onDoneClick={() => console.log('time set')}
-                            coarseMinutes={5}
-                            forceCoarseMinutes
-                            
-                        />
-                    </div>
-                </div>
-            </div>
-
-        </div>
+    render() {      
         return (
             <Fragment>
 
@@ -457,11 +345,122 @@ class NewAppointmentModal extends Component {
                                 closeOnSelect={true}
                                 value={this.state.appointment_date.value}
                             />
-                            
+
                         </div>
-                        
+
                     </div>
-                    {this.state.loading_status ? <Loading size={150} /> : add_appointment_modal_body}
+                    {this.state.loading_status ? <Loading size={150} /> : <div className="modal-body">
+                        <div className="row">
+
+                            <div className="col-md-8">
+                                <div className={`row`}>
+                                    <div className={`col-md-10`}>
+                                        <div className="form-group">
+                                            <label className="font-weight-semibold">Select or add user<span className="text-danger"> * </span></label>
+                                            <Select
+                                                id="appointment_patient_selection"
+                                                isClearable
+                                                menuPlacement="auto"
+                                                options={this.state.patients}
+                                                // components={{ Control: ControlComponent }}
+                                                classNamePrefix={`form-control`}
+                                                placeholder="Select Patient"
+                                                onInputChange={e => this.populate_patients(e)}
+                                                onChange={e => this.on_selected_changed(e, "appointment_patient_selection")}
+                                                value={this.state.patient_select_value}
+                                                styles={{
+                                                    container: base => ({
+                                                        ...base,
+                                                        backgroundColor: this.state.appointment_patient.error ? '#FF0000' : '',
+                                                        padding: 1,
+                                                        borderRadius: 5
+                                                    }),
+                                                }}
+                                            />
+
+                                        </div>
+                                    </div>
+                                    <div className={`col-md-2 d-flex align-items-end mb-3 `}>
+                                        <Popup
+                                            trigger={
+                                                <button className={`btn btn-outline btn-lg bg-secondary btn-block border-secondary text-dark btn-icon`} onClick={this.open_new_patient_modal}>
+                                                    <i className="icon-plus3"></i>
+                                                </button>}
+                                            flowing
+                                            // hoverable
+                                            content={
+                                                <div className={`card card-body bg-dark text-white shadow ml-1 py-1 mt-4`}>
+                                                    Add new Patient
+                                    </div>
+                                            }
+                                            position='top center'
+                                            style={{ zIndex: 15000 }}
+                                        />
+                                    </div>
+                                </div>
+
+
+                                <div className="form-group">
+                                    <label className="font-weight-semibold">Which doctor to assign<span className="text-danger"> * </span></label>
+                                    <Select
+                                        id="appointment_doctor_selection"
+                                        isClearable
+                                        options={this.state.doctors}
+                                        classNamePrefix={`form-control`}
+                                        placeholder="Select a Doctor"
+                                        menuPlacement="auto"
+                                        onInputChange={e => this.populate_doctors(e)}
+                                        onChange={e => this.on_selected_changed(e, 'appointment_doctor_selection')}
+                                        value={this.state.doctor_select_value}
+                                        styles={{
+                                            container: base => ({
+                                                ...base,
+                                                backgroundColor: this.state.appointment_doctor.error ? '#FF0000' : '',
+                                                padding: 1,
+                                                borderRadius: 5
+                                            }),
+                                        }}
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="font-weight-semibold">Refered by</label>
+                                    <input
+                                        id="appointment_referee_text_input"
+                                        className="form-control"
+                                        value={this.state.appointment_referee.value}
+                                        onChange={e => this.on_text_field_change(e)}
+                                        placeholder="Reference of any doctor if any"
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Additional comments</label>
+                                    <textarea rows={3} cols={3}
+                                        id="appointment_comments_text_input"
+                                        className="form-control"
+                                        placeholder="Comments for the appointment"
+                                        onChange={e => this.on_text_field_change(e)}
+                                        value={this.state.appointment_comments.value} />
+                                </div>
+                            </div>
+
+                            <div className="col-md-4">
+
+                                <div className={`mt-1 d-flex justify-content-center`}>
+                                    <TimeKeeper
+                                        time={this.state.appointment_time.value}
+                                        onChange={(new_time) => this.on_apointment_time_change(new_time)}
+                                        // onDoneClick={() => console.log('time set')}
+                                        coarseMinutes={5}
+                                        forceCoarseMinutes
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    }
                     {this.state.loading_status ? '' : <div className="modal-footer">
                         <Select
                             isClearable

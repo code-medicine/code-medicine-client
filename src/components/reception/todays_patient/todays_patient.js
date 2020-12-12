@@ -19,6 +19,7 @@ import { Popup } from "semantic-ui-react";
 import { PATIENT_VISIT_STATUSES } from '../../../shared/constant_data';
 import DateTimePicker from 'react-datetime';
 import { Ucfirst } from '../../../shared/functions';
+import ConsultacyModal from './consultancy';
 
 
 class Todayspatient extends Component {
@@ -33,7 +34,9 @@ class Todayspatient extends Component {
             patients: [],
 
             new_appointment_modal_visibility: false,
-            procedure_visibility: false,
+            procedure_modal_visibility: false,
+            consultancy_modal_visibility: false,
+            
             prev_procedure_list: null,
             user_preview_modal_visibility: false,
             new_patient_modal_visibility: false,
@@ -42,7 +45,7 @@ class Todayspatient extends Component {
             user_modal_props: null,
             invoice_data: null,
             appointment_invoice_id: '',
-            procedure_appointment_id: null,
+            selected_appointment_id: null,
             search_doctor: { value: '' },
             search_patient: { value: '' },
             search_status: { value: '' },
@@ -203,33 +206,21 @@ class Todayspatient extends Component {
                     key={i}
                     row_data={booking}
                     hidden_data={hidden_data}
-                    open_procedure_modal={this.openProcedureModalHandler}
-                    open_invoice_modal={this.openInvoiceModalHandler}
-                    open_user_view_modal={this.request_user}
+                    toggle_consultancy_modal={this.toggle_consultancy_modal}
+                    toggle_procedure_modal={this.openProcedureModalHandler}
+                    toggle_invoice_modal={this.openInvoiceModalHandler}
+                    toggle_user_view_modal={this.request_user}
                     columns="8" />
             )
         }))
     }
 
     openProcedureModalHandler = (id) => {
-        this.setState({ procedure_visibility: true }, () => {
-            try {
-                let response = Axios.get(`${PROCEDURES_SEARCH_BY_APPOINTMENT_ID}?tag=${id}`);
-                response.then((res) => {
-                    this.setState({
-                        prev_procedure_list: res.data.payload,
-                        procedure_appointment_id: id,
-                        invoiceVisitId: 0
-                    });
-                });
-            }
-            catch (err) {
-                this.props.notify('error', '', 'Server is not responding! Please try again later');
-            }
-        });
+        this.setState({ procedure_modal_visibility: true, selected_appointment_id: id });
     };
+
     closeProcedureModalHandler = (type) => {
-        this.setState({ procedure_visibility: false, prev_procedure_list: null, data: null })
+        this.setState({ procedure_modal_visibility: false, prev_procedure_list: null, data: null })
     };
 
     invoiceVisitIdHandler = (value) => {
@@ -243,9 +234,11 @@ class Todayspatient extends Component {
     open_new_appointment_modal = () => {
         this.setState({ new_appointment_modal_visibility: true })
     };
+
     openInvoiceModalHandler = (object) => {
         this.setState({ invoice_modal_visibility: true, appointment_invoice_id: object })
     };
+
     closeInvoiceModalHandler = () => {
         this.setState({ invoice_modal_visibility: false })
     };
@@ -363,6 +356,16 @@ class Todayspatient extends Component {
                 this.setState({ search_date: { value: configured_date } })
             }
         }
+    }
+
+    /*************************************************************************************************************************************************/
+
+    toggle_consultancy_modal = (id) => {
+        this.setState({ consultancy_modal_visibility: !this.state.consultancy_modal_visibility }, () => {
+            if (this.state.consultancy_modal_visibility) {
+                this.setState({ selected_appointment_id: id })
+            }
+        })
     }
 
 
@@ -550,9 +553,15 @@ class Todayspatient extends Component {
                     bind_function={this.open_new_appointment_modal}
                     state={'new'} />
 
+                <ConsultacyModal
+                    visibility={this.state.consultancy_modal_visibility}
+                    toggle_modal={this.toggle_consultancy_modal}
+                    appointment_id={this.state.selected_appointment_id}
+                />
+
                 <ProcedureModal
-                    new_procedure_visibility={this.state.procedure_visibility}
-                    appointment_id={this.state.procedure_appointment_id}
+                    visibility={this.state.procedure_modal_visibility}
+                    appointment_id={this.state.selected_appointment_id}
                     prev_procedure_list={this.state.prev_procedure_list}
                     updateProcedureList={this.UpdateProcedureListHandler}
                     procedure_backDrop={this.closeProcedureModalHandler}
@@ -560,12 +569,13 @@ class Todayspatient extends Component {
                 />
 
                 <InvoiceModal
-                    modal_visibility={this.state.invoice_modal_visibility}
+                    visibility={this.state.invoice_modal_visibility}
                     appointment_id={this.state.appointment_invoice_id}
                     close_modal={this.closeInvoiceModalHandler}
-                />
+                /> 
 
-                <UserPreviewModal visibility={this.state.user_preview_modal_visibility}
+                <UserPreviewModal 
+                    visibility={this.state.user_preview_modal_visibility}
                     modal_props={this.state.user_modal_props}
                     on_click_back_drop={() => this.setState({ user_preview_modal_visibility: false, user_modal_props: null })}
                     on_click_cancel={() => this.setState({ user_preview_modal_visibility: false, user_modal_props: null })} />
