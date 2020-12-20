@@ -6,9 +6,11 @@ import { Popup } from "semantic-ui-react";
 import UpdateAppointmentModal from './appointment/update_appointment_modal';
 import { Ucfirst } from '../../../shared/functions'
 import Axios from 'axios';
-import { PROCEDURES_SEARCH_BY_APPOINTMENT_ID } from '../../../shared/rest_end_points';
+import { APPOINTMENTS_CHECKOUT, CHECKOUT_APPOINTMENT, PROCEDURES_SEARCH_BY_APPOINTMENT_ID } from '../../../shared/rest_end_points';
 import Loading from '../../../shared/customs/loading/loading';
 import './todays_patient_row.css'
+import { connect } from 'react-redux';
+import { notify, load_todays_appointments, clear_todays_appointments } from '../../../actions'
 
 // import '../../../../node_modules/semantic-ui-css/semantic.min.css';
 
@@ -52,73 +54,97 @@ class TodaysPatientRow extends Component {
     }
 
     view_user = (id) => {
-        this.props.open_user_view_modal(id)
+        this.props.toggle_user_view_modal(id)
+    }
+
+    handle_checkout = () => {
+        const confirmation = window.confirm('Checkout appointment?') 
+        if (confirmation) {
+            console.log('yes checkout')
+            const payload = {
+                appointment_id: this.state.row_data._id
+            }
+            const that = this;
+            Axios.post(APPOINTMENTS_CHECKOUT, payload).then(res => {
+                this.props.notify('info', '', res.data.message)
+                this.props.clear_todays_appointments();
+                this.props.load_todays_appointments(localStorage.getItem('Gh65$p3a008#2C'));
+            }).catch(err => {
+                if (err.response) {
+                    if (err.response.status === 400) {
+                        that.props.notify('error', '', err.response.data.message);
+                    }
+                    else {
+                        that.props.notify('error', '', err.response.data.message);
+                    }
+                }
+                else {
+                    that.props.notify('error', '', err.toString());
+                }
+            })
+        } else {
+
+        }
     }
 
     render_read_only_cols = () => {
         const options = {
-            charges: <Popup
+            consultancy_charges: <Popup
                 trigger={
-                    <button className="btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 secondary btn-icon "
-                        onClick={() => this.props.open_procedure_modal(this.props.row_data._id)}>
-                        <i className="icon-plus2"></i>
+                    <button className="btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 secondary btn-icon m-1"
+                        onClick={() => this.props.toggle_consultancy_modal(this.props.row_data._id)}>
+                        <i className="icon-vcard"></i>
                     </button>}
-                content={
-                    <div className="card card-body bg-teal-400 text-white shadow mr-1 mt-3 py-1">
-                        View or Add procedures
-                            </div>
-                }
+                content={<div className="card card-body bg-teal-400 text-white shadow mr-1 mt-3 py-1">Payment</div>}
                 flowing
                 position='left center'
             />,
+            procedure_charges: <Popup
+                trigger={
+                    <button className="btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 secondary btn-icon m-1"
+                        onClick={() => this.props.toggle_procedure_modal(this.props.row_data._id)}>
+                        <i className="icon-add-to-list"></i>
+                    </button>}
+                content={<div className="card card-body bg-teal-400 text-white shadow py-1">Procedures</div>}
+                flowing
+                position='top center'
+            />,
             invoice: <Popup
                 trigger={
-                    <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon ml-2`}
-                        onClick={() => this.props.open_invoice_modal(this.props.row_data._id)}>
+                    <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon m-1`}
+                        onClick={() => this.props.toggle_invoice_modal(this.props.row_data._id)}>
                         <i className={`icon-file-text2`}></i>
                     </button>}
-                content={
-                    <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
-                        Generate Invoice
-                            </div>
-                }
+                content={<div className={`card card-body bg-teal-400 text-white shadow py-1`}>Generate Invoice</div>}
                 flowing
                 // hoverable
-                position='top left'
+                position='top center'
             />,
             edit: <Popup
                 trigger={
-                    <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon ml-2`}
+                    <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon m-1`}
                         onClick={() => this.setState({ update_appointment_modal_visibility: true })}    >
                         <i className={`icon-pencil3`}></i>
                     </button>}
                 flowing
                 // hoverable
-                content={
-                    <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
-                        Edit appointment
-                            </div>
-                }
+                content={<div className={`card card-body bg-teal-400 text-white shadow py-1`}>Edit appointment</div>}
                 position='top center'
             />,
             follow_ups: <Popup
                 trigger={
-                    <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon ml-2`}
-                        onClick={() => alert('There are no follow ups')}    >
+                    <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon m-1`}
+                        onClick={() => alert('In progress')}    >
                         <i className={`icon-loop`}></i>
                     </button>}
                 flowing
                 // hoverable
-                content={
-                    <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
-                        Follow ups
-                                </div>
-                }
-                position='top right'
+                content={<div className={`card card-body bg-teal-400 text-white shadow py-1`}>Follow ups</div>}
+                position='top center'
             />,
             details: <Popup
                 trigger={
-                    <button className={`btn btn-outline btn-sm bg-dark border-dark text-dark btn-icon ml-2`}
+                    <button className={`btn btn-outline btn-sm bg-dark border-dark text-dark btn-icon m-1`}
                         onClick={this.toggle_row}>
                         <i className={this.state.toggle_icon}></i>
                     </button>}
@@ -130,6 +156,21 @@ class TodaysPatientRow extends Component {
                             </div>
                 }
                 position='right center'
+            />,
+            checkout: <Popup
+                trigger={
+                    <button className={`btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 btn-icon m-1 float-right`}
+                        onClick={() => this.handle_checkout()}>
+                        <i className={'icon-exit'}></i>
+                    </button>}
+                flowing
+                // hoverable
+                content={
+                    <div className={`card card-body bg-teal-400 text-white shadow py-1 mt-3 mr-2`}>
+                        Checkout
+                    </div>
+                }
+                position='left center'
             />
         }
 
@@ -190,11 +231,13 @@ class TodaysPatientRow extends Component {
                             <div className="col-12">
                                 {!this.state.row_data.appointment_status.is_paid ?
                                     <Fragment>
-                                        {options['charges']}
+                                        {options['consultancy_charges']}
+                                        {options['procedure_charges']}
                                         {options['invoice']}
                                         {options['edit']}
                                         {options['follow_ups']}
                                         {options['details']}
+                                        {options['checkout']}
                                     </Fragment> :
                                     <Fragment>
                                         {options['invoice']}
@@ -224,7 +267,7 @@ class TodaysPatientRow extends Component {
 
                     {
                         this.state.procedure_loading ? <Loading size={100} /> : (
-                            this.state.procedures_list.length > 0?
+                            this.state.procedures_list.length > 0 ?
                                 this.state.procedures_list.map((item, i) => {
                                     return (
                                         <div className="">
@@ -234,10 +277,10 @@ class TodaysPatientRow extends Component {
                                             {/* <span className="text-secondary procedureslist-secondary-text">{'item'}</span> */}
                                         </div>
                                     )
-                                }): <div className="alert alert-info mt-2" style={{ marginBottom: '0px' }}>
-                                        <strong>Info!</strong> No Procedures found.
+                                }) : <div className="alert alert-info mt-2" style={{ marginBottom: '0px' }}>
+                                    <strong>Info!</strong> No Procedures found.
                                     </div>
-                            )
+                        )
                     }
                 </blockquote>
             </div>
@@ -285,7 +328,7 @@ class TodaysPatientRow extends Component {
                             }
                         </Collapse>
                         <UpdateAppointmentModal
-                            id={this.props.id}
+                            id={this.state.row_data._id}
                             visibility={this.state.update_appointment_modal_visibility}
                             close={this.close_update_appointment_modal}
                             call_back={this.call_back_update_appointment_modal}
@@ -309,4 +352,4 @@ class TodaysPatientRow extends Component {
         )
     }
 }
-export default TodaysPatientRow
+export default connect(null, { notify, load_todays_appointments, clear_todays_appointments })(TodaysPatientRow)

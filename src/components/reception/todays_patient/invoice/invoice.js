@@ -5,7 +5,7 @@ import Axios from 'axios';
 import { APPOINTMENTS_INVOICE } from '../../../../shared/rest_end_points';
 import Loading from '../../../../shared/customs/loading/loading';
 import ReactToPrint from 'react-to-print';
-import { get_utc_date, shift_timezone_to_pakistan, Ucfirst } from '../../../../shared/functions';
+import { get_utc_date, Ucfirst } from '../../../../shared/functions';
 import moment from 'moment'
 
 
@@ -20,7 +20,7 @@ class Invoice extends Component {
     }
 
     componentWillReceiveProps(new_props, new_state) {
-        if (new_props.modal_visibility === true) {
+        if (new_props.visibility === true) {
             console.log('fetching data')
             Axios.get(`${APPOINTMENTS_INVOICE}?tag=${new_props.appointment_id}`).then(res => {
                 console.log('fetched', res.data)
@@ -48,8 +48,19 @@ class Invoice extends Component {
         if (this.state.data !== null) {
             const total = this.get_total();
             const paid = parseInt(this.state.data.appointment_charges.paid);
+            const paid_for_procedures = parseInt(this.state.data.appointment_charges.paid_for_procedures);
 
-            return total - paid;
+            return total - paid - paid_for_procedures;
+        }
+        return 0;
+    }
+
+    get_total_paid = () => {
+        if (this.state.data !== null) {
+            const paid = parseInt(this.state.data.appointment_charges.paid);
+            const paid_for_procedures = parseInt(this.state.data.appointment_charges.paid_for_procedures);
+            
+            return paid + paid_for_procedures;
         }
         return 0;
     }
@@ -198,6 +209,18 @@ class Invoice extends Component {
                         </td>
                     </tr>
                     <tr>
+                        <td className="py-1">Paid Amount for procedures</td>
+                        <td className="py-1">
+                            {this.state.data ? this.state.data.appointment_charges.paid_for_procedures : ''}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td className="py-1">Total paid Amount</td>
+                        <td className="py-1">
+                            {this.get_total_paid()}
+                        </td>
+                    </tr>
+                    <tr>
                         <td className="py-1">Due Amount</td>
                         <td className="py-1">
                             {this.state.data ? this.get_balance() : ''}
@@ -207,7 +230,7 @@ class Invoice extends Component {
             </table>
         </div>
         return (
-            <Modal visible={this.props.modal_visibility}
+            <Modal visible={this.props.visibility}
                 onClickBackdrop={this.props.close_modal}
                 fade={true}
                 dialogClassName={`modal-dialog modal-lg `}>
