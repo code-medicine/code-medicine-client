@@ -22,6 +22,7 @@ class ConsultancyModal extends Component {
 
             total: 0,
             balance: 0,
+            procedure_charges: 0,
 
             loading: false,
 
@@ -30,17 +31,18 @@ class ConsultancyModal extends Component {
     }
 
     componentWillReceiveProps(new_props) {
-        if (new_props.visibility && new_props.appointment_id) {
+        if (new_props.visibility && new_props.appointment_id !== null) {
             this.setState({ loading: true });
             Axios.get(`${GET_APPOINTMENT_CHARGES}?tag=${new_props.appointment_id}`).then(res => {
-                console.log('response', res.data)
+                console.log('charges', res.data.payload)
                 this.setState({
                     loading: false,
 
                     consultancy_fee_text_input: { value: res.data.payload.consultancy === 0 ? "" : res.data.payload.consultancy.toString(), error: false },
                     discount_text_input: { value: res.data.payload.discount === 0 ? "" : res.data.payload.discount.toString(), error: false },
                     follow_up_text_input: { value: res.data.payload.follow_up === 0 ? "" : res.data.payload.follow_up.toString(), error: false },
-                    paid_text_input: { value: res.data.payload.paid === 0 ? "" : res.data.payload.paid.toString(), error: false }
+                    paid_text_input: { value: res.data.payload.paid === 0 ? "" : res.data.payload.paid.toString(), error: false },
+                    procedure_charges: res.data.payload.procedures,
                 }, () => {
                     this.handle_total_values()
                     Axios
@@ -51,6 +53,9 @@ class ConsultancyModal extends Component {
             }).catch(err => {
                 this.props.notify('error', '', err.toString())
             })
+        }
+        else if (new_props.visibility && new_props.appointment_id === null){
+            this.props.notify('error', '', "Something went wrong! Please try again later")
         }
         else {
             this.setState({
@@ -239,6 +244,9 @@ class ConsultancyModal extends Component {
                                         </tr>
                                     </tbody>
                                 </table>
+                                <div className={`text-center`}>
+                                    Charges for procedures are <span className={`font-weight-bold`}>Rs. {this.state.procedure_charges}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -319,7 +327,6 @@ class ConsultancyModal extends Component {
                                 </table>
                                 <span className={`text-muted`}>- Invoice date-time {moment(new Date()).format('LLL')}</span>
                             </div>
-1
                         </div>
                     </div>
                 </div>

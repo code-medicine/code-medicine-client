@@ -86,7 +86,7 @@ class Container extends Component {
 
                 <div className="content-wrapper">
                     
-                    {/* {page_header? <Pageheader /> : ''} */}
+                    {page_header? <Pageheader /> : ''}
 
                     <div className={`content ${this.state.type === 'login'? 'p-0':this.state.type === 'register'? 'p-0':'' }`}>
                         {

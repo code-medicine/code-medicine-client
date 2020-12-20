@@ -48,8 +48,19 @@ class Invoice extends Component {
         if (this.state.data !== null) {
             const total = this.get_total();
             const paid = parseInt(this.state.data.appointment_charges.paid);
+            const paid_for_procedures = parseInt(this.state.data.appointment_charges.paid_for_procedures);
 
-            return total - paid;
+            return total - paid - paid_for_procedures;
+        }
+        return 0;
+    }
+
+    get_total_paid = () => {
+        if (this.state.data !== null) {
+            const paid = parseInt(this.state.data.appointment_charges.paid);
+            const paid_for_procedures = parseInt(this.state.data.appointment_charges.paid_for_procedures);
+            
+            return paid + paid_for_procedures;
         }
         return 0;
     }
@@ -154,12 +165,12 @@ class Invoice extends Component {
         const appointment_charges_table = <div className="table-responsive card">
             <table className="table table-hover mb-0">
                 <tbody>
-                    {/* <tr>
+                    <tr>
                         <td className="py-1">Procedures total fee</td>
                         <td className="py-1">
                             {this.state.data ? this.state.data.appointment_charges.procedures : ''}
                         </td>
-                    </tr> */}
+                    </tr>
                     <tr>
                         <td className="py-1">Consultancy fee</td>
                         <td className="py-1">
@@ -195,6 +206,18 @@ class Invoice extends Component {
                         <td className="py-1">Paid Amount</td>
                         <td className="py-1">
                             {this.state.data ? this.state.data.appointment_charges.paid : ''}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td className="py-1">Paid Amount for procedures</td>
+                        <td className="py-1">
+                            {this.state.data ? this.state.data.appointment_charges.paid_for_procedures : ''}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td className="py-1">Total paid Amount</td>
+                        <td className="py-1">
+                            {this.get_total_paid()}
                         </td>
                     </tr>
                     <tr>
