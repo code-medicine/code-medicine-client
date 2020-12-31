@@ -297,7 +297,7 @@ class Visits extends Component {
                     {/* {`${moment(booking.appointment_date, "YYYY-MM-DDThh:mm:ss").utc().format('LL')}`} */}
                 </div>,// date of booking
                 time_of_booking: <div>
-                    {booking.appointment_time}
+                    {moment(booking.appointment_time, "HH:mm:ss").format('LT') === 'Invalid date'? "-":moment(booking.appointment_time, "HH:mm:ss").format('LT')}
                     {/* {`${moment(booking.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LT')}`} */}
                 </div>,// time of booking
                 patient_name: <button className="btn btn-outline bg-teal-400 border-teal-400 text-teal-400 btn-sm btn-block zoomIn animated"
