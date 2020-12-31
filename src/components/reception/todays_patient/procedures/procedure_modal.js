@@ -291,11 +291,11 @@ class ProcedureModal extends Component {
                         <div className="">
                             <button
                                 type="button"
-                                className="btn bg-dark btn-sm btn-labeled btn-labeled-right pr-5 mr-1/"
+                                className="btn bg-dark btn-sm btn-labeled btn-labeled-right pr-5 mr-1"
                                 style={{ textTransform: "inherit" }}
                                 onClick={this.add_procedure_click}>
                                 <b><i className="icon-plus3" /></b>
-                                Add Procedures
+                                New Procedure
                             </button>
                             <ReactToPrint
                                 trigger={() => <button
@@ -441,10 +441,10 @@ class ProcedureModal extends Component {
                                             <b>Description</b>
                                         </th>
                                         <th className="py-1">
-                                            <b>Charges</b>
+                                            <b>Discount</b>
                                         </th>
                                         <th className="py-1">
-                                            <b>Discount</b>
+                                            <b>Charges</b>
                                         </th>
                                     </tr>
                                 </thead>
@@ -457,20 +457,24 @@ class ProcedureModal extends Component {
                                                         {item.procedure_description}
                                                     </td>
                                                     <td className="py-1">
-                                                        {item.procedure_fee}
+                                                        {item.procedure_discount}
                                                     </td>
                                                     <td className="py-1">
-                                                        {item.procedure_discount}
+                                                        {item.procedure_fee}
                                                     </td>
                                                 </tr>)
 
                                             }) : 'No procedure found'
                                     }
+                                    <tr>
+                                        <td className={`font-weight-bold`} colSpan="2">Total</td>
+                                        <td className={`font-weight-bold`}>{this.state.total}</td>
+                                    </tr>
                                 </tbody>
                             </table>
-                            <div className={`d-flex justify-content-between px-3 mt-2`}>
-                                <h2 className={`font-weight-bold`}>Total</h2>
-                                <h2 className={`font-weight-bold`}>{this.state.total}</h2>                            
+                            <div className={`d-flex justify-content-between mt-2`}>
+                                <h2 className={`font-weight-bold`}>Payment</h2>
+                                {/* <h2 className={`font-weight-bold`}>{this.state.total}</h2>                             */}
                             </div>
                             <table className={`table table-sm table-bordered table-hover mb-0 mt-2`}>
                                 <tbody>
