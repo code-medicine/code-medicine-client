@@ -87,7 +87,7 @@ function CustomTable(props) {
                                                 parse_item(item[cell])
                                             }
                                             {
-                                                console.log('object', item[cell], 'type', typeof (item[cell]))
+                                                // console.log('object', item[cell], 'type', typeof (item[cell]))
                                             }
                                         </Table.Cell>
                                     )

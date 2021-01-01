@@ -55,7 +55,7 @@ class ConsultancyModal extends Component {
             })
         }
         else if (new_props.visibility && new_props.appointment_id === null){
-            this.props.notify('error', '', "Something went wrong! Please try again later")
+            // this.props.notify('error', '', "Something went wrong! Please try again later")
         }
         else {
             this.setState({
@@ -244,9 +244,9 @@ class ConsultancyModal extends Component {
                                         </tr>
                                     </tbody>
                                 </table>
-                                <div className={`text-center`}>
+                                {/* <div className={`text-center`}>
                                     Charges for procedures are <span className={`font-weight-bold`}>Rs. {this.state.procedure_charges}</span>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>

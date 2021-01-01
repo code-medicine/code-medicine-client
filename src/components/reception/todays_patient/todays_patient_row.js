@@ -6,7 +6,7 @@ import { Popup } from "semantic-ui-react";
 import UpdateAppointmentModal from './appointment/update_appointment_modal';
 import { Ucfirst } from '../../../shared/functions'
 import Axios from 'axios';
-import { APPOINTMENTS_CHECKOUT, CHECKOUT_APPOINTMENT, PROCEDURES_SEARCH_BY_APPOINTMENT_ID } from '../../../shared/rest_end_points';
+import { APPOINTMENTS_CHECKOUT, PROCEDURES_SEARCH_BY_APPOINTMENT_ID } from '../../../shared/rest_end_points';
 import Loading from '../../../shared/customs/loading/loading';
 import './todays_patient_row.css'
 import { connect } from 'react-redux';
@@ -115,7 +115,7 @@ class TodaysPatientRow extends Component {
                         onClick={() => this.props.toggle_invoice_modal(this.props.row_data._id)}>
                         <i className={`icon-file-text2`}></i>
                     </button>}
-                content={<div className={`card card-body bg-teal-400 text-white shadow py-1`}>Generate Invoice</div>}
+                content={<div className={`card card-body bg-teal-400 text-white shadow py-1`}>Details</div>}
                 flowing
                 // hoverable
                 position='top center'

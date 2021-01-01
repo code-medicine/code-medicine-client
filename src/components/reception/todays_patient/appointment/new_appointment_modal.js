@@ -261,7 +261,7 @@ class NewAppointmentModal extends Component {
             patient: this.state.appointment_patient.value,
             doctor: this.state.appointment_doctor.value,
             date: `${moment(this.state.appointment_date.value).format('YYYY-MM-DD')}T${moment(this.state.appointment_time.value, ["h:mm A"]).format("HH:mm:ss")}Z`,
-            time: moment(`${moment(this.state.appointment_time.value, ["h:mm A"]).format("HH:mm:ss")}Z`),
+            time: `${moment(this.state.appointment_time.value, ["h:mm A"]).format("HH:mm:ss")}Z`,
             description: "",
             comments: this.state.appointment_comments.value,
             referee: this.state.appointment_referee.value
