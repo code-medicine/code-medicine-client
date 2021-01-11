@@ -3,7 +3,7 @@ import { TODAYS_PATIENT, TODAYS_PATIENT_CLEAR, TODAYS_PATIENT_APPOINTMENT_UPDATE
 export default function (state = {}, action) {
     switch (action.type) {
         case TODAYS_PATIENT:
-            console.log('todays patients',action.payload)
+            console.log('todays patients', action.payload)
             if (action.payload.status === 200)
                 return { 
                     loading: action.loading, 
