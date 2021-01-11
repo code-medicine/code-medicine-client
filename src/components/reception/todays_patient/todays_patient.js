@@ -49,7 +49,18 @@ class Todayspatient extends Component {
             search_doctor: { value: '' },
             search_patient: { value: '' },
             search_status: { value: '' },
-            search_date: { value: moment(new Date()).format('ll') }
+            search_date: { value: moment(new Date()).format('ll') },
+
+        }
+    }
+
+    load_data = () => {
+        if (localStorage.getItem('Gh65$p3a008#2C')) {
+            this.setState({ search_date: { value: localStorage.getItem('Gh65$p3a008#2C') }}, () => this.props.load_todays_appointments(this.state.search_date.value))
+        } else {
+            const app_date = new Date(this.state.search_date.value);
+            this.props.load_todays_appointments(new Date(app_date.getTime() + (app_date.getTimezoneOffset() * 60000)).toISOString())
+            localStorage.setItem('Gh65$p3a008#2C', this.state.search_date.value)
         }
     }
 
@@ -59,16 +70,10 @@ class Todayspatient extends Component {
             Reception
         </Link>, <span className="breadcrumb-item active">Today's Patient</span>]
         this.props.set_active_page(routes)
-        if (localStorage.getItem('Gh65$p3a008#2C')) {
-            this.setState({
-                search_date: { value: localStorage.getItem('Gh65$p3a008#2C') }
-            }, () => this.props.load_todays_appointments(this.state.search_date.value))
-        } else {
-            const app_date = new Date(this.state.search_date.value);
-            this.props.load_todays_appointments(new Date(app_date.getTime() + (app_date.getTimezoneOffset() * 60000)).toISOString())
-            localStorage.setItem('Gh65$p3a008#2C', this.state.search_date.value)
-        }
-
+        this.load_data();
+        // setInterval(() => {
+        //     this.load_data()   
+        // }, 10000)
     }
 
     async request(_data, _url, _method = "post") {
@@ -132,10 +137,7 @@ class Todayspatient extends Component {
 
     componentWillReceiveProps(new_props) {
         if (new_props.todays_patient) {
-            this.setState({
-                filtered_data: new_props.todays_patient.data,
-                data: new_props.todays_patient.data
-            })
+            this.setState({ filtered_data: new_props.todays_patient.data, data: new_props.todays_patient.data })
         }
     }
 
@@ -195,7 +197,7 @@ class Todayspatient extends Component {
             return
         }
         return (data.map((booking, i) => {
-            console.log('booking',booking)
+            // console.log('booking',booking)
             // var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
             const hidden_data = {
                 appointment_description: booking.appointment_description,

@@ -56,16 +56,23 @@ export const PROCEDURES_SEARCH_BY_ID = `${PROCEDURES_BASE_URL}/search/id`;
 export const PROCEDURES_SEARCH_BY_APPOINTMENT_ID = `${PROCEDURES_BASE_URL}/appointment/id`;
 
 export const DOCTORDETAILS_BASE_URL = `${BASE_URL}/doctor/details`;
-export const DOCTORDETAILS_CREATE = `/create`;
-export const DOCTORDETAILS_UPDATE = `/update`;
-export const DOCTORDETAILS_DELETE = `/delete`;
-export const DOCTORDETAILS_SEARCH_BY_ID = `/search/id`;
+export const DOCTORDETAILS_CREATE = `${DOCTORDETAILS_BASE_URL}/create`;
+export const DOCTORDETAILS_UPDATE = `${DOCTORDETAILS_BASE_URL}/update`;
+export const DOCTORDETAILS_DELETE = `${DOCTORDETAILS_BASE_URL}/delete`;
+export const DOCTORDETAILS_SEARCH_BY_ID = `${DOCTORDETAILS_BASE_URL}/search/id`;
 
 export const BRANCHES_BASE_URL = `${BASE_URL}/branches`;
-export const BRANCHES_CREATE = `/create`;
-export const BRANCHES_UPDATE = `/update`;
-export const BRANCHES_DELETE = `/delete`;
-export const BRANCHES_SEARCH_BY_ID = `/search/id`;
+export const BRANCHES_CREATE = `${BRANCHES_BASE_URL}/create`;
+export const BRANCHES_UPDATE = `${BRANCHES_BASE_URL}/update`;
+export const BRANCHES_DELETE = `${BRANCHES_BASE_URL}/delete`;
+export const BRANCHES_SEARCH_BY_ID = `${BRANCHES_BASE_URL}/search/id`;
+
+export const PAYMENTS_BASE_URL = `${BASE_URL}/payments`;
+export const PAYMENTS_CREATE = `${PAYMENTS_BASE_URL}/create`;
+export const PAYMENTS_UPDATE = `${PAYMENTS_BASE_URL}/update`;
+export const PAYMENTS_DELETE = `${PAYMENTS_BASE_URL}/delete`;
+export const PAYMENTS_SEARCH_BY_ID = `${PAYMENTS_BASE_URL}/search/id`;
+
 
 // --------------------------------------------------------------------------------------------------------------------
 
