@@ -1,4 +1,4 @@
-const ROOT_ROUTE = '/t';
+const ROOT_ROUTE = '';
 
 export const BASE_URL = `${ROOT_ROUTE}/`;
 export const LOGIN_URL = `${ROOT_ROUTE}/login`;
