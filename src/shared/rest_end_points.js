@@ -12,7 +12,7 @@ const PROTOCOL = 'http';
  * developement address
  */
 const ADDRESS = 'localhost'
-const PORT = 6969;
+const PORT = 7000;
 const TYPE = '/test';
 export const ROOT_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
 export const SOCKET_URL = `${TYPE}/socket.io`;
