@@ -1,15 +1,23 @@
 const PROTOCOL = 'http';
 
-/* development port */
-// const ADDRESS = 'localhost'
-// export const ROOT_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
-// const PORT = 6969;
-
-/* production url */
+/**
+ * production address
+ */
 const ADDRESS = '18.188.119.132'
+const TYPE = '/api';
 export const ROOT_URL = `${PROTOCOL}://${ADDRESS}`;
+export const SOCKET_URL = `${TYPE}/socket.io`;
 
-export const BASE_URL = `${ROOT_URL}/api`;
+/**
+ * developement address
+ */
+// const ADDRESS = 'localhost'
+// const PORT = 6969;
+// const TYPE = '/test';
+// export const ROOT_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
+// export const SOCKET_URL = `${TYPE}/socket.io`;
+
+export const BASE_URL = `${ROOT_URL}${TYPE}`;
  
 export const USERS_BASE_URL = `${BASE_URL}/users`;
 export const USERS_LOGIN = `${USERS_BASE_URL}/login`;

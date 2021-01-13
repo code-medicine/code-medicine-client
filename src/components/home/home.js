@@ -41,7 +41,8 @@ class Home extends Component {
         const token = localStorage.getItem('user')
         Axios.get(`${rc.USERS_SEARCH_BY_TOKEN}?tag=${token}`).then(res => {
             this.props.set_active_user(res.data['payload'])
-            this.socket = socketIOClient(`${rc.ROOT_URL}`)
+            this.socket = socketIOClient(rc.ROOT_URL, {path: rc.SOCKET_URL} )
+            console.log('socket', this.socket)
             this.socket.on("FromAPI", data => this.order_data(data));
         }).catch(err => {
             console.log(err)
