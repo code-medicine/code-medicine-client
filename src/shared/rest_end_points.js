@@ -3,7 +3,8 @@ const PROTOCOL = 'http';
 /**
  * production address
  */
-const ADDRESS = '18.188.119.132'
+// const ADDRESS = '18.188.119.132'
+const ADDRESS = 'iffatanwar.ddns.net'
 const TYPE = '/api';
 export const ROOT_URL = `${PROTOCOL}://${ADDRESS}`;
 export const SOCKET_URL = `${TYPE}/socket.io`;
