@@ -175,9 +175,14 @@ class SearchDoctors extends Component {
                     }
                 }
                 if (_doctors.length === 0) {
-                    this.setState({ loading: false })
+                    
                 }
             }
+            this.setState({ loading: false })
+        })
+        .catch(err => {
+            this.props.notify('error', '', err.toString());
+            this.setState({ loading: false })
         })
     }
 

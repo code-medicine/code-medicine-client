@@ -3,7 +3,8 @@ const PROTOCOL = 'http';
 /**
  * production address
  */
-const ADDRESS = '18.188.119.132'
+// const ADDRESS = '18.188.119.132'
+const ADDRESS = 'code-medicine.ddns.net'
 const TYPE = '/test';
 export const ROOT_URL = `${PROTOCOL}://${ADDRESS}`;
 export const SOCKET_URL = `${TYPE}/socket.io`;
@@ -12,13 +13,10 @@ export const SOCKET_URL = `${TYPE}/socket.io`;
  * developement address
  */
 // const ADDRESS = 'localhost'
-// const PORT = 7000;
+// const PORT = 6969;
 // const TYPE = '/test';
 // export const ROOT_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
 // export const SOCKET_URL = `${TYPE}/socket.io`;
-
-// development port
-// production url
 
 export const BASE_URL = `${ROOT_URL}${TYPE}`;
  
