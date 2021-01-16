@@ -396,6 +396,7 @@ class SearchDoctors extends Component {
                                         heading={'Phone number'}
                                         placeholder="Enter phone number"
                                         required
+                                        type="text" pattern="\d*" maxlength="11"
                                         onChange={this.on_text_field_change}
                                         value={this.state.user_phone_number.value}
                                         error={this.state.user_phone_number.error} />

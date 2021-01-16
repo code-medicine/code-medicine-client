@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { BASE_URL, LOGIN_URL, PAYMENTS, RECEPTION_TODAYSPATIIENT, RECEPTION_VISITS, SEARCH_DOCTORS } from '../../router_constants';
 import { connect } from "react-redux";
 import { Link, withRouter } from 'react-router-dom';
-import { set_active_user, notify } from '../../../actions';
+import { set_active_user, notify, left_sidebar_controls } from '../../../actions';
 import '../../customs/Animations/animations.css';
 import { LOGOUT_USER_REQUEST } from '../../rest_end_points';
 import Axios from 'axios';
 import './left_sidebar.css'
+import { Logo, LogoWithAbreviation } from '../../../resources/svgs';
 
 class Left_sidebar extends Component {
 
@@ -79,15 +80,16 @@ class Left_sidebar extends Component {
         }
     }
     render() {
-        const first_name_first_letter = this.props.active_user.first_name.charAt(0).toUpperCase()
-        const first_name_rest = this.props.active_user.first_name.length > 1 ? this.props.active_user.first_name.substring(1) : ''
-        const last_name_first_letter = this.props.active_user.last_name.charAt(0).toUpperCase()
-        const last_name_rest = this.props.active_user.last_name.length > 1 ? this.props.active_user.last_name.substring(1) : ''
+        console.log('left side bar', this.props.left_sidebar)
+        // const first_name_first_letter = this.props.active_user.first_name.charAt(0).toUpperCase()
+        // const first_name_rest = this.props.active_user.first_name.length > 1 ? this.props.active_user.first_name.substring(1) : ''
+        // const last_name_first_letter = this.props.active_user.last_name.charAt(0).toUpperCase()
+        // const last_name_rest = this.props.active_user.last_name.length > 1 ? this.props.active_user.last_name.substring(1) : ''
         return (
             <div className="sidebar sidebar-dark sidebar-main sidebar-fixed sidebar-expand-md" >
 
                 <div className="sidebar-mobile-toggler text-center">
-                    <Link to={BASE_URL} className="sidebar-mobile-main-toggle">
+                    <Link to={"#"} onClick={() => this.props.left_sidebar_controls(false)} className="sidebar-mobile-main-toggle">
                         <i className="icon-arrow-left8"></i>
                     </Link>
                     Menu
@@ -101,31 +103,10 @@ class Left_sidebar extends Component {
                     <div className="sidebar-user background_custom_left_side_bar d-flex align-items-center" style={{ height: '25vh' }}>
                         <div className="card-body">
                             <div className="media d-flex align-items-center">
-                                <div className="mr-3">
-                                    {/* <Link to={BASE_URL}>
-                                        <i className="icon-user"></i>
-                                    </Link> */}
-                                    <div className={`img-fluid rounded-circle text-teal-400 bg-light h3 d-flex justify-content-center align-items-center p-2`}
-                                        // src={NO_PICTURE} 
-                                        style={{ height: '50px', width: '50px' }}>
-                                        {`${first_name_first_letter}${last_name_first_letter}`}
-                                    </div>
+                                {this.props.left_sidebar? <Logo width="0.5in" height="0.5in"/>:''}
+                                <div className="media-body d-flex justify-content-center">
+                                    <LogoWithAbreviation width="1.5in" height="1.5in"/>
                                 </div>
-
-
-                                <div className="media-body ">
-
-                                    <div className="media-title font-weight-semibold ">
-                                        <span className="text-shadow">{`${first_name_first_letter}${first_name_rest} ${last_name_first_letter}${last_name_rest}`}</span>
-                                    </div>
-                                    <div className="font-size-xs opacity-50 text-shadow">
-                                        <i className="icon-pin font-size-sm"></i> &nbsp;Pakistan
-                                    </div>
-                                </div>
-                                {/* settings button in left bar */}
-                                {/* <div className="ml-3 align-self-center">
-                                    <Link to={BASE_URL}  className="text-white"><i className="icon-cog3"></i></Link>
-                                </div> */}
                             </div>
                         </div>
                     </div>
@@ -240,4 +221,4 @@ function map_state_to_props(state) {
         left_sidebar: state.left_sidebar
     }
 }
-export default connect(map_state_to_props, { set_active_user, notify })(withRouter(Left_sidebar));
+export default connect(map_state_to_props, { set_active_user, notify, left_sidebar_controls })(withRouter(Left_sidebar));
