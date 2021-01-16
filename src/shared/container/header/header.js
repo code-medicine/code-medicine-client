@@ -1,20 +1,23 @@
-import React, { Component } from 'react';
-import { LOGIN_URL } from '../../router_constants';
+import React, { Component, Fragment } from 'react';
+import { LOGIN_URL, PROFILE } from '../../router_constants';
 // import Logo_light from './logo_main.png';
 // import IAMC from './IAMC.png';
 import IAMC_detail from "./iffatanwarmedicalcomplex.png";
 import { connect } from "react-redux";
-import { left_sidebar_controls, set_active_user} from '../../../actions';
+import { left_sidebar_controls, set_active_user } from '../../../actions';
 import { Link, withRouter } from 'react-router-dom';
+import Axios from 'axios';
+import { LOGOUT_USER_REQUEST } from '../../rest_end_points';
 // import NOPICTURE from '../../resources/images/placeholder.jpg'
-
+import ReactDOM from 'react-dom';
 
 class Header extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-
+            showDropDown: false,
+            collapseMenu: false,
         };
     }
 
@@ -27,10 +30,60 @@ class Header extends Component {
         }
     }
 
+    // on_logout_button_click = () => {
+    //     localStorage.clear()
+    //     this.props.set_active_user({})
+    //     this.props.history.push(LOGIN_URL)
+    // }
+
     on_logout_button_click = () => {
-        localStorage.clear()
-        this.props.set_active_user({})
-        this.props.history.push(LOGIN_URL)
+
+        Axios.post(LOGOUT_USER_REQUEST, {
+            token: localStorage.getItem('user')
+        }, {
+            headers: { 'code-medicine': localStorage.getItem('user') }
+        }).then(res => {
+            if (res.data.status === true) {
+                localStorage.clear()
+                this.props.set_active_user({})
+                this.props.history.push(LOGIN_URL)
+
+                this.props.notify('success', '', res.data.message)
+            }
+            else {
+                this.props.notify('error', '', res.data.message)
+            }
+
+        })
+            .catch(err => {
+                this.props.notify('error', '', err)
+            })
+
+
+    }
+
+    on_click_drop_down = () => {
+        this.setState({ showDropDown: !this.state.showDropDown })
+    }
+
+    on_click_collapse_menu = () => {
+        this.setState({ collapseMenu: !this.state.collapseMenu })
+    }
+
+    componentDidMount() {
+        document.addEventListener('click', this.handleClickOutside, true);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('click', this.handleClickOutside, true);
+    }
+
+    handleClickOutside = event => {
+        const domNode = ReactDOM.findDOMNode(this);
+
+        if (!domNode || !domNode.contains(event.target)) {
+            this.setState({ showDropDown: false });
+        }
     }
 
     render() {
@@ -42,143 +95,59 @@ class Header extends Component {
                         className="d-inline py-3 text-white">
                         <i className="icon-paragraph-justify2"></i>
                     </Link>
-                    {/* <img 
-                        className="d-inline ml-3"  src={Logo_light} alt="" /> */}
-                    
-                    {/* <img className="d-inline float-right m-0" src={Logo_light} alt="" /> */}
                 </div>
 
                 <div className="d-md-none">
-                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-mobile">
-                        <i className="icon-tree5"></i>
+                    <button
+                        className={`btn bg-teal-400 btn-labeled-left rounded-round`}
+                        onClick={() => this.on_click_drop_down()}
+                    >
+                        <i className={`icon-reading`} />
                     </button>
-                    <button className="navbar-toggler sidebar-mobile-main-toggle" 
-                        onClick={this.on_sidebar_control_button_click} 
-                        type="button">
-                        <i className="icon-paragraph-justify3"></i>
-                    </button>
+                    <div
+                        className={`dropdown-menu dropdown-menu-right ${this.state.showDropDown ? 'show' : ''}`}
+                        x-placement="bottom-end"
+                        style={{ position: 'absolute', willChange: 'transform', top: '0px', right: '0px', transform: 'translate3d(-38px, 36px, 0px)' }}
+                    >
+                        <Link to={PROFILE} className="dropdown-item"><i className="icon-user-plus"></i> My profile</Link>
+                        <div className="dropdown-divider"></div>
+                        <Link onClick={() => this.on_logout_button_click()} to={"#"} className="dropdown-item"><i className="icon-switch2"></i> Logout</Link>
+                    </div>
                 </div>
 
-                <div className="collapse navbar-collapse" id="navbar-mobile">
-                    <div className={`container-fluid`}>
-                        <div className={`row`}>
-                            <div className={`col text-right`}>
-                                <img className="border-left-light" src={IAMC_detail} alt="" style={{maxHeight: '30px'}}/>
-                            </div>
-                        </div>
+                <div className={`collapse navbar-collapse d-none d-md-none d-lg-flex justify-content-between align-items-center ${this.state.collapseMenu ? '' : 'show'}`} id="navbar-mobile">
+                    <p className={`mb-0`}>
+                        {
+                            this.props.active_page !== null ? this.props.active_page.map((item, i) => {
+                                return <Fragment key={i}>{item}</Fragment>
+                            }) : ''
+                        }
+                    </p>
+                    <div className={`text-white`}>
+                        <Link to={"#"} onClick={() => alert("Please mail us on codemedicine29@gmail.com")} className="breadcrumb-elements-item mr-2">
+                            <i className="icon-comment-discussion mr-2"></i>
+                            Support
+                        </Link>
+                        <button
+                            className={`btn bg-teal-400 btn-labeled btn-labeled-left rounded-round dropdown-toggle pl-5`}
+                            onClick={() => this.on_click_drop_down()}
+                        >
+                            <b>
+                                <i className={`icon-reading`} />
+                            </b>
+                            {this.props.active_user.first_name}
+                        </button>
                     </div>
-                    
-                    {/* <ul className="navbar-nav"> */}
-                        
-                        {/* <li className="nav-item">
-                            <Link onClick={this.on_sidebar_control_button_click} to={"#"}
-                                className="navbar-nav-link sidebar-control sidebar-main-toggle d-none d-md-block">
-                                <i className="icon-transmission"></i>
-                            </Link>
-                        </li> */}
 
-                        {/* <li className="nav-item dropdown">
-                            <Link to={BASE_URL} className="navbar-nav-link dropdown-toggle caret-0" data-toggle="dropdown">
-                                <i className="icon-git-compare"></i>
-                                <span className="d-md-none ml-2">Git updates</span>
-                                <span className="badge badge-pill bg-warning-400 ml-auto ml-md-0">9</span>
-                            </Link>
-
-                            <div className="dropdown-menu dropdown-content wmin-md-350">
-                                <div className="dropdown-content-header">
-                                    <span className="font-weight-semibold">Git updates</span>
-                                    <Link to={BASE_URL} className="text-default"><i className="icon-sync"></i></Link>
-                                </div>
-
-                                <div className="dropdown-content-body dropdown-scrollable">
-                                    <ul className="media-list">
-                                        <li className="media">
-                                            <div className="mr-3">
-                                                <Link to={BASE_URL} className="btn bg-transparent border-primary text-primary rounded-round border-2 btn-icon"><i className="icon-git-pull-request"></i></Link>
-                                            </div>
-
-                                            <div className="media-body">
-                                                Drop the IE <Link to={BASE_URL}>specific hacks</Link> for temporal inputs
-										<div className="text-muted font-size-sm">4 minutes ago</div>
-                                            </div>
-                                        </li>
-
-                                        <li className="media">
-                                            <div className="mr-3">
-                                                <Link to={BASE_URL} className="btn bg-transparent border-warning text-warning rounded-round border-2 btn-icon"><i className="icon-git-commit"></i></Link>
-                                            </div>
-
-                                            <div className="media-body">
-                                                Add full font overrides for popovers and tooltips
-										<div className="text-muted font-size-sm">36 minutes ago</div>
-                                            </div>
-                                        </li>
-
-                                        <li className="media">
-                                            <div className="mr-3">
-                                                <Link to={BASE_URL} className="btn bg-transparent border-info text-info rounded-round border-2 btn-icon"><i className="icon-git-branch"></i></Link>
-                                            </div>
-
-                                            <div className="media-body">
-                                                <Link to={BASE_URL}>Chris Arney</Link> created a new <span className="font-weight-semibold">Design</span> branch
-										<div className="text-muted font-size-sm">2 hours ago</div>
-                                            </div>
-                                        </li>
-
-                                        <li className="media">
-                                            <div className="mr-3">
-                                                <Link to={BASE_URL} className="btn bg-transparent border-success text-success rounded-round border-2 btn-icon"><i className="icon-git-merge"></i></Link>
-                                            </div>
-
-                                            <div className="media-body">
-                                                <Link to={BASE_URL}>Eugene Kopyov</Link> merged <span className="font-weight-semibold">Master</span> and <span className="font-weight-semibold">Dev</span> branches
-										<div className="text-muted font-size-sm">Dec 18, 18:36</div>
-                                            </div>
-                                        </li>
-
-                                        <li className="media">
-                                            <div className="mr-3">
-                                                <Link to={BASE_URL} className="btn bg-transparent border-primary text-primary rounded-round border-2 btn-icon"><i className="icon-git-pull-request"></i></Link>
-                                            </div>
-
-                                            <div className="media-body">
-                                                Have Carousel ignore keyboard events
-										        <div className="text-muted font-size-sm">Dec 12, 05:46</div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <div className="dropdown-content-footer bg-light">
-                                    <Link to={BASE_URL} className="text-grey mr-auto">All updates</Link>
-                                    <div>
-                                        <Link to={BASE_URL} className="text-grey" data-popup="tooltip" title="Mark all as read"><i className="icon-radio-unchecked"></i></Link>
-                                        <Link to={BASE_URL} className="text-grey ml-2" data-popup="tooltip" title="Bug tracker"><i className="icon-bug2"></i></Link>
-                                    </div>
-                                </div>
-                            </div>
-                        </li> */}
-                    {/* </ul>s */}
-
-                    <span className="navbar-text ml-md-3 mr-md-auto">
-                        <span className="badge bg-transparent"></span>
-                    </span>
-
-                    {/* <ul className="navbar-nav">
-                        <li className="nav-item dropdown dropdown-user">
-                            <Link to={`#`} className="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
-                                <img src={NOPICTURE} className="rounded-circle" alt="" />
-                                <span>{this.props.active_user['first_name']}</span>
-                            </Link>
-
-                            <div className="dropdown-menu dropdown-menu-right">
-                                <Link to={PROFILE} className="dropdown-item"><i className="icon-user-plus"></i> My profile</Link>
-                                <Link to={`#`} className="dropdown-item"><i className="icon-comment-discussion"></i> Messages <span className="badge badge-pill bg-blue ml-auto">58</span></Link>
-                                <div className="dropdown-divider"></div>
-                                <Link onClick={this.on_logout_button_click} to={LOGIN_URL} className="dropdown-item"><i className="icon-switch2"></i> Logout</Link>
-                            </div>
-                        </li>
-                    </ul> */}
+                    <div
+                        className={`dropdown-menu dropdown-menu-right ${this.state.showDropDown ? 'show' : ''}`}
+                        x-placement="bottom-end"
+                        style={{ position: 'absolute', willChange: 'transform', top: '0px', right: '0px', transform: 'translate3d(-38px, 36px, 0px)' }}
+                    >
+                        <Link to={PROFILE} className="dropdown-item"><i className="icon-user-plus"></i> My profile</Link>
+                        <div className="dropdown-divider"></div>
+                        <Link onClick={() => this.on_logout_button_click()} to={"#"} className="dropdown-item"><i className="icon-switch2"></i> Logout</Link>
+                    </div>
                 </div>
             </div>
         );
@@ -187,7 +156,9 @@ class Header extends Component {
 function map_state_to_props(state) {
     return {
         left_sidebar: state.left_sidebar,
-        active_user: state.active_user
+        active_user: state.active_user,
+        active_page: state.active_page
+
     }
 }
 export default connect(map_state_to_props, { left_sidebar_controls, set_active_user })(withRouter(Header));
