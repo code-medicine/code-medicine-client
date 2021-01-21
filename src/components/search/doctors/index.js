@@ -442,6 +442,7 @@ class SearchDoctors extends Component {
                                         heading={'Email'}
                                         icon_class={'icon-envelop'}
                                         input_type={'email'}
+                                        required
                                         placeholder="Enter email"
                                         onChange={this.on_text_field_change}
                                         value={this.state.user_email.value}
@@ -508,7 +509,6 @@ class SearchDoctors extends Component {
                                     <div className="col-md-12">
                                         <Inputfield
                                             heading="Address/Area"
-                                            required
                                             className="form-control form-control-lg"
                                             id="user_address"
                                             value={this.state.user_address.value}
@@ -575,6 +575,7 @@ class SearchDoctors extends Component {
                                     id="user_consultancy_fee"
                                     heading="Consultancy fee"
                                     placeholder="Enter consultancy fee"
+                                    required
                                     value={this.state.user_consultancy_fee.value}
                                     error={this.state.user_consultancy_fee.error}
                                     onChange={this.on_text_field_change}
@@ -585,6 +586,7 @@ class SearchDoctors extends Component {
                                     id="user_consultancy_percentage"
                                     heading="Consultancy percentage"
                                     placeholder="Enter consultancy % shared with this doctor"
+                                    required
                                     value={this.state.user_consultancy_percentage.value}
                                     error={this.state.user_consultancy_percentage.error}
                                     onChange={this.on_text_field_change}

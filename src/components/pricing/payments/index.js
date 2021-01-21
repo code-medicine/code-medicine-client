@@ -101,9 +101,15 @@ class Payments extends Component {
         Axios
             .get(`${APPOINTMENTS_SEARCH_TODAY}?tag=${new Date(new Date(date.getTime() + (date.getTimezoneOffset() * 60000)).toISOString())}&type=checkout`)
             .then(async res => {
-                console.log('search', res.data)
+                // console.log('search', res.data)
                 if (res.data.payload && res.data.payload.length > 0) {
-                    const result = await res.data.payload.reduce(async function (appointments, element) {
+                    const records = {};
+                    const data = res.data.payload;
+                    let counter = 0;
+
+                    // console.log('data length', data.length)
+                    while(true) {
+                        const element = data[counter];
                         /**
                          * consultancy fee + follow up - discount = charges
                          */
@@ -112,19 +118,23 @@ class Payments extends Component {
                          * doctor_share = (charges / 100) * percentage
                          */
                         const doctor_share = (total / 100) * Number(element.doctor.consultancy_percentage)
-
-                        if (appointments[element.doctor.id]) {
-                            ++appointments[element.doctor.id].appointment_count;
-                            appointments[element.doctor.id].consultancy_fee += total;
-                            appointments[element.doctor.id].doctor_share += doctor_share;
+                        // console.log('check', element.doctor.id, records[element.doctor.id])
+                        // console.log('records', records)
+                        if (records[element.doctor.id]) {
+                            // console.log('if', counter)
+                            ++records[element.doctor.id].appointment_count;
+                            records[element.doctor.id].consultancy_fee += total;
+                            records[element.doctor.id].doctor_share += doctor_share;
                             /**
                              * hopital share = total - doctor shares
                              */
-                            appointments[element.doctor.id].hospital_share += total - doctor_share;
+                            records[element.doctor.id].hospital_share += total - doctor_share;
+                            counter++;
                         } else {
+                            // console.log('else', counter);
                             await GetUserById(element.doctor.id).then(_doctor => {
                                 // console.log('doctor found', _doctor.data.payload.details)
-                                appointments[element.doctor.id] = {
+                                records[element.doctor.id] = {
                                     doctor_name: `Dr. ${Ucfirst(element.doctor.first_name)} ${Ucfirst(element.doctor.last_name)}`,
                                     appointment_count: 1,
                                     consultancy_fee: total,
@@ -142,24 +152,27 @@ class Payments extends Component {
                                             onClick={() => that.onCheckoutToggle(element.doctor.id, 'checkout')} 
                                             icon="icon-exit3" />,
                                 };
-                                console.log('eement', appointments[element.doctor.id])
+                                counter++;
+                                // console.log('element', records[element.doctor.id])
+                                // console.log('obj', records)
                             })
+                            // console.log('after', response);
                         }
-                        return appointments;
-                    }, {});
-                    console.log('results', result)
-                    if (result) {
-                        this.setState({ 
-                            featuredData: result, 
-                            data: Object.keys(result).map(item => { return result[item] }),
-                            rawData: res.data.payload,
-                        });
+                        if (counter === data.length) {
+                            this.setState({ 
+                                featuredData: records, 
+                                data: Object.keys(records).map(item => { return records[item] }),
+                                rawData: res.data.payload,
+                                loading: false
+                            });
+                            break;
+                        }
+
                     }
                 }
                 else {
-                    this.setState({ featuredData: {}, data: [], rawData: [] })
+                    this.setState({ featuredData: {}, data: [], rawData: [], loading: false })
                 }
-                this.setState({ loading: false });
             })
             .catch(err => {
                 console.log('error', err);
@@ -249,10 +262,10 @@ class Payments extends Component {
                                                 <td>Appointments count</td>
                                                 <td>{this.state.currentCheckout.appointment_count}</td>
                                             </tr>
-                                            <tr>
+                                            {/* <tr>
                                                 <td>Current consultancy fee</td>
                                                 <td>Rs. {this.state.currentCheckout.current_consultancy_fee}/-</td>
-                                            </tr>
+                                            </tr> */}
                                             <tr>
                                                 <td>Total amount</td>
                                                 <td>Rs. {this.state.currentCheckout.totalAmount}/-</td>
@@ -276,7 +289,7 @@ class Payments extends Component {
                             <div className={`col-md-3 d-flex flex-column align-items-start`}>
                                 <span className={`font-weight-bold`}>Total</span>
                                 <pre className={`w-100 text-center mb-0`}>
-                                    <h4 className={`mb-0`}>Rs {this.state.currentCheckout.ammount_to_be_paid + this.state.currentCheckout.balance}/-</h4>
+                                    <h4 className={`mb-0`}>Rs. {this.state.mode === "view"? this.state.currentCheckout.paid_amount:this.state.currentCheckout.ammount_to_be_paid + this.state.currentCheckout.balance}/-</h4>
                                 </pre>
                                 { 
                                     this.state.mode === 'view' ? '' : <Inputfield
@@ -305,7 +318,7 @@ class Payments extends Component {
                         
                         
                         <div className={`btn btn-block text-left`} onClick={() => this.setState({ showAppointments: !this.state.showAppointments })}>
-                            <i className={`${this.state.showAppointments? 'icon-subtract':'icon-add'}`} /> View Appointments
+                            <i className={`${this.state.showAppointments? 'icon-subtract':'icon-add'}`} /> View Appointments ({moment(new Date(), "YYYY-MM-DDThh:mm:ss").format('ll')})
                         </div>
                         {/* <Link to className={`text-dark`} onClick={() => this.setState({ showAppointments: !this.state.showAppointments })}>
                             <i className={`${this.state.showAppointments? 'icon-subtract':'icon-add'}`} /> Appointments
@@ -315,13 +328,13 @@ class Payments extends Component {
                                 <table className={`table table-hover table-bordered table-sm mb-0`}>
                                     <thead className={`bg-dark`}>
                                         <tr>
+                                            <th>Appointment Time</th>
                                             <th>Consultancy</th>
                                             <th>Follow up</th>
                                             <th>Discount</th>
-                                            <th>Consultancy %</th>
-                                            <th>Payment</th>
-                                            <th>Appointment date</th>
-                                            <th>Paid Time</th>
+                                            <th>Total</th>
+                                            <th>Consultancy Share</th>
+                                            <th>Payment Time</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -329,20 +342,21 @@ class Payments extends Component {
                                             this.state.currentCheckout.appointments.map((item,i) => {
                                                 return (
                                                     <tr key={i}>
-                                                        <td>{item.appointment_charges.consultancy}</td>
-                                                        <td>{item.appointment_charges.follow_up}</td>
-                                                        <td>{item.appointment_charges.discount}</td>
-                                                        <td>{item.doctor.consultancy_percentage}</td>
-                                                        <td>
-                                                            {
+                                                        <td>{moment(item.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LT')}</td>
+                                                        <td>Rs. {item.appointment_charges.consultancy}/-</td>
+                                                        <td>Rs. {item.appointment_charges.follow_up}/-</td>
+                                                        <td>Rs. {item.appointment_charges.discount}/-</td>
+                                                        <td>Rs. {(
+                                                                Number(item.appointment_charges.consultancy) +
+                                                                Number(item.appointment_charges.follow_up) - 
+                                                                Number(item.appointment_charges.discount))}/-</td>
+                                                        <td>Rs. {
                                                             ((
                                                                 Number(item.appointment_charges.consultancy) +
                                                                 Number(item.appointment_charges.follow_up) - 
                                                                 Number(item.appointment_charges.discount))/100) * item.doctor.consultancy_percentage
-                                                            }
-                                                        </td>
-                                                        <td>{moment(item.appointment_date, "YYYY-MM-DDThh:mm:ss").format('lll')}</td>
-                                                        <td>{moment(item.appointment_charges.time, "YYYY-MM-DDThh:mm:ss").format('lll')}</td>
+                                                            }/- ({item.doctor.consultancy_percentage}%)</td>
+                                                        <td>{moment(new Date(item.appointment_charges.time), "YYYY-MM-DDThh:mm:ss").format('LT')}</td>
                                                     </tr>
                                                 )
                                             })
