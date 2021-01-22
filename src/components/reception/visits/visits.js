@@ -17,6 +17,7 @@ import { BASE_URL } from '../../../shared/router_constants';
 import { Popup } from "semantic-ui-react";
 import { Ucfirst } from '../../../shared/functions'
 import Inputfield from '../../../shared/customs/inputfield/inputfield';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 
 class Visits extends Component {
@@ -389,7 +390,14 @@ class Visits extends Component {
                 </components.Menu>
             );
         };
-        const loading = <Loading size={150} />
+        const loading = <div className={`mt-2`}>
+            <SkeletonTheme color="#000" highlightColor="#f2f2f2">
+                <Skeleton className="my-1" count={1} height={40}/>
+            </SkeletonTheme>
+            <SkeletonTheme color="#ffffff" highlightColor="#f2f2f2">
+                <Skeleton className="my-1" count={8} height={45}/>
+            </SkeletonTheme>
+        </div>
         var table = ''
         if (this.state.data != null) {
             if (this.state.data.length > 0) {
@@ -462,48 +470,53 @@ class Visits extends Component {
             <Container container_type={'visits'}>
                 <div className={`container-fluid`}>
                     <div className="row">
-                        <div className="col-lg-3">
-                            <Inputfield
-                                field_type="select"
-                                heading="Patient"
-                                isClearable
-                                parent_classes="mb-1"
-                                classNamePrefix={`form-control`}
-                                id="patient_list"
-                                components={{ Menu }}
-                                options={this.state.patient_list}
-                                onInputChange={e => this.populate_patients(e)}
-                                onChange={e => this.on_selected_changed(e, 'patient_list')}
-                                placeholder="Search patients"
-                                styles={{
-                                    container: base => ({
-                                        ...base,
-                                        // backgroundColor: this.state.appointment_doctor.error ? '#FF0000' : '',
-                                        padding: 1,
-                                        borderRadius: 5
-                                    }),
-                                }}
-                            />
-                        </div>
-                        <div className="col-lg-3">
-                            <Inputfield
-                                field_type="select"
-                                heading="Doctor"
-                                isClearable
-                                parent_classes="mb-1"
-                                options={this.state.doctor_list}
-                                onInputChange={e => this.populate_doctors(e)}
-                                onChange={e => this.on_selected_changed(e, 'doctor_list')}
-                                placeholder="Search Doctor"
-                                styles={{
-                                    container: base => ({
-                                        ...base,
-                                        // backgroundColor: this.state.appointment_doctor.error ? '#FF0000' : '',
-                                        padding: 1,
-                                        borderRadius: 5
-                                    }),
-                                }}
-                            />
+                        <div className="col-lg-9">
+                            <div className={`row`}>
+                                <div className={`col-lg-6`}>
+                                    <Inputfield
+                                        field_type="select"
+                                        heading="Patient"
+                                        isClearable
+                                        parent_classes="mb-1"
+                                        classNamePrefix={`form-control`}
+                                        id="patient_list"
+                                        components={{ Menu }}
+                                        options={this.state.patient_list}
+                                        onInputChange={e => this.populate_patients(e)}
+                                        onChange={e => this.on_selected_changed(e, 'patient_list')}
+                                        placeholder="Search patients"
+                                        styles={{
+                                            container: base => ({
+                                                ...base,
+                                                // backgroundColor: this.state.appointment_doctor.error ? '#FF0000' : '',
+                                                padding: 1,
+                                                borderRadius: 5
+                                            }),
+                                        }}
+                                    />
+                                </div>
+                                <div className={`col-lg-6`}>
+                                    <Inputfield
+                                        field_type="select"
+                                        heading="Doctor"
+                                        isClearable
+                                        parent_classes="mb-1"
+                                        options={this.state.doctor_list}
+                                        onInputChange={e => this.populate_doctors(e)}
+                                        onChange={e => this.on_selected_changed(e, 'doctor_list')}
+                                        placeholder="Search Doctor"
+                                        styles={{
+                                            container: base => ({
+                                                ...base,
+                                                // backgroundColor: this.state.appointment_doctor.error ? '#FF0000' : '',
+                                                padding: 1,
+                                                borderRadius: 5
+                                            }),
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
                         </div>
                         <div className="col-lg-3">
                             <Inputfield
@@ -519,38 +532,10 @@ class Visits extends Component {
                                 onChange={e => this.on_selected_changed(e, 'status_list')}
                             />
                         </div>
-                        <div className="col-lg-3">
-                            <Inputfield
-                                field_type="select"
-                                heading="Blood group"
-                                className=""
-                                parent_classes="mb-1"
-                                options={BLOOD_GROUPS_OPTIONS}
-                                classNamePrefix={``}
-                                placeholder="(coming soon)"
-                                isClearable
-                                id="blood_group_selection"
-                                isDisabled
-                                onChange={this.on_selected_changed}
-                            />
-                        </div>
                     </div>
 
                     <div className="row">
-                        <div className="col-lg-3">
-                            <Inputfield
-                                field_type="select"
-                                heading="Branch"
-                                className=""
-                                options={PATIENT_VISIT_STATUSES}
-                                classNamePrefix={``}
-                                placeholder="Branch (Coming soon)"
-                                isClearable
-                                id="branch_selection"
-                                onChange={this.on_selected_changed}
-                                isDisabled={true}
-                            />
-                        </div>
+                        
                         <div className="col-lg-9">
                             <div className="row">
                                 <div className="col-lg-3">
@@ -584,47 +569,41 @@ class Visits extends Component {
                                         value={this.state.date_to.value}
                                     />
                                 </div>
-                                <div className="col-lg-6">
-                                    <div className="row">
-                                        <div className="col-lg-6">
-                                            <button
-                                                type="button"
-                                                className="btn bg-dark btn-block btn-sm btn-labeled btn-labeled-right pr-5"
-                                                style={{ textTransform: "inherit" }}
-                                                onClick={() => this.setState({
-                                                    date_from: { value: '' }, date_to: { value: '' },
-                                                    patient_checkbox: false,
-                                                    doctor_checkbox: false,
-                                                })}>
-                                                <b><i className="icon-reset"></i></b>
+                                <div className={`col-lg-3 d-flex align-items-end mb-3 pb-1`}>
+                                    <button
+                                        type="button"
+                                        className="btn bg-dark btn-block btn-sm btn-labeled btn-labeled-right pr-5"
+                                        style={{ textTransform: "inherit" }}
+                                        onClick={() => this.setState({
+                                            date_from: { value: '' }, date_to: { value: '' },
+                                            patient_checkbox: false,
+                                            doctor_checkbox: false,
+                                        })}>
+                                        <b><i className="icon-reset"></i></b>
                                                 Reset filters
                                             </button>
-                                        </div>
-                                        <div className="col-lg-6">
-                                            <button
-                                                type="button"
-                                                className="btn bg-teal-400 btn-labeled btn-labeled-right btn-sm pr-5 btn-block"
-                                                style={{ textTransform: "inherit" }}
-                                                onClick={this.refresh_button_click}>
-                                                <b><i className="icon-reset"></i></b>
+                                </div>
+                                <div className={`col-lg-3 d-flex align-items-end mb-3 pb-1`}>
+                                    <button
+                                        type="button"
+                                        className="btn bg-teal-400 btn-labeled btn-labeled-right btn-sm pr-5 btn-block"
+                                        style={{ textTransform: "inherit" }}
+                                        onClick={this.refresh_button_click}>
+                                        <b><i className="icon-reset"></i></b>
                                                 Refresh
                                             </button>
-                                        </div>
-                                    </div>
-                                    <div className="row mt-1">
-                                        <div className="col-lg-12">
-                                            <button
-                                                type="button"
-                                                className="btn bg-teal-400 btn-labeled btn-labeled-right btn-sm pr-5 btn-block "
-                                                style={{ textTransform: "inherit" }}
-                                                onClick={this.on_search_click}>
-                                                <b><i className="icon-search4"></i></b>
-                                                Search
-                                            </button>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
+                        </div>
+                        <div className={`col-lg-3 d-flex align-items-end mb-3 pb-1`}>
+                            <button
+                                type="button"
+                                className="btn bg-teal-400 btn-labeled btn-labeled-right btn-sm pr-5 btn-block "
+                                style={{ textTransform: "inherit" }}
+                                onClick={this.on_search_click}>
+                                <b><i className="icon-search4"></i></b>
+                                Search
+                            </button>
                         </div>
                     </div>
                 </div>

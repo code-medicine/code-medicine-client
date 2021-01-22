@@ -175,13 +175,13 @@ class Left_sidebar extends Component {
                                 <ul className="nav nav-group-sub" data-submenu-title="Pricing"
                                     style={{ display: this.state.pricing_toggle === '' ? 'none' : 'block' }}>
                                     <li className="nav-item"><Link to={PAYMENTS} className="nav-link ">Day to day</Link></li>
-                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disbaled">My payments<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
-                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disbaled">History<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">My payments<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">History<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Settings<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
                                 </ul>
 
                             </li>
-                            <li className={`nav-item nav-item-submenu ${this.state.chat_toggle}`}>
+                            {/* <li className={`nav-item nav-item-submenu ${this.state.chat_toggle}`}>
                                 <Link className="nav-link"
                                     to={'#'}
                                     onClick={this.on_item_click}
@@ -197,13 +197,13 @@ class Left_sidebar extends Component {
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Requests<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
                                 </ul>
 
-                            </li>
-                            <li className="nav-item">
+                            </li> */}
+                            {/* <li className="nav-item">
                                 <Link className="nav-link" onClick={this.on_logout_button_click} to={"#"}>
                                     <i className="icon-exit3"></i>
                                     <span>Logout</span>
                                 </Link>
-                            </li>
+                            </li> */}
                         </ul>
                     </div>
 

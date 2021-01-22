@@ -9,6 +9,7 @@ import ReactToPrint from 'react-to-print';
 import LOGO from '../../../../resources/images/LOGO.png';
 import { get_utc_date, Ucfirst } from '../../../../shared/functions';
 import moment from 'moment';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 class ConsultancyModal extends Component {
 
@@ -36,8 +37,6 @@ class ConsultancyModal extends Component {
             Axios.get(`${GET_APPOINTMENT_CHARGES}?tag=${new_props.appointment_id}`).then(res => {
                 console.log('charges', res.data.payload)
                 this.setState({
-                    loading: false,
-
                     consultancy_fee_text_input: { value: res.data.payload.consultancy === 0 ? "" : res.data.payload.consultancy.toString(), error: false },
                     discount_text_input: { value: res.data.payload.discount === 0 ? "" : res.data.payload.discount.toString(), error: false },
                     follow_up_text_input: { value: res.data.payload.follow_up === 0 ? "" : res.data.payload.follow_up.toString(), error: false },
@@ -101,10 +100,12 @@ class ConsultancyModal extends Component {
         Axios.put(UPDATE_APPOINTMENT_CHARGES, payload)
             .then(res => {
                 this.props.notify('success', '', res.data.message)
-                this.setState({ loading: false });
+                this.setState({ loading: false }, () => {
+                    setTimeout(() => this.props.toggle_modal(), 1000);
+                });
             })
             .catch(err => {
-                this.props.notify('error', '', 'Changes could not be saved!' + err.toString())
+                this.props.notify('error', '', 'Changes could not be saved! ' + err.toString())
                 this.setState({ loading: false });
             })
     }
@@ -159,7 +160,7 @@ class ConsultancyModal extends Component {
                         onBeforeGetContent={this.gather_invoice_data}
                     />
                 </div>
-                <div className={`modal-body`}>
+                <div className={`modal-body bg-light`}>
                     <div className={`row`}>
                         <div className={`col-lg-6 col-md-6`}>
                             <Inputfield
@@ -174,6 +175,7 @@ class ConsultancyModal extends Component {
                                 className="form-control-sm"
                                 parent_classes="mb-1"
                                 type="number"
+                                loading={this.state.loading}
                             />
                             <Inputfield
                                 id="discount_text_input"
@@ -185,6 +187,7 @@ class ConsultancyModal extends Component {
                                 className="form-control-sm"
                                 parent_classes="mb-1"
                                 type="number"
+                                loading={this.state.loading}
                             />
                             <Inputfield
                                 id="follow_up_text_input"
@@ -198,6 +201,7 @@ class ConsultancyModal extends Component {
                                 className="form-control-sm"
                                 parent_classes="mb-1"
                                 type="number"
+                                loading={this.state.loading}
                             />
                             <hr className={`mb-0`} />
                             <Inputfield
@@ -211,10 +215,25 @@ class ConsultancyModal extends Component {
                                 className="form-control-sm"
                                 parent_classes="mb-1"
                                 type="number"
+                                loading={this.state.loading}
                             />
                         </div>
                         <div className={`col-lg-6 col-md-6`}>
-                            <div className={`table-responsive px-1`}>
+                            {
+                                this.state.loading? 
+                                <SkeletonTheme color="#ffffff" highlightColor="#f2f2f2">
+                                    <Skeleton className="my-1" count={1} height={15} width={80}/>
+                                    <div className={`row`}>
+                                        <div className={`col-6`}>
+                                            <Skeleton className="my-2" count={5} height={30} />
+                                        </div>
+                                        <div className={`col-6`}>
+                                            <Skeleton className="my-2" count={5} height={30} />
+                                        </div>
+                                    </div>
+                                </SkeletonTheme>:
+                                (
+                                <div className={`table-responsive px-1`}>
                                 <table className={`table table-sm table-bordered table-hover mb-0`}>
                                     <thead>
                                         <tr>
@@ -247,7 +266,7 @@ class ConsultancyModal extends Component {
                                 {/* <div className={`text-center`}>
                                     Charges for procedures are <span className={`font-weight-bold`}>Rs. {this.state.procedure_charges}</span>
                                 </div> */}
-                            </div>
+                            </div>)}
                         </div>
                     </div>
                     <hr />
@@ -260,7 +279,8 @@ class ConsultancyModal extends Component {
                                     <img src={LOGO} className="img-fluid" alt="logo" />
                                 </div>
                                 <div className={`col-6`}>
-                                    {this.state.data? <div className="table-responsive card">
+                                    {
+                                        this.state.data? <div className="table-responsive card">
                                         <table className="table table-hover mb-0">
                                             <tbody>
                                                 <tr>

@@ -36,6 +36,7 @@ class SearchDoctors extends Component {
         this.state = {
 
             loading: true,
+            addNewDoctorModalLoading: false,
 
             rows: [],
             addNewModalVisibility: false,
@@ -303,16 +304,17 @@ class SearchDoctors extends Component {
             }
         }
         if (this.state.mode === 'create') {
-            
+            this.setState({ addNewDoctorModalLoading: true });
             Axios
                 .post(ADMIN_CREATE_DOCTOR, payload)
                 .then(res => {
                     console.log('res', res)
-                    this.setState({ loading: true, addNewModalVisibility: false }, () => this.load_doctors())
+                    this.setState({ loading: true, addNewModalVisibility: false, addNewDoctorModalLoading: false }, () => this.load_doctors())
                 })
                 .catch(err => {
                     console.log('res', err)
                     this.props.notify('error','','Server not responding');
+                    this.setState({ addNewDoctorModalLoading: false })
                 })
         }
         else {
@@ -322,12 +324,15 @@ class SearchDoctors extends Component {
                 .then(res => {
                     console.log('response', res)
                     this.props.notify('success','', 'Doctor successfully updated');
-                    this.reset_state()
-                    this.load_doctors()
+                    this.setState({ addNewModalVisibility: false, addNewDoctorModalLoading: false }, () => {
+                        this.reset_state()
+                        this.load_doctors()    
+                    })
                 })
                 .catch(err => {
                     console.log('err', err)
                     this.props.notify('error','', 'There was an error updating doctor');
+                    this.setState({ addNewModalVisibility: false, addNewDoctorModalLoading: false })
                 })
 
         }
@@ -374,7 +379,8 @@ class SearchDoctors extends Component {
                                         required
                                         onChange={this.on_text_field_change}
                                         value={this.state.user_first_name.value}
-                                        error={this.state.user_first_name.error} />
+                                        error={this.state.user_first_name.error}
+                                        disabled={this.state.addNewDoctorModalLoading} />
                                 </div>
                             </div>
                             <div className="col-md-4 px-3">
@@ -386,7 +392,8 @@ class SearchDoctors extends Component {
                                         required
                                         onChange={this.on_text_field_change}
                                         value={this.state.user_last_name.value}
-                                        error={this.state.user_last_name.error} />
+                                        error={this.state.user_last_name.error}
+                                        disabled={this.state.addNewDoctorModalLoading} />
                                 </div>
                             </div>
                             <div className="col-md-4 px-3">
@@ -399,7 +406,8 @@ class SearchDoctors extends Component {
                                         type="text" pattern="\d*" maxlength="11"
                                         onChange={this.on_text_field_change}
                                         value={this.state.user_phone_number.value}
-                                        error={this.state.user_phone_number.error} />
+                                        error={this.state.user_phone_number.error}
+                                        disabled={this.state.addNewDoctorModalLoading} />
                                 </div>
                             </div>
                         </div>
@@ -443,10 +451,12 @@ class SearchDoctors extends Component {
                                         icon_class={'icon-envelop'}
                                         input_type={'email'}
                                         required
+                                        
                                         placeholder="Enter email"
                                         onChange={this.on_text_field_change}
                                         value={this.state.user_email.value}
-                                        error={this.state.user_email.error} />
+                                        error={this.state.user_email.error}
+                                        disabled={this.state.addNewDoctorModalLoading} />
                                 </div>
                             </div>
                         </div>
@@ -491,6 +501,7 @@ class SearchDoctors extends Component {
                                             classNamePrefix={`form-control`}
                                             placeholder="Select City"
                                             id="user_city"
+                                            isDisabled={this.state.addNewDoctorModalLoading}
                                             onChange={e => this.on_selected_changed(e, 'user_city')}
                                             value={{ id: 'city_selection', label: this.state.user_city.value }}
                                             defaultValue={{ id: 'city_selection', label: 'Lahore' }}
@@ -514,6 +525,7 @@ class SearchDoctors extends Component {
                                             value={this.state.user_address.value}
                                             onChange={e => this.on_text_field_change(e)}
                                             placeholder="Enter address / area you live in the city"
+                                            disabled={this.state.addNewDoctorModalLoading}
                                         />
                                     </div>
                                 </div>
@@ -530,6 +542,7 @@ class SearchDoctors extends Component {
                                     classNamePrefix={`form-control`}
                                     placeholder="Select Gender"
                                     id="gender_selection"
+                                    isDisabled={this.state.addNewDoctorModalLoading}
                                     onChange={e => this.on_selected_changed(e, 'gender_selection')}
                                     value={{ id: 'gender_selection', label: this.state.user_gender.value }}
                                     defaultValue={{ id: 'gender_selection', label: 'Male' }}
@@ -553,6 +566,7 @@ class SearchDoctors extends Component {
                                     classNamePrefix={`form-control`}
                                     placeholder="Select blood group"
                                     id="user_gender"
+                                    isDisabled={this.state.addNewDoctorModalLoading}
                                     onChange={e => this.on_selected_changed(e, 'user_gender')}
                                     value={{ id: 'blood_group_selection', label: this.state.user_blood_group.value }}
                                     defaultValue={{ id: 'blood_group_selection', label: 'Unknown' }}
@@ -579,6 +593,7 @@ class SearchDoctors extends Component {
                                     value={this.state.user_consultancy_fee.value}
                                     error={this.state.user_consultancy_fee.error}
                                     onChange={this.on_text_field_change}
+                                    disabled={this.state.addNewDoctorModalLoading}
                                 />
                             </div>
                             <div className={`col-md-6`}>
@@ -590,6 +605,7 @@ class SearchDoctors extends Component {
                                     value={this.state.user_consultancy_percentage.value}
                                     error={this.state.user_consultancy_percentage.error}
                                     onChange={this.on_text_field_change}
+                                    disabled={this.state.addNewDoctorModalLoading}
                                 />
 
                             </div>
@@ -597,7 +613,7 @@ class SearchDoctors extends Component {
                         <hr />
                         <div className={`d-flex justify-content-between`}>
                             <h5 className={`font-weight-bold`}>Specialities's</h5>
-                            <Button icon="icon-plus3" color="black" onClick={() => this.toggle_modal('addNewSpecialityModalVisibility')}>Speciality</Button>
+                            <Button icon="icon-plus3" color="black" disabled={this.state.addNewDoctorModalLoading} onClick={() => this.toggle_modal('addNewSpecialityModalVisibility')}>Speciality</Button>
                         </div>
                         <div className={`row mt-2`}>
                             {
@@ -638,7 +654,7 @@ class SearchDoctors extends Component {
                         <hr />
                         <div className={`d-flex justify-content-between`}>
                             <h5 className={`font-weight-bold`}>Degree's</h5>
-                            <Button icon="icon-plus3" color="black" onClick={() => this.toggle_modal('addNewDegreeModalVisibility')}>Degree</Button>
+                            <Button icon="icon-plus3" color="black" disabled={this.state.addNewDoctorModalLoading} onClick={() => this.toggle_modal('addNewDegreeModalVisibility')}>Degree</Button>
                         </div>
                         <div className={`row mt-2`}>
                             {
@@ -683,7 +699,7 @@ class SearchDoctors extends Component {
                         </div>
                     </div>
                     <div className={`modal-footer`}>
-                        <Button icon="icon-plus3" onClick={e => this.on_submit(e)}>{this.state.mode === 'create'? 'Create Doctor': 'Update doctor'}</Button>
+                        <Button icon="icon-plus3" disabled={this.state.addNewDoctorModalLoading} onClick={e => this.on_submit(e)}>{this.state.mode === 'create'? 'Create Doctor': 'Update doctor'}</Button>
                         <Button icon="icon-cross" color="red" onClick={e => this.reset_state()}>Cancel</Button>
                     </div>
                 </Modal>

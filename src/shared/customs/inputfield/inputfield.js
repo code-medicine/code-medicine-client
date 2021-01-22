@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Select from 'react-select'
 import DateTimePicker from 'react-datetime';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 
 class Inputfield extends Component {
@@ -36,12 +37,22 @@ class Inputfield extends Component {
         const inner_classes = this.props.inner_classes;
         return (
             <div className={`form-group ${parent_classes}`}>
-                {this.props.heading ? <label className="col-form-label mb-0 pb-1">
-                    {this.props.heading}{this.props.required ? <span className="text-danger"> * </span> : ''}
-                </label> : ''
+                {
+                    this.props.loading? 
+                    <SkeletonTheme color="#ffffff" highlightColor="#f2f2f2">
+                        <Skeleton className="" count={1} height={15} width={80} />
+                    </SkeletonTheme> : 
+                    (this.props.heading ? <label className="col-form-label mb-0 pb-1">
+                        {this.props.heading}{this.props.required ? <span className="text-danger"> * </span> : ''}
+                    </label> : '')
                 }
                 <div className={inner_classes}>
-                    {render_field}
+                    {
+                        this.props.loading? 
+                        <SkeletonTheme color="#ffffff" highlightColor="#f2f2f2">
+                            <Skeleton className="mb-1" count={1} height={40} />
+                        </SkeletonTheme> : render_field
+                    }
                 </div>
             </div>
         );

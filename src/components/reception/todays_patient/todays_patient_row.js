@@ -11,6 +11,7 @@ import Loading from '../../../shared/customs/loading/loading';
 import './todays_patient_row.css'
 import { connect } from 'react-redux';
 import { notify, load_todays_appointments, clear_todays_appointments } from '../../../actions'
+import { confirmAlert } from 'react-confirm-alert';
 
 // import '../../../../node_modules/semantic-ui-css/semantic.min.css';
 
@@ -58,33 +59,42 @@ class TodaysPatientRow extends Component {
     }
 
     handle_checkout = () => {
-        const confirmation = window.confirm('Checkout appointment?') 
-        if (confirmation) {
-            console.log('yes checkout')
-            const payload = {
-                appointment_id: this.state.row_data._id
-            }
-            const that = this;
-            Axios.post(APPOINTMENTS_CHECKOUT, payload).then(res => {
-                this.props.notify('info', '', res.data.message)
-                this.props.clear_todays_appointments();
-                this.props.load_todays_appointments(localStorage.getItem('Gh65$p3a008#2C'));
-            }).catch(err => {
-                if (err.response) {
-                    if (err.response.status === 400) {
-                        that.props.notify('error', '', err.response.data.message);
+        confirmAlert({
+            title: "Checkout confirmation",
+            message: 'Are you sure you want to checkout?',
+            buttons: [
+                {
+                    label: 'Yes',
+                    onClick: () => {
+                        const payload = {
+                            appointment_id: this.state.row_data._id
+                        }
+                        const that = this;
+                        Axios.post(APPOINTMENTS_CHECKOUT, payload).then(res => {
+                            this.props.notify('info', '', res.data.message)
+                            this.props.clear_todays_appointments();
+                            this.props.load_todays_appointments(localStorage.getItem('Gh65$p3a008#2C'));
+                        }).catch(err => {
+                            if (err.response) {
+                                if (err.response.status === 400) {
+                                    that.props.notify('error', '', err.response.data.message);
+                                }
+                                else {
+                                    that.props.notify('error', '', err.response.data.message);
+                                }
+                            }
+                            else {
+                                that.props.notify('error', '', err.toString());
+                            }
+                        })
                     }
-                    else {
-                        that.props.notify('error', '', err.response.data.message);
-                    }
+                },
+                {
+                    label: 'No',
+                    onClick: () => console.log('Not checked out')
                 }
-                else {
-                    that.props.notify('error', '', err.toString());
-                }
-            })
-        } else {
-
-        }
+            ]
+        })
     }
 
     render_read_only_cols = () => {

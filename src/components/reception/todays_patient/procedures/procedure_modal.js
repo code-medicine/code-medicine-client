@@ -11,6 +11,7 @@ import LOGO from '../../../../resources/images/LOGO.png';
 import { get_utc_date, Ucfirst } from '../../../../shared/functions';
 import moment from 'moment';
 import Inputfield from '../../../../shared/customs/inputfield/inputfield';
+import ProcedureLoading from './procedure_loading';
 
 class ProcedureModal extends Component {
 
@@ -293,6 +294,7 @@ class ProcedureModal extends Component {
                                 type="button"
                                 className="btn bg-dark btn-sm btn-labeled btn-labeled-right pr-5 mr-1"
                                 style={{ textTransform: "inherit" }}
+                                disabled={this.state.loading_status}
                                 onClick={this.add_procedure_click}>
                                 <b><i className="icon-plus3" /></b>
                                 New Procedure
@@ -309,14 +311,15 @@ class ProcedureModal extends Component {
                             />
                         </div>
                     </div>
-                    <div className="modal-body pt-1" style={{ height: '60vh', overflowY: 'auto', overflowX: 'hidden' }}>
+                    <div className="modal-body pt-1 bg-light" style={{ height: '60vh', overflowY: 'auto', overflowX: 'hidden' }}>
                         {
-                            this.state.loading_status ? <div className={`d-flex justify-content-center`}><Loading size={150} /></div> :
+                            this.state.loading_status ? 
+                                <ProcedureLoading /> :
                                 (
                                     this.state.procedures_list.length === 0 ?
                                         <div className="alert alert-info mt-2" style={{ marginBottom: '0px' }}>
                                             <strong>Info!</strong> No Procedures found.
-                                </div> :
+                                        </div> :
                                         <div className="table-responsive px-1">
                                             <table className="table table-bordered table-hover">
                                                 <thead>
@@ -355,7 +358,7 @@ class ProcedureModal extends Component {
                                 // heading="Amount Paid"
                                 icon_class="icon-cash3"
                                 placeholder="Amount paid"
-                                disabled={false}
+                                disabled={this.state.loading_status}
                                 value={this.state.paid_text_input.value}
                                 error={this.state.paid_text_input.error}
                                 onChange={this.on_text_change}

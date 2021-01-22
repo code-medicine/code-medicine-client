@@ -20,6 +20,7 @@ import { PATIENT_VISIT_STATUSES } from '../../../shared/constant_data';
 import DateTimePicker from 'react-datetime';
 import { Ucfirst } from '../../../shared/functions';
 import ConsultacyModal from './consultancy';
+import TodaysPatientRowLoading from './todays_patient_row_loading';
 
 
 class Todayspatient extends Component {
@@ -372,7 +373,10 @@ class Todayspatient extends Component {
 
 
     render() {
-        var table = <Loading size={150} />
+        var table = <div className={``}>
+                <div className={`mt-2 card px-2 py-2`}><TodaysPatientRowLoading /></div>
+                <div className={`mt-2 card px-2 py-2`}><TodaysPatientRowLoading /></div>
+            </div>
         if (this.state.filtered_data != null) {
             if (this.state.filtered_data.length > 0) {
                 table = <Fragment>
@@ -545,7 +549,7 @@ class Todayspatient extends Component {
                 {filters}
                 {table_header}
                 {/* table of todays appointments */}
-                {this.props.todays_patient.loading === true ? <Loading size={150} /> : table}
+                {this.props.todays_patient.loading === true ? <TodaysPatientRowLoading /> : table}
 
                 {/* Add new appointment modal */}
                 <NewAppointmentModal
