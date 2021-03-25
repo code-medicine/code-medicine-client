@@ -5,15 +5,15 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 function TodaysPatientRowLoading(props) {
     return (
         <SkeletonTheme color="#ffffff" highlightColor="#f2f2f2">
-            <div className={`container-fluid`} >
+            <div className={`container-fluid mt-2 bg-light`} >
                 {/* {this.props.reference} */}
                 <div className={`row`}>
                     {/* Patient name and phone number */}
-                    <div className={`col-lg-3 col-md-6 col-sm-6 mt-0 text-teal-400 border-left-2 border-left-teal-400`}>
+                    <div className={`col-lg-3 col-md-6 col-sm-6 mt-0 `}>
                         <Skeleton className="my-1" count={1} height={120}/>
                     </div>
                     {/* Appointment Time column */}
-                    <div className={`col-lg-2 col-md-6 col-sm-6 mt-0 text-teal-400 border-left-2 border-bottom-sm-2 border-left-teal-400 border-right-teal-400 border-right-2`} >
+                    <div className={`col-lg-2 col-md-6 col-sm-6 mt-0`} >
                         <Skeleton className="my-1" count={1} height={120} />
                     </div>
                     {/* appointment details */}

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Axios from 'axios';
 import { connect } from "react-redux";
 import Loader from 'react-loader-spinner';
 import { withRouter, Link } from 'react-router-dom';
@@ -9,7 +8,7 @@ import { notify, set_active_user } from '../../../actions';
 import Inputfield from '../../../shared/customs/inputfield/inputfield';
 
 import { BASE_URL, REGISTER_URL, LOGIN_URL, FORGOT_PASSWORD } from '../../../shared/router_constants';
-import { USERS_LOGIN } from '../../../shared/rest_end_points';
+import { LoginRequest } from '../../../shared/queries';
 
 
 class Login extends Component {
@@ -23,16 +22,6 @@ class Login extends Component {
             loading_status: false,
         }
     }
-
-    // UNSAFE_componentWillMount() {
-    //     if (localStorage.user) {
-    //         Axios.get(`${PROFILE_USER_REQUEST}?tag=${localStorage.user}`).then(res => {
-    //             if (res.data['status']) {
-    //                 this.props.history.push(BASE_URL)
-    //             }
-    //         })
-    //     }
-    // }
 
     on_text_field_change = (e) => {
         switch (e.target.id) {
@@ -70,15 +59,19 @@ class Login extends Component {
             password: this.state.password.value.trim(),
             remember_me: this.state.remember_me_option
         }
-        Axios.post(USERS_LOGIN, data).then(res => {
-            this.setState({ loading_status: false })
-            console.log('user login', res.data)
-            localStorage.setItem("user", res.data['token'])
-            this.props.notify('success', '', res.data['message'])
-            this.props.history.push(BASE_URL)
+        LoginRequest(data).then(res => {
+            this.setState({ loading_status: false });
+            localStorage.setItem("user", res.data['token']);
+            this.props.notify('success', '', res.data['message']);
+            if (!localStorage.getItem('cached-path'))
+                this.props.history.push(BASE_URL);
+            else {
+                this.props.history.push(`${BASE_URL}${localStorage.getItem('cached-path').substring(1)}`);
+                localStorage.removeItem('cached-path');
+            }
         }).catch(err => {
             if (err.response) {
-                console.log('login',err.response)
+                // console.log('login',err.response)
                 if (err.response.status >= 500) {
                     this.props.notify('error', '', 'Server not responding! please try again later')
                 }
@@ -169,7 +162,7 @@ class Login extends Component {
             <Container container_type={'login'}>
                 <div className={`container-fluid`}>
                     <div className={`row`}>
-                        <div className={`col-lg-4 col-md-6 p-0`}>
+                        <div className={`col-lg-3 col-md-6 p-0`}>
                             <form method="post" onSubmit={this.on_submit}>
                                 <div className={`card m-0`} style={{ height: '100vh' }}>
                                     <div className={`card-header text-center h4 font-weight-light`}>
@@ -199,7 +192,9 @@ class Login extends Component {
                                                 type="button"
                                                 className="btn btn-block bg-dark btn-labeled btn-labeled-right ml-auto"
                                                 style={{ textTransform: "inherit" }}
-                                                onClick={() => this.props.history.push(REGISTER_URL)}>
+                                                onClick={() => alert("Patients signup under developement..")}
+                                                // this.props.history.push(REGISTER_URL)}
+                                                >
                                                 <b><i className="icon-plus2"></i></b>
                                                 Sign up
                                             </button>
@@ -209,7 +204,7 @@ class Login extends Component {
                                 </div>
                             </form>
                         </div>
-                        <div className={`col-lg-8 col-md-6 d-none d-lg-block d-xl-block d-md-block background_custom`}>
+                        <div className={`col-lg-9 col-md-6 d-none d-lg-block d-xl-block d-md-block background_custom`}>
 
                         </div>
                     </div>

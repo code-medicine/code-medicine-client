@@ -18,6 +18,7 @@ import { Popup } from "semantic-ui-react";
 import { Ucfirst } from '../../../shared/functions'
 import Inputfield from '../../../shared/customs/inputfield/inputfield';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import { GetRequest, PostRequest, UserSearchById } from '../../../shared/queries';
 
 
 class Visits extends Component {
@@ -67,10 +68,10 @@ class Visits extends Component {
         try {
             if (_method === 'post') {
                 this.setState({ previous_query: { data: _data } })
-                return await Axios.post(_url, _data)
+                return await PostRequest(_url, _data)
             }
             else if (_method === 'get') {
-                return await Axios.get(_url)
+                return await GetRequest(_url)
             }
         }
         catch (err) {
@@ -280,7 +281,7 @@ class Visits extends Component {
         this.setState({
             user_preview_modal_visibility: true
         }, () => {
-            Axios.post(USERS_SEARCH_BY_ID, { user_id: id }).then(res => {
+            UserSearchById(id).then(res => {
                 this.setState({ user_modal_props: res.data.payload.user })
             }).catch(err => {
                 console.log('failed to fetch user')

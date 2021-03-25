@@ -10,6 +10,7 @@ import LOGO from '../../../../resources/images/LOGO.png';
 import { get_utc_date, Ucfirst } from '../../../../shared/functions';
 import moment from 'moment';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import { AppointmentCharges, AppointmentCheckout, AppointmentSearchById, AppointmentUpdateCharges } from '../../../../shared/queries';
 
 class ConsultancyModal extends Component {
 
@@ -34,26 +35,25 @@ class ConsultancyModal extends Component {
     componentWillReceiveProps(new_props) {
         if (new_props.visibility && new_props.appointment_id !== null) {
             this.setState({ loading: true });
-            Axios.get(`${GET_APPOINTMENT_CHARGES}?tag=${new_props.appointment_id}`).then(res => {
-                console.log('charges', res.data.payload)
-                this.setState({
-                    consultancy_fee_text_input: { value: res.data.payload.consultancy === 0 ? "" : res.data.payload.consultancy.toString(), error: false },
-                    discount_text_input: { value: res.data.payload.discount === 0 ? "" : res.data.payload.discount.toString(), error: false },
-                    follow_up_text_input: { value: res.data.payload.follow_up === 0 ? "" : res.data.payload.follow_up.toString(), error: false },
-                    paid_text_input: { value: res.data.payload.paid === 0 ? "" : res.data.payload.paid.toString(), error: false },
-                    procedure_charges: res.data.payload.procedures,
-                }, () => {
-                    this.handle_total_values()
-                    Axios
-                    .get(`${APPOINTMENTS_SEARCH_BY_ID}?tag=${this.props.appointment_id}`)
-                    .then(res => this.setState({ data: res.data.payload, loading: false }))
-                    .catch(err => this.setState({ loading: false }))
+            AppointmentCharges(new_props.appointment_id)
+                .then(res => {
+                    this.setState({
+                        consultancy_fee_text_input: { value: res.data.payload.consultancy === 0 ? "" : res.data.payload.consultancy.toString(), error: false },
+                        discount_text_input: { value: res.data.payload.discount === 0 ? "" : res.data.payload.discount.toString(), error: false },
+                        follow_up_text_input: { value: res.data.payload.follow_up === 0 ? "" : res.data.payload.follow_up.toString(), error: false },
+                        paid_text_input: { value: res.data.payload.paid === 0 ? "" : res.data.payload.paid.toString(), error: false },
+                        procedure_charges: res.data.payload.procedures,
+                    }, () => {
+                        this.handle_total_values()
+                        AppointmentSearchById(this.props.appointment_id)
+                            .then(res => this.setState({ data: res.data.payload, loading: false }))
+                            .catch(err => this.setState({ loading: false }))
+                    })
+                }).catch(err => {
+                    this.props.notify('error', '', err.toString())
                 })
-            }).catch(err => {
-                this.props.notify('error', '', err.toString())
-            })
         }
-        else if (new_props.visibility && new_props.appointment_id === null){
+        else if (new_props.visibility && new_props.appointment_id === null) {
             // this.props.notify('error', '', "Something went wrong! Please try again later")
         }
         else {
@@ -88,7 +88,8 @@ class ConsultancyModal extends Component {
         this.setState({ [e.target.id]: { value: e.target.value, error: false } }, () => this.handle_total_values())
     }
 
-    handle_save_button_click = () => {
+    handle_save_button_click = (e) => {
+        e.preventDefault()
         this.setState({ loading: true });
         const payload = {
             appointment_id: this.props.appointment_id,
@@ -97,7 +98,7 @@ class ConsultancyModal extends Component {
             follow_up: parseInt(this.state.follow_up_text_input.value === "" ? 0 : this.state.follow_up_text_input.value),
             paid: parseInt(this.state.paid_text_input.value === "" ? 0 : this.state.paid_text_input.value),
         }
-        Axios.put(UPDATE_APPOINTMENT_CHARGES, payload)
+        AppointmentUpdateCharges(payload)
             .then(res => {
                 this.props.notify('success', '', res.data.message)
                 this.setState({ loading: false }, () => {
@@ -116,17 +117,14 @@ class ConsultancyModal extends Component {
             this.props.notify('error', '', 'Payment is less that minimum payable amount.')
         }
         else {
-            const payload = {
-                appointment_id: this.props.appointment_id
-            }
             const that = this;
-            Axios.post(CHECKOUT_APPOINTMENT, payload).then(res => {
+            AppointmentCheckout(this.props.appointment_id).then(res => {
                 this.props.notify('info', '', res.data.message)
                 this.props.clear_todays_appointments();
                 this.props.load_todays_appointments(localStorage.getItem('Gh65$p3a008#2C'));
-                setTimeout(() => {
-                    this.props.toggle_modal();
-                }, 1000)
+                // setTimeout(() => {
+                //     this.props.toggle_modal();
+                // }, 1000)
             }).catch(err => {
                 if (err.response) {
                     if (err.response.status === 400) {
@@ -220,53 +218,53 @@ class ConsultancyModal extends Component {
                         </div>
                         <div className={`col-lg-6 col-md-6`}>
                             {
-                                this.state.loading? 
-                                <SkeletonTheme color="#ffffff" highlightColor="#f2f2f2">
-                                    <Skeleton className="my-1" count={1} height={15} width={80}/>
-                                    <div className={`row`}>
-                                        <div className={`col-6`}>
-                                            <Skeleton className="my-2" count={5} height={30} />
+                                this.state.loading ?
+                                    <SkeletonTheme color="#ffffff" highlightColor="#f2f2f2">
+                                        <Skeleton className="my-1" count={1} height={15} width={80} />
+                                        <div className={`row`}>
+                                            <div className={`col-6`}>
+                                                <Skeleton className="my-2" count={5} height={30} />
+                                            </div>
+                                            <div className={`col-6`}>
+                                                <Skeleton className="my-2" count={5} height={30} />
+                                            </div>
                                         </div>
-                                        <div className={`col-6`}>
-                                            <Skeleton className="my-2" count={5} height={30} />
-                                        </div>
-                                    </div>
-                                </SkeletonTheme>:
-                                (
-                                <div className={`table-responsive px-1`}>
-                                <table className={`table table-sm table-bordered table-hover mb-0`}>
-                                    <thead>
-                                        <tr>
-                                            <th className={`border-0`}>Appointment charges</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Consultancy</td>
-                                            <td>{this.state.consultancy_fee_text_input.value}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Follow up</td>
-                                            <td>{this.state.follow_up_text_input.value}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Discount</td>
-                                            <td>{this.state.discount_text_input.value}</td>
-                                        </tr>
-                                        <tr>
-                                            <td className={`font-weight-bold`}>Total</td>
-                                            <td className={`font-weight-bold`}>{this.state.total}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Balance</td>
-                                            <td>{this.state.balance}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                {/* <div className={`text-center`}>
+                                    </SkeletonTheme> :
+                                    (
+                                        <div className={`table-responsive px-1`}>
+                                            <table className={`table table-sm table-bordered table-hover mb-0`}>
+                                                <thead>
+                                                    <tr>
+                                                        <th className={`border-0`}>Appointment charges</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Consultancy</td>
+                                                        <td>{this.state.consultancy_fee_text_input.value}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Follow up</td>
+                                                        <td>{this.state.follow_up_text_input.value}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Discount</td>
+                                                        <td>{this.state.discount_text_input.value}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td className={`font-weight-bold`}>Total</td>
+                                                        <td className={`font-weight-bold`}>{this.state.total}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Balance</td>
+                                                        <td>{this.state.balance}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            {/* <div className={`text-center`}>
                                     Charges for procedures are <span className={`font-weight-bold`}>Rs. {this.state.procedure_charges}</span>
                                 </div> */}
-                            </div>)}
+                                        </div>)}
                         </div>
                     </div>
                     <hr />
@@ -280,32 +278,32 @@ class ConsultancyModal extends Component {
                                 </div>
                                 <div className={`col-6`}>
                                     {
-                                        this.state.data? <div className="table-responsive card">
-                                        <table className="table table-hover mb-0">
-                                            <tbody>
-                                                <tr>
-                                                    <td className="py-1 font-weight-bold">MRN#</td>
-                                                    <td className="py-1">{this.state.data.patient.mrn}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="py-1 font-weight-bold">Patient</td>
-                                                    <td className="py-1">{`${Ucfirst(this.state.data.patient.first_name)} ${Ucfirst(this.state.data.patient.last_name)}`}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="py-1 font-weight-bold">Contact</td>
-                                                    <td className="py-1">{`${this.state.data.patient.phone_number}`}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="py-1 font-weight-bold">Doctor</td>
-                                                    <td className="py-1">{`${Ucfirst(this.state.data.doctor.first_name)} ${Ucfirst(this.state.data.doctor.last_name)}`}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="py-1 font-weight-bold">Date</td>
-                                                    <td className="py-1">{`${moment(get_utc_date(this.state.data.appointment_date), "YYYY-MM-DDThh:mm:ss").format('LLLL')}`}</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>: <span>Cannot fetch user data</span>
+                                        this.state.data ? <div className="table-responsive card">
+                                            <table className="table table-hover mb-0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td className="py-1 font-weight-bold">MRN#</td>
+                                                        <td className="py-1">{this.state.data.patient.mrn}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td className="py-1 font-weight-bold">Patient</td>
+                                                        <td className="py-1">{`${Ucfirst(this.state.data.patient.first_name)} ${Ucfirst(this.state.data.patient.last_name)}`}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td className="py-1 font-weight-bold">Contact</td>
+                                                        <td className="py-1">{`${this.state.data.patient.phone_number}`}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td className="py-1 font-weight-bold">Doctor</td>
+                                                        <td className="py-1">{`${Ucfirst(this.state.data.doctor.first_name)} ${Ucfirst(this.state.data.doctor.last_name)}`}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td className="py-1 font-weight-bold">Date</td>
+                                                        <td className="py-1">{`${moment(get_utc_date(this.state.data.appointment_date), "YYYY-MM-DDThh:mm:ss").format('LLLL')}`}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div> : <span>Cannot fetch user data</span>
                                     }
                                 </div>
                             </div>
@@ -334,7 +332,7 @@ class ConsultancyModal extends Component {
                                 <h2 className={`font-weight-bold mt-2`}>Payment</h2>
                                 <table className={`table table-sm table-bordered table-hover mb-0 mt-2`}>
                                     <tbody>
-                                        
+
                                         <tr>
                                             <td>Paid</td>
                                             <td>{this.state.paid_text_input.value}</td>
@@ -352,15 +350,6 @@ class ConsultancyModal extends Component {
                 </div>
                 <div className={`modal-footer`}>
                     <button
-                        type="button"
-                        className="btn bg-danger btn-labeled btn-labeled-right pr-5"
-                        style={{ textTransform: "inherit" }}
-                        onClick={this.props.toggle_modal}
-                    >
-                        <b><i className="icon-cross" /></b>
-                        Cancel
-                    </button>
-                    <button
                         // disabled={this.state.procedures_list.length === 0}
                         type="button"
                         className="btn bg-dark btn-labeled btn-labeled-right pr-5"
@@ -371,6 +360,16 @@ class ConsultancyModal extends Component {
                         <b><i className="icon-floppy-disk" /></b>
                         Save
                     </button>
+                    <button
+                        type="button"
+                        className="btn bg-danger btn-labeled btn-labeled-right pr-5"
+                        style={{ textTransform: "inherit" }}
+                        onClick={this.props.toggle_modal}
+                    >
+                        <b><i className="icon-cross" /></b>
+                        Cancel
+                    </button>
+
                     {/* <button
                         // disabled={this.state.procedures_list.length === 0}
                         type="button"

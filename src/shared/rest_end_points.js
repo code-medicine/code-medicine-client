@@ -4,7 +4,7 @@ const PROTOCOL = 'http';
  * production address
  */
 // const ADDRESS = '18.188.119.132'
-const ADDRESS = 'code-medicine.ddns.net'
+const ADDRESS = 'codemedicine.ddns.net'
 const TYPE = '/test';
 export const ROOT_URL = `${PROTOCOL}://${ADDRESS}`;
 export const SOCKET_URL = `${TYPE}/socket.io`;

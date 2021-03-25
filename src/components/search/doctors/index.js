@@ -17,6 +17,7 @@ import Loading from '../../../shared/customs/loading/loading';
 import IconButton from '../../../elements/icon-button';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 
 const headCells = [
@@ -26,6 +27,7 @@ const headCells = [
     { id: 'consultancy_fee', numeric: true, disablePadding: false, label: 'Consultancy' },
     { id: 'consultancy_percentage', numeric: false, disablePadding: false, label: 'Percentage' },
     { id: 'gender', numeric: false, disablePadding: false, label: 'Gender' },
+    { id: 'active', numeric: false, disablePadding: false, label: 'Active' },
     { id: 'actions', numeric: false, disablePadding: false, label: 'Actions' },
 ];
 
@@ -61,6 +63,7 @@ class SearchDoctors extends Component {
 
             user_consultancy_fee: { value: '1500', error: false },
             user_consultancy_percentage: { value: '70', error: false },
+            user_is_active: { value: true, error: false },
 
             speciality_description: { value: '', error: false },
             degree_description: { value: '', error: false },
@@ -71,7 +74,13 @@ class SearchDoctors extends Component {
             user_schedule: [],
 
             mode: 'create',
-            toUpdateDoctorId: ''
+            toUpdateDoctorId: '',
+
+            counts: {
+                total: 0,
+                active: 0,
+                deactive: 0,
+            }
         }
     }
 
@@ -108,6 +117,7 @@ class SearchDoctors extends Component {
 
             user_consultancy_fee: { value: doctor.details.consultancy_fee, error: false },
             user_consultancy_percentage: { value: doctor.details.consultancy_percentage, error: false },
+            user_is_active: { value: doctor.doctor.is_active, error: false },
 
             user_specialities: doctor.details.specialities,
 
@@ -119,8 +129,8 @@ class SearchDoctors extends Component {
 
     on_delete_doctor = (id) => {
         confirmAlert({
-            title: "Delete doctor confirmation",
-            message: 'Are you sure to delete this doctor?',
+            title: "Deactivate doctor",
+            message: 'Are you sure you want to deactivate this doctor?',
             buttons: [
                 {
                     label: 'Yes',
@@ -128,8 +138,11 @@ class SearchDoctors extends Component {
                         Axios
                             .delete(`${ADMIN_DELETE_DOCTOR}?tag=${id}`)
                             .then(() => {
-                                setTimeout(() => this.setState({ loading: true, rows: [] }, () => this.load_doctors()), 1000);
-                                this.props.notify('info', '', 'Successfully deleted doctor');
+                                // this.setState({ loading: true }, () => {
+                                    this.reset_state()
+                                    this.load_doctors()
+                                // })
+                                this.props.notify('success', '', 'Successfully deleted doctor');
                             })
                             .catch(err => {
                                 console.log('error', err);
@@ -139,7 +152,7 @@ class SearchDoctors extends Component {
                 },
                 {
                     label: 'No',
-                    onClick: () => this.props.notify('info', '', 'Doctor not deleted')
+                    onClick: () => console.log('no selected')//this.props.notify('info', '', 'Doctor not deleted')
                 }
             ]
         })
@@ -152,6 +165,11 @@ class SearchDoctors extends Component {
             if (_doctors.data) {
                 _doctors = _doctors.data.payload;
                 console.log('doctors', _doctors);
+                const counts = {
+                    total: 0,
+                    active: 0,
+                    deactive: 0,
+                }
                 const temp = []
                 for (let i = 0; i < _doctors.length; ++i) {
                     temp.push({
@@ -161,22 +179,32 @@ class SearchDoctors extends Component {
                         consultancy_fee: _doctors[i].details.consultancy_fee,
                         consultancy_percentage: `${_doctors[i].details.consultancy_percentage}% cut`,
                         gender: _doctors[i].doctor.gender === 'Male' ? <span className={`badge badge-primary`}>Male</span> : <span className={`badge bg-pink-400`}>Female</span>,
-                        actions: <div className={`d-flex justify-content-center`}>
+                        active: _doctors[i].doctor.is_active,
+                        actions: <div className={`d-flex`}>
                             <IconButton 
                                 icon="icon-pencil" className={`mx-1`} 
                                 onClick={() => this.on_edit_doctor(_doctors[i])}/>
-                            <IconButton 
-                                color="red"
-                                icon="icon-cross" 
-                                onClick={() => this.on_delete_doctor(_doctors[i].doctor._id)} />
+                            {
+                                _doctors[i].doctor.is_active ? <IconButton
+                                    color="red"
+                                    icon="icon-cross"
+                                    onClick={() => this.on_delete_doctor(_doctors[i].doctor._id)} /> : ''
+                            }
                         </div>
                     })
+                    counts.total += 1;
+                    if (_doctors[i].doctor.is_active) {
+                        counts.active += 1;
+                    }
+                    else {
+                        counts.deactive += 1;
+                    }
                     if (i === _doctors.length - 1) {
-                        this.setState({ rows: temp, loading: false })
+                        this.setState({ rows: temp, loading: false, counts: counts });
                     }
                 }
                 if (_doctors.length === 0) {
-                    
+                    this.setState({ rows: temp, loading: false });
                 }
             }
             this.setState({ loading: false })
@@ -192,12 +220,7 @@ class SearchDoctors extends Component {
     }
 
     on_selected_changed = (e, actor) => {
-        if (e !== null) {
-            this.setState({ [e.id]: { value: e.label, error: false } })
-        }
-        else {
-            this.setState({ [actor]: { value: e.label, error: false } })
-        }
+        this.setState({ [actor]: { value: e !== null ? e.label : '', error: false } })
     }
     on_user_date_of_birth_change = (e) => {
         if (e === '')
@@ -214,6 +237,10 @@ class SearchDoctors extends Component {
                 this.setState({ user_dob: { value: configured_date, error: false } })
             }
         }
+    }
+
+    on_checkbox_change = (e) => {
+        this.setState({ [e.target.id]: { value: !e.target.checked, error: false }})
     }
 
     delete_item = (index, id) => {
@@ -313,12 +340,19 @@ class SearchDoctors extends Component {
                 })
                 .catch(err => {
                     console.log('res', err)
-                    this.props.notify('error','','Server not responding');
+                    if (err.response){
+                        this.props.notify('error', '', err.response.data.message);
+                    }
+                    else {
+                        this.props.notify('error', '', err.toString());
+                    }
+                    
                     this.setState({ addNewDoctorModalLoading: false })
                 })
         }
         else {
             payload.doctor_id = this.state.toUpdateDoctorId;
+            payload.doctor.is_active = this.state.user_is_active.value;
             Axios
                 .put(ADMIN_UPDATE_DOCTOR, payload)
                 .then(res => {
@@ -346,13 +380,70 @@ class SearchDoctors extends Component {
     render() {
         return (
             <Container container_type={'searchdoctors'}>
-                <div className={`mb-2 d-flex justify-content-end`}>
-                    <Button icon="icon-plus3" onClick={() => this.setState({ addNewModalVisibility: true })}>
-                        Add a new doctor
-                    </Button>
+                <div className={`mb-2 d-flex justify-content-between`}>
+                    <div className={`d-flex justify-content-between w-100`}>
+                        
+                        <div className="card w-100 border-left-3 border-top-0 border-bottom-0 border-right-0 border-info mr-2 px-3" >
+                            <div className="card-body d-flex justify-content-around align-items-center py-1">
+                                <div className="">
+                                    {
+                                        this.state.loading ?
+                                            <Loading size={55} custom={{ color: '#5bc0de' }} /> :
+                                            <h1 className="font-weight-bold text-center values-text mb-0 text-info">
+                                                {this.state.counts.total}
+                                            </h1>
+                                    }
+                                    <h5 className={`text-dark`}>Total</h5>
+                                </div>
+                                <i className="fa fa-stethoscope fa-5x text-info"></i>
+                            </div>
+                        </div>
+                        <div className="card w-100 border-left-3 border-top-0 border-bottom-0 border-right-0 border-success mr-2 px-3" >
+                            <div className="card-body d-flex justify-content-around align-items-center py-1">
+                                <div className="">
+                                    {
+                                        this.state.loading ?
+                                            <Loading size={55} custom={{ color: '#5bc0de' }} /> :
+                                            <h1 className="font-weight-bold text-center values-text mb-0 text-success">
+                                                {this.state.counts.active}
+                                            </h1>
+                                    }
+                                    <h5 className={`text-dark`}>Active</h5>
+                                </div>
+                                <i className="fa fa-check fa-5x text-success"></i>
+                            </div>
+                        </div>
+                        <div className="card w-100 border-left-3 border-top-0 border-bottom-0 border-right-0 border-danger mr-2 px-3" >
+                            <div className="card-body d-flex justify-content-around align-items-center py-1">
+                                <div className="">
+                                    {
+                                        this.state.loading ?
+                                            <Loading size={55} custom={{ color: '#5bc0de' }} /> :
+                                            <h1 className="font-weight-bold text-center values-text mb-0 text-danger">
+                                                {this.state.counts.deactive}
+                                            </h1>
+                                    }
+                                    <h5 className={`text-dark`}>Deactive</h5>
+                                </div>
+                                <i className="fa fa-times fa-5x text-danger"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={`d-flex align-items-end mb-3`}>
+                        <Button icon="icon-plus3" onClick={() => this.setState({ addNewModalVisibility: true })}>
+                            Add a new doctor
+                        </Button>
+                    </div>
                 </div>
                 {
-                    this.state.loading ? <Loading size={150} /> : (
+                    this.state.loading ? <>
+                        {/* <SkeletonTheme color="#000" highlightColor="#f2f2f2">
+                            <Skeleton className="my-1" count={1} height={40}/>
+                        </SkeletonTheme> */}
+                        <SkeletonTheme color="#ffffff" highlightColor="#f2f2f2">
+                            <Skeleton className="my-1" count={8} height={45}/>
+                        </SkeletonTheme>
+                    </>: (
                         this.state.rows.length === 0 ?
                             <div className="alert alert-info mt-2 w-100" >
                                 <strong>Info!</strong> Not found.
@@ -478,7 +569,7 @@ class SearchDoctors extends Component {
                                             id="user_country"
                                             isDisabled
                                             onChange={e => this.on_selected_changed(e, 'user_country')}
-                                            value={{ id: 'country_selection', label: this.state.user_country.value }}
+                                            // value={{ id: 'country_selection', label: this.state.user_country.value }}
                                             defaultValue={{ id: 'country_selection', label: 'Pakistan' }}
                                             styles={{
                                                 container: base => ({
@@ -503,7 +594,7 @@ class SearchDoctors extends Component {
                                             id="user_city"
                                             isDisabled={this.state.addNewDoctorModalLoading}
                                             onChange={e => this.on_selected_changed(e, 'user_city')}
-                                            value={{ id: 'city_selection', label: this.state.user_city.value }}
+                                            // value={{ id: 'city_selection', label: this.state.user_city.value }}
                                             defaultValue={{ id: 'city_selection', label: 'Lahore' }}
                                             styles={{
                                                 container: base => ({
@@ -541,10 +632,10 @@ class SearchDoctors extends Component {
                                     options={GENDER_OPTIONS}
                                     classNamePrefix={`form-control`}
                                     placeholder="Select Gender"
-                                    id="gender_selection"
+                                    id="user_gender"
                                     isDisabled={this.state.addNewDoctorModalLoading}
-                                    onChange={e => this.on_selected_changed(e, 'gender_selection')}
-                                    value={{ id: 'gender_selection', label: this.state.user_gender.value }}
+                                    onChange={e => this.on_selected_changed(e, 'user_gender')}
+                                    // value={{ id: 'gender_selection', label: this.state.user_gender.value }}
                                     defaultValue={{ id: 'gender_selection', label: 'Male' }}
                                     styles={{
                                         container: base => ({
@@ -568,7 +659,7 @@ class SearchDoctors extends Component {
                                     id="user_gender"
                                     isDisabled={this.state.addNewDoctorModalLoading}
                                     onChange={e => this.on_selected_changed(e, 'user_gender')}
-                                    value={{ id: 'blood_group_selection', label: this.state.user_blood_group.value }}
+                                    // value={{ id: 'blood_group_selection', label: this.state.user_blood_group.value }}
                                     defaultValue={{ id: 'blood_group_selection', label: 'Unknown' }}
                                     styles={{
                                         container: base => ({
@@ -696,6 +787,45 @@ class SearchDoctors extends Component {
                             <h5 className={`font-weight-bold`}>Schedule</h5>
                             <span>Coming soon</span>
                             <Button icon="icon-plus3" color="black" disabled>Add schedule</Button>
+                        </div>
+                        <hr />
+                        <div className={``}>
+                            <h5 className={`font-weight-bold`}>Status</h5>
+                            <div className={`d-flex`}>
+
+                                <div className="form-check mr-2">
+                                    <label className="form-check-label">
+                                        <div className="uniform-checker">
+                                            <span className={this.state.user_is_active.value ? 'checked' : ''}>
+                                                <input type="checkbox"
+                                                    name="is_active"
+                                                    id="user_is_active"
+                                                    // defaultChecked={this.state.user_is_active.value}
+                                                    // value={this.state.user_is_active.value}
+                                                    onChange={() => this.setState({ user_is_active: { value: true, error: false } })}
+                                                    className="form-input-styled" />
+                                            </span>
+                                        </div>
+                                    Is Active
+                                </label>
+                                </div>
+                                <div className="form-check mb-0">
+                                    <label className="form-check-label">
+                                        <div className="uniform-checker">
+                                            <span className={this.state.user_is_active.value ? '' : 'checked'}>
+                                                <input type="checkbox"
+                                                    name="is_active"
+                                                    id="user_is_active"
+                                                    // defaultChecked={!this.state.user_is_active.value}
+                                                    // value={!this.state.user_is_active.value}
+                                                    onChange={() => this.setState({ user_is_active: { value: false, error: false } })}
+                                                    className="form-input-styled" />
+                                            </span>
+                                        </div>
+                                    Is Deactivated
+                                </label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className={`modal-footer`}>

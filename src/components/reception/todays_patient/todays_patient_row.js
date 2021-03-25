@@ -12,6 +12,7 @@ import './todays_patient_row.css'
 import { connect } from 'react-redux';
 import { notify, load_todays_appointments, clear_todays_appointments } from '../../../actions'
 import { confirmAlert } from 'react-confirm-alert';
+import { AppointmentCheckout, ProcedureSearchByAppointmentId } from '../../../shared/queries';
 
 // import '../../../../node_modules/semantic-ui-css/semantic.min.css';
 
@@ -39,10 +40,10 @@ class TodaysPatientRow extends Component {
             this.setState({ toggle: false, procedure_loading: false, toggle_icon: 'icon-eye-plus' })
         else
             this.setState({ toggle: true, procedure_loading: true, toggle_icon: 'icon-eye-minus' }, () => {
-                Axios.get(`${PROCEDURES_SEARCH_BY_APPOINTMENT_ID}?tag=${this.state.row_data._id}`).then(_procedures => {
-                    // console.log('procedures', _procedures)
-                    this.setState({ procedures_list: _procedures.data.payload, procedure_loading: false })
-                })
+                ProcedureSearchByAppointmentId(this.state.row_data._id)
+                    .then(_procedures => {
+                        this.setState({ procedures_list: _procedures.data.payload, procedure_loading: false })
+                    })
             })
     }
     componentDidMount() {
@@ -66,27 +67,26 @@ class TodaysPatientRow extends Component {
                 {
                     label: 'Yes',
                     onClick: () => {
-                        const payload = {
-                            appointment_id: this.state.row_data._id
-                        }
+
                         const that = this;
-                        Axios.post(APPOINTMENTS_CHECKOUT, payload).then(res => {
-                            this.props.notify('info', '', res.data.message)
-                            this.props.clear_todays_appointments();
-                            this.props.load_todays_appointments(localStorage.getItem('Gh65$p3a008#2C'));
-                        }).catch(err => {
-                            if (err.response) {
-                                if (err.response.status === 400) {
-                                    that.props.notify('error', '', err.response.data.message);
+                        AppointmentCheckout(this.state.row_data._id)
+                            .then(res => {
+                                this.props.notify('info', '', res.data.message)
+                                this.props.clear_todays_appointments();
+                                this.props.load_todays_appointments(localStorage.getItem('Gh65$p3a008#2C'));
+                            }).catch(err => {
+                                if (err.response) {
+                                    if (err.response.status === 400) {
+                                        that.props.notify('error', '', err.response.data.message);
+                                    }
+                                    else {
+                                        that.props.notify('error', '', err.response.data.message);
+                                    }
                                 }
                                 else {
-                                    that.props.notify('error', '', err.response.data.message);
+                                    that.props.notify('error', '', err.toString());
                                 }
-                            }
-                            else {
-                                that.props.notify('error', '', err.toString());
-                            }
-                        })
+                            })
                     }
                 },
                 {

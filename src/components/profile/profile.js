@@ -13,6 +13,7 @@ import moment from 'moment';
 import { BLOOD_GROUPS_OPTIONS, CITIES, COUTRIES, GENDER_OPTIONS } from '../../shared/constant_data';
 import Loading from '../../shared/customs/loading/loading';
 import { Ucfirst } from '../../shared/functions';
+import { UserSearchByToken, UserUpdate } from '../../shared/queries';
 
 
 
@@ -46,41 +47,41 @@ class Profile extends Component {
         this.props.set_active_page(routes)
         if (localStorage.user) {
             this.setState({ loading_status: true }, () => {
-                Axios.get(`${USERS_SEARCH_BY_TOKEN}?tag=${localStorage.user}`).then(res => {
-                    this.props.set_active_user(res.data['payload'])
-                    console.log('payload', res.data.payload)
-                    this.setState({
-                        first_name:     { value: res.data.payload.first_name, error: false },
-                        last_name:      { value: res.data.payload.last_name, error: false },
-                        email:          { value: res.data.payload.email, error: false },
-                        cnic:           { value: res.data.payload.cnic, error: false },
-                        phone_number:   { value: res.data.payload.phone_number, error: false },
-                        city:           { value: res.data.payload.city, error: false },
-                        address:        { value: res.data.payload.address, error: false },
-                        date_of_birth:  { 
-                            value: res.data.payload.date_of_birth === null || res.data.payload.date_of_birth === ''? 
-                            '':moment(res.data.payload.date_of_birth).format('ll'), error: false 
-                        },
-                        register_date:  { value: moment(res.data.payload.register_date).format('lll'), error: false },
-                        blood_group:    { value: res.data.payload.blood_group, error: false },
-                        gender:         { value: res.data.payload.gender, error: false },
+                UserSearchByToken(localStorage.getItem('user'))
+                    .then(res => {
+                        this.props.set_active_user(res.data['payload'])
+                        this.setState({
+                            first_name: { value: Ucfirst(res.data.payload.first_name), error: false },
+                            last_name: { value: Ucfirst(res.data.payload.last_name), error: false },
+                            email: { value: res.data.payload.email, error: false },
+                            cnic: { value: res.data.payload.cnic, error: false },
+                            phone_number: { value: res.data.payload.phone_number, error: false },
+                            city: { value: res.data.payload.city, error: false },
+                            address: { value: res.data.payload.address, error: false },
+                            date_of_birth: {
+                                value: res.data.payload.date_of_birth === null || res.data.payload.date_of_birth === '' ?
+                                    '' : moment(res.data.payload.date_of_birth).format('ll'), error: false
+                            },
+                            register_date: { value: moment(res.data.payload.register_date).format('lll'), error: false },
+                            blood_group: { value: res.data.payload.blood_group, error: false },
+                            gender: { value: res.data.payload.gender, error: false },
 
-                        loading_status: false
+                            loading_status: false
 
+                        })
+                    }).catch(err => {
+                        if (err) {
+                            console.log(err.response)
+                            if (err.response.status >= 500) {
+                                this.props.notify('error', '', `No response`)
+                                this.setState({ loading_status: false })
+                            }
+                            else if (err.response.status >= 400 && err.response.status < 500) {
+                                this.props.notify('info', '', `${err.response.status}. Please refresh the page.`)
+                                this.setState({ loading_status: false })
+                            }
+                        }
                     })
-                }).catch(err => {
-                    if (err) {
-                        console.log(err.response)
-                        if (err.response.status >= 500) {
-                            this.props.notify('error', '', `No response`)
-                            this.setState({ loading_status: false })
-                        }
-                        else if (err.response.status >= 400 && err.response.status < 500) {
-                            this.props.notify('info', '', `${err.response.status}. Please refresh the page.`)
-                            this.setState({ loading_status: false })
-                        }
-                    }
-                })
             })
 
         }
@@ -91,15 +92,16 @@ class Profile extends Component {
 
     request_update = (data) => {
         this.setState({ loading_status: true }, () => {
-            Axios.put(USERS_UPDATE, data).then(res => {
-                this.setState({ loading_status: false })
-                this.props.notify('success', '', res.data.message)
-            }).catch(err => {
-                console.log('request error', err)
-                this.setState({ loading_status: false })
-                if (err.response){
-                    this.props.notify('error', '', err.response['message'])
-                }
+            UserUpdate(data)
+                .then(res => {
+                    this.setState({ loading_status: false })
+                    this.props.notify('success', '', res.data.message)
+                }).catch(err => {
+                    console.log('request error', err)
+                    this.setState({ loading_status: false })
+                    if (err.response) {
+                        this.props.notify('error', '', err.response['message'])
+                    }
             })
         })
 
@@ -210,7 +212,7 @@ class Profile extends Component {
                             <span className={`mb-0 text-muted`}>{this.state.email.value}</span>
                         </div>
                     </div>
-                    
+
                     <div className={`row`}>
                         <div className={`col-lg-6`}>
                             <Inputfield

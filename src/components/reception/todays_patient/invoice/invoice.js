@@ -7,6 +7,7 @@ import Loading from '../../../../shared/customs/loading/loading';
 import ReactToPrint from 'react-to-print';
 import { get_utc_date, Ucfirst } from '../../../../shared/functions';
 import moment from 'moment'
+import { AppointmentInvoice } from '../../../../shared/queries';
 
 
 class Invoice extends Component {
@@ -22,10 +23,11 @@ class Invoice extends Component {
     componentWillReceiveProps(new_props, new_state) {
         if (new_props.visibility === true) {
             console.log('fetching data')
-            Axios.get(`${APPOINTMENTS_INVOICE}?tag=${new_props.appointment_id}`).then(res => {
-                console.log('fetched', res.data)
-                this.setState({ data: res.data.payload, loading: false })
-            })
+            AppointmentInvoice(new_props.appointment_id)
+                .then(res => {
+                    console.log('fetched', res.data)
+                    this.setState({ data: res.data.payload, loading: false })
+                })
         }
         else {
             this.setState({ data: null })
@@ -59,13 +61,13 @@ class Invoice extends Component {
         if (this.state.data !== null) {
             const paid = parseInt(this.state.data.appointment_charges.paid);
             const paid_for_procedures = parseInt(this.state.data.appointment_charges.paid_for_procedures);
-            
+
             return paid + paid_for_procedures;
         }
         return 0;
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         this.setState({ data: null })
     }
 
@@ -257,13 +259,6 @@ class Invoice extends Component {
                     </div>
                 </div>
                 <div className="modal-footer">
-                    <button
-                        type="button"
-                        className="btn bg-danger btn-labeled btn-labeled-right btn-sm pr-5"
-                        style={{ textTransform: "inherit" }}
-                        onClick={this.props.close_modal}
-                    >
-                        <b><i className="icon-cross" /></b>Close</button>
                     <ReactToPrint
                         trigger={() => <button
                             type="button"
@@ -273,6 +268,16 @@ class Invoice extends Component {
                             <b><i className="icon-printer2" /></b>Print</button>}
                         content={() => this.componentRef}
                     />
+                    <button
+                        type="button"
+                        className="btn bg-danger btn-labeled btn-labeled-right btn-sm pr-5"
+                        style={{ textTransform: "inherit" }}
+                        onClick={this.props.close_modal}
+                    >
+                        <b><i className="icon-cross" /></b>
+                        Close
+                    </button>
+
 
                 </div>
             </Modal>

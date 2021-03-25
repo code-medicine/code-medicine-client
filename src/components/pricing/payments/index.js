@@ -17,7 +17,7 @@ import Inputfield from '../../../shared/customs/inputfield/inputfield';
 import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
 import { Collapse } from 'reactstrap';
 import { confirmAlert } from 'react-confirm-alert';
-import { CreateNewPaymentLog, GetUserById } from '../../../shared/queries';
+import { AppointmentsSearchToday, CreateNewPaymentLog, GetUserById } from '../../../shared/queries';
 
 
 const headCells = [
@@ -98,8 +98,7 @@ class Payments extends Component {
 
     query = (date) => {
         const that = this;
-        Axios
-            .get(`${APPOINTMENTS_SEARCH_TODAY}?tag=${new Date(new Date(date.getTime() + (date.getTimezoneOffset() * 60000)).toISOString())}&type=checkout`)
+        AppointmentsSearchToday(date, 'checkout')
             .then(async res => {
                 // console.log('search', res.data)
                 if (res.data.payload && res.data.payload.length > 0) {

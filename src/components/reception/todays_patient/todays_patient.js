@@ -21,6 +21,7 @@ import DateTimePicker from 'react-datetime';
 import { Ucfirst } from '../../../shared/functions';
 import ConsultacyModal from './consultancy';
 import TodaysPatientRowLoading from './todays_patient_row_loading';
+import { GetRequest, PostRequest, UserSearchById } from '../../../shared/queries';
 
 
 class Todayspatient extends Component {
@@ -80,10 +81,10 @@ class Todayspatient extends Component {
     async request(_data, _url, _method = "post") {
         try {
             if (_method === 'post') {
-                return await Axios.post(_url, _data)
+                return await PostRequest(_url, _data)
             }
             else if (_method === 'get') {
-                return await Axios.get(_url)
+                return await GetRequest(_url)
             }
         }
         catch (err) {
@@ -185,11 +186,12 @@ class Todayspatient extends Component {
         this.setState({
             user_preview_modal_visibility: true
         }, () => {
-            Axios.post(USERS_SEARCH_BY_ID, { user_id: id }).then(res => {
-                this.setState({ user_modal_props: res.data.payload.user })
-            }).catch(err => {
-                console.log('failed to fetch user', err)
-            })
+            UserSearchById(id)
+                .then(res => {
+                    this.setState({ user_modal_props: res.data.payload.user })
+                }).catch(err => {
+                    console.log('failed to fetch user', err)
+                })
         })
     }
 

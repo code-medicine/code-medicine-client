@@ -17,6 +17,7 @@ import './styles.css'
 import TimeKeeper from 'react-timekeeper';
 // import { Height } from '@material-ui/icons';
 import { Popup } from 'semantic-ui-react';
+import { AppointmentCreate, GetRequest, PostRequest } from '../../../../shared/queries';
 
 class NewAppointmentModal extends Component {
     constructor(props) {
@@ -49,10 +50,10 @@ class NewAppointmentModal extends Component {
     async request(_data, _url, _method = "post") {
         try {
             if (_method === 'post') {
-                return await Axios.post(_url, _data)
+                return await PostRequest(_url, _data)
             }
             else if (_method === 'get') {
-                return await Axios.get(_url)
+                return await GetRequest(_url)
             }
         }
         catch (err) {
@@ -63,10 +64,9 @@ class NewAppointmentModal extends Component {
 
     async render_users(string, role) {
         try {
-            const query = `${USERS_SEARCH_BY_CREDENTIALS}?search=${string}&role=${role}`
+            const query = `${USERS_SEARCH_BY_CREDENTIALS}?search=${string}&role=${role}&active=true`
             const res_users = await this.request({}, query, 'get')
-            let temp_users = []
-            console.log('users...', res_users)
+            let temp_users = [];
             for (var i = 0; i < res_users.data.payload['count']; ++i) {
                 const t_user = res_users.data.payload['users'][i]
                 temp_users.push({
@@ -268,7 +268,7 @@ class NewAppointmentModal extends Component {
         }
         // console.log('data',data)
         // return;
-        Axios.post(APPOINTMENTS_CREATE, data).then(res => {
+        AppointmentCreate(data).then(res => {
             this.props.notify('success', '', res.data.message)
             this.setState({
                 appointment_patient: { value: '', error: false },
@@ -497,20 +497,20 @@ class NewAppointmentModal extends Component {
                         />
                         <button
                             type="button"
-                            className="btn bg-danger btn-labeled btn-labeled-right pr-5"
-                            style={{ textTransform: "inherit" }}
-                            onClick={this.props.close}>
-                            <b><i className="icon-cross"></i></b>
-                            Cancel
-                        </button>
-                        <button
-                            type="button"
                             className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
                             style={{ textTransform: "inherit" }}
                             disabled={this.state.loading_status}
                             onClick={this.on_submit}>
                             <b><i className="icon-plus3"></i></b>
                             Create
+                        </button>
+                        <button
+                            type="button"
+                            className="btn bg-danger btn-labeled btn-labeled-right pr-5"
+                            style={{ textTransform: "inherit" }}
+                            onClick={this.props.close}>
+                            <b><i className="icon-cross"></i></b>
+                            Cancel
                         </button>
                     </div>
                 </Modal>
