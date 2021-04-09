@@ -3,9 +3,6 @@ import ProcedureItem from './procedure_item';
 import Modal from "react-bootstrap4-modal";
 import { connect } from 'react-redux';
 import { notify, update_appointment, load_todays_appointments, clear_todays_appointments } from '../../../../actions';
-import Axios from 'axios';
-import { UPDATE_APPOINTMENT_CHARGES, CHECKOUT_APPOINTMENT, PROCEDURES_SEARCH_BY_APPOINTMENT_ID, APPOINTMENTS_SEARCH_BY_ID, GET_APPOINTMENT_CHARGES, APPOINTMENTS_CHARGES_UPDATE } from '../../../../shared/rest_end_points';
-import Loading from '../../../../shared/customs/loading/loading';
 import ReactToPrint from 'react-to-print';
 import LOGO from '../../../../resources/images/LOGO.png';
 import { get_utc_date, Ucfirst } from '../../../../shared/functions';
@@ -56,11 +53,10 @@ class ProcedureModal extends Component {
         temp[key].type = 'previous';
         temp[key].procedure_fee = data.fee;
         temp[key].procedure_discount = data.discount;
+        temp[key].procedure_dr_share = data.dr_share;
         temp[key].procedure_description = data.description;
         temp[key].id = data.id
-        this.setState({ procedures_list: temp }, () => {
-            this.handle_total_values()
-        })
+        this.setState({ procedures_list: temp }, () => this.handle_total_values());
     }
 
     delete_procedure = (key) => {
@@ -81,6 +77,7 @@ class ProcedureModal extends Component {
                 id: null,//Math.max.apply(Math, this.state.procedures_list.map(function(obj) { return obj.id })),
                 procedure_fee: 0,
                 procedure_discount: 0,
+                procedure_dr_share: 0,
                 procedure_description: '',
                 type: 'new',
             })
@@ -102,6 +99,7 @@ class ProcedureModal extends Component {
                             id: list[i]._id,
                             procedure_fee: list[i].fee,
                             procedure_discount: list[i].discount,
+                            procedure_dr_share: list[i].dr_share,
                             procedure_description: list[i].description,
                             type: 'previous'
                         })
@@ -161,7 +159,6 @@ class ProcedureModal extends Component {
             procedure_discount += this.state.procedures_list[i].procedure_discount;
         }
 
-
         const t_total = this.state.consultancy_fee_text_input.value.length > 0 ?
             parseInt(this.state.consultancy_fee_text_input.value) : 0;
         const t_discount = this.state.discount_text_input.value.length > 0 ?
@@ -178,6 +175,7 @@ class ProcedureModal extends Component {
 
     show_procedures = () => {
         return this.state.procedures_list.map((item, index) => {
+            console.log('item', item);
             return <ProcedureItem
                 key={index}
                 appointment_id={this.props.appointment_id}
@@ -217,6 +215,7 @@ class ProcedureModal extends Component {
 
         const payload = {
             appointment_id: this.props.appointment_id,
+            procedures: this.state.total,
             paid_for_procedures: parseInt(this.state.paid_text_input.value),
         }
         AppointmentUpdateCharges(payload).then(res => {
@@ -278,6 +277,7 @@ class ProcedureModal extends Component {
 
     render() {
         // this.handle_total_values();
+        console.log('procedure modal props', this.props)
         return (
             <Fragment>
                 <Modal
@@ -320,13 +320,14 @@ class ProcedureModal extends Component {
                                             <strong>Info!</strong> No Procedures found.
                                         </div> :
                                         <div className="table-responsive px-1">
-                                            <table className="table table-bordered table-hover">
+                                            <table className="table table-bordered w-100">
                                                 <thead>
                                                     <tr>
-                                                        <th className={`border-0`}>Procedure reason</th>
-                                                        <th className={`border-0`}>Charges</th>
-                                                        <th className={`border-0`}>Discount</th>
-                                                        <th className={`border-0`}>Actions</th>
+                                                        <th className={`border-0`} style={{width: '50%'}}>Procedure reason</th>
+                                                        <th className={`border-0`} style={{width: '12%'}}>Charges</th>
+                                                        <th className={`border-0`} style={{width: '12%'}}>Discount</th>
+                                                        <th className={`border-0`} style={{width: '12%'}}>Dr. Share</th>
+                                                        <th className={`border-0 text-center`} >Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -368,7 +369,7 @@ class ProcedureModal extends Component {
                         </div>
                         
                         <button
-                            disabled={this.state.procedures_list.length === 0 || this.state.paid_text_input.value === "" || Number(this.state.paid_text_input.value) < (this.state.total - this.state.discount)}
+                            disabled={this.state.procedures_list.length === 0 || this.state.paid_text_input.value === "" || Number(this.state.paid_text_input.value) < (this.state.total)}
                             type="button"
                             className="btn bg-dark btn-labeled btn-sm btn-labeled-right pr-5"
                             style={{ textTransform: "inherit" }}

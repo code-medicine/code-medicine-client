@@ -16,7 +16,7 @@ export const SOCKET_URL = `${TYPE}/socket.io`;
 // const PORT = 7000;
 // const TYPE = '/test';
 // export const ROOT_URL = `${PROTOCOL}://${ADDRESS}:${PORT}`;
-// export const SOCKET_URL = `${TYPE}/socket.io`;
+// export const SOCKET_URL = `${TYPE}/socket.io`; 
 
 export const BASE_URL = `${ROOT_URL}${TYPE}`;
  
@@ -54,6 +54,7 @@ export const PROCEDURES_BASE_URL = `${BASE_URL}/procedures`;
 export const PROCEDURES_CREATE = `${PROCEDURES_BASE_URL}/create`;
 export const PROCEDURES_UPDATE = `${PROCEDURES_BASE_URL}/update`;
 export const PROCEDURES_DELETE = `${PROCEDURES_BASE_URL}/delete`;
+export const PROCEDURES_SEARCH = `${PROCEDURES_BASE_URL}/search`;
 export const PROCEDURES_SEARCH_BY_ID = `${PROCEDURES_BASE_URL}/search/id`;
 export const PROCEDURES_SEARCH_BY_APPOINTMENT_ID = `${PROCEDURES_BASE_URL}/appointment/id`;
 

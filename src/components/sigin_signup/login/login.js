@@ -162,7 +162,7 @@ class Login extends Component {
             <Container container_type={'login'}>
                 <div className={`container-fluid`}>
                     <div className={`row`}>
-                        <div className={`col-lg-3 col-md-6 p-0`}>
+                        <div className={`col-lg-4 col-md-6 p-0`}>
                             <form method="post" onSubmit={this.on_submit}>
                                 <div className={`card m-0`} style={{ height: '100vh' }}>
                                     <div className={`card-header text-center h4 font-weight-light`}>
@@ -204,7 +204,7 @@ class Login extends Component {
                                 </div>
                             </form>
                         </div>
-                        <div className={`col-lg-9 col-md-6 d-none d-lg-block d-xl-block d-md-block background_custom`}>
+                        <div className={`col-lg-8 col-md-6 d-none d-lg-block d-xl-block d-md-block background_custom`}>
 
                         </div>
                     </div>

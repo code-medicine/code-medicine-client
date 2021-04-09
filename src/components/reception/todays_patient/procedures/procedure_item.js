@@ -14,10 +14,12 @@ class ProcedureItem extends Component {
             description_text_input: { value: this.props.data.procedure_description, error: false },
             charges_text_input: { value: this.props.data.procedure_fee, error: false },
             discount_text_input: { value: this.props.data.procedure_discount, error: false },
+            dr_share_text_input: { value: this.props.data.procedure_dr_share, error: false },
 
             prev_description: this.props.data.procedure_description,
             prev_fee: this.props.data.procedure_fee,
             prev_discount: this.props.data.procedure_discount,
+            prev_dr_share: this.props.data.procedure_dr_share,
 
             edited: false,
             save_click_loading: false,
@@ -28,7 +30,8 @@ class ProcedureItem extends Component {
         this.setState({ [e.target.id]: { value: e.target.value, error: false } }, () => {
             if (this.state.description_text_input.value !== this.state.prev_description ||
                 parseInt(this.state.charges_text_input.value) !== this.state.prev_fee ||
-                parseInt(this.state.discount_text_input.value) !== this.state.prev_discount) {
+                parseInt(this.state.discount_text_input.value) !== this.state.prev_discount ||
+                parseInt(this.state.dr_share_text_input.value) !== this.state.prev_dr_share) {
                 /**
                  * If data loaded is edited
                  */
@@ -51,19 +54,23 @@ class ProcedureItem extends Component {
         if (this.props.data.type === 'new') {
             const payload = {
                 appointment_id: this.props.appointment_id,
+                // doctor_id: 
                 fee: parseInt(this.state.charges_text_input.value),
                 discount: parseInt(this.state.discount_text_input.value),
-                description: this.state.description_text_input.value
+                dr_share: parseInt(this.state.dr_share_text_input.value),
+                description: this.state.description_text_input.value,                
             }
-
+            // console.log('payload', payload)
+            // return ;
             ProcedureCreate(payload).then(res => {
                 this.setState({ save_click_loading: false, edited: false })
                 this.props.notify('success', '', res.data.message)
                 this.props.save_opp(this.props.index, {
-                    id: res.data.payload._id,//this.props.data.id,
-                    fee: res.data.payload.fee, //parseInt(this.state.charges_text_input.value), 
-                    discount: res.data.payload.discount, //parseInt(this.state.discount_text_input.value), 
-                    description: res.data.payload.description,// this.state.description_text_input.value 
+                    id: res.data.payload._id, // this.props.data.id,
+                    fee: res.data.payload.fee, // parseInt(this.state.charges_text_input.value), 
+                    discount: res.data.payload.discount, // parseInt(this.state.discount_text_input.value),
+                    dr_share: res.data.payload.dr_share, // parseInt(this.state.dr_share_text_input.value),
+                    description: res.data.payload.description, // this.state.description_text_input.value 
                 })
                 // console.log('error');
                 // this.setState({ save_click_loading: false, edited: false })
@@ -80,6 +87,7 @@ class ProcedureItem extends Component {
                 procedure_id: this.props.data.id,
                 fee: parseInt(this.state.charges_text_input.value),
                 discount: parseInt(this.state.discount_text_input.value),
+                dr_share: parseInt(this.state.dr_share_text_input.value),
                 description: this.state.description_text_input.value
             }
             ProcedureUpdate(payload).then(res => {
@@ -90,6 +98,7 @@ class ProcedureItem extends Component {
                     id: this.props.data.id,
                     fee: parseInt(this.state.charges_text_input.value),
                     discount: parseInt(this.state.discount_text_input.value),
+                    dr_share: parseInt(this.state.dr_share_text_input.value),
                     description: this.state.description_text_input.value
                 })
 
@@ -127,13 +136,13 @@ class ProcedureItem extends Component {
     }
 
     render() {
-
+        console.log('procedure item props', this.props)
         const save_button_classes = `btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 secondary btn-icon mx-1 ${this.state.save_click_loading ? 'p-0' : ''}`;
         const update_button_classes = `btn btn-outline-dark btn-sm secondary btn-icon mx-1 ${this.state.save_click_loading ? 'p-0' : ''}`;
         const delete_button_classes = `btn btn-outline btn-sm bg-danger border-danger text-danger secondary btn-icon`;
         return (
             <tr>
-                <td className="p-0">
+                <td className="p-0" style={{ width: '50%' }}>
                     <input
                         id={`description_text_input`}
                         placeholder="Enter Reason"
@@ -146,7 +155,7 @@ class ProcedureItem extends Component {
                     // error={this.state.description_text_input.error}
                     />
                 </td>
-                <td className="p-0">
+                <td className="p-0" style={{ width: '10%' }}>
                     <input
                         id={`charges_text_input`}
                         placeholder="Charges"
@@ -159,7 +168,7 @@ class ProcedureItem extends Component {
                     // error={this.state.charges_text_input.error}`
                     />
                 </td>
-                <td className="p-0">
+                <td className="p-0" style={{ width: '10%' }}>
                     <input
                         id={`discount_text_input`}
                         placeholder="Discount"
@@ -171,16 +180,28 @@ class ProcedureItem extends Component {
                     // error={this.state.discount_text_input.error}
                     />
                 </td>
-                <td className="d-flex align-items-end justify-content-center" style={{ padding: '3px' }}>
-                        <button className={delete_button_classes}
-                            onClick={this.on_delete_click}>
-                            <i className="icon-cross" onClick={this.on_delete_click}/>
-                        </button>
-                        {this.state.edited ?
-                            <button className={this.props.data.type === 'new' ? save_button_classes : update_button_classes}
-                                onClick={this.on_save_click}>
-                                {this.state.save_click_loading ? <Loading size="30" /> : <i className="icon-floppy-disk" />}
-                            </button> : ''}
+                <td className="p-0" style={{ width: '10%' }}>
+                    <input
+                        id={`dr_share_text_input`}
+                        placeholder="Dr Share %"
+                        disabled={this.state.save_click_loading}
+                        className="form-control form-control-lg"
+                        onChange={e => this.handle_change(e)}
+                        defaultValue={this.state.dr_share_text_input.value}
+                        style={{ border: 0 }}
+                    // error={this.state.discount_text_input.error}
+                    />
+                </td>
+                <td className="d-flex align-items-end justify-content-center border-0" style={{ padding: '3px' }}>
+                    <button className={delete_button_classes}
+                        onClick={this.on_delete_click}>
+                        <i className="icon-cross" onClick={this.on_delete_click} />
+                    </button>
+                    {this.state.edited ?
+                        <button className={this.props.data.type === 'new' ? save_button_classes : update_button_classes}
+                            onClick={this.on_save_click}>
+                            {this.state.save_click_loading ? <Loading size="30" /> : <i className="icon-floppy-disk" />}
+                        </button> : ''}
                 </td>
             </tr>
             // <div className="row">

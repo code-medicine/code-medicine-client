@@ -61,7 +61,7 @@ class Invoice extends Component {
         if (this.state.data !== null) {
             const paid = parseInt(this.state.data.appointment_charges.paid);
             const paid_for_procedures = parseInt(this.state.data.appointment_charges.paid_for_procedures);
-
+            console.log('charges', this.state.data.appointment_charges)
             return paid + paid_for_procedures;
         }
         return 0;

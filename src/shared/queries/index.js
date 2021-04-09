@@ -107,6 +107,9 @@ export const ProcedureDelete = (id) => {
     return Axios.delete(rep.PROCEDURES_DELETE, { data: { procedure_id: id } })
 }
 
+export const ProcedureSearch = (appointment_id, doctor_id, date) => {
+    return Axios.get(`${rep.PROCEDURES_SEARCH}?appointment_id=${appointment_id}&doctor_id=${doctor_id}&date=${date}`); 
+}
 
 /**
  * ------------------------------------------------------------------------------
