@@ -13,6 +13,7 @@ import { connect } from "react-redux";
 // import Inputfield from '../../../../shared/customs/inputfield/inputfield';
 import './styles.css'
 import { Ucfirst } from '../../../../shared/functions';
+import { AppointmentUpdate, GetRequest, PostRequest } from '../../../../shared/queries';
 
 class UpdateAppointmentModal extends Component {
     constructor(props) {
@@ -52,10 +53,10 @@ class UpdateAppointmentModal extends Component {
     async request(_data, _url, _method = "post") {
         try {
             if (_method === 'post') {
-                return await Axios.post(_url, _data, { headers: { 'code-medicine': localStorage.getItem('user') } })
+                return await PostRequest(_url, _data)
             }
             else if (_method === 'get') {
-                return await Axios.get(_url, { headers: { 'code-medicine': localStorage.getItem('user') } })
+                return await GetRequest(_url)
             }
         }
         catch (err) {
@@ -284,8 +285,7 @@ class UpdateAppointmentModal extends Component {
             appointment_comments: this.state.appointment_comments.value,
             appointment_referee: this.state.appointment_referee.value
         }
-        console.log('data update', data)
-        Axios.put(APPOINTMENTS_UPDATE, data).then(res => {
+        AppointmentUpdate(data).then(res => {
             // console.log('res', res)
             this.props.notify('success', '', res.data.message)
             this.setState({ 
@@ -463,20 +463,21 @@ class UpdateAppointmentModal extends Component {
                 <div className="modal-footer">
                     <button
                         type="button"
-                        className="btn bg-danger btn-labeled btn-labeled-right pr-5"
-                        style={{ textTransform: "inherit" }}
-                        onClick={() => this.props.close()}>
-                        <b><i className="icon-cross"></i></b>
-                            Cancel
-                        </button>
-                    <button
-                        type="button"
                         className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
                         style={{ textTransform: "inherit" }}
                         onClick={this.on_submit}>
                         <b><i className="icon-plus3"></i></b>
-                            Update
-                        </button>
+                        Update
+                    </button>
+                    <button
+                        type="button"
+                        className="btn bg-danger btn-labeled btn-labeled-right pr-5"
+                        style={{ textTransform: "inherit" }}
+                        onClick={() => this.props.close()}>
+                        <b><i className="icon-cross"></i></b>
+                        Cancel
+                    </button>
+
                 </div>
             </Modal>
         )

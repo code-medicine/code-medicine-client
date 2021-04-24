@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BASE_URL, LOGIN_URL, PAYMENTS, RECEPTION_TODAYSPATIIENT, RECEPTION_VISITS, SEARCH_DOCTORS } from '../../router_constants';
+import { BASE_URL, LOGIN_URL, PAYMENTS, PROFILE, RECEPTION_TODAYSPATIIENT, RECEPTION_VISITS, SEARCH_DOCTORS } from '../../router_constants';
 import { connect } from "react-redux";
 import { Link, withRouter } from 'react-router-dom';
 import { set_active_user, notify, left_sidebar_controls } from '../../../actions';
@@ -8,6 +8,8 @@ import { LOGOUT_USER_REQUEST } from '../../rest_end_points';
 import Axios from 'axios';
 import './left_sidebar.css'
 import { Logo, LogoWithAbreviation } from '../../../resources/svgs';
+import { FormatBold } from '@material-ui/icons';
+import { Avatar, Typography } from '@material-ui/core';
 
 class Left_sidebar extends Component {
 
@@ -81,10 +83,10 @@ class Left_sidebar extends Component {
     }
     render() {
         console.log('left side bar', this.props.left_sidebar)
-        // const first_name_first_letter = this.props.active_user.first_name.charAt(0).toUpperCase()
-        // const first_name_rest = this.props.active_user.first_name.length > 1 ? this.props.active_user.first_name.substring(1) : ''
-        // const last_name_first_letter = this.props.active_user.last_name.charAt(0).toUpperCase()
-        // const last_name_rest = this.props.active_user.last_name.length > 1 ? this.props.active_user.last_name.substring(1) : ''
+        const first_name_first_letter = this.props.active_user.first_name.charAt(0).toUpperCase()
+        const first_name_rest = this.props.active_user.first_name.length > 1 ? this.props.active_user.first_name.substring(1) : ''
+        const last_name_first_letter = this.props.active_user.last_name.charAt(0).toUpperCase()
+        const last_name_rest = this.props.active_user.last_name.length > 1 ? this.props.active_user.last_name.substring(1) : ''
         return (
             <div className="sidebar sidebar-dark sidebar-main sidebar-fixed sidebar-expand-md" >
 
@@ -104,8 +106,19 @@ class Left_sidebar extends Component {
                         <div className="card-body">
                             <div className="media d-flex align-items-center">
                                 {this.props.left_sidebar? <Logo width="0.5in" height="0.5in"/>:''}
-                                <div className="media-body d-flex justify-content-center">
-                                    <LogoWithAbreviation width="1.5in" height="1.5in"/>
+                                <div className="media-body d-flex flex-column justify-content-center align-items-center">
+                                    <Avatar 
+                                        className={`text-info bg-white h3 p-3 btn btn-light`} 
+                                        style={{ height: '80px', width: '80px'}} 
+                                        component="button"
+                                        onClick={() => this.props.history.push(PROFILE)}>
+                                        {first_name_first_letter}{last_name_first_letter}
+                                    </Avatar>
+                                    <div className={``}>
+                                        <Link className={`text-shadow text-white`} to={PROFILE}>
+                                            {first_name_first_letter}{first_name_rest} {last_name_first_letter}{last_name_rest}
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -175,13 +188,13 @@ class Left_sidebar extends Component {
                                 <ul className="nav nav-group-sub" data-submenu-title="Pricing"
                                     style={{ display: this.state.pricing_toggle === '' ? 'none' : 'block' }}>
                                     <li className="nav-item"><Link to={PAYMENTS} className="nav-link ">Day to day</Link></li>
-                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disbaled">My payments<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
-                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disbaled">History<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">My payments<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
+                                    <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">History<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Settings<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
                                 </ul>
 
                             </li>
-                            <li className={`nav-item nav-item-submenu ${this.state.chat_toggle}`}>
+                            {/* <li className={`nav-item nav-item-submenu ${this.state.chat_toggle}`}>
                                 <Link className="nav-link"
                                     to={'#'}
                                     onClick={this.on_item_click}
@@ -197,13 +210,13 @@ class Left_sidebar extends Component {
                                     <li className="nav-item"><Link to={BASE_URL} className="nav-link disabled">Requests<span className="badge bg-transparent align-self-center ml-auto">Coming soon</span></Link></li>
                                 </ul>
 
-                            </li>
-                            <li className="nav-item">
+                            </li> */}
+                            {/* <li className="nav-item">
                                 <Link className="nav-link" onClick={this.on_logout_button_click} to={"#"}>
                                     <i className="icon-exit3"></i>
                                     <span>Logout</span>
                                 </Link>
-                            </li>
+                            </li> */}
                         </ul>
                     </div>
 

@@ -17,6 +17,7 @@ import './styles.css'
 import TimeKeeper from 'react-timekeeper';
 // import { Height } from '@material-ui/icons';
 import { Popup } from 'semantic-ui-react';
+import { AppointmentCreate, GetRequest, PostRequest } from '../../../../shared/queries';
 
 class NewAppointmentModal extends Component {
     constructor(props) {
@@ -49,10 +50,10 @@ class NewAppointmentModal extends Component {
     async request(_data, _url, _method = "post") {
         try {
             if (_method === 'post') {
-                return await Axios.post(_url, _data)
+                return await PostRequest(_url, _data)
             }
             else if (_method === 'get') {
-                return await Axios.get(_url)
+                return await GetRequest(_url)
             }
         }
         catch (err) {
@@ -63,10 +64,9 @@ class NewAppointmentModal extends Component {
 
     async render_users(string, role) {
         try {
-            const query = `${USERS_SEARCH_BY_CREDENTIALS}?search=${string}&role=${role}`
+            const query = `${USERS_SEARCH_BY_CREDENTIALS}?search=${string}&role=${role}&active=true`
             const res_users = await this.request({}, query, 'get')
-            let temp_users = []
-            console.log('users...', res_users)
+            let temp_users = [];
             for (var i = 0; i < res_users.data.payload['count']; ++i) {
                 const t_user = res_users.data.payload['users'][i]
                 temp_users.push({
@@ -268,7 +268,7 @@ class NewAppointmentModal extends Component {
         }
         // console.log('data',data)
         // return;
-        Axios.post(APPOINTMENTS_CREATE, data).then(res => {
+        AppointmentCreate(data).then(res => {
             this.props.notify('success', '', res.data.message)
             this.setState({
                 appointment_patient: { value: '', error: false },
@@ -338,20 +338,25 @@ class NewAppointmentModal extends Component {
                             <DateTimePicker id="dob_text_input"
                                 onChange={this.on_apointment_date_change}
                                 className="clock_datatime_picker text-teal-400"
-                                inputProps={{ placeholder: 'Select Date', width: '100%', className: `form-control ${this.state.appointment_date.error ? 'border-danger' : ''}` }}
+                                inputProps={{ 
+                                    placeholder: 'Select Date', 
+                                    width: '100%', 
+                                    className: `form-control ${this.state.appointment_date.error ? 'border-danger' : ''}`, 
+                                    disabled: this.state.loading_status
+                                }}
                                 input={true}
                                 dateFormat={'ll'}
                                 timeFormat={false}
                                 closeOnSelect={true}
                                 value={this.state.appointment_date.value}
+                                
                             />
 
                         </div>
 
                     </div>
-                    {this.state.loading_status ? <Loading size={150} /> : <div className="modal-body">
+                    <div className="modal-body">
                         <div className="row">
-
                             <div className="col-md-8">
                                 <div className={`row`}>
                                     <div className={`col-md-10`}>
@@ -368,6 +373,7 @@ class NewAppointmentModal extends Component {
                                                 onInputChange={e => this.populate_patients(e)}
                                                 onChange={e => this.on_selected_changed(e, "appointment_patient_selection")}
                                                 value={this.state.patient_select_value}
+                                                isDisabled={this.state.loading_status}
                                                 styles={{
                                                     container: base => ({
                                                         ...base,
@@ -383,7 +389,9 @@ class NewAppointmentModal extends Component {
                                     <div className={`col-md-2 d-flex align-items-end mb-3 `}>
                                         <Popup
                                             trigger={
-                                                <button className={`btn btn-outline btn-lg bg-secondary btn-block border-secondary text-dark btn-icon`} onClick={this.open_new_patient_modal}>
+                                                <button 
+                                                    disabled={this.state.loading_status}
+                                                    className={`btn btn-outline btn-lg bg-secondary btn-block border-secondary text-dark btn-icon`} onClick={this.open_new_patient_modal}>
                                                     <i className="icon-plus3"></i>
                                                 </button>}
                                             flowing
@@ -391,7 +399,7 @@ class NewAppointmentModal extends Component {
                                             content={
                                                 <div className={`card card-body bg-dark text-white shadow ml-1 py-1 mt-4`}>
                                                     Add new Patient
-                                    </div>
+                                                </div>
                                             }
                                             position='top center'
                                             style={{ zIndex: 15000 }}
@@ -412,6 +420,7 @@ class NewAppointmentModal extends Component {
                                         onInputChange={e => this.populate_doctors(e)}
                                         onChange={e => this.on_selected_changed(e, 'appointment_doctor_selection')}
                                         value={this.state.doctor_select_value}
+                                        isDisabled={this.state.loading_status}
                                         styles={{
                                             container: base => ({
                                                 ...base,
@@ -431,6 +440,7 @@ class NewAppointmentModal extends Component {
                                         value={this.state.appointment_referee.value}
                                         onChange={e => this.on_text_field_change(e)}
                                         placeholder="Reference of any doctor if any"
+                                        disabled={this.state.loading_status}
                                     />
                                 </div>
 
@@ -441,7 +451,8 @@ class NewAppointmentModal extends Component {
                                         className="form-control"
                                         placeholder="Comments for the appointment"
                                         onChange={e => this.on_text_field_change(e)}
-                                        value={this.state.appointment_comments.value} />
+                                        value={this.state.appointment_comments.value}
+                                        disabled={this.state.loading_status} />
                                 </div>
                             </div>
 
@@ -460,8 +471,7 @@ class NewAppointmentModal extends Component {
                         </div>
 
                     </div>
-                    }
-                    {this.state.loading_status ? '' : <div className="modal-footer">
+                    <div className="modal-footer">
                         <Select
                             isClearable
                             menuPlacement="auto"
@@ -487,21 +497,22 @@ class NewAppointmentModal extends Component {
                         />
                         <button
                             type="button"
+                            className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
+                            style={{ textTransform: "inherit" }}
+                            disabled={this.state.loading_status}
+                            onClick={this.on_submit}>
+                            <b><i className="icon-plus3"></i></b>
+                            Create
+                        </button>
+                        <button
+                            type="button"
                             className="btn bg-danger btn-labeled btn-labeled-right pr-5"
                             style={{ textTransform: "inherit" }}
                             onClick={this.props.close}>
                             <b><i className="icon-cross"></i></b>
                             Cancel
                         </button>
-                        <button
-                            type="button"
-                            className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
-                            style={{ textTransform: "inherit" }}
-                            onClick={this.on_submit}>
-                            <b><i className="icon-plus3"></i></b>
-                            Create
-                        </button>
-                    </div>}
+                    </div>
                 </Modal>
 
             </Fragment>

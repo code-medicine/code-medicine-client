@@ -3,14 +3,13 @@ import ProcedureItem from './procedure_item';
 import Modal from "react-bootstrap4-modal";
 import { connect } from 'react-redux';
 import { notify, update_appointment, load_todays_appointments, clear_todays_appointments } from '../../../../actions';
-import Axios from 'axios';
-import { UPDATE_APPOINTMENT_CHARGES, CHECKOUT_APPOINTMENT, PROCEDURES_SEARCH_BY_APPOINTMENT_ID, APPOINTMENTS_SEARCH_BY_ID, GET_APPOINTMENT_CHARGES } from '../../../../shared/rest_end_points';
-import Loading from '../../../../shared/customs/loading/loading';
 import ReactToPrint from 'react-to-print';
 import LOGO from '../../../../resources/images/LOGO.png';
 import { get_utc_date, Ucfirst } from '../../../../shared/functions';
 import moment from 'moment';
 import Inputfield from '../../../../shared/customs/inputfield/inputfield';
+import ProcedureLoading from './procedure_loading';
+import { AppointmentCharges, AppointmentCheckout, AppointmentSearchById, AppointmentUpdateCharges, ProcedureSearchByAppointmentId } from '../../../../shared/queries';
 
 class ProcedureModal extends Component {
 
@@ -54,11 +53,10 @@ class ProcedureModal extends Component {
         temp[key].type = 'previous';
         temp[key].procedure_fee = data.fee;
         temp[key].procedure_discount = data.discount;
+        temp[key].procedure_dr_share = data.dr_share;
         temp[key].procedure_description = data.description;
         temp[key].id = data.id
-        this.setState({ procedures_list: temp }, () => {
-            this.handle_total_values()
-        })
+        this.setState({ procedures_list: temp }, () => this.handle_total_values());
     }
 
     delete_procedure = (key) => {
@@ -79,6 +77,7 @@ class ProcedureModal extends Component {
                 id: null,//Math.max.apply(Math, this.state.procedures_list.map(function(obj) { return obj.id })),
                 procedure_fee: 0,
                 procedure_discount: 0,
+                procedure_dr_share: 0,
                 procedure_description: '',
                 type: 'new',
             })
@@ -91,8 +90,7 @@ class ProcedureModal extends Component {
 
     componentWillReceiveProps(new_props) {
         if (new_props.visibility && new_props.appointment_id !== null) {
-            Axios
-                .get(`${PROCEDURES_SEARCH_BY_APPOINTMENT_ID}?tag=${new_props.appointment_id}`)
+            ProcedureSearchByAppointmentId(new_props.appointment_id)
                 .then(res => {
                     const temp = [];
                     const list = res.data.payload;
@@ -101,6 +99,7 @@ class ProcedureModal extends Component {
                             id: list[i]._id,
                             procedure_fee: list[i].fee,
                             procedure_discount: list[i].discount,
+                            procedure_dr_share: list[i].dr_share,
                             procedure_description: list[i].description,
                             type: 'previous'
                         })
@@ -108,16 +107,14 @@ class ProcedureModal extends Component {
                             this.setState({ procedures_list: temp }, () => this.handle_total_values())
                         }
                     }
-                    Axios
-                        .get(`${GET_APPOINTMENT_CHARGES}?tag=${new_props.appointment_id}`)
+                    AppointmentCharges(new_props.appointment_id)
                         .then(res => {
                             const amount = res.data.payload.paid_for_procedures === 0 ? "" : res.data.payload.paid_for_procedures.toString()
                             this.setState({ loading_status: false, paid_text_input: { value: amount, error: false }, }, () => this.handle_total_values())
                             /**
                              * Fetch appointment by id, we need patient data here
                              */
-                            Axios
-                            .get(`${APPOINTMENTS_SEARCH_BY_ID}?tag=${new_props.appointment_id}`)
+                            AppointmentSearchById(new_props.appointment_id)
                             .then(res => this.setState({ user_data: res.data.payload, loading_status: false }))
                             .catch(err => {
                                 this.props.notify('error', '', err.toString())
@@ -162,7 +159,6 @@ class ProcedureModal extends Component {
             procedure_discount += this.state.procedures_list[i].procedure_discount;
         }
 
-
         const t_total = this.state.consultancy_fee_text_input.value.length > 0 ?
             parseInt(this.state.consultancy_fee_text_input.value) : 0;
         const t_discount = this.state.discount_text_input.value.length > 0 ?
@@ -179,6 +175,7 @@ class ProcedureModal extends Component {
 
     show_procedures = () => {
         return this.state.procedures_list.map((item, index) => {
+            console.log('item', item);
             return <ProcedureItem
                 key={index}
                 appointment_id={this.props.appointment_id}
@@ -190,6 +187,12 @@ class ProcedureModal extends Component {
     }
 
     handle_close_modal = (type) => {
+        for (let i = 0; i < this.state.procedures_list.length; ++i) {
+            if (this.state.procedures_list[i].type === 'new') {
+                this.props.notify('info', '', 'There is an unsaved procedure.')
+                return;
+            }
+        }
         this.setState({
             procedures_list: [],
             consultancy_fee_text_input: { value: "", error: false },
@@ -212,9 +215,10 @@ class ProcedureModal extends Component {
 
         const payload = {
             appointment_id: this.props.appointment_id,
+            procedures: this.state.total,
             paid_for_procedures: parseInt(this.state.paid_text_input.value),
         }
-        Axios.put(UPDATE_APPOINTMENT_CHARGES, payload).then(res => {
+        AppointmentUpdateCharges(payload).then(res => {
             this.props.notify('success', '', res.data.message);
             // this.handle_close_modal()
         }).catch(err => {
@@ -230,14 +234,9 @@ class ProcedureModal extends Component {
             return;
         }
         else {
-            const payload = {
-                appointment_id: this.props.appointment_id
-            }
             const that = this;
-            Axios.post(CHECKOUT_APPOINTMENT, payload).then(res => {
+            AppointmentCheckout(this.props.appointment_id).then(res => {
                 this.props.notify('info', '', res.data.message)
-                // this.props.update_appointment(this.props.appointment_id)
-
                 this.props.clear_todays_appointments();
                 this.props.load_todays_appointments(localStorage.getItem('Gh65$p3a008#2C'));
                 setTimeout(() => {
@@ -278,6 +277,7 @@ class ProcedureModal extends Component {
 
     render() {
         // this.handle_total_values();
+        console.log('procedure modal props', this.props)
         return (
             <Fragment>
                 <Modal
@@ -293,6 +293,7 @@ class ProcedureModal extends Component {
                                 type="button"
                                 className="btn bg-dark btn-sm btn-labeled btn-labeled-right pr-5 mr-1"
                                 style={{ textTransform: "inherit" }}
+                                disabled={this.state.loading_status}
                                 onClick={this.add_procedure_click}>
                                 <b><i className="icon-plus3" /></b>
                                 New Procedure
@@ -309,22 +310,24 @@ class ProcedureModal extends Component {
                             />
                         </div>
                     </div>
-                    <div className="modal-body pt-1" style={{ height: '60vh', overflowY: 'auto', overflowX: 'hidden' }}>
+                    <div className="modal-body pt-1 bg-light" style={{ height: '60vh', overflowY: 'auto', overflowX: 'hidden' }}>
                         {
-                            this.state.loading_status ? <div className={`d-flex justify-content-center`}><Loading size={150} /></div> :
+                            this.state.loading_status ? 
+                                <ProcedureLoading /> :
                                 (
                                     this.state.procedures_list.length === 0 ?
                                         <div className="alert alert-info mt-2" style={{ marginBottom: '0px' }}>
                                             <strong>Info!</strong> No Procedures found.
-                                </div> :
+                                        </div> :
                                         <div className="table-responsive px-1">
-                                            <table className="table table-bordered table-hover">
+                                            <table className="table table-bordered w-100">
                                                 <thead>
                                                     <tr>
-                                                        <th className={`border-0`}>Procedure reason</th>
-                                                        <th className={`border-0`}>Charges</th>
-                                                        <th className={`border-0`}>Discount</th>
-                                                        <th className={`border-0`}>Actions</th>
+                                                        <th className={`border-0`} style={{width: '50%'}}>Procedure reason</th>
+                                                        <th className={`border-0`} style={{width: '12%'}}>Charges</th>
+                                                        <th className={`border-0`} style={{width: '12%'}}>Discount</th>
+                                                        <th className={`border-0`} style={{width: '12%'}}>Dr. Share</th>
+                                                        <th className={`border-0 text-center`} >Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -355,7 +358,7 @@ class ProcedureModal extends Component {
                                 // heading="Amount Paid"
                                 icon_class="icon-cash3"
                                 placeholder="Amount paid"
-                                disabled={false}
+                                disabled={this.state.loading_status}
                                 value={this.state.paid_text_input.value}
                                 error={this.state.paid_text_input.error}
                                 onChange={this.on_text_change}
@@ -364,6 +367,16 @@ class ProcedureModal extends Component {
                                 type="number"
                             />
                         </div>
+                        
+                        <button
+                            disabled={this.state.procedures_list.length === 0 || this.state.paid_text_input.value === "" || Number(this.state.paid_text_input.value) < (this.state.total)}
+                            type="button"
+                            className="btn bg-dark btn-labeled btn-sm btn-labeled-right pr-5"
+                            style={{ textTransform: "inherit" }}
+                            onClick={this.handle_save_button_click}>
+                            <b><i className="icon-floppy-disk" /></b>
+                            Save Payment
+                        </button>
                         <button
                             type="button"
                             className="btn bg-danger btn-labeled btn-sm btn-labeled-right pr-5"
@@ -371,15 +384,6 @@ class ProcedureModal extends Component {
                             onClick={this.handle_close_modal}>
                             <b><i className="icon-cross" /></b>
                             Cancel
-                        </button>
-                        <button
-                            disabled={this.state.procedures_list.length === 0}
-                            type="button"
-                            className="btn bg-dark btn-labeled btn-sm btn-labeled-right pr-5"
-                            style={{ textTransform: "inherit" }}
-                            onClick={this.handle_save_button_click}>
-                            <b><i className="icon-floppy-disk" /></b>
-                            Save
                         </button>
                         {/* <button
                         // disabled={this.state.procedures_list.length === 0}

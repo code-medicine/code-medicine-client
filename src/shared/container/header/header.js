@@ -10,6 +10,7 @@ import Axios from 'axios';
 import { LOGOUT_USER_REQUEST } from '../../rest_end_points';
 // import NOPICTURE from '../../resources/images/placeholder.jpg'
 import ReactDOM from 'react-dom';
+import { Ucfirst } from '../../functions';
 
 class Header extends Component {
 
@@ -123,7 +124,7 @@ class Header extends Component {
                             }) : ''
                         }
                     </p>
-                    <div className={`text-white`}>
+                    <div className={`text-white d-flex align-items-center`}>
                         <Link to={"#"} onClick={() => alert("Please mail us on codemedicine29@gmail.com")} className="breadcrumb-elements-item mr-2">
                             <i className="icon-comment-discussion mr-2"></i>
                             Support
@@ -135,7 +136,7 @@ class Header extends Component {
                             <b>
                                 <i className={`icon-reading`} />
                             </b>
-                            {this.props.active_user.first_name}
+                            {Ucfirst(this.props.active_user.first_name)}
                         </button>
                     </div>
 
