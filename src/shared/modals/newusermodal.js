@@ -208,16 +208,12 @@ class NewUserModal extends Component {
                 this.close_modal()
             })
         }).catch(err => {
-            // this.props.notify('error', '', err.toString())
-            console.log('error', err)
             this.setState({ loading_status: false })
             if (err.response) {
                 if (err.response.status === 400){
-                    console.log('response error', err.response)
                     this.props.notify('error', '', err.response.data.error.message)
                 }
                 else if (err.response.status === 422){
-                    console.log('response error', err.response)
                     this.props.notify('error', '', err.response.data.error[0])
                 }
             }
@@ -272,6 +268,7 @@ class NewUserModal extends Component {
                             heading={'Phone number'}
                             placeholder="Enter phone number"
                             required
+                            maxLength="13"
                             onChange={this.on_text_field_change}
                             value={this.state.user_phone_number.value}
                             error={this.state.user_phone_number.error} 
@@ -288,6 +285,7 @@ class NewUserModal extends Component {
                             icon_class={'icon-vcard'}
                             type={'number'}
                             required
+                            maxLength="2"
                             placeholder="Enter Age"
                             onChange={this.on_text_field_change}
                             value={this.state.user_age.value}
@@ -319,6 +317,7 @@ class NewUserModal extends Component {
                             heading={'CNIC'}
                             icon_class={'icon-vcard'}
                             type={'number'}
+                            maxLength="13"
                             placeholder="Enter CNIC"
                             onChange={this.on_text_field_change}
                             value={this.state.user_cnic.value}

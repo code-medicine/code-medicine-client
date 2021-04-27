@@ -382,7 +382,6 @@ class Todayspatient extends Component {
         if (this.state.filtered_data != null) {
             if (this.state.filtered_data.length > 0) {
                 table = <Fragment>
-
                     <div className="table-responsive mt-2 card mb-0 pb-0">
                         <table className="table table-hover mb-0">
                             <tbody>
