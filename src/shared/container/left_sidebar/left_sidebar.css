@@ -7,3 +7,7 @@
 .text-shadow {
     text-shadow: 5px 5px 10px black;
 }
+.avatar-styles {
+    min-height: '120px';
+    min-width: '120px';
+}

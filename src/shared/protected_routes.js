@@ -28,8 +28,12 @@ class ProtectedRoutes extends Component {
                 }).catch(err => {
                     console.log(err)
                     localStorage.clear()
+                    localStorage.setItem('cached-path', this.props.path)
                     this.props.set_active_user({})
                 })
+            }
+            else {
+                localStorage.setItem('cached-path', this.props.path)
             }
         }
     }

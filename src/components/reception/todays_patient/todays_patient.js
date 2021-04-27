@@ -20,6 +20,8 @@ import { PATIENT_VISIT_STATUSES } from '../../../shared/constant_data';
 import DateTimePicker from 'react-datetime';
 import { Ucfirst } from '../../../shared/functions';
 import ConsultacyModal from './consultancy';
+import TodaysPatientRowLoading from './todays_patient_row_loading';
+import { GetRequest, PostRequest, UserSearchById } from '../../../shared/queries';
 
 
 class Todayspatient extends Component {
@@ -79,10 +81,10 @@ class Todayspatient extends Component {
     async request(_data, _url, _method = "post") {
         try {
             if (_method === 'post') {
-                return await Axios.post(_url, _data)
+                return await PostRequest(_url, _data)
             }
             else if (_method === 'get') {
-                return await Axios.get(_url)
+                return await GetRequest(_url)
             }
         }
         catch (err) {
@@ -184,11 +186,12 @@ class Todayspatient extends Component {
         this.setState({
             user_preview_modal_visibility: true
         }, () => {
-            Axios.post(USERS_SEARCH_BY_ID, { user_id: id }).then(res => {
-                this.setState({ user_modal_props: res.data.payload.user })
-            }).catch(err => {
-                console.log('failed to fetch user', err)
-            })
+            UserSearchById(id)
+                .then(res => {
+                    this.setState({ user_modal_props: res.data.payload.user })
+                }).catch(err => {
+                    console.log('failed to fetch user', err)
+                })
         })
     }
 
@@ -372,11 +375,13 @@ class Todayspatient extends Component {
 
 
     render() {
-        var table = <Loading size={150} />
+        var table = <div className={``}>
+                <div className={`mt-2 card px-2 py-2`}><TodaysPatientRowLoading /></div>
+                <div className={`mt-2 card px-2 py-2`}><TodaysPatientRowLoading /></div>
+            </div>
         if (this.state.filtered_data != null) {
             if (this.state.filtered_data.length > 0) {
                 table = <Fragment>
-
                     <div className="table-responsive mt-2 card mb-0 pb-0">
                         <table className="table table-hover mb-0">
                             <tbody>
@@ -545,7 +550,7 @@ class Todayspatient extends Component {
                 {filters}
                 {table_header}
                 {/* table of todays appointments */}
-                {this.props.todays_patient.loading === true ? <Loading size={150} /> : table}
+                {this.props.todays_patient.loading === true ? <TodaysPatientRowLoading /> : table}
 
                 {/* Add new appointment modal */}
                 <NewAppointmentModal

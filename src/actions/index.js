@@ -6,6 +6,14 @@ import { NOTIFY, LEFT_SIDEBAR,
     TODAYS_PATIENT_APPOINTMENT_UPDATE } from "../shared/action_constants";
 import Axios from "axios";
 import { SEARCH_APPOINTMENT_BY_ID, APPOINTMENTS_SEARCH_TODAY } from "../shared/rest_end_points";
+import { AppointmentsSearchToday } from '../shared/queries';
+
+/**
+ * LOGIN api
+ * Return token
+ * store token
+ * user_token = token
+ */
 
 Axios.interceptors.request.use(request => {
     var user = localStorage.getItem('user');
@@ -52,7 +60,7 @@ export function load_todays_appointments(date){
     return function(dispatch){
         // let d = new Date();
         // d = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
-        Axios.get(`${APPOINTMENTS_SEARCH_TODAY}?tag=${new Date(date)}`)
+        AppointmentsSearchToday(new Date(date))
         .then(res => {
             dispatch({
                 type: TODAYS_PATIENT,

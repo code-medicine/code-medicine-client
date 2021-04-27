@@ -21,6 +21,7 @@ export const ROLES_OPTIONS = [
 ];
 
 export const PATIENT_VISIT_STATUSES = [
+    { id: 'status_selection', label: 'Scheduled'},
     { id: 'status_selection', label: 'Waiting'},
     { id: 'status_selection', label: 'Checked in'},
     { id: 'status_selection', label: 'Checked out'},

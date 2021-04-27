@@ -11,6 +11,7 @@ import Inputfield from '../customs/inputfield/inputfield';
 // import NO_PICTURE from '../../resources/images/placeholder.jpg';
 import Modal from 'react-bootstrap4-modal';
 // import { Link } from 'react-router-dom';
+import moment from 'moment'
 
 class NewUserModal extends Component {
 
@@ -23,6 +24,8 @@ class NewUserModal extends Component {
             user_last_name: { value: '', error: false },
             user_phone_number: { value: '', error: false },
             user_dob: { value: '', error: false },
+            user_age: { value: '', error: false },
+            
             user_cnic: { value: '', error: false },
             user_email: { value: '', error: false },
 
@@ -37,83 +40,50 @@ class NewUserModal extends Component {
     }
 
     on_text_field_change = (e) => {
-        switch (e.target.id) {
-            case 'user_first_name_text_input':
-                this.setState({ user_first_name: { value: e.target.value, error: false } })
-                break;
-            case 'user_last_name_text_input':
-                this.setState({ user_last_name: { value: e.target.value, error: false } })
-                break;
-            case 'user_cnic_text_input':
-                if (e.target.value.length <= 13)
-                    this.setState({ user_cnic: { value: e.target.value, error: false } })
-                break;
-            case 'user_phone_number_text_input':
-                if (e.target.value.length <= 11)
-                    this.setState({ user_phone_number: { value: e.target.value, error: false } })
-                break;
-            case 'user_email_text_input':
-                this.setState({ user_email: { value: e.target.value, error: false } })
-                break;
-            case 'user_address_text_input':
-                this.setState({ user_address: { value: e.target.value, error: false } })
-                break;
-            default:
-                break;
+        if (e.target.id === 'user_age') {
+            const dob = e.target.value === '' ? '' : moment(moment().subtract(parseInt(e.target.value), 'years').calendar()).format('ll');
+            this.setState({ user_age: { value: e.target.value, error: false }, user_dob: { value: dob, error: false } });
+        } 
+        else {
+            this.setState({ [e.target.id]: { value: e.target.value, error: false }})
         }
     }
-
+    
     on_selected_changed = (e, actor) => {
         if (e !== null) {
-            switch (e.id) {
-                case 'blood_group_selection':
-                    this.setState({ user_blood_group: { value: e.label, error: false } })
-                    break;
-                case 'gender_selection':
-                    this.setState({ user_gender: { value: e.label, error: false } })
-                    break;
-                case 'country_selection':
-                    this.setState({ user_country: { value: e.label, error: false } })
-                    break;
-                case 'city_selection':
-                    this.setState({ user_city: { value: e.label, error: false } })
-                    break;
-                default:
-                    break;
-            }
+            this.setState({ [e.id]: { value: e.label, error: false } })
         }
         else {
-            switch (actor) {
-                case 'blood_group_selection':
-                    this.setState({ user_blood_group: { value: '', error: false } })
-                    break;
-                case 'gender_selection':
-                    this.setState({ user_gender: { value: '', error: false } })
-                    break;
-                case 'country_selection':
-                    this.setState({ user_country: { value: '', error: false } })
-                    break;
-                case 'city_selection':
-                    this.setState({ user_city: { value: '', error: false } })
-                    break;
-                default:
-                    break;
-            }
+            this.setState({ [actor]: { value: '', error: false } })
         }
     }
+    
     on_user_date_of_birth_change = (e) => {
         if (e === '')
             this.setState({ user_dob: { value: '', error: false } })
         else {
-            var configured_date = null;
+            let configured_date = null;
+            let configured_age = null;
             try {
                 configured_date = e.format('ll');
+                configured_age = e.fromNow();
+                if (configured_age.includes('years')){
+                    configured_age = configured_age.split(' ');
+                    configured_age = configured_age[0];
+                }
+                else {
+                    configured_age = "0"
+                }
             }
             catch (err) {
                 configured_date = ''
+                configured_age = ''
             }
             finally {
-                this.setState({ user_dob: { value: configured_date, error: false } })
+                this.setState({ 
+                    user_dob: { value: configured_date, error: false }, 
+                    user_age: { value: configured_age, error: false } 
+                })
             }
         }
     }
@@ -150,69 +120,70 @@ class NewUserModal extends Component {
         return false;
     }
 
-    on_submit = async () => {
-        await this.setState({ loading_status: true })
-        let error = false
-        /** firstname */
-        if (this.check_input(this.state.user_first_name.value, true, true, false)) {
-            this.setState({ user_first_name: { value: this.state.user_first_name.value, error: true } })
-            error = true
-        }
-        /** lastname */
-        if (this.check_input(this.state.user_last_name.value, true, true)) {
-            this.setState({ user_last_name: { value: this.state.user_last_name.value, error: true } })
-            error = true
-        }
-        /** phone number */
-        if (this.check_input(this.state.user_phone_number.value, true, false, true) && this.check_hard_constraints(this.state.user_phone_number.value, "", "eq", 11)) {
-            this.setState({ user_phone_number: { value: this.state.user_phone_number.value, error: true } })
-            error = true
-        }
-        // if (this.check_input(this.state.user_dob.value)) {
-        //     this.setState({ user_dob: { value: this.state.user_dob.value, error: true } })
+    on_submit = (e) => {
+        e.preventDefault();
+        this.setState({ loading_status: true })
+        // let error = false
+        // /** firstname */
+        // if (this.check_input(this.state.user_first_name.value, true, true, false)) {
+        //     this.setState({ user_first_name: { value: this.state.user_first_name.value, error: true } })
         //     error = true
         // }
-        /** cnic */
-        if (this.check_input(this.state.user_cnic.value, false, false, true) && this.check_hard_constraints(this.state.user_cnic.value, "", "eq", 13)) {
-            this.setState({ user_cnic: { value: this.state.user_cnic.value, error: true } })
-            error = true
-        }
-        /** email */
-        if (this.check_input(this.state.user_email.value, false, false, false) && this.check_hard_constraints(this.state.user_email.value, "@")) {
-            this.setState({ user_email: { value: this.state.user_email.value, error: true } })
-            error = true
-        }
-        /** country */
-        if (this.check_input(this.state.user_country.value, true, true)) {
-            this.setState({ user_country: { value: this.state.user_country.value, error: true } })
-            error = true
-        }
-        /** city */
-        if (this.check_input(this.state.user_city.value, true, true)) {
-            this.setState({ user_city: { value: this.state.user_city.value, error: true } })
-            error = true
-        }
-        /** address */
-        if (this.check_input(this.state.user_address.value, true)) {
-            this.setState({ user_address: { value: this.state.user_address.value, error: true } })
-            error = true
-        }
-        /** gender */
-        if (this.check_input(this.state.user_gender.value, true)) {
-            this.setState({ user_gender: { value: this.state.user_gender.value, error: true } })
-            error = true
-        }
-        /** blood group */
-        if (this.check_input(this.state.user_blood_group.value, true)) {
-            this.setState({ user_blood_group: { value: this.state.user_blood_group.value, error: true } })
-            error = true
-        }
+        // /** lastname */
+        // if (this.check_input(this.state.user_last_name.value, true, true)) {
+        //     this.setState({ user_last_name: { value: this.state.user_last_name.value, error: true } })
+        //     error = true
+        // }
+        // /** phone number */
+        // if (this.check_input(this.state.user_phone_number.value, true, false, true) && this.check_hard_constraints(this.state.user_phone_number.value, "", "eq", 11)) {
+        //     this.setState({ user_phone_number: { value: this.state.user_phone_number.value, error: true } })
+        //     error = true
+        // }
+        // // if (this.check_input(this.state.user_dob.value)) {
+        // //     this.setState({ user_dob: { value: this.state.user_dob.value, error: true } })
+        // //     error = true
+        // // }
+        // /** cnic */
+        // if (this.check_input(this.state.user_cnic.value, false, false, true) && this.check_hard_constraints(this.state.user_cnic.value, "", "eq", 13)) {
+        //     this.setState({ user_cnic: { value: this.state.user_cnic.value, error: true } })
+        //     error = true
+        // }
+        // /** email */
+        // if (this.check_input(this.state.user_email.value, false, false, false) && this.check_hard_constraints(this.state.user_email.value, "@")) {
+        //     this.setState({ user_email: { value: this.state.user_email.value, error: true } })
+        //     error = true
+        // }
+        // /** country */
+        // if (this.check_input(this.state.user_country.value, true, true)) {
+        //     this.setState({ user_country: { value: this.state.user_country.value, error: true } })
+        //     error = true
+        // }
+        // /** city */
+        // if (this.check_input(this.state.user_city.value, true, true)) {
+        //     this.setState({ user_city: { value: this.state.user_city.value, serror: true } })
+        //     error = true
+        // }
+        // /** address */
+        // if (this.check_input(this.state.user_address.value, true)) {
+        //     this.setState({ user_address: { value: this.state.user_address.value, error: true } })
+        //     error = true
+        // }
+        // /** gender */
+        // if (this.check_input(this.state.user_gender.value, true)) {
+        //     this.setState({ user_gender: { value: this.state.user_gender.value, error: true } })
+        //     error = true
+        // }
+        // /** blood group */
+        // if (this.check_input(this.state.user_blood_group.value, true)) {
+        //     this.setState({ user_blood_group: { value: this.state.user_blood_group.value, error: true } })
+        //     error = true
+        // }
 
-        if (error === true) {
-            this.props.notify('error', '', 'Invalid inputs')
-            this.setState({ loading_status: false })
-            return
-        }
+        // if (error === true) {
+        //     this.props.notify('error', '', 'Invalid inputs')
+        //     this.setState({ loading_status: false })
+        //     return
+        // }
         const data = {
             admin_id: this.props.active_user._id,
             patient: {
@@ -230,14 +201,28 @@ class NewUserModal extends Component {
                 role: this.state.user_role.value.trim(),
             }
         }
+        // console.log('submit data', data)
         Axios.post(ADMIN_CREATE_PATIENT, data).then(response => {
             this.props.notify('success', '', response.data['message']);
             this.setState({ loading_status: false }, () => {
                 this.close_modal()
             })
         }).catch(err => {
-            this.props.notify('error', '', 'No connection!' + err.toString())
             this.setState({ loading_status: false })
+            if (err.response) {
+                if (err.response.status === 400){
+                    this.props.notify('error', '', err.response.data.error.message)
+                }
+                else if (err.response.status === 422){
+                    this.props.notify('error', '', err.response.data.error[0])
+                }
+            }
+            else if (err.request) {
+                console.log('request error', err);
+            }
+            else {
+                console.log('error', err)
+            }
         })
     }
 
@@ -253,49 +238,69 @@ class NewUserModal extends Component {
                 <div className={`col-md-4 px-3`}>
                     <div className="form-group">
                         <Inputfield
-                            id={`user_first_name_text_input`}
+                            id={`user_first_name`}
                             heading={'First name'}
                             placeholder="Enter first name"
                             required
                             onChange={this.on_text_field_change}
                             value={this.state.user_first_name.value}
-                            error={this.state.user_first_name.error} />
+                            // error={this.state.user_first_name.error} 
+                            />
                     </div>
                 </div>
                 <div className="col-md-4 px-3">
                     <div className="form-group">
                         <Inputfield
-                            id={`user_last_name_text_input`}
+                            id={`user_last_name`}
                             heading={'Last name'}
                             placeholder="Enter last name"
                             required
                             onChange={this.on_text_field_change}
                             value={this.state.user_last_name.value}
-                            error={this.state.user_last_name.error} />
+                            error={this.state.user_last_name.error} 
+                            />
                     </div>
                 </div>
                 <div className="col-md-4 px-3">
                     <div className="form-group">
                         <Inputfield
-                            id={`user_phone_number_text_input`}
+                            id={`user_phone_number`}
                             heading={'Phone number'}
                             placeholder="Enter phone number"
                             required
+                            maxLength="13"
                             onChange={this.on_text_field_change}
                             value={this.state.user_phone_number.value}
-                            error={this.state.user_phone_number.error} />
+                            error={this.state.user_phone_number.error} 
+                            />
                     </div>
                 </div>
             </div>
             <div className="row">
-                <div className="col-md-4 px-3">
+                <div className="col-md-3 px-3">
                     <div className="form-group">
                         <Inputfield
-                            id={`user_dob_text_input`}
+                            id={`user_age`}
+                            heading={'Age'}
+                            icon_class={'icon-vcard'}
+                            type={'number'}
+                            required
+                            maxLength="2"
+                            placeholder="Enter Age"
+                            onChange={this.on_text_field_change}
+                            value={this.state.user_age.value}
+                            error={this.state.user_age.error}
+                        />
+                    </div>
+                </div>
+                <div className="col-md-3 px-3">
+                    <div className="form-group">
+                        <Inputfield
+                            id={`user_dob`}
                             heading={'Date of birth'}
                             icon_class={'icon-calendar3'}
-                            placeholder="Date of birth"
-                            input_type={'text'}
+                            placeholder="Enter Date of birth"
+                            type={'text'}
                             field_type="date-time"
                             date_format={'ll'}
                             time_format={false}
@@ -305,30 +310,33 @@ class NewUserModal extends Component {
                         />
                     </div>
                 </div>
-                <div className="col-md-4 px-3">
+                <div className="col-md-3 px-3">
                     <div className="form-group">
                         <Inputfield
-                            id={`user_cnic_text_input`}
+                            id={`user_cnic`}
                             heading={'CNIC'}
                             icon_class={'icon-vcard'}
-                            input_type={'number'}
+                            type={'number'}
+                            maxLength="13"
                             placeholder="Enter CNIC"
                             onChange={this.on_text_field_change}
                             value={this.state.user_cnic.value}
-                            error={this.state.user_cnic.error} />
+                            error={this.state.user_cnic.error} 
+                            />
                     </div>
                 </div>
-                <div className="col-md-4 px-3">
+                <div className="col-md-3 px-3">
                     <div className="form-group">
                         <Inputfield
-                            id={`user_email_text_input`}
+                            id={`user_email`}
                             heading={'Enter email'}
                             icon_class={'icon-envelop'}
-                            input_type={'email'}
+                            type={'email'}
                             placeholder="Enter email"
                             onChange={this.on_text_field_change}
                             value={this.state.user_email.value}
-                            error={this.state.user_email.error} />
+                            error={this.state.user_email.error} 
+                            />
                     </div>
                 </div>
             </div>
@@ -390,10 +398,10 @@ class NewUserModal extends Component {
                         <div className="col-md-12">
                             <Inputfield 
                                 heading="Address/Area"
-                                required
                                 className="form-control form-control-lg"
-                                id="user_address_text_input"
+                                id="user_address"
                                 value={this.state.user_address.value}
+                                error={this.state.user_address.error}
                                 onChange={e => this.on_text_field_change(e)}
                                 placeholder="Enter address / area you live in the city"
                                 />
@@ -454,35 +462,38 @@ class NewUserModal extends Component {
                 onClickBackdrop={this.close_modal}
                 fade={true}
                 dialogClassName={`modal-dialog-centered modal-lg`}>
+                <form onSubmit={this.on_submit}>
+                    <div className="modal-header bg-teal-400">
+                        <h5 className="modal-title">New Patient</h5>
+                    </div>
 
-                <div className="modal-header bg-teal-400">
-                    <h5 className="modal-title">New Patient</h5>
-                </div>
+                    {this.state.loading_status ? <Loading /> : add_user_modal_body}
 
-                {this.state.loading_status ? <Loading /> : add_user_modal_body}
+                    <div className="modal-footer">
+                        <span className="float-left"><span className="text-danger">*</span> Are required fields</span>
+                        
+                        <button
+                            type="button"
+                            className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
+                            style={{ textTransform: "inherit" }}
+                            type="submit"
+                            disabled={this.state.loading_status}>
+                            <b><i className="icon-plus3"></i></b>
+                            Add
+                        </button>
 
-                <div className="modal-footer">
-                    <span className="float-left"><span className="text-danger">*</span> Are required fields</span>
+                        <button
+                            type="button"
+                            className="btn bg-danger btn-labeled btn-labeled-right pr-5"
+                            style={{ textTransform: "inherit" }}
+                            onClick={this.close_modal}>
+                            <b><i className="icon-cross"></i></b>
+                            Cancel
+                        </button>
 
-                    <button
-                        type="button"
-                        className="btn bg-danger btn-labeled btn-labeled-right pr-5"
-                        style={{ textTransform: "inherit" }}
-                        onClick={this.close_modal}>
-                        <b><i className="icon-cross"></i></b>
-                        Cancel
-                    </button>
-
-                    <button
-                        type="button"
-                        className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
-                        style={{ textTransform: "inherit" }}
-                        onClick={this.on_submit}>
-                        <b><i className="icon-plus3"></i></b>
-                        Add
-                    </button>
-                </div>
-
+                        
+                    </div>
+                </form>
             </Modal>
         )
     }

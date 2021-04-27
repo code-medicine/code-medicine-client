@@ -5,13 +5,13 @@ import { notify, set_active_user, set_active_page } from '../../actions';
 import ReactEcharts from 'echarts-for-react';
 import * as echarts from 'echarts/lib/echarts'
 import { Link } from 'react-router-dom';
-import { BASE_URL } from '../../shared/router_constants';
+import { BASE_URL, SEARCH_DOCTORS } from '../../shared/router_constants';
 import * as rc from '../../shared/rest_end_points';
-import Axios from 'axios';
 import socketIOClient from "socket.io-client";
 import Loading from '../../shared/customs/loading/loading';
 import './home.css'
 import moment from 'moment'
+import { UsersSearchByToken } from '../../shared/queries';
 
 class Home extends Component {
     constructor(props) {
@@ -39,9 +39,9 @@ class Home extends Component {
                         </Link>, <span className="breadcrumb-item active">Dashboard</span>]
         this.props.set_active_page(routes)
         const token = localStorage.getItem('user')
-        Axios.get(`${rc.USERS_SEARCH_BY_TOKEN}?tag=${token}`).then(res => {
+        UsersSearchByToken(token).then(res => {
             this.props.set_active_user(res.data['payload'])
-            this.socket = socketIOClient(rc.ROOT_URL, {path: rc.SOCKET_URL} )
+            this.socket = socketIOClient(rc.ROOT_URL, { path: rc.SOCKET_URL })
             console.log('socket', this.socket)
             this.socket.on("FromAPI", data => this.order_data(data));
         }).catch(err => {
@@ -260,7 +260,8 @@ class Home extends Component {
             <Container container_type={'home'}>
                 <div className="row">
                     <div className="col-lg-4 d-flex align-items-stretch " >
-                        <div className="card w-100  border-left-3 border-top-0 border-bottom-0 border-right-0 border-info ">
+                        <div 
+                            className="card w-100 border-left-3 border-top-0 border-bottom-0 border-right-0 border-info " >
                             <div className="card-body d-flex justify-content-around align-items-center py-1">
                                 <div className="">
                                     {
@@ -270,7 +271,7 @@ class Home extends Component {
                                                 {this.state.doctors}
                                             </h1>
                                     }
-                                    <h5>Doctors</h5>
+                                    <Link className={`h5 text-dark`} to={SEARCH_DOCTORS}>Doctors</Link>
                                 </div>
                                 <i className="fa fa-stethoscope fa-5x text-info"></i>
                             </div>
