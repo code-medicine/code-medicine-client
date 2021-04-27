@@ -26,10 +26,10 @@ const headCells = [
     { id: 'consultancy_fee', numeric: true, disablePadding: false, label: 'C-Fee' },
     { id: 'c_doctor_share', numeric: true, disablePadding: false, label: 'Dr. Share' },
     { id: 'c_hospital_share', numeric: true, disablePadding: false, label: 'H. Share' },
-    { id: 'balance', numeric: true, disablePadding: false, label: 'Bal' },
     { id: 'procedures_fee', numeric: true, disablePadding: false, label: 'P-Fee' },
     { id: 'p_doctor_share', numeric: true, disablePadding: false, label: 'Dr. Share' },
     { id: 'p_hospital_share', numeric: true, disablePadding: false, label: 'H. Share' },
+    { id: 'balance', numeric: true, disablePadding: false, label: 'Bal' },
     { id: 'actions', numeric: true, disablePadding: false, label: 'Actions' },
 ];
 
@@ -77,13 +77,13 @@ class Payments extends Component {
 
     onCheckoutToggle = (doctor_id, type) => {
 
-        console.log('data', doctor_id, this.state.data)
-        console.log('featured', this.state.featuredData);
-        console.log('raw', this.state.rawData)
+        // console.log('data', doctor_id, this.state.data)
+        // console.log('featured', this.state.featuredData);
+        // console.log('raw', this.state.rawData)
 
         this.setState({ checkoutModalVisibility: true }, () => {
             const selected_doctor_appointments = this.state.rawData.filter(doc => doc.doctor.id === doctor_id);
-            console.log('selected doctor', this.state.featuredData[doctor_id])
+            // console.log('selected doctor', this.state.featuredData[doctor_id])
             const payload = {
                 id: doctor_id,
                 doctor_name: this.state.featuredData[doctor_id].doctor_name,
@@ -145,8 +145,8 @@ class Payments extends Component {
                                     records[element.doctor.id].c_doctor_share += total_c_doctor_share;
                                     records[element.doctor.id].c_hospital_share += total - total_c_doctor_share;
                                     records[element.doctor.id].procedures_fee += total_procedures_fee;
-                                    records[element.doctor.id].p_doctor_share += total_p_dr_share;
-                                    records[element.doctor.id].p_hospital_share += total_procedures_fee - total_p_dr_share;
+                                    records[element.doctor.id].p_doctor_share += (total_procedures_fee * total_p_dr_share) / 100.00;
+                                    records[element.doctor.id].p_hospital_share += total_procedures_fee - ((total_procedures_fee * total_p_dr_share) / 100.00);
                                     counter++;
                                 } else {
                                     await GetUserById(element.doctor.id)
@@ -159,10 +159,10 @@ class Payments extends Component {
                                                 consultancy_fee: total,
                                                 c_doctor_share: total_c_doctor_share,
                                                 c_hospital_share: total - total_c_doctor_share,
-                                                balance: _doctor.data.payload.details.payments_balance,
                                                 procedures_fee: total_procedures_fee,
-                                                p_doctor_share: total_p_dr_share,
-                                                p_hospital_share: total_procedures_fee - total_p_dr_share,
+                                                p_doctor_share: (total_procedures_fee * total_p_dr_share) / 100.00,
+                                                p_hospital_share: total_procedures_fee - ((total_procedures_fee * total_p_dr_share) / 100.00),
+                                                balance: _doctor.data.payload.details.payments_balance,
                                                 actions: element.is_paid_to_doctor ?
                                                     <IconButton
                                                         className={`btn-sm`}

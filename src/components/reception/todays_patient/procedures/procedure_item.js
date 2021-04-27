@@ -204,71 +204,7 @@ class ProcedureItem extends Component {
                         </button> : ''}
                 </td>
             </tr>
-            // <div className="row">
-            //     <div className={`col-lg-7 col-md-4 col-12 px-3`}>
-            //         <Inputfield
-            //             id={`description_text_input`}
-            //             label_tag={'Procedure Reason'}
-            //             icon_class={'icon-file-plus'}
-            //             placeholder="Enter Reason"
-            //             disabled={this.state.save_click_loading}
-            //             input_type={'text'}
-            //             custom_classes="mb-1"
-            //             field_type=""
-            //             size="form-control-sm"
-            //             on_text_change_listener={this.handle_change}
-            //             default_value={this.state.description_text_input.value}
-            //             error={this.state.description_text_input.error}
-            //         />
-            //     </div>
-
-            //     <div className={`col-lg-2 col-md-3 col-6 px-3`}>
-            //         <Inputfield
-            //             id={`charges_text_input`}
-            //             label_tag={'Charges'}
-            //             icon_class={'icon-cash3'}
-            //             placeholder="Charges"
-            //             input_type={'text'}
-            //             disabled={this.state.save_click_loading}
-            //             custom_classes="mb-1"
-            //             field_type=""
-            //             size="form-control-sm"
-            //             on_text_change_listener={this.handle_change}
-            //             default_value={this.state.charges_text_input.value}
-            //             error={this.state.charges_text_input.error}
-            //         />
-            //     </div>
-
-            //     <div className={`col-lg-2 col-md-3 col-6 px-3`}>
-            //         <Inputfield
-            //             id={`discount_text_input`}
-            //             label_tag={'Discount'}
-            //             icon_class={'icon-arrow-down132'}
-            //             placeholder="Discount"
-            //             input_type={'text'}
-            //             disabled={this.state.save_click_loading}
-            //             custom_classes="mb-1"
-            //             field_type=""
-            //             size="form-control-sm"
-            //             on_text_change_listener={this.handle_change}
-            //             default_value={this.state.discount_text_input.value}
-            //             error={this.state.discount_text_input.error}
-            //         />
-            //     </div>
-
-            //     <div className="col-lg-1 col-md-2 col-12 pl-0 d-flex align-items-end justify-content-center">
-            //         <button className="btn btn-outline btn-sm bg-danger border-danger text-danger secondary btn-icon mb-1"
-            //             onClick={this.on_delete_click}>
-            //             <i className="icon-cross" />
-            //         </button>
-            //         {this.state.edited? 
-            //             <button className={this.props.data.type === 'new'? save_button_classes: update_button_classes}
-            //                 onClick={this.on_save_click}>
-            //             {this.state.save_click_loading? <Loading size="30" />:<i className="icon-floppy-disk" />}
-            //         </button>:''}
-            //     </div>
-
-            // </div>
+            
         )
     }
 }
