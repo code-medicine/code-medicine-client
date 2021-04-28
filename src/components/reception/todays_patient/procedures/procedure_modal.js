@@ -638,7 +638,7 @@ class ProcedureModal extends Component {
                             className="btn bg-dark btn-labeled btn-sm btn-labeled-right pr-5"
                             style={{ textTransform: "inherit" }}
                             disabled={
-                                this.state.procedures_list_copy.length === 0 ||
+                                this.state.procedures_list.length === 0 ||
                                 (this.state.procedures_list_copy.length === this.state.procedures_list.length &&
                                     this.state.edited_items.length === 0)
                             }
