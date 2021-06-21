@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Inputfield from "../inputfield/inputfield";
+import Inputfield from "../../../components/inputfield";
 import "../Animations/animations.css"
 
 

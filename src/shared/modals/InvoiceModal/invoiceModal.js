@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import Modal from "react-bootstrap4-modal";
-import LOGO from '../../../resources/images/LOGO.png';
+import LOGO from 'resources/images/LOGO.png';
 import './invoiceModal.css';
 import Axios from "axios";
-import {GET_PROCEDURES_FEE, GET_PROFITS_BY_DOCTOR_ID, UPDATE_APPOINTMENT_URL, PROFITS_UPDATE,DOCTORDETAILS_SEARCH} from "../../rest_end_points";
+import {GET_PROCEDURES_FEE, GET_PROFITS_BY_DOCTOR_ID, UPDATE_APPOINTMENT_URL, PROFITS_UPDATE,DOCTORDETAILS_SEARCH} from "../../../services/rest_end_points";
 import ReactToPrint from 'react-to-print';
 import PrintInvoice from '../PrintInvoice/PrintInvoice';
-import {connect} from "react-redux";
-import {notify} from "../../../actions";
 import moment from 'moment';
+import notify from 'notify'
 
 
 class InvoiceModal extends Component {
@@ -80,12 +79,12 @@ class InvoiceModal extends Component {
                         };
                     });
 
-                    this.props.notify('success', '', 'Addons Updated!');
+                    notify('success', '', 'Addons Updated!');
                 }
             });
         }
         catch (err) {
-            this.props.notify('error', '', 'Server is not responding! Please try again later');
+            notify('error', '', 'Server is not responding! Please try again later');
         }
     };
 
@@ -149,12 +148,12 @@ class InvoiceModal extends Component {
                             consultancyTotal: state.consultancyFee - state.consultancyDiscount
                         };
                     });
-                    this.props.notify('success', '', 'Visit Updated!');
+                    notify('success', '', 'Visit Updated!');
                 }
             });
         }
         catch (err) {
-            this.props.notify('error', '', 'Server is not responding! Please try again later');
+            notify('error', '', 'Server is not responding! Please try again later');
         }
     };
 
@@ -180,7 +179,7 @@ class InvoiceModal extends Component {
                 });
             }
             catch (err) {
-                this.props.notify('error', '', 'Server is not responding! Please try again later');
+                notify('error', '', 'Server is not responding! Please try again later');
             }
 
 
@@ -203,7 +202,7 @@ class InvoiceModal extends Component {
                     }
                 });
             } catch (err) {
-                this.props.notify('error', '', 'Server is not responding! Please try again later');
+                notify('error', '', 'Server is not responding! Please try again later');
             }
 
 
@@ -224,7 +223,7 @@ class InvoiceModal extends Component {
                     }
                 });
             } catch (err) {
-                this.props.notify('error', '', 'Server is not responding! Please try again later');
+                notify('error', '', 'Server is not responding! Please try again later');
             }
 
 
@@ -451,4 +450,4 @@ class InvoiceModal extends Component {
     }
 }
 
-export default connect(null, { notify })(InvoiceModal);
+export default InvoiceModal;

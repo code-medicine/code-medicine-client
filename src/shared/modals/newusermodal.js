@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
-import { BLOOD_GROUPS_OPTIONS, GENDER_OPTIONS, CITIES, COUTRIES } from '../constant_data';
-import { ADMIN_CREATE_PATIENT } from '../rest_end_points';
+import { BLOOD_GROUPS_OPTIONS, GENDER_OPTIONS, CITIES, COUTRIES } from '../../utils/constant_data';
+import { ADMIN_CREATE_PATIENT } from '../../services/rest_end_points';
 import Axios from 'axios';
-import Loading from '../customs/loading/loading';
-// import DateTimePicker from 'react-datetime';
-import Select from 'react-select'
-import { connect } from "react-redux";
-import { notify } from '../../actions';
-import Inputfield from '../customs/inputfield/inputfield';
+import Loading from '../../components/loading';
+import Inputfield from '../../components/inputfield';
 // import NO_PICTURE from '../../resources/images/placeholder.jpg';
 import Modal from 'react-bootstrap4-modal';
 // import { Link } from 'react-router-dom';
 import moment from 'moment'
+import notify from 'notify'
 
 class NewUserModal extends Component {
 
@@ -180,7 +177,7 @@ class NewUserModal extends Component {
         // }
 
         // if (error === true) {
-        //     this.props.notify('error', '', 'Invalid inputs')
+        //     notify('error', '', 'Invalid inputs')
         //     this.setState({ loading_status: false })
         //     return
         // }
@@ -203,7 +200,7 @@ class NewUserModal extends Component {
         }
         // console.log('submit data', data)
         Axios.post(ADMIN_CREATE_PATIENT, data).then(response => {
-            this.props.notify('success', '', response.data['message']);
+            notify('success', '', response.data['message']);
             this.setState({ loading_status: false }, () => {
                 this.close_modal()
             })
@@ -211,10 +208,10 @@ class NewUserModal extends Component {
             this.setState({ loading_status: false })
             if (err.response) {
                 if (err.response.status === 400){
-                    this.props.notify('error', '', err.response.data.error.message)
+                    notify('error', '', err.response.data.error.message)
                 }
                 else if (err.response.status === 422){
-                    this.props.notify('error', '', err.response.data.error[0])
+                    notify('error', '', err.response.data.error[0])
                 }
             }
             else if (err.request) {
@@ -498,9 +495,4 @@ class NewUserModal extends Component {
         )
     }
 }
-function map_state_to_props(state) {
-    return {
-        active_user: state.active_user
-    }
-}
-export default connect(map_state_to_props, { notify })(NewUserModal)
+export default NewUserModal
