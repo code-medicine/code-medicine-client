@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React, { useEffect, useRef } from 'react';
 import { Table } from 'semantic-ui-react';
 import moment from 'moment'
-import Loading from '../loading/loading';
+import Loading from '../../../components/loading';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 

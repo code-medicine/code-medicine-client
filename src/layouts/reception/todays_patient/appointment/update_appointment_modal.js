@@ -1,0 +1,487 @@
+import React, { Component } from 'react';
+import moment from 'moment'
+import { APPOINTMENTS_UPDATE, USERS_SEARCH_BY_CREDENTIALS } from 'services/rest_end_points';
+import Axios from 'axios';
+import Loading from 'components/loading';
+import Select from 'react-select'
+import Modal from 'react-bootstrap4-modal';
+// import '../todays_patient.css';
+
+import DateTimePicker from 'react-datetime';
+import { load_todays_appointments, clear_todays_appointments } from 'redux/actions';
+import { connect } from "react-redux";
+// import Inputfield from '../../../../shared/customs/inputfield/inputfield';
+import './styles.css'
+import { Ucfirst } from 'utils/functions';
+import { AppointmentUpdate, GetRequest, PostRequest } from 'services/queries';
+import notify from 'notify'
+
+class UpdateAppointmentModal extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            patients: [{
+                id: 'appointment_patient_selection',
+                reference: this.props.payload.patient_ref.id,
+                label: `${Ucfirst(this.props.payload.patient_ref.first_name)} ${Ucfirst(this.props.payload.patient_ref.last_name)} | ${this.props.payload.patient_ref.phone_number} | ${this.props.payload.patient_ref.email}`
+            }],
+            doctors: [{
+                id: 'appointment_doctor_selection',
+                reference: this.props.payload.doctor_ref.id,
+                label: `Dr. ${Ucfirst(this.props.payload.doctor_ref.first_name)} ${Ucfirst(this.props.payload.doctor_ref.last_name)} | ${this.props.payload.doctor_ref.phone_number} | ${this.props.payload.doctor_ref.email}`
+            }],
+            appointment_patient: { value: this.props.payload.patient_ref.id, error: false },
+            appointment_doctor: { value: this.props.payload.doctor_ref.id, error: false },
+            // appointment_reason: { value: this.props.payload.reason, error: false },
+            appointment_comments: { value: this.props.payload.comments, error: false },
+            appointment_referee: { value: this.props.payload.referee, error: false },
+            appointment_date: { value: moment.utc(this.props.payload.date).format('ll'), error: false },
+            appointment_time: { value: this.props.payload.time, error: false },
+
+            patient_select_value: {
+                id: 'appointment_patient_selection',
+                reference: this.props.payload.patient_ref.id,
+                label: `${Ucfirst(this.props.payload.patient_ref.first_name)} ${Ucfirst(this.props.payload.patient_ref.last_name)} | ${this.props.payload.patient_ref.phone_number} | ${this.props.payload.patient_ref.email}`
+            },
+            doctor_select_value: {
+                id: 'appointment_doctor_selection',
+                reference: this.props.payload.doctor_ref.id,
+                label: `Dr. ${Ucfirst(this.props.payload.doctor_ref.first_name)} ${Ucfirst(this.props.payload.doctor_ref.last_name)} | ${this.props.payload.doctor_ref.phone_number} | ${this.props.payload.doctor_ref.email}`
+            },
+        };
+    }
+
+    async request(_data, _url, _method = "post") {
+        try {
+            if (_method === 'post') {
+                return await PostRequest(_url, _data)
+            }
+            else if (_method === 'get') {
+                return await GetRequest(_url)
+            }
+        }
+        catch (err) {
+            notify('error', '', 'Server is not responding! Please try again later')
+            return null
+        }
+    }
+
+    async render_users(string, role) {
+        const query = `${USERS_SEARCH_BY_CREDENTIALS}?search=${string}&role=${role}`
+        const res_users = await this.request({}, query, 'get')
+        let temp_users = []
+        if (role === 'patient') {
+            temp_users.push({
+                id: 'appointment_patient_selection',
+                reference: this.props.payload.patient_ref.id,
+                label: `${this.props.payload.patient_ref.first_name} ${this.props.payload.patient_ref.last_name} | ${this.props.payload.patient_ref.phone_number} | ${this.props.payload.patient_ref.email}`
+            })
+        }
+        else {
+            temp_users.push({
+                id: 'appointment_doctor_selection',
+                reference: this.props.payload.doctor_ref.id,
+                label: `${this.props.payload.doctor_ref.first_name} ${this.props.payload.doctor_ref.last_name} | ${this.props.payload.doctor_ref.phone_number} | ${this.props.payload.doctor_ref.email}`
+            })
+        }
+        if (res_users.status === 200) {
+            for (var i = 0; i < res_users.data.payload['count']; ++i) {
+                const t_user = res_users.data.payload['users'][i]
+                temp_users.push({
+                    id: `appointment_${role.toLowerCase()}_selection`,
+                    reference: t_user._id,
+                    label: `${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
+                })
+            }
+            if (role === 'Patient') {
+                this.setState({ patients: temp_users })
+            }
+            else if (role === 'Doctor') {
+                this.setState({ doctors: temp_users })
+            }
+        }
+    }
+
+    populate_patients = (string) => {
+        if (string.length >= 1) {
+            this.render_users(string, 'Patient')
+        }
+        else {
+            this.setState({
+                patients: [{
+                    id: 'appointment_patient_selection',
+                    reference: this.props.payload.patient_ref.id,
+                    label: `${this.props.payload.patient_ref.first_name} ${this.props.payload.patient_ref.last_name} | ${this.props.payload.patient_ref.phone_number}`
+                }]
+            })
+
+        }
+    }
+
+    populate_doctors = (string) => {
+        if (string.length >= 1) {
+            this.render_users(string, 'Doctor')
+        }
+        else {
+            this.setState({
+                doctors: [{
+                    id: 'appointment_doctor_selection',
+                    reference: this.props.payload.doctor_ref.id,
+                    label: `Dr. ${Ucfirst(this.props.payload.doctor_ref.first_name)} ${Ucfirst(this.props.payload.doctor_ref.last_name)} | ${this.props.payload.doctor_ref.phone_number}`
+                }]
+            })
+
+        }
+    }
+
+
+    on_selected_changed = (e, actor) => {
+        if (e !== null) {
+
+            switch (e.id) {
+                case 'appointment_patient_selection':
+                    const val_patient = {
+                        id: 'appointment_patient_selection',
+                        reference: e.reference,
+                        label: e.label
+                    }
+                    this.setState({ appointment_patient: { value: e.reference, error: false }, patient_select_value: val_patient })
+                    break;
+                case 'appointment_doctor_selection':
+                    const val_doctor = {
+                        id: 'appointment_doctor_selection',
+                        reference: e.reference,
+                        label: e.label
+                    }
+                    this.setState({ appointment_doctor: { value: e.reference, error: false }, doctor_select_value: val_doctor })
+                    break;
+                default:
+                    break;
+            }
+        }
+        else {
+            switch (actor) {
+                case 'appointment_patient_selection':
+                    this.setState({ appointment_patient: { value: '', error: false }, patient_select_value: '' })
+                    break;
+                case 'appointment_doctor_selection':
+                    this.setState({ appointment_doctor: { value: '', error: false }, doctor_select_value: '' })
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    on_text_field_change = (e) => {
+        switch (e.target.id) {
+            case 'appointment_reason_text_input':
+                this.setState({ appointment_reason: { value: e.target.value, error: false } })
+                break;
+            case 'appointment_comments_text_input':
+                this.setState({ appointment_comments: { value: e.target.value, error: false }});
+                break;
+            case 'appointment_referee_text_input':
+                this.setState({ appointment_referee: { value: e.target.value, error: false }});
+                break;
+            default:
+                break;
+        }
+    }
+
+    on_apointment_date_change = (e) => {
+        if (e === '')
+            this.setState({ appointment_date: { value: '', error: false } })
+        else {
+            var configured_date = null;
+            try {
+                configured_date = e.format('ll');
+            }
+            catch (err) {
+                configured_date = ''
+            }
+            finally {
+                this.setState({ appointment_date: { value: configured_date, error: false } })
+            }
+        }
+    }
+
+    on_apointment_time_change = (e) => {
+
+        if (e === '')
+            this.setState({ appointment_time: { value: '', error: false } })
+        else {
+            var configured_date = null;
+            try {
+                configured_date = e.format('LT');
+            }
+            catch (err) {
+                configured_date = ''
+            }
+            finally {
+                this.setState({ appointment_time: { value: configured_date, error: false } })
+            }
+        }
+    }
+
+    check_input = (input, required = true, only_alpha = false, only_numbers = false) => {
+        const alphabets = /^[A-Za-z]+$/;
+        const numbers = /^[0-9]+$/;
+        if (required && input === '') {
+            return true;
+        }
+        if (only_alpha && input !== '' && !input.match(alphabets)) {
+            return true;
+        }
+        if (only_numbers && input !== '' && !input.match(numbers)) {
+            return true;
+        }
+        return false;
+    }
+
+    on_submit = () => {
+        this.setState({ loading_status: true })
+        let error = false
+        if (this.check_input(this.state.appointment_patient.value, true)) {
+            this.setState({ appointment_patient: { value: this.state.appointment_patient.value, error: true } })
+            error = true
+        }
+        if (this.check_input(this.state.appointment_doctor.value, true)) {
+            this.setState({ appointment_doctor: { value: this.state.appointment_doctor.value, error: true } })
+            error = true
+        }
+        // if (this.check_input(this.state.appointment_reason.value)) {
+        //     this.setState({ appointment_reason: { value: this.state.appointment_reason.value, error: true } })
+        //     error = true
+        // }
+        if (this.check_input(this.state.appointment_comments.value, false, false, false)) {
+            this.setState({ appointment_reason: { value: this.state.appointment_comments.value, error: true } })
+            error = true
+        }
+        if (this.check_input(this.state.appointment_referee.value, false, false, false)) {
+            this.setState({ appointment_reason: { value: this.state.appointment_referee.value, error: true } })
+            error = true
+        }
+        if (this.check_input(this.state.appointment_date.value, true)) {
+            this.setState({ appointment_date: { value: this.state.appointment_date.value, error: true } })
+            error = true
+        }
+        if (this.check_input(this.state.appointment_time.value, true)) {
+            this.setState({ appointment_time: { value: this.state.appointment_time.value, error: true } })
+            error = true
+        }
+
+        if (error === true) {
+            notify('error', '', 'Invalid inputs')
+            this.setState({ loading_status: false })
+            return
+        }
+        localStorage.setItem('h7vjys8yyd12', this.props.id)
+        const data = {
+            appointment_id: this.props.payload.visit_id,
+            doctor_id: this.state.appointment_doctor.value,
+            appointment_date: `${moment(this.state.appointment_date.value).format('YYYY-MM-DD')}T${moment(this.state.appointment_time.value, ["h:mm A"]).format("HH:mm:ss")}Z`,
+            appointment_time: this.state.appointment_time.value,
+            // appointment_description: this.state.appointment_reason.value,
+            appointment_comments: this.state.appointment_comments.value,
+            appointment_referee: this.state.appointment_referee.value
+        }
+        AppointmentUpdate(data).then(res => {
+            // console.log('res', res)
+            notify('success', '', res.data.message)
+            this.setState({ 
+                loading_status: false 
+                
+            })
+            this.props.clear_todays_appointments()
+            this.props.load_todays_appointments(localStorage.getItem('Gh65$p3a008#2C'))
+            setTimeout(() => this.props.close(), 2000);
+        }).catch(err => {
+            console.log('res err', err)
+            notify('error', '', `Network error ${err.toString()}`)
+            this.setState({ loading_status: false })
+        })
+    }
+
+    render() {
+        const add_appointment_modal_body =
+            <div className="modal-body">
+                <div className="row">
+                    <div className="col-md-6">
+                        <pre>
+                            Patient: <span className="h3">{Ucfirst(this.props.payload.patient_ref.first_name)} {Ucfirst(this.props.payload.patient_ref.last_name)}</span>
+                        </pre>
+                        <div className="form-group d-none">
+                            <label>Patient <span className="text-danger">*</span></label>
+                            <Select
+                                id="appointment_patient_selection"
+                                isClearable
+                                menuPlacement="auto"
+                                isDisabled
+                                options={this.state.patients}
+                                classNamePrefix={`form-control`}
+                                placeholder="Select Patient"
+                                onInputChange={e => this.populate_patients(e)}
+                                onChange={e => this.on_selected_changed(e, "appointment_patient_selection")}
+                                value={this.state.patient_select_value}
+                                styles={{
+                                    container: base => ({
+                                        ...base,
+                                        backgroundColor: this.state.appointment_patient.error ? '#FF0000' : '',
+                                        padding: 1,
+                                        borderRadius: 5
+                                    }),
+                                }}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Doctor <span className="text-danger">*</span></label>
+                            <Select
+                                id="appointment_doctor_selection"
+                                isClearable
+                                options={this.state.doctors}
+                                classNamePrefix={`form-control`}
+                                placeholder="Select a Doctor"
+                                menuPlacement="auto"
+                                onInputChange={e => this.populate_doctors(e)}
+                                onChange={e => this.on_selected_changed(e, 'appointment_doctor_selection')}
+                                value={this.state.doctor_select_value}
+                                styles={{
+                                    container: base => ({
+                                        ...base,
+                                        backgroundColor: this.state.appointment_doctor.error ? '#FF0000' : '',
+                                        padding: 1,
+                                        borderRadius: 5
+                                    }),
+                                }}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Reffered by</label>
+                            <input
+                                id="appointment_referee_text_input"
+                                className="form-control"
+                                placeholder="Doctor name for reference"
+                                value={this.state.appointment_referee.value}
+                                onChange={e => this.on_text_field_change(e)}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="form-group">
+                            <label>Comments (if any)</label>
+                            <textarea
+                                id="appointment_comments_text_input"
+                                className="form-control"
+                                placeholder="Any special comments about the patient"
+                                rows="4"
+                                value={this.state.appointment_comments.value}
+                                onChange={e => this.on_text_field_change(e)}
+                            />
+                        </div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label>Date <span className="text-danger">*</span></label>
+                                    <DateTimePicker id="dob_text_input"
+                                        onChange={this.on_apointment_date_change}
+                                        className="clock_datatime_picker"
+                                        inputProps={{ placeholder: 'Select Date', width: '100%', className: 'form-control' }}
+                                        input={true}
+                                        dateFormat={'ll'}
+                                        timeFormat={false}
+                                        closeOnSelect={true}
+                                        value={this.state.appointment_date.value}
+                                    />
+                                </div>
+
+
+                            </div>
+                            <div className="col-md-6">
+                                <div className="form-group">
+                                    <label>Time <span className="text-danger">*</span></label>
+                                    <DateTimePicker id="dob_text_input"
+                                        onChange={this.on_apointment_time_change}
+                                        className="clock_datatime_picker"
+                                        inputProps={{ placeholder: 'Select Time', width: '100%', className: 'form-control' }}
+                                        input={true}
+                                        dateFormat={false}
+                                        timeFormat={true}
+                                        closeOnSelect={true}
+                                        strictParsing={true}
+                                        value={this.state.appointment_time.value}
+                                    />
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-12">
+                        {/* <Inputfield
+                            id="appointment_reason_text_input"
+                            label_tag={'What is the reason for the visit'}
+                            icon_class={'icon-user-check'}
+                            input_type={'text'}
+                            placeholder="Enter visit reason"
+                            field_type="text-area"
+                            on_text_change_listener={this.on_text_field_change}
+                            default_value={this.state.appointment_reason.value}
+                            error={this.state.appointment_reason.error}
+                        /> */}
+                        {/* <div className="form-group form-group-float">
+                            <div className="form-group-float-label is-visible mb-1">
+                                What is the reason for the visit
+                            </div>
+                            <textarea rows={5} cols={5}
+                                id="appointment_reason_text_input"
+                                className="form-control"
+                                placeholder="Reason for visit"
+                                onChange={this.on_text_field_change}
+                                value={this.state.appointment_reason.value} />
+                        </div> */}
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-md-6">
+
+                    </div>
+
+                </div>
+            </div>
+        return (
+            <Modal
+                visible={this.props.visibility}
+                onClickBackdrop={() => this.props.close()}
+                fade={true}
+                dialogClassName={`modal-dialog-centered modal-lg`}>
+
+                <div className="modal-header bg-teal-400">
+                    <h5 className="modal-title">Update Appointment</h5>
+                </div>
+                {this.state.loading_status ? <Loading size={150} /> : add_appointment_modal_body}
+                <div className="modal-footer">
+                    <button
+                        type="button"
+                        className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
+                        style={{ textTransform: "inherit" }}
+                        onClick={this.on_submit}>
+                        <b><i className="icon-plus3"></i></b>
+                        Update
+                    </button>
+                    <button
+                        type="button"
+                        className="btn bg-danger btn-labeled btn-labeled-right pr-5"
+                        style={{ textTransform: "inherit" }}
+                        onClick={() => this.props.close()}>
+                        <b><i className="icon-cross"></i></b>
+                        Cancel
+                    </button>
+
+                </div>
+            </Modal>
+        )
+    }
+}
+export default connect(null, { notify, load_todays_appointments, clear_todays_appointments })(UpdateAppointmentModal);

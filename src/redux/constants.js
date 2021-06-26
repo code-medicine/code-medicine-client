@@ -1,0 +1,10 @@
+export const NOTIFY = 'notify';
+export const LEFT_SIDEBAR = 'left_sidebar';
+export const ACTIVE_USER = 'active_user';
+export const ACTIVE_PAGE = 'active_page';
+export const TODAYS_PATIENT = 'todays_patients';
+export const TODAYS_PATIENT_CLEAR = 'clear_todays_patients';
+export const TODAYS_PATIENT_APPOINTMENT_UPDATE = 'update_single_record';
+export const SETTINGS_UPDATE_LEFTSIDEBAR_LIST = `settings-update-left-sidebar-list`;
+export const FETCH_DOCTORS = 'fetch-doctors';
+export const FETCH_PROCEDURE_LIST = 'fetch-procedure-list';

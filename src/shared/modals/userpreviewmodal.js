@@ -1,9 +1,9 @@
 import React from 'react'
 import Modal from "react-bootstrap4-modal";
-import Loading from "../customs/loading/loading";
+import Loading from "../../components/loading";
 import User from '../customs/user/user';
 import { Link } from 'react-router-dom';
-import '../customs/Animations/animations.css'
+import 'styles/animations/animations.css'
 
 function UserPreviewModal(props) {
 
