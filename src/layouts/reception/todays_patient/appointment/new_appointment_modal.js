@@ -69,12 +69,24 @@ class NewAppointmentModal extends Component {
             const res_users = await this.request({}, query, 'get')
             let temp_users = [];
             for (var i = 0; i < res_users.data.payload['count']; ++i) {
-                const t_user = res_users.data.payload['users'][i]
-                temp_users.push({
-                    id: `appointment_${role.toLowerCase()}_selection`,
-                    reference: t_user._id,
-                    label: `${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
-                })
+                if (role === 'Patient'){
+                    const t_user = res_users.data.payload['users'][i]
+                    temp_users.push({
+                        id: `appointment_${role.toLowerCase()}_selection`,
+                        reference: t_user._id,
+                        label: `${t_user.first_name} ${t_user.last_name} | ${t_user.phone_number} | ${t_user.email}`
+                    })
+                }
+                else if (role === 'Doctor'){
+                    const t_user = res_users.data.payload['users'][i]
+                    temp_users.push({
+                        id: `appointment_${role.toLowerCase()}_selection`,
+                        reference: t_user.doctor._id,
+                        label: `${t_user.doctor.first_name} ${t_user.doctor.last_name} | ${t_user.doctor.phone_number} | ${t_user.doctor.email}`
+                    })
+                    console.log(t_user.doctor)
+                }
+                
             }
             if (role === 'Patient') {
                 this.setState({ patients: temp_users })

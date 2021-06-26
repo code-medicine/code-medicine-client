@@ -57,13 +57,14 @@ class Login extends Component {
             password: this.state.password.value.trim(),
             remember_me: this.state.remember_me_option
         }
-        LoginRequest(data).then(res => {
-            this.setState({ loading_status: false });
+        LoginRequest(data).then(async res => {
             localStorage.setItem("user", res.data['token']);
+            await this.props.set_active_user(res.data.user)
+            await this.props.fetch_doctors();
+            await this.props.fetch_procedures_list();
             notify('success', '', res.data['message']);
-            this.props.set_active_user(res.data.user)
-            this.props.fetch_doctors();
-            this.props.fetch_procedures_list();
+            this.setState({ loading_status: false });
+            
             if (!localStorage.getItem('cached-path'))
                 this.props.history.push(BASE_URL);
             else {

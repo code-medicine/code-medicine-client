@@ -4,32 +4,32 @@ import React from 'react'
 
 function IconButton(props) {
     let color = 'bg-teal-400 border-teal-400 text-teal-400';
-    let variant = 'btn-outlined';
+    let btn_type = 'btn-outline';
     let size = "btn-lg";
 
     switch(props.variant) {
         case 'outlined':
-            variant = 'btn-outlined'
+            btn_type = 'btn-outline'
             break;
         case 'filled':
-            variant = ''
+            btn_type = ''
             break;
         default: 
-            variant = 'btn-outlined'
+            btn_type = 'btn-outline'
             break;
     }
     switch(props.color) {
         case 'red':
-            color = variant === 'btn-outlined'? 'bg-danger border-danger text-danger': 'btn-danger';
+            color = btn_type === 'btn-outline'? 'bg-danger border-danger text-danger': 'btn-danger';
             break;
         case 'black':
-            color = variant === 'btn-outlined'? 'bg-dark border-dark text-dark' : 'btn-dark';
+            color = btn_type === 'btn-outline'? 'bg-dark border-dark text-dark' : 'btn-dark';
             break;
         case 'gray':
-            color = variant === 'btn-outlined'? 'bg-secondary border-secondary text-secondary' : 'btn-secondary';
+            color = btn_type === 'btn-outline'? 'bg-secondary border-secondary text-secondary' : 'btn-secondary';
             break;
         default:
-            color = variant === 'btn-outlined'? 'bg-teal-400 border-teal-400 text-teal-400' : 'bg-teal-400 text-white';
+            color = btn_type === 'btn-outline'? 'bg-teal-400 border-teal-400 text-teal-400' : 'bg-teal-400 text-white';
             break;
     }
     switch(props.size) {
@@ -47,7 +47,7 @@ function IconButton(props) {
             break;
     }
 
-    const className = `btn ${variant} ${size} ${color} btn-icon ${props.className}`
+    const className = `btn ${btn_type} ${size} ${color} btn-icon ${props.className}`
 
     // console.log('className', className)
     return (

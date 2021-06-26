@@ -239,7 +239,7 @@ class Left_sidebar extends Component {
                                             {
                                                 elem.nested ?
                                                     elem.routes.map((nitem, ni) => {
-                                                        return <li className={`nav-item`}>
+                                                        return <li className={`nav-item`} key={ni}>
                                                             <Link to={nitem.url} className={`nav-link ${nitem.active ? '' : 'disabled'}`}>
                                                                 <i className={nitem.icon_class}></i>
                                                                 {nitem.title}

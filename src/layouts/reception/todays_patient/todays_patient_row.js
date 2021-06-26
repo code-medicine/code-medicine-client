@@ -4,16 +4,15 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { Popup } from "semantic-ui-react";
 import UpdateAppointmentModal from './appointment/update_appointment_modal';
-import { Ucfirst } from '../../../utils/functions'
-import Axios from 'axios';
-import { APPOINTMENTS_CHECKOUT, PROCEDURES_SEARCH_BY_APPOINTMENT_ID } from '../../../services/rest_end_points';
-import Loading from '../../../components/loading';
+import { Ucfirst } from 'utils/functions'
+import Loading from 'components/loading';
 import './todays_patient_row.css'
 import { connect } from 'react-redux';
-import { load_todays_appointments, clear_todays_appointments } from '../../../redux/actions'
+import { load_todays_appointments, clear_todays_appointments } from 'redux/actions'
 import { confirmAlert } from 'react-confirm-alert';
-import { AppointmentCheckout, ProcedureSearchByAppointmentId } from '../../../services/queries';
+import { AppointmentCheckout, ProcedureSearchByAppointmentId } from 'services/queries';
 import notify from 'notify'
+import CreateProcedure from '../procedures/create-procedure';
 // import '../../../../node_modules/semantic-ui-css/semantic.min.css';
 
 class TodaysPatientRow extends Component {
@@ -30,6 +29,7 @@ class TodaysPatientRow extends Component {
             appointment_time_difference_from_now: moment(this.props.row_data.appointment_date, "YYYY-MM-DDThh:mm:ss").fromNow(),
 
             update_appointment_modal_visibility: false,
+            procedure_modal_visibility: false,
 
             procedure_loading: false,
             procedures_list: []
@@ -109,10 +109,11 @@ class TodaysPatientRow extends Component {
                 flowing
                 position='left center'
             />,
-            procedure_charges: <Popup
+            procedures: <Popup
                 trigger={
                     <button className="btn btn-outline btn-sm bg-teal-400 border-teal-400 text-teal-400 secondary btn-icon m-1"
-                        onClick={() => this.props.toggle_procedure_modal(this.props.row_data._id)}>
+                        onClick={() => this.setState({ procedure_modal_visibility: true }, () => console.log('state', this.state))}>
+                            {/* this.props.toggle_procedure_modal(this.props.row_data._id)}> */}
                         <i className="icon-add-to-list"></i>
                     </button>}
                 content={<div className="card card-body bg-teal-400 text-white shadow py-1">Procedures</div>}
@@ -242,7 +243,7 @@ class TodaysPatientRow extends Component {
                                 {!this.state.row_data.appointment_status.is_paid ?
                                     <Fragment>
                                         {options['consultancy_charges']}
-                                        {options['procedure_charges']}
+                                        {options['procedures']}
                                         {options['invoice']}
                                         {options['edit']}
                                         {options['follow_ups']}
@@ -353,6 +354,15 @@ class TodaysPatientRow extends Component {
                                 comments: this.state.row_data.appointment_comments,
                                 referee: this.state.row_data.appointment_referee,
                             }} />
+                        {
+                            this.state.procedure_modal_visibility &&
+                            <CreateProcedure
+                                visibility={this.state.procedure_modal_visibility}
+                                handleClose={() => this.setState({ procedure_modal_visibility: false })}
+                                appointment_id={this.state.row_data._id}
+                            />
+                        }
+
                     </td>
 
                 </tr>

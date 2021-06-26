@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Header from '../header';
 import Footer from '../footer';
 import Leftsidebar from '../left_sidebar';
-import Pageheader from '../page_header';
+// import Pageheader from '../page_header';
 import { connect } from "react-redux";
 // import Axios from 'axios';
 // import { PROFILE_USER_REQUEST } from '../rest_end_points';
@@ -14,7 +14,7 @@ import 'styles/animations/animations.css'
 import { UsersSearchByToken } from 'services/queries';
 import Skeletons from 'components/Skeletons';
 // import BACKGROUND from '../../resources/images/background_image.jpg'
-
+import _ from 'lodash'
 
 class Container extends Component {
     
@@ -56,7 +56,7 @@ class Container extends Component {
             )
         }
         return (
-            this.props.container_type ? 
+            this.props.container_type && !_.isEmpty(this.props.active_user)? 
             
                 <div className={`virtual-body navbar-top ${this.props.left_sidebar ? (window.innerWidth >= 500 ? 'sidebar-xs' : 'sidebar-mobile-main') : ''}`}
                 // style={{backgroundImage: `url(${BACKGROUND})`, backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundPosition:'center'}}

@@ -50,7 +50,7 @@ class Settings extends Component {
                                                 className="form-input-styled" />
                                         </span>
                                     </div>
-                                    UnCollapsed
+                                    UnCollapsed (Experimental)
                                 </label>
                             </div>
                         </div>

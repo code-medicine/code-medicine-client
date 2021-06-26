@@ -123,6 +123,9 @@ export const ProcedureSearch = (appointment_id, doctor_id, date) => {
     return Axios.get(`${rep.PROCEDURES_SEARCH}?appointment_id=${appointment_id}&doctor_id=${doctor_id}&date=${date}`); 
 }
 
+export const GetProcedures = (date) => {
+    return Axios.get(`${rep.PROCEDURES_BASE_URL}?date=${date}`);
+}
 /**
  * ------------------------------------------------------------------------------
  * Procedure List Queries
