@@ -1,19 +1,17 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
-import Container from '../../../components/container';
 import CustomTable from '../../../shared/customs/CustomTable';
 import Button from '../../../components/button';
 import IconButton from '../../../components/icon-button';
 import moment from 'moment';
 import { load_todays_appointments, set_active_page } from '../../../redux/actions';
-import { shift_timezone_to_pakistan, Ucfirst } from '../../../utils/functions';
-import Loading from '../../../components/loading';
+import { Ucfirst } from '../../../utils/functions';
 import Modal from 'react-bootstrap4-modal';
 import Inputfield from '../../../components/inputfield';
-import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
+// import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
 import { Collapse } from 'reactstrap';
-import { AppointmentsSearchToday, CreateNewPaymentLog, GetUserById, ProcedureSearch, ProcedureSearchByAppointmentId } from '../../../services/queries';
+import { AppointmentsSearchToday, CreateNewPaymentLog, GetUserById, ProcedureSearch } from '../../../services/queries';
 import notify from 'notify'
 import { BASE_URL } from 'router/constants';
 
@@ -143,7 +141,6 @@ class Payments extends Component {
                                     records[element.doctor.id].procedures_fee += total_procedures_fee;
                                     records[element.doctor.id].p_doctor_share += (total_procedures_fee * total_p_dr_share) / 100.00;
                                     records[element.doctor.id].p_hospital_share += total_procedures_fee - ((total_procedures_fee * total_p_dr_share) / 100.00);
-                                    counter++;
                                 } else {
                                     await GetUserById(element.doctor.id)
                                         .then(async _doctor => {
@@ -170,10 +167,11 @@ class Payments extends Component {
                                                         onClick={() => that.onCheckoutToggle(element.doctor.id, 'checkout')}
                                                         icon="icon-exit3" />,
                                             };
-                                            counter++;
                                         })
                                 }
                             })
+                            counter++;
+
                         if (counter === data.length) {
                             this.setState({
                                 featuredData: records,

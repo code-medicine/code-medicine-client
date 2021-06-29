@@ -1,8 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import Container from '../../../components/container'
 import Select, { components } from 'react-select'
-import Axios from 'axios';
-import { USERS_SEARCH_BY_ID, USERS_SEARCH_BY_CREDENTIALS, PROCEDURES_SEARCH_BY_APPOINTMENT_ID } from '../../../services/rest_end_points';
+import { USERS_SEARCH_BY_CREDENTIALS } from '../../../services/rest_end_points';
 import { connect } from "react-redux";
 import { set_active_page, load_todays_appointments, clear_todays_appointments } from '../../../redux/actions';
 import { Link, withRouter } from 'react-router-dom';
@@ -13,7 +11,6 @@ import ProcedureModal from './procedures/procedure_modal';
 import InvoiceModal from './invoice/invoice';
 import TodaysPatientRow from './todays_patient_row';
 import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
-import Loading from '../../../components/loading';
 import NewAppointmentModal from './appointment/new_appointment_modal';
 import { Popup } from "semantic-ui-react";
 import { PATIENT_VISIT_STATUSES } from '../../../utils/constant_data';

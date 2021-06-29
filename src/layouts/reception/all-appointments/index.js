@@ -1,25 +1,22 @@
 import React, { Component, Fragment } from 'react';
-import Container from '../../../components/container';
-import { USERS_SEARCH_BY_CREDENTIALS, APPOINTMENTS_SEARCH, USERS_SEARCH_BY_ID } from '../../../services/rest_end_points';
-import Axios from 'axios';
+import { USERS_SEARCH_BY_CREDENTIALS, APPOINTMENTS_SEARCH } from '../../../services/rest_end_points';
 import { connect } from "react-redux";
-import { notify, set_active_page } from '../../../redux/actions';
+import { set_active_page } from '../../../redux/actions';
 import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 import "./visits.css"
 import { components } from 'react-select';
-import { BLOOD_GROUPS_OPTIONS, PATIENT_VISIT_STATUSES } from '../../../utils/constant_data';
+import { PATIENT_VISIT_STATUSES } from '../../../utils/constant_data';
 import TableRow from '../../../shared/customs/tablerows/tablerow';
 import 'styles/animations/animations.css';
 import UserPreviewModal from '../../../shared/modals/userpreviewmodal';
-import Loading from '../../../components/loading';
 import { BASE_URL } from '../../../router/constants';
 import { Popup } from "semantic-ui-react";
 import { Ucfirst } from '../../../utils/functions'
 import Inputfield from '../../../components/inputfield';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { GetRequest, PostRequest, UserSearchById } from '../../../services/queries';
-
+import notify from 'notify';
 
 class AllAppointments extends Component {
     constructor(props) {

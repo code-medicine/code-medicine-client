@@ -3,8 +3,6 @@ import Modal from 'react-bootstrap4-modal';
 import Inputfield from '../../../../components/inputfield';
 import { connect } from 'react-redux';
 import { update_appointment, load_todays_appointments, clear_todays_appointments } from '../../../../redux/actions';
-import Axios from 'axios';
-import { UPDATE_APPOINTMENT_CHARGES, CHECKOUT_APPOINTMENT, GET_APPOINTMENT_CHARGES, APPOINTMENTS_SEARCH_BY_ID } from '../../../../services/rest_end_points';
 import ReactToPrint from 'react-to-print';
 import LOGO from '../../../../resources/images/LOGO.png';
 import { get_utc_date, Ucfirst } from '../../../../utils/functions';

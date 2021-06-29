@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
-import Container from '../../components/container';
 import { Link, withRouter } from 'react-router-dom';
 import NO_PICTURE from '../../resources/images/placeholder.jpg'
 import { connect } from "react-redux";
-import Axios from 'axios';
-import { USERS_SEARCH_BY_TOKEN, USERS_UPDATE } from '../../services/rest_end_points';
 import { LOGIN_URL, BASE_URL } from '../../router/constants';
 import { set_active_user, set_active_page } from '../../redux/actions'
 import Inputfield from '../../components/inputfield';

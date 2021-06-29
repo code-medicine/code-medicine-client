@@ -1,10 +1,6 @@
 import React, { Fragment, useState } from 'react'
-import Container from '../../../components/container';
 import Inputfield from '../../../components/inputfield';
-// import { LOGIN_URL } from '../../../shared/router_constants';
-import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { notify } from '../../../redux/actions';
 
 
 function ForgotPassword(props) {
@@ -57,4 +53,4 @@ function ForgotPassword(props) {
         </Fragment>
     )
 }
-export default connect(null, notify)(withRouter(ForgotPassword));
+export default withRouter(ForgotPassword);

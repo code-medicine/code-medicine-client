@@ -12,7 +12,6 @@ import CreateProcedureList from './create-procedure-list';
 import { GetProcedures } from 'services/queries';
 import { Link } from 'react-router-dom';
 import TodaysPatientRowLoading from '../todays_patient/todays_patient_row_loading';
-import _ from 'lodash';
 
 const Menu = props => {
     return (

@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import moment from 'moment'
-import { APPOINTMENTS_UPDATE, USERS_SEARCH_BY_CREDENTIALS } from 'services/rest_end_points';
-import Axios from 'axios';
+import { USERS_SEARCH_BY_CREDENTIALS } from 'services/rest_end_points';
 import Loading from 'components/loading';
 import Select from 'react-select'
 import Modal from 'react-bootstrap4-modal';
-// import '../todays_patient.css';
-
 import DateTimePicker from 'react-datetime';
 import { load_todays_appointments, clear_todays_appointments } from 'redux/actions';
 import { connect } from "react-redux";

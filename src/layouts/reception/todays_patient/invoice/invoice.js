@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import Modal from "react-bootstrap4-modal";
 import LOGO from '../../../../resources/images/LOGO.png';
-import Axios from 'axios';
-import { APPOINTMENTS_INVOICE } from '../../../../services/rest_end_points';
 import Loading from '../../../../components/loading';
 import ReactToPrint from 'react-to-print';
 import { get_utc_date, Ucfirst } from '../../../../utils/functions';
