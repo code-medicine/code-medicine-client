@@ -5,7 +5,7 @@ import { NOTIFY, LEFT_SIDEBAR,
     TODAYS_PATIENT_CLEAR, 
     TODAYS_PATIENT_APPOINTMENT_UPDATE, SETTINGS_UPDATE_LEFTSIDEBAR_LIST, FETCH_DOCTORS, FETCH_PROCEDURE_LIST } from "../constants";
 import Axios from "axios";
-import { SEARCH_APPOINTMENT_BY_ID, APPOINTMENTS_SEARCH_TODAY } from "../../services/rest_end_points";
+import { SEARCH_APPOINTMENT_BY_ID } from "../../services/rest_end_points";
 import { AppointmentsSearchToday, GetAllDoctors, GetProceduresList } from '../../services/queries';
 
 /**

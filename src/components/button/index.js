@@ -17,6 +17,8 @@ function Button(props) {
         case 'gray':
             color = 'bg-secondary';
             break;
+        default:
+            break;
     }
     return (
         <button

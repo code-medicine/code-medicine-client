@@ -4,7 +4,6 @@ import Axios from 'axios';
 import { USERS_CREATE } from '../../../services/rest_end_points';
 import 'react-toastify/dist/ReactToastify.css';
 import { LOGIN_URL } from '../../../router/constants';
-import Container from '../../../components/container';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import './register.css';

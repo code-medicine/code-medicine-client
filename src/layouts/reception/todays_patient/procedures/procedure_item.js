@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import Axios from 'axios';
-import { PROCEDURES_CREATE, PROCEDURES_DELETE, PROCEDURES_UPDATE } from '../../../../services/rest_end_points';
-import Loading from '../../../../components/loading';
-import { connect } from 'react-redux';
-import { ProcedureCreate, ProcedureDelete, ProcedureUpdate } from '../../../../services/queries';
+import Loading from 'components/loading';
+import { ProcedureCreate, ProcedureDelete, ProcedureUpdate } from 'services/queries';
 import notify from 'notify'
 
 class ProcedureItem extends Component {

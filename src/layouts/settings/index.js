@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Container from '../../components/container';
 import { toggle_sidebar_menu_collapse } from '../../redux/actions';
 
 class Settings extends Component {

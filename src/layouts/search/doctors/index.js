@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import Container from '../../../components/container';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { set_active_page } from '../../../redux/actions';
@@ -12,7 +11,6 @@ import Button from '../../../components/button';
 import Modal from 'react-bootstrap4-modal';
 import Inputfield from '../../../components/inputfield';
 import { BLOOD_GROUPS_OPTIONS, CITIES, COUTRIES, GENDER_OPTIONS } from '../../../utils/constant_data';
-import { Popup } from "semantic-ui-react";
 import Loading from '../../../components/loading';
 import IconButton from '../../../components/icon-button';
 import { confirmAlert } from 'react-confirm-alert'; // Import

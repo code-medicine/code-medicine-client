@@ -4,9 +4,7 @@ import { ADMIN_CREATE_PATIENT } from '../../services/rest_end_points';
 import Axios from 'axios';
 import Loading from '../../components/loading';
 import Inputfield from '../../components/inputfield';
-// import NO_PICTURE from '../../resources/images/placeholder.jpg';
 import Modal from 'react-bootstrap4-modal';
-// import { Link } from 'react-router-dom';
 import moment from 'moment'
 import notify from 'notify'
 
@@ -120,67 +118,6 @@ class NewUserModal extends Component {
     on_submit = (e) => {
         e.preventDefault();
         this.setState({ loading_status: true })
-        // let error = false
-        // /** firstname */
-        // if (this.check_input(this.state.user_first_name.value, true, true, false)) {
-        //     this.setState({ user_first_name: { value: this.state.user_first_name.value, error: true } })
-        //     error = true
-        // }
-        // /** lastname */
-        // if (this.check_input(this.state.user_last_name.value, true, true)) {
-        //     this.setState({ user_last_name: { value: this.state.user_last_name.value, error: true } })
-        //     error = true
-        // }
-        // /** phone number */
-        // if (this.check_input(this.state.user_phone_number.value, true, false, true) && this.check_hard_constraints(this.state.user_phone_number.value, "", "eq", 11)) {
-        //     this.setState({ user_phone_number: { value: this.state.user_phone_number.value, error: true } })
-        //     error = true
-        // }
-        // // if (this.check_input(this.state.user_dob.value)) {
-        // //     this.setState({ user_dob: { value: this.state.user_dob.value, error: true } })
-        // //     error = true
-        // // }
-        // /** cnic */
-        // if (this.check_input(this.state.user_cnic.value, false, false, true) && this.check_hard_constraints(this.state.user_cnic.value, "", "eq", 13)) {
-        //     this.setState({ user_cnic: { value: this.state.user_cnic.value, error: true } })
-        //     error = true
-        // }
-        // /** email */
-        // if (this.check_input(this.state.user_email.value, false, false, false) && this.check_hard_constraints(this.state.user_email.value, "@")) {
-        //     this.setState({ user_email: { value: this.state.user_email.value, error: true } })
-        //     error = true
-        // }
-        // /** country */
-        // if (this.check_input(this.state.user_country.value, true, true)) {
-        //     this.setState({ user_country: { value: this.state.user_country.value, error: true } })
-        //     error = true
-        // }
-        // /** city */
-        // if (this.check_input(this.state.user_city.value, true, true)) {
-        //     this.setState({ user_city: { value: this.state.user_city.value, serror: true } })
-        //     error = true
-        // }
-        // /** address */
-        // if (this.check_input(this.state.user_address.value, true)) {
-        //     this.setState({ user_address: { value: this.state.user_address.value, error: true } })
-        //     error = true
-        // }
-        // /** gender */
-        // if (this.check_input(this.state.user_gender.value, true)) {
-        //     this.setState({ user_gender: { value: this.state.user_gender.value, error: true } })
-        //     error = true
-        // }
-        // /** blood group */
-        // if (this.check_input(this.state.user_blood_group.value, true)) {
-        //     this.setState({ user_blood_group: { value: this.state.user_blood_group.value, error: true } })
-        //     error = true
-        // }
-
-        // if (error === true) {
-        //     notify('error', '', 'Invalid inputs')
-        //     this.setState({ loading_status: false })
-        //     return
-        // }
         const data = {
             admin_id: this.props.active_user._id,
             patient: {
@@ -470,7 +407,6 @@ class NewUserModal extends Component {
                         <span className="float-left"><span className="text-danger">*</span> Are required fields</span>
                         
                         <button
-                            type="button"
                             className="btn bg-teal-400 btn-labeled btn-labeled-right pr-5"
                             style={{ textTransform: "inherit" }}
                             type="submit"

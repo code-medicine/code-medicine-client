@@ -1,14 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { LOGIN_URL, PROFILE } from '../../router/constants';
-// import Logo_light from './logo_main.png';
-// import IAMC from './IAMC.png';
-import IAMC_detail from "./iffatanwarmedicalcomplex.png";
 import { connect } from "react-redux";
 import { left_sidebar_controls, set_active_user } from '../../redux/actions';
 import { Link, withRouter } from 'react-router-dom';
-import Axios from 'axios';
-import { LOGOUT_USER_REQUEST } from '../../services/rest_end_points';
-// import NOPICTURE from '../../resources/images/placeholder.jpg'
 import ReactDOM from 'react-dom';
 import { Ucfirst } from '../../utils/functions';
 import notify from 'notify';

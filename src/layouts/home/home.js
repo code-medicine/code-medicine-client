@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import Container from '../../components/container';
 import { connect } from "react-redux";
 import { set_active_user, set_active_page } from '../../redux/actions';
 import ReactEcharts from 'echarts-for-react';
@@ -9,9 +8,8 @@ import { BASE_URL, SEARCH_DOCTORS } from '../../router/constants';
 import * as rc from '../../services/rest_end_points';
 import socketIOClient from "socket.io-client";
 import Loading from '../../components/loading';
-import './home.css'
-import moment from 'moment'
-import { UsersSearchByToken } from '../../services/queries';
+import './home.css';
+import moment from 'moment';
 
 class Home extends Component {
     constructor(props) {

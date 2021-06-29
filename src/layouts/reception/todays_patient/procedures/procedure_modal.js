@@ -280,7 +280,7 @@ class ProcedureModal extends Component {
                 procedures_list: prev_procedure_list, 
                 edited_items: prev_procedure_list[index]['is_deleted'] ? 
                     [...this.state.edited_items, index] : 
-                    this.state.edited_items.filter(x => x != index) 
+                    this.state.edited_items.filter(x => x !== index) 
                 }, () => this.handle_total_values());
 
         }
@@ -325,7 +325,7 @@ class ProcedureModal extends Component {
                         [...this.state.edited_items, index] :
                         this.state.edited_items) :
                     (this.state.edited_items.length === 0 ? [] :
-                        this.state.edited_items.filter(x => x != index))
+                        this.state.edited_items.filter(x => x !== index))
             });
         }
     }
