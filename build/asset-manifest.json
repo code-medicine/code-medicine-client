@@ -1,31 +1,30 @@
 {
   "files": {
-    "main.css": "/static/css/main.161d7776.chunk.css",
-    "main.js": "/static/js/main.2375feec.chunk.js",
-    "main.js.map": "/static/js/main.2375feec.chunk.js.map",
+    "main.css": "/static/css/main.0dbe5009.chunk.css",
+    "main.js": "/static/js/main.d44e1c86.chunk.js",
+    "main.js.map": "/static/js/main.d44e1c86.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.84dc4de3.js",
     "runtime-main.js.map": "/static/js/runtime-main.84dc4de3.js.map",
     "static/css/2.06078425.chunk.css": "/static/css/2.06078425.chunk.css",
-    "static/js/2.02fbc9ab.chunk.js": "/static/js/2.02fbc9ab.chunk.js",
-    "static/js/2.02fbc9ab.chunk.js.map": "/static/js/2.02fbc9ab.chunk.js.map",
+    "static/js/2.f1fa0b91.chunk.js": "/static/js/2.f1fa0b91.chunk.js",
+    "static/js/2.f1fa0b91.chunk.js.map": "/static/js/2.f1fa0b91.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.b92c2dd61679838a393ab6c9638360b8.js": "/precache-manifest.b92c2dd61679838a393ab6c9638360b8.js",
+    "precache-manifest.b2b51ded04ad8cb4d219498665c0b0ed.js": "/precache-manifest.b2b51ded04ad8cb4d219498665c0b0ed.js",
     "service-worker.js": "/service-worker.js",
     "static/css/2.06078425.chunk.css.map": "/static/css/2.06078425.chunk.css.map",
-    "static/css/main.161d7776.chunk.css.map": "/static/css/main.161d7776.chunk.css.map",
-    "static/js/2.02fbc9ab.chunk.js.LICENSE.txt": "/static/js/2.02fbc9ab.chunk.js.LICENSE.txt",
+    "static/css/main.0dbe5009.chunk.css.map": "/static/css/main.0dbe5009.chunk.css.map",
+    "static/js/2.f1fa0b91.chunk.js.LICENSE.txt": "/static/js/2.f1fa0b91.chunk.js.LICENSE.txt",
     "static/media/LOGO.png": "/static/media/LOGO.21ff2f94.png",
     "static/media/container.css": "/static/media/background_image.3d130c0e.jpg",
     "static/media/register.css": "/static/media/background_image_black.3b31581c.jpg",
-    "static/media/iffatanwarmedicalcomplex.png": "/static/media/iffatanwarmedicalcomplex.36cda954.png",
     "static/media/placeholder.jpg": "/static/media/placeholder.59e6f5b8.jpg",
     "static/media/left_sidebar.css": "/static/media/user_bg3.27650860.jpg"
   },
   "entrypoints": [
     "static/js/runtime-main.84dc4de3.js",
     "static/css/2.06078425.chunk.css",
-    "static/js/2.02fbc9ab.chunk.js",
-    "static/css/main.161d7776.chunk.css",
-    "static/js/main.2375feec.chunk.js"
+    "static/js/2.f1fa0b91.chunk.js",
+    "static/css/main.0dbe5009.chunk.css",
+    "static/js/main.d44e1c86.chunk.js"
   ]
 }
