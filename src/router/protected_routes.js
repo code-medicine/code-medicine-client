@@ -49,7 +49,6 @@ class ProtectedRoutes extends Component {
 
         /* if user is logged in */
         if (this.check_for_token()) {
-            console.log('token received')
             /* first fetch the user details from server */
             if (!_.isEmpty(this.props.active_user)) {
                 __html = <Route {...props} render={props => <Component {...props} />} />
