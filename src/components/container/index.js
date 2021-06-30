@@ -75,7 +75,7 @@
 import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Drawer, AppBar, Toolbar, CssBaseline, Typography, Divider, IconButton, Menu, MenuItem, Chip, Avatar, ListItemIcon, ListItemText, Backdrop, CircularProgress } from '@material-ui/core';
+import { Drawer, AppBar, Toolbar, CssBaseline, Typography, Divider, IconButton, Menu, MenuItem, Backdrop, CircularProgress } from '@material-ui/core';
 import { Menu as MenuIcon, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon, AccountCircleRounded, PersonRounded } from '@material-ui/icons';
 import { LeftSideBar, Skeletons } from 'components';
 import { connect } from "react-redux";
