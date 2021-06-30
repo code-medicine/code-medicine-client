@@ -23,7 +23,7 @@ function ForgotPassword(props) {
 
     return (
         <Fragment>
-            <div className="card shadow">
+            <div className="card shadow w-lg-50 w-md-75 w-100">
                 <div className="card-header">
                     <h4>Reset your password</h4>
                 </div>
@@ -33,9 +33,9 @@ function ForgotPassword(props) {
                         label_tag="Email"
                         placeholder="Enter your email"
                         icon_class="icon-envelop"
-                        input_type={'email'}
-                        on_text_change_listener={(e) => on_change(e)}
-                        default_value={email}
+                        type={'email'}
+                        onChange={(e) => on_change(e)}
+                        defaultValue={email}
                         error={error}
                     />
                 </div>
