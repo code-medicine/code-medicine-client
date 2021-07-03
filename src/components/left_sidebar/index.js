@@ -163,7 +163,7 @@
 
 
 import React from 'react'
-import { List, ListItem, ListItemIcon, ListItemText, Divider, Avatar, Collapse } from '@material-ui/core';
+import { List, ListItem, ListItemIcon, ListItemText, Divider, Avatar, Collapse, Button } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import * as RC from 'router/constants';
 import { connect } from "react-redux";
@@ -244,9 +244,9 @@ function LeftSideBar(props) {
                         }) : ''
                 }
             </List>
-            <button className={`btn `} onClick={() => console.log('STORE', store.getState())}>
+            <Button color="secondary" endIcon={<ExpandLess />} onClick={() => console.log('STORE', store.getState())}>
                 Store
-            </button>
+            </Button>
         </div>
     )
 }
