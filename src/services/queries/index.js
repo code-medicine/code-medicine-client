@@ -53,8 +53,31 @@ export const LogoutRequest = () => {
     return Axios.post(rep.USERS_LOGOUT, { token: localStorage.getItem('user') })
 }
 
-export const GetAllDoctors = (s) => {
-    return Axios.get(`${rep.BASE_USERS_URL}?role=Doctor`)
+export const GetAllUsers = (type, active = true) => {
+    /**
+     * active = true -> you will get all users of type that are active
+     * active = false -> you will get all users that are not active
+     * active = all -> you will get all the users
+     */
+    return Axios.get(`${rep.BASE_USERS_URL}?role=${type}&active=${active}`)
+}
+
+/**
+ * ------------------------------------------------------------------------------
+ * Admin Queries
+ * ------------------------------------------------------------------------------
+ */
+
+export const AdminCreateDoctor = (payload) => {
+    return Axios.post(rep.ADMIN_CREATE_DOCTOR, payload);
+}
+
+export const AdminUpdateDoctor = (id, payload) => {
+    return Axios.put(rep.ADMIN_UPDATE_DOCTOR, { id, payload })
+}
+
+export const AdminDeleteDoctor = (id) => {
+    return Axios.delete(`${rep.ADMIN_DELETE_DOCTOR}?tag=${id}`)
 }
 
 /**

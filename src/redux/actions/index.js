@@ -6,7 +6,7 @@ import { NOTIFY, LEFT_SIDEBAR,
     TODAYS_PATIENT_APPOINTMENT_UPDATE, SETTINGS_UPDATE_LEFTSIDEBAR_LIST, FETCH_DOCTORS, FETCH_PROCEDURE_LIST } from "../constants";
 import Axios from "axios";
 import { SEARCH_APPOINTMENT_BY_ID } from "../../services/rest_end_points";
-import { AppointmentsSearchToday, GetAllDoctors, GetProceduresList } from '../../services/queries';
+import { AppointmentsSearchToday, GetAllUsers, GetProceduresList } from '../../services/queries';
 
 /**
  * LOGIN api
@@ -106,7 +106,7 @@ export function toggle_sidebar_menu_collapse(){
 }
 
 export async function fetch_doctors() {
-    const response = await GetAllDoctors();
+    const response = await GetAllUsers('Doctor', true);
     return {
         type: FETCH_DOCTORS,
         payload: response.data

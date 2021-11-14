@@ -12,7 +12,7 @@ export default function (state = {}, action) {
             else
                 return { 
                     loading: action.loading, 
-                    data: action.payload 
+                    data: []
                 }
         case TODAYS_PATIENT_CLEAR:
             return { loading: true, data: [] }

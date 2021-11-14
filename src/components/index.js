@@ -8,6 +8,8 @@ import LeftSideBar from './left_sidebar';
 import Loading from './loading';
 import PageHeader from './page_header';
 import Skeletons from './Skeletons';
+import CheckBox from './check-box';
+
 
 export {
     Button,
@@ -20,4 +22,5 @@ export {
     Loading,
     PageHeader,
     Skeletons,
+    CheckBox
 }

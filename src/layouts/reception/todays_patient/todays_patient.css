@@ -250,3 +250,8 @@ td.rdtYear:hover {
   padding: 10px;
   border-radius: 5px;
 }
+
+.table-partition {
+  border-left: #428bca;
+  border-left-width: 4px;
+}

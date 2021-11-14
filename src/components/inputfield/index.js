@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Select from 'react-select'
 import DateTimePicker from 'react-datetime';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import { Typography } from '@material-ui/core';
 
 
 class Inputfield extends Component {
@@ -14,6 +15,7 @@ class Inputfield extends Component {
         const input_field_type = <input 
             {...received_props} 
             className={`form-control ${received_props.error ? 'border-danger' : ''} ${received_props.className}`} 
+            error={received_props.error? "true": "false"}
             />
 
         const text_area_field_type = <textarea 
@@ -55,15 +57,15 @@ class Inputfield extends Component {
         const parent_classes = received_props.parent_classes;
         const inner_classes = received_props.inner_classes;
         return (
-            <div className={`form-group ${parent_classes} mb-0`}>
+            <div className={`${parent_classes} mb-0`}>
                 {
                     received_props.loading? 
                     <SkeletonTheme color="#ffffff" highlightColor="#f2f2f2">
                         <Skeleton className="" count={1} height={15} width={80} />
                     </SkeletonTheme> : 
-                    (received_props.heading ? <label className="col-form-label mb-0 pb-1">
+                    (received_props.heading ? <Typography variant="caption">
                         {received_props.heading}{received_props.required ? <span className="text-danger"> * </span> : ''}
-                    </label> : '')
+                    </Typography> : '')
                 }
                 <div className={inner_classes}>
                     {

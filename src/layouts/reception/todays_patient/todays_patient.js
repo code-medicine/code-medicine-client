@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import Select, { components } from 'react-select'
 import { USERS_SEARCH_BY_CREDENTIALS } from '../../../services/rest_end_points';
 import { connect } from "react-redux";
-import { set_active_page, load_todays_appointments, clear_todays_appointments } from '../../../redux/actions';
+import { set_active_page, load_todays_appointments, clear_todays_appointments } from 'redux/actions';
 import { Link, withRouter } from 'react-router-dom';
 import './todays_patient.css';
 import { BASE_URL } from '../../../router/constants';
@@ -15,18 +15,31 @@ import NewAppointmentModal from './appointment/new_appointment_modal';
 import { Popup } from "semantic-ui-react";
 import { PATIENT_VISIT_STATUSES } from '../../../utils/constant_data';
 import DateTimePicker from 'react-datetime';
-import { Ucfirst } from '../../../utils/functions';
+import { convert_object_array_to_string, Ucfirst } from '../../../utils/functions';
 import ConsultacyModal from './consultancy';
 import TodaysPatientRowLoading from './todays_patient_row_loading';
-import { GetRequest, PostRequest, UserSearchById } from '../../../services/queries';
+import { GetRequest, PostRequest, UserSearchByCredentials, UserSearchById } from '../../../services/queries';
 import notify from 'notify'
+import { InputField } from  'components';
+import _ from 'lodash';
+import { Typography } from '@material-ui/core';
+
+const Menu = props => {
+    return (
+        <components.Menu {...props} >
+            <div className={`bg-light text-teal-400`} style={{ width: '400px' }}>
+                {props.children}
+            </div>
+        </components.Menu>
+    );
+};
 
 class Todayspatient extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            data: null,
+            data: [],
             filtered_data: null,
 
             doctors: [],
@@ -45,15 +58,20 @@ class Todayspatient extends Component {
             invoice_data: null,
             appointment_invoice_id: '',
             selected_appointment_id: null,
-            search_doctor: { value: '' },
-            search_patient: { value: '' },
-            search_status: { value: '' },
+
+            doctor_selection: { value: '', label: '', error: false },
+            patient_selection: { value: '', label: '', error: false },
+            status_selection: { value: '', label: '', error: false },
             search_date: { value: moment(new Date()).format('ll') },
 
+            patients_options_loading: false,
+
         }
+        this.search_patient_trigger_timmer = null;
     }
 
     load_data = () => {
+        this.props.clear_todays_appointments();
         if (localStorage.getItem('Gh65$p3a008#2C')) {
             this.setState({ search_date: { value: localStorage.getItem('Gh65$p3a008#2C') }}, () => this.props.load_todays_appointments(this.state.search_date.value))
         } else {
@@ -71,12 +89,23 @@ class Todayspatient extends Component {
             </Link>,
             <span className="breadcrumb-item active">Today's Patient</span>
         ]
+        if (this.props.doctors) {
+            this.populate_doctors(this.props);
+        }
+        
         this.props.set_active_page(routes)
         this.load_data();
-        // setInterval(() => {
-        //     this.load_data()   
-        // }, 10000)
     }
+
+    UNSAFE_componentWillReceiveProps(new_props) {
+        if (new_props.todays_patient) {
+            this.setState({ filtered_data: new_props.todays_patient.data, data: new_props.todays_patient.data })
+        }
+        if (new_props.doctors) {
+            this.populate_doctors(new_props);
+        }
+    }
+
 
     async request(_data, _url, _method = "post") {
         try {
@@ -93,6 +122,24 @@ class Todayspatient extends Component {
         }
     }
 
+    populate_doctors = (props) => {
+        console.log('props.doctors', props.doctors)
+        const temp_users = []
+        for (let i = 0; i < props.doctors.length; ++i) {
+            const t_user = props.doctors[i]
+
+            temp_users.push({
+                id: `doctor_selection`,
+                value: t_user.doctor._id,
+                label: `Dr. ${Ucfirst(t_user.doctor.first_name)} ${Ucfirst(t_user.doctor.last_name)} | ${convert_object_array_to_string(t_user.details.specialities, 'description')}`
+            })
+            if (i === props.doctors.length - 1) {
+                this.setState({ doctors: temp_users });
+            }
+        }
+    }
+    
+
     async render_users(string, role) {
         const query = `${USERS_SEARCH_BY_CREDENTIALS}?search=${string}&role=${role}`
         try {
@@ -108,6 +155,7 @@ class Todayspatient extends Component {
                     })
                 }
             }
+            
             if (role === 'Patient') {
                 this.setState({ patients: temp_users })
             }
@@ -120,67 +168,43 @@ class Todayspatient extends Component {
         }
     }
 
-    populate_doctors = (string) => {
-        if (string.length >= 1) {
-            this.render_users(string, 'Doctor')
+    populate_patients = (str) => {
+        clearTimeout(this.search_patient_trigger_timmer);
+        if (str.length >= 2) {
+            this.setState({ patients_options_loading: true }, () => {
+                this.search_patient_trigger_timmer = setTimeout(() => {
+                    UserSearchByCredentials(str, 'Patient').then(_res => {
+                        console.log('response patients', _res.data);
+                        const temp = []
+                        if (_res.data.payload.users.length > 0){
+                            for (let i = 0; i < _res.data.payload.users.length; ++i) {
+                                const t = _res.data.payload.users[i]
+        
+                                temp.push({
+                                    id: 'patient_selection',
+                                    value: t._id,
+                                    label: `${t.mrn} | ${Ucfirst(t.first_name)} ${Ucfirst(t.last_name)} `
+                                })
+                                if (i === _res.data.payload.users.length - 1) {
+                                    this.setState({ patients: temp, patients_options_loading: false });
+                                }
+                            }
+                        }
+                        else {
+                            this.setState({ patients: [], patients_options_loading: false });
+                        }
+                    })
+                }, 1000)
+                
+            })
         }
         else {
-            this.setState({ doctors: [] })
+            this.setState({ patients: [], pateints_options_loading: false });
         }
     }
 
-    populate_patient = (string) => {
-        if (string.length >= 1) {
-            this.render_users(string, 'Patient')
-        }
-        else {
-            this.setState({ patients: [] })
-        }
-    }
-
-    componentWillReceiveProps(new_props) {
-        if (new_props.todays_patient) {
-            this.setState({ filtered_data: new_props.todays_patient.data, data: new_props.todays_patient.data })
-        }
-    }
-
-    on_selected_changed = (e, actor) => {
-        if (e !== null) {
-            switch (e.id) {
-                case 'location_selection':
-                    this.setState({ user_blood_group: { value: e.label } })
-                    break;
-                case 'status_selection':
-                    this.setState({ search_status: { value: e.label } })
-                    break;
-                case 'doctor_selection':
-                    this.setState({ search_doctor: { value: e.reference } })
-                    break;
-                case 'patient_selection':
-                    this.setState({ search_patient: { value: e.reference } })
-                    break
-                default:
-                    break;
-            }
-        }
-        else {
-            switch (actor) {
-                case 'location_selection':
-                    this.setState({ user_blood_group: { value: '' } })
-                    break;
-                case 'status_selection':
-                    this.setState({ search_status: { value: '' } })
-                    break;
-                case 'doctor_selection':
-                    this.setState({ search_doctor: { value: '' } })
-                    break;
-                case 'patient_selection':
-                    this.setState({ search_patient: { value: '' } })
-                    break
-                default:
-                    break;
-            }
-        }
+    onSelectChange = (e, actor) => {
+        this.setState({ [actor]: { value: e ? e.value : '', label: e ? e.label : '', error: false } });
     }
 
     request_user = (id) => {
@@ -194,31 +218,6 @@ class Todayspatient extends Component {
                     console.log('failed to fetch user', err)
                 })
         })
-    }
-
-    renderDataInRows = (data) => {
-        if (data === null) {
-            return
-        }
-        return (data.map((booking, i) => {
-            // console.log('booking',booking)
-            // var random_color = classNameColors[Math.floor(Math.random() * classNameColors.length)]
-            const hidden_data = {
-                appointment_description: booking.appointment_description,
-                appointment_comments: booking.appointment_comments
-            }
-            return (
-                <TodaysPatientRow
-                    key={i}
-                    row_data={booking}
-                    hidden_data={hidden_data}
-                    toggle_consultancy_modal={this.toggle_consultancy_modal}
-                    toggle_procedure_modal={this.openProcedureModalHandler}
-                    toggle_invoice_modal={this.openInvoiceModalHandler}
-                    toggle_user_view_modal={this.request_user}
-                    columns="8" />
-            )
-        }))
     }
 
     openProcedureModalHandler = (id) => {
@@ -258,89 +257,10 @@ class Todayspatient extends Component {
     };
 
     set_filters = () => {
-        this.setState({ filtered_data: null }, () => {
-            /**
-             * P D S
-             * ---------
-             * 0 0 0 - 1
-             * 0 0 1 - 2
-             * 0 1 0 - 3
-             * 0 1 1 - 4
-             * 1 0 0 - 5
-             * 1 0 1 - 6
-             * 1 1 0 - 7
-             * 1 1 1 - 8
-             */
-
-            const search_with_patients = this.state.search_patient.value !== '';
-            const search_with_doctors = this.state.search_doctor.value !== '';
-            const search_with_status = this.state.search_status.value !== '';
-
-            // console.log('search state', search_with_patients, search_with_doctors, search_with_status)
-
-            const temp = []
-            for (let i = 0; i < this.state.data.length; ++i) {
-                // console.log(this.state.search_patient.value, this.state.data[i].patient.id)
-                // 0 0 1
-                if (!search_with_patients && !search_with_doctors && search_with_status) {
-                    if (this.state.search_status.value.toLowerCase() === this.state.data[i].appointment_status.info) {
-                        temp.push(this.state.data[i])
-                    }
-                }
-                // 0 1 0
-                else if (!search_with_patients && search_with_doctors && !search_with_status) {
-                    if (this.state.search_doctor.value === this.state.data[i].doctor.id) {
-                        temp.push(this.state.data[i])
-                    }
-                }
-                // 0 1 1
-                else if (!search_with_patients && search_with_doctors && search_with_status) {
-                    if (this.state.search_doctor.value === this.state.data[i].doctor.id &&
-                        this.state.search_status.value.toLowerCase() === this.state.data[i].appointment_status.info) {
-                        temp.push(this.state.data[i])
-                    }
-                }
-                // 1 0 0
-                else if (search_with_patients && !search_with_doctors && !search_with_status) {
-                    if (this.state.search_patient.value === this.state.data[i].patient.id) {
-                        temp.push(this.state.data[i])
-                    }
-                }
-                // 1 0 1
-                else if (search_with_patients && !search_with_doctors && search_with_status) {
-                    if (this.state.search_patient.value === this.state.data[i].patient.id &&
-                        this.state.search_status.value.toLowerCase() === this.state.data[i].appointment_status.info) {
-                        temp.push(this.state.data[i])
-                    }
-                }
-                // 1 1 0
-                else if (search_with_patients && search_with_doctors && !search_with_status) {
-                    if (this.state.search_patient.value === this.state.data[i].patient.id &&
-                        this.state.search_doctor.value === this.state.data[i].doctor.id) {
-                        temp.push(this.state.data[i])
-                    }
-                }
-                // 1 1 1
-                else if (search_with_patients && search_with_doctors && search_with_status) {
-                    if (this.state.search_patient.value === this.state.data[i].patient.id &&
-                        this.state.search_doctor.value === this.state.data[i].doctor.id &&
-                        this.state.search_status.value.toLowerCase() === this.state.data[i].appointment_status.info) {
-                        temp.push(this.state.data[i])
-                    }
-                }
-            }
-            let reset_check = true;
-            ['search_patient', 'search_doctor', 'search_status'].map((item, i) => {
-                if (this.state[item].value !== '') {
-                    reset_check = false;
-                    this.setState({ filtered_data: temp })
-                }
-                return '';
-            })
-            if (reset_check)
-                this.setState({ filtered_data: this.state.data })
-        })
-
+        return this.state.data? this.state.data.filter(item => 
+            (this.state.doctor_selection.value === "" ? true : item.doctor.id === this.state.doctor_selection.value) &&
+            (this.state.patient_selection.value === "" ? true : item.patient.id === this.state.patient_selection.value) &&
+            (this.state.status_selection.label === "" ? true : item.appointment_status.info === this.state.status_selection.label.toLowerCase())): []
     }
 
     todays_date_change = (e) => {
@@ -376,182 +296,251 @@ class Todayspatient extends Component {
 
 
     render() {
-        var table = <div className={``}>
-                <div className={`mt-2 card px-2 py-2`}><TodaysPatientRowLoading /></div>
-                <div className={`mt-2 card px-2 py-2`}><TodaysPatientRowLoading /></div>
-            </div>
-        if (this.state.filtered_data != null) {
-            if (this.state.filtered_data.length > 0) {
-                table = <Fragment>
-                    <div className="table-responsive mt-2 card mb-0 pb-0">
-                        <table className="table table-hover mb-0">
-                            <tbody>
-                                {
-                                    this.renderDataInRows(this.state.filtered_data)
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </Fragment>
-
-            }
-            else {
-                table = <div className="alert alert-info mt-2" style={{ marginBottom: '0px' }}>
-                    <strong>Info!</strong> No Appointments found.
-                </div>;
-            }
-        }
-
-
-        const Menu = props => {
-            return (
-                <components.Menu {...props} >
-                    <div className={`bg-light text-teal-400`} style={{ width: '400px' }}>
-                        {props.children}
-                    </div>
-                </components.Menu>
-            );
-        };
-
-        const filters = <div className="row">
-            <div className="col-md-10">
-                <div className="row">
-                    <div className="col-md-4">
-                        <div className="form-group">
-                            <label className="font-weight-semibold">Doctors</label>
-                            <Select
-                                id="doctor_selection"
-                                isClearable
-                                components={{ Menu }}
-                                menuPlacement="auto"
-                                options={this.state.doctors}
-                                classNamePrefix={`form-control`}
-                                placeholder="Search Doctor"
-                                onInputChange={e => this.populate_doctors(e)}
-                                onChange={e => this.on_selected_changed(e, "doctor_selection")}
-                            />
-                        </div>
-                    </div>
-                    <div className="col-md-4">
-                        <div className="form-group">
-                            <label className="font-weight-semibold">Patients</label>
-                            <Select
-                                id="patient_selection"
-                                isClearable
-                                components={{ Menu }}
-                                menuPlacement="auto"
-                                options={this.state.patients}
-                                classNamePrefix={`form-control`}
-                                placeholder="Search Patient"
-                                onInputChange={e => this.populate_patient(e)}
-                                onChange={e => this.on_selected_changed(e, "patient_selection")}
-                            />
-                        </div>
-                    </div>
-
-                    <div className={`col-md-4`}>
-
-                        <div className="form-group">
-                            <label className="font-weight-semibold">Status</label>
-                            <Select
-                                isClearable
-                                options={PATIENT_VISIT_STATUSES}
-                                placeholder="Status"
-                                onChange={e => this.on_selected_changed(e, "status_selection")}
-                                onClick={() => console.log('visit status')}
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="col-md-2 d-flex justify-content-center align-items-end mb-2 pb-2">
-
-                <Popup
-                    trigger={
-                        <button
-                            type="button"
-                            className="btn btn-dark btn-icon mr-1 "
-                            style={{ textTransform: "inherit" }}
-                            onClick={this.set_filters}
-                        >
-                            <i className="icon-filter4"></i>
-
-                        </button>}
-                    content={
-                        <div className={`card card-body bg-dark text-white shadow mb-1 py-1`}>
-                            Filter records
-                        </div>
-                    }
-                    flowing
-                    // hoverable
-                    position='top center'
-                />
-
-                <Popup
-                    trigger={
-                        <button
-                            type="button"
-                            className="btn bg-teal-400 btn-icon mr-1 btn-block"
-                            style={{ textTransform: "inherit" }}
-                            onClick={this.open_new_appointment_modal}>
-                            <b><i className="icon-plus3"></i></b>
-                        </button>}
-                    content={
-                        <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
-                            New Appointment
-                        </div>
-                    }
-                    flowing
-                    // hoverable
-                    position='top center'
-                />
-
-            </div>
-        </div>
-
-        const table_header = <div className="table-header-background shadow-sw">
-            <div className="row">
-                <div className="col-lg-6 col-md-6 col-12 d-flex align-items-center">
-                    <span className="text-white">Patients list for date</span>
-                    <span className="badge badge-secondary ml-2 d-none d-lg-block">
-                        {this.state.search_date.value}
-                    </span>
-                </div>
-                <div className="col-lg-3 d-none d-lg-block col-0"></div>
-                <div className="col-lg-3 col-md-6 col-12 d-flex">
-                    <DateTimePicker id="dob_text_input"
-                        onChange={this.todays_date_change}
-                        className="clock_datatime_picker "
-                        inputProps={{
-                            placeholder: 'Select Date',
-                            width: '100%',
-                            className: `form-control bg-teal-400 border-teal-400`
-                        }}
-                        input={true}
-                        dateFormat={'ll'}
-                        timeFormat={false}
-                        closeOnSelect={true}
-                        value={this.state.search_date.value}
-
-                        onClick={() => console.log('date select', this.state.search_date.value)}
-                    />
-                    <button className="btn bg-teal-400 border-teal-400 text-teal-400 btn-sm ml-2" onClick={() => {
-                        this.props.clear_todays_appointments()
-                        this.props.load_todays_appointments(localStorage.getItem('Gh65$p3a008#2C'))
-                    }}>
-                        <i className="icon-search4" />
-                    </button>
-                </div>
-            </div>
-        </div>
-
+        const records = this.set_filters();
         return (
             <Fragment>
                 {/* filters panel */}
-                {filters}
-                {table_header}
+                <div className="row">
+                    <div className="col-md-10">
+                        <div className="row">
+                            <div className="col-md-4">
+                                <InputField
+                                    heading="Doctors"
+                                    field_type="select"
+                                    isClearable
+                                    menuPlacement="auto"
+                                    options={this.state.doctors}
+                                    className={`Select-option`}
+                                    classNamePrefix={`form-control`}
+                                    components={{ Menu }}
+                                    placeholder="Search Doctor"
+                                    onChange={e => this.onSelectChange(e, 'doctor_selection')}
+                                />
+                            </div>
+                            <div className="col-md-4">
+                                <InputField
+                                    heading="Patients"
+                                    field_type="select"
+                                    isClearable
+                                    menuPlacement="auto"
+                                    isLoading={this.state.patients_options_loading}
+                                    options={this.state.patients}
+                                    noOptionsMessage={(e) => "Type to Search"}
+                                    className={`Select-option`}
+                                    classNamePrefix={`form-control`}
+                                    components={{ Menu }}
+                                    placeholder="Search Patients"
+                                    onChange={e => this.onSelectChange(e, 'patient_selection')}
+                                    onInputChange={e => this.populate_patients(e)}
+                                />
+                            </div>
+
+                            <div className={`col-md-4`}>
+                                <InputField
+                                    heading="Status"
+                                    field_type="select"
+                                    isClearable
+                                    menuPlacement="auto"
+                                    options={PATIENT_VISIT_STATUSES}
+                                    className={`Select-option`}
+                                    classNamePrefix={`form-control`}
+                                    placeholder="Select Status"
+                                    onChange={e => this.onSelectChange(e, 'status_selection')}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-2 d-flex justify-content-center align-items-end">
+
+                        <Popup
+                            trigger={
+                                <button
+                                    type="button"
+                                    className="btn bg-teal-400 btn-icon mr-1 btn-block"
+                                    style={{ textTransform: "inherit" }}
+                                    onClick={this.open_new_appointment_modal}>
+                                    <b><i className="icon-plus3"></i></b>
+                                </button>}
+                            content={
+                                <div className={`card card-body bg-teal-400 text-white shadow mb-1 py-1`}>
+                                    New Appointment
+                                </div>
+                            }
+                            flowing
+                            // hoverable
+                            position='top center'
+                        />
+
+                    </div>
+                </div>
+                <div className="table-header-background shadow-sw mt-2">
+                    <div className="row">
+                        <div className="col-lg-6 col-md-6 col-4 d-flex align-items-center h6">
+                            <span className="badge badge-danger ml-2 d-flex">
+                                <span className={`d-none d-lg-block`}>Waiting: </span>
+                                <span className={``}> {this.state.data ? this.state.data.filter(item => item.appointment_status.info === 'waiting').length : 0}</span>
+                            </span>
+                            <span className="badge badge-primary ml-2 d-flex">
+                                <span className={`d-none d-lg-block`}>Checked out: </span>
+                                <span className={``}> {this.state.data ? this.state.data.filter(item => item.appointment_status.info === 'checked out').length : 0}</span>
+                            </span>
+                            <span className="badge badge-warning ml-2 d-flex">
+                                <span className={`d-none d-lg-block`}>Scheduled: </span>
+                                <span className={``}> {this.state.data ? this.state.data.filter(item => item.appointment_status.info === 'scheduled').length : 0}</span>
+                            </span>
+                            
+                        </div>
+                        <div className="col-lg-3 d-none d-lg-block col-0"></div>
+                        <div className="col-lg-3 col-md-6 col-8 d-flex">
+                            <DateTimePicker id="dob_text_input"
+                                onChange={this.todays_date_change}
+                                className="clock_datatime_picker "
+                                inputProps={{
+                                    placeholder: 'Select Date',
+                                    width: '100%',
+                                    className: `form-control bg-teal-400 border-teal-400`
+                                }}
+                                input={true}
+                                dateFormat={'ll'}
+                                timeFormat={false}
+                                closeOnSelect={true}
+                                value={this.state.search_date.value}
+
+                                onClick={() => console.log('date select', this.state.search_date.value)}
+                            />
+                            <button className="btn bg-teal-400 border-teal-400 text-teal-400 btn-sm ml-2 d-none d-lg-block" onClick={() => {
+                                this.props.clear_todays_appointments()
+                                this.props.load_todays_appointments(localStorage.getItem('Gh65$p3a008#2C'))
+                            }}>
+                                <i className="icon-search4" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 {/* table of todays appointments */}
-                {this.props.todays_patient.loading === true ? <TodaysPatientRowLoading /> : table}
+                {
+                    this.props.todays_patient && 
+                        this.props.todays_patient.loading ?
+                        <Fragment>
+                            <TodaysPatientRowLoading />
+                            <TodaysPatientRowLoading />
+                            <TodaysPatientRowLoading /> 
+                            <TodaysPatientRowLoading />
+                            <TodaysPatientRowLoading />
+                            <TodaysPatientRowLoading />
+                        </Fragment>
+                        :
+                        records.length > 0 ?
+                            <div className="table-responsive mt-2 card mb-0 pb-0">
+                                <table className="table table-hover mb-0">
+                                    <tbody>
+                                        {
+                                            records.map((item, i) => {
+                                                return (
+                                                    <tr key={i}>
+                                                        <td>
+                                                            <div className={`container-fluid`} >
+                                                                <div className={`row`}>
+                                                                    {/* Patient name and phone number */}
+                                                                    <div className={`col-lg-3 col-md-6 col-sm-6 mt-0 text-teal-400 border-left-2 border-left-teal-400 btn-block d-flex align-items-center justify-content-center text-center`}>
+                                                                        <div className={`btn btn-outline bg-teal-400 text-teal-400 btn-block jackInTheBox animated`}
+                                                                            style={{ verticalAlign: 'center' }}
+                                                                            // onClick={() => this.view_user(this.state.row_data.patient['id'])}
+                                                                        >
+                                                                            <span className={`img-fluid rounded-circle text-white bg-teal-400 h3 p-2`} >
+                                                                                {item.patient['first_name'].charAt(0).toUpperCase() + item.patient['last_name'].charAt(0).toUpperCase()}
+                                                                            </span>
+                                                                            <Typography variant="h6" className="mt-2">{`${Ucfirst(item.patient['first_name'])} ${Ucfirst(item.patient['last_name'])}`}</Typography>
+                                                                            <Typography variant="caption"><i className="icon-phone-wave mr-1"></i> {item.patient['phone_number']}</Typography>
+                                                                        </div>
+                                                                    </div>
+                                                                    {/* Appointment Time column */}
+                                                                    <div className={`col-lg-2 col-md-6 col-sm-6 mt-0 d-flex align-items-center justify-content-center text-center text-teal-400 table-partition`} >
+                                                                        <div className={` jackInTheBox animated`} >
+                                                                            <Typography variant="h5" className="mb-0">{moment(item.appointment_date, "YYYY-MM-DDThh:mm:ss").format('hh:mm a')}</Typography>
+                                                                            <Typography variant="caption">{`from now`}</Typography>
+                                                                        </div>
+                                                                    </div>
+                                                                    {/* appointment details */}
+                                                                    <div className={`col-lg-7 col-md-12 col-sm-12 mt-sm-2`}>
+                                                                        {/* Appointment date and time */}
+                                                                        <div className="row">
+                                                                            <div className="col-12 font-weight-bold h6">
+                                                                                Appointment with <Link className="text-teal-400 font-weight-bold ml-1" to={"#"}
+                                                                                    // onClick={() => this.view_user(this.state.row_data.doctor['id'])}
+                                                                                    >
+                                                                                    {`Dr. ${Ucfirst(item.doctor['first_name'])} ${Ucfirst(item.doctor['last_name'])}`}
+                                                                                    <i className="icon-user-tie ml-1"></i>
+                                                                                </Link>
+                                                                                <span className="text-muted float-lg-right float-md-right float-left">
+                                                                                    {`${moment(item.appointment_date, "YYYY-MM-DDThh:mm:ss").format('LL')}`}
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                        {/* Appointment Reason */}
+                                                                        <div className={`row`}>
+                                                                            <div className={`col-12 h6`}>
+                                                                                <span className="font-weight-bold">Comments</span>
+                                                                                <span className=" h6 text-muted">
+                                                                                    {` ${item.appointment_comments.length > 25 ? item.appointment_comments.substring(0, 25) + '...' : item.appointment_comments}`}
+                                                                                </span>
+                                                                                <span className={`badge badge-${item.appointment_status.info === 'checked out' ? 'primary' : 'danger'} float-right`}>
+                                                                                    {item.appointment_status.info}
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                        {/* Appointment Actions */}
+                                                                        <div className="row">
+                                                                            <div className="col-12">
+                                                                                {/* {!this.state.row_data.appointment_status.is_paid ?
+                                                                                    <Fragment>
+                                                                                        {options['consultancy_charges']}
+                                                                                        {options['procedures']}
+                                                                                        {options['invoice']}
+                                                                                        {options['edit']}
+                                                                                        {options['follow_ups']}
+                                                                                        {options['details']}
+                                                                                        {options['checkout']}
+                                                                                    </Fragment> :
+                                                                                    <Fragment>
+                                                                                        {options['invoice']}
+                                                                                        {options['follow_ups']}
+                                                                                        {options['details']}
+                                                                                    </Fragment>} */}
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                                // const hidden_data = {
+                                                //     appointment_description: booking.appointment_description,
+                                                //     appointment_comments: booking.appointment_comments
+                                                // }
+                                                // return (
+                                                //     <TodaysPatientRow
+                                                //         key={i}
+                                                //         row_data={booking}
+                                                //         hidden_data={hidden_data}
+                                                //         toggle_consultancy_modal={this.toggle_consultancy_modal}
+                                                //         toggle_procedure_modal={this.openProcedureModalHandler}
+                                                //         toggle_invoice_modal={this.openInvoiceModalHandler}
+                                                //         toggle_user_view_modal={this.request_user}
+                                                //         columns="8" />
+                                                // )
+                                            })
+                                        }
+                                    </tbody>
+                                </table>
+                            </div> :
+                            <div className="alert alert-info mt-2" style={{ marginBottom: '0px' }}>
+                                <strong>Info!</strong> No Appointments found.
+                            </div>
+
+                }
 
                 {/* Add new appointment modal */}
                 <NewAppointmentModal
@@ -593,8 +582,8 @@ class Todayspatient extends Component {
 }
 function map_state_to_props(state) {
     return {
-        notify: state.notify,
-        todays_patient: state.todays_patient
+        todays_patient: state.todays_patient,
+        doctors: state.doctors.payload
     }
 }
-export default connect(map_state_to_props, { notify, set_active_page, load_todays_appointments, clear_todays_appointments })(withRouter(Todayspatient));
+export default connect(map_state_to_props, { set_active_page, load_todays_appointments, clear_todays_appointments })(withRouter(Todayspatient));

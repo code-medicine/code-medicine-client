@@ -3,9 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { set_active_page } from '../../../redux/actions';
 import { BASE_URL } from '../../../router/constants';
-import { ADMIN_CREATE_DOCTOR, ADMIN_DELETE_DOCTOR, ADMIN_UPDATE_DOCTOR, USERS_BASE_URL } from '../../../services/rest_end_points';
 import CustomTable from '../../../shared/customs/CustomTable';
-import Axios from 'axios';
 import { Ucfirst } from '../../../utils/functions';
 import Button from '../../../components/button';
 import Modal from 'react-bootstrap4-modal';
@@ -17,11 +15,12 @@ import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import notify from 'notify'
+import { AdminCreateDoctor, AdminDeleteDoctor, AdminUpdateDoctor, GetAllUsers } from 'services/queries';
 
 
 const headCells = [
     { id: 'name', numeric: false, disablePadding: false, label: 'Name' },
-    { id: 'phone_number', numeric: false, disablePadding: false, label: 'Phone#' },
+    { id: 'phone', numeric: false, disablePadding: false, label: 'Phone#' },
     { id: 'email', numeric: false, disablePadding: false, label: 'Email' },
     { id: 'consultancy_fee', numeric: true, disablePadding: false, label: 'Consultancy' },
     { id: 'consultancy_percentage', numeric: false, disablePadding: false, label: 'Percentage' },
@@ -47,7 +46,7 @@ class SearchDoctors extends Component {
 
             user_first_name: { value: '', error: false },
             user_last_name: { value: '', error: false },
-            user_phone_number: { value: '', error: false },
+            user_phone: { value: '', error: false },
             user_dob: { value: '', error: false },
             user_cnic: { value: '', error: false },
             user_email: { value: '', error: false },
@@ -68,7 +67,6 @@ class SearchDoctors extends Component {
             degree_description: { value: '', error: false },
 
             user_specialities: [],
-
             user_degrees: [],
             user_schedule: [],
 
@@ -94,34 +92,35 @@ class SearchDoctors extends Component {
 
 
     on_edit_doctor = (doctor) => {
+        console.log('doctor edit', doctor)
         this.setState({
             mode: 'update',
-            toUpdateDoctorId: doctor.doctor._id,
+            toUpdateDoctorId: doctor._id,
             addNewModalVisibility: true,
 
-            user_first_name: { value: doctor.doctor.first_name, error: false },
-            user_last_name: { value: doctor.doctor.last_name, error: false },
-            user_phone_number: { value: doctor.doctor.phone_number, error: false },
-            user_dob: { value: doctor.doctor.date_of_birth, error: false },
-            user_cnic: { value: doctor.doctor.cnic, error: false },
-            user_email: { value: doctor.doctor.email, error: false },
+            user_first_name: { value: doctor.first_name, error: false },
+            user_last_name: { value: doctor.last_name, error: false },
+            user_phone: { value: doctor.phone, error: false },
+            user_dob: { value: doctor.date_of_birth, error: false },
+            user_cnic: { value: doctor.cnic, error: false },
+            user_email: { value: doctor.email, error: false },
 
-            user_country: { value: doctor.doctor.country, error: false },
-            user_city: { value: doctor.doctor.city, error: false },
-            user_address: { value: doctor.doctor.address, error: false },
+            user_country: { value: doctor.country, error: false },
+            user_city: { value: doctor.city, error: false },
+            user_address: { value: doctor.address, error: false },
 
-            user_gender: { value: doctor.doctor.gender, error: false },
-            user_blood_group: { value: doctor.doctor.blood_group, error: false },
+            user_gender: { value: doctor.gender, error: false },
+            user_blood_group: { value: doctor.blood_group, error: false },
             user_role: { value: 'Doctor', error: false },
 
-            user_consultancy_fee: { value: doctor.details.consultancy_fee, error: false },
-            user_consultancy_percentage: { value: doctor.details.consultancy_percentage, error: false },
-            user_is_active: { value: doctor.doctor.is_active, error: false },
+            user_consultancy_fee: { value: doctor.consultancy_fee, error: false },
+            user_consultancy_percentage: { value: doctor.consultancy_percentage, error: false },
+            user_is_active: { value: doctor.is_active, error: false },
 
-            user_specialities: doctor.details.specialities,
+            user_specialities: doctor.specialities,
 
-            user_degrees: doctor.details.degrees,
-            user_schedule: doctor.details.schedule,
+            user_degrees: doctor.degrees,
+            user_schedule: doctor.schedule,
 
         }, () => console.log('state', this.state));
     }
@@ -134,12 +133,11 @@ class SearchDoctors extends Component {
                 {
                     label: 'Yes',
                     onClick: () => {
-                        Axios
-                            .delete(`${ADMIN_DELETE_DOCTOR}?tag=${id}`)
-                            .then(() => {
+                        AdminDeleteDoctor(id).then(() => {
                                 // this.setState({ loading: true }, () => {
                                     this.reset_state()
                                     this.load_doctors()
+                                    
                                 // })
                                 notify('success', '', 'Successfully deleted doctor');
                             })
@@ -159,10 +157,9 @@ class SearchDoctors extends Component {
     }
 
     load_doctors = () => {
-        const query = `${USERS_BASE_URL}?role=Doctor&active=all`
-        Axios.get(query).then(_doctors => {
+        GetAllUsers('Doctor', 'all').then(_doctors => {
             if (_doctors.data) {
-                _doctors = _doctors.data.payload;
+                _doctors = _doctors.data.payload.users;
                 console.log('doctors', _doctors);
                 const counts = {
                     total: 0,
@@ -172,27 +169,27 @@ class SearchDoctors extends Component {
                 const temp = []
                 for (let i = 0; i < _doctors.length; ++i) {
                     temp.push({
-                        name: `Dr. ${Ucfirst(_doctors[i].doctor.first_name)} ${Ucfirst(_doctors[i].doctor.last_name)}`,
-                        phone_number: _doctors[i].doctor.phone_number,
-                        email: _doctors[i].doctor.email,
-                        consultancy_fee: _doctors[i].details.consultancy_fee,
-                        consultancy_percentage: `${_doctors[i].details.consultancy_percentage}% cut`,
-                        gender: _doctors[i].doctor.gender === 'Male' ? <span className={`badge badge-primary`}>Male</span> : <span className={`badge bg-pink-400`}>Female</span>,
-                        active: _doctors[i].doctor.is_active,
+                        name: `Dr. ${Ucfirst(_doctors[i].first_name)} ${Ucfirst(_doctors[i].last_name)}`,
+                        phone: _doctors[i].phone,
+                        email: _doctors[i].email,
+                        consultancy_fee: _doctors[i].consultancy_fee,
+                        consultancy_percentage: `${_doctors[i].consultancy_percentage}% cut`,
+                        gender: _doctors[i].gender === 'Male' ? <span className={`badge badge-primary`}>Male</span> : <span className={`badge bg-pink-400`}>Female</span>,
+                        active: _doctors[i].is_active,
                         actions: <div className={`d-flex`}>
                             <IconButton 
                                 icon="icon-pencil" className={`mx-1`} 
                                 onClick={() => this.on_edit_doctor(_doctors[i])}/>
                             {
-                                _doctors[i].doctor.is_active ? <IconButton
+                                _doctors[i].is_active ? <IconButton
                                     color="red"
                                     icon="icon-cross"
-                                    onClick={() => this.on_delete_doctor(_doctors[i].doctor._id)} /> : ''
+                                    onClick={() => this.on_delete_doctor(_doctors[i]._id)} /> : ''
                             }
                         </div>
                     })
                     counts.total += 1;
-                    if (_doctors[i].doctor.is_active) {
+                    if (_doctors[i].is_active) {
                         counts.active += 1;
                     }
                     else {
@@ -221,6 +218,7 @@ class SearchDoctors extends Component {
     on_selected_changed = (e, actor) => {
         this.setState({ [actor]: { value: e !== null ? e.label : '', error: false } })
     }
+    
     on_user_date_of_birth_change = (e) => {
         if (e === '')
             this.setState({ user_dob: { value: '', error: false } })
@@ -273,7 +271,7 @@ class SearchDoctors extends Component {
 
             user_first_name: { value: '', error: false },
             user_last_name: { value: '', error: false },
-            user_phone_number: { value: '', error: false },
+            user_phone: { value: '', error: false },
             user_dob: { value: '', error: false },
             user_cnic: { value: '', error: false },
             user_email: { value: '', error: false },
@@ -306,34 +304,27 @@ class SearchDoctors extends Component {
         e.preventDefault()
         console.log('this.state', this.state)
         const payload = {
-            admin_id: this.props.active_user._id,
-            doctor: {
-                first_name: this.state.user_first_name.value.trim(),
-                last_name: this.state.user_last_name.value.trim(),
-                phone_number: this.state.user_phone_number.value.trim(),
-                date_of_birth: this.state.user_dob.value,
-                cnic: this.state.user_cnic.value.trim(),
-                email: this.state.user_email.value.trim(),
-                country: this.state.user_country.value,
-                city: this.state.user_city.value,
-                address: this.state.user_address.value.trim(),
-                gender: this.state.user_gender.value.trim(),
-                blood_group: this.state.user_blood_group.value.trim(),
-                role: this.state.user_role.value.trim(),
-            },
-            doctor_details: {
-                consultancy_fee: this.state.user_consultancy_fee.value,
-                consultancy_percentage: this.state.user_consultancy_percentage.value,
-                specialities: this.state.user_specialities,
-                degrees: this.state.user_degrees,
-                schedule: this.state.user_schedule,
-            }
+            first_name: this.state.user_first_name.value.trim(),
+            last_name: this.state.user_last_name.value.trim(),
+            phone: this.state.user_phone.value,
+            date_of_birth: this.state.user_dob.value,
+            cnic: this.state.user_cnic.value,
+            email: this.state.user_email.value.trim(),
+            country: this.state.user_country.value,
+            city: this.state.user_city.value,
+            address: this.state.user_address.value.trim(),
+            gender: this.state.user_gender.value,
+            blood_group: this.state.user_blood_group.value,
+            role: this.state.user_role.value.trim(),
+            consultancy_fee: this.state.user_consultancy_fee.value,
+            consultancy_percentage: this.state.user_consultancy_percentage.value,
+            specialities: this.state.user_specialities,
+            degrees: this.state.user_degrees,
+            schedule: this.state.user_schedule,
         }
         if (this.state.mode === 'create') {
             this.setState({ addNewDoctorModalLoading: true });
-            Axios
-                .post(ADMIN_CREATE_DOCTOR, payload)
-                .then(res => {
+            AdminCreateDoctor(payload).then(res => {
                     console.log('res', res)
                     this.setState({ loading: true, addNewModalVisibility: false, addNewDoctorModalLoading: false }, () => this.load_doctors())
                 })
@@ -350,11 +341,8 @@ class SearchDoctors extends Component {
                 })
         }
         else {
-            payload.doctor_id = this.state.toUpdateDoctorId;
-            payload.doctor.is_active = this.state.user_is_active.value;
-            Axios
-                .put(ADMIN_UPDATE_DOCTOR, payload)
-                .then(res => {
+            payload.is_active = this.state.user_is_active.value;
+            AdminUpdateDoctor(this.state.toUpdateDoctorId, payload).then(res => {
                     console.log('response', res)
                     notify('success','', 'Doctor successfully updated');
                     this.setState({ addNewModalVisibility: false, addNewDoctorModalLoading: false }, () => {
@@ -440,7 +428,7 @@ class SearchDoctors extends Component {
                             <Skeleton className="my-1" count={1} height={40}/>
                         </SkeletonTheme> */}
                         <SkeletonTheme color="#ffffff" highlightColor="#f2f2f2">
-                            <Skeleton className="my-1" count={8} height={45}/>
+                            <Skeleton className="my-1" count={12} height={45}/>
                         </SkeletonTheme>
                     </>: (
                         this.state.rows.length === 0 ?
@@ -489,14 +477,14 @@ class SearchDoctors extends Component {
                             <div className="col-md-4 px-3">
                                 <div className="form-group">
                                     <Inputfield
-                                        id={`user_phone_number`}
+                                        id={`user_phone`}
                                         heading={'Phone number'}
                                         placeholder="Enter phone number"
                                         required
                                         type="text" pattern="\d*" maxlength="11"
                                         onChange={this.on_text_field_change}
-                                        value={this.state.user_phone_number.value}
-                                        error={this.state.user_phone_number.error}
+                                        value={this.state.user_phone.value}
+                                        error={this.state.user_phone.error}
                                         disabled={this.state.addNewDoctorModalLoading} />
                                 </div>
                             </div>
@@ -657,7 +645,7 @@ class SearchDoctors extends Component {
                                     placeholder="Select blood group"
                                     id="user_gender"
                                     isDisabled={this.state.addNewDoctorModalLoading}
-                                    onChange={e => this.on_selected_changed(e, 'user_gender')}
+                                    onChange={e => this.on_selected_changed(e, 'user_blood_group')}
                                     // value={{ id: 'blood_group_selection', label: this.state.user_blood_group.value }}
                                     defaultValue={{ id: 'blood_group_selection', label: 'Unknown' }}
                                     styles={{
@@ -800,7 +788,7 @@ class SearchDoctors extends Component {
                                                     name="is_active"
                                                     id="user_is_active"
                                                     // defaultChecked={this.state.user_is_active.value}
-                                                    // value={this.state.user_is_active.value}
+                                                    checked={this.state.user_is_active.value}
                                                     onChange={() => this.setState({ user_is_active: { value: true, error: false } })}
                                                     className="form-input-styled" />
                                             </span>
@@ -816,7 +804,7 @@ class SearchDoctors extends Component {
                                                     name="is_active"
                                                     id="user_is_active"
                                                     // defaultChecked={!this.state.user_is_active.value}
-                                                    // value={!this.state.user_is_active.value}
+                                                    checked={!this.state.user_is_active.value}
                                                     onChange={() => this.setState({ user_is_active: { value: false, error: false } })}
                                                     className="form-input-styled" />
                                             </span>

@@ -7,6 +7,7 @@ import Inputfield from '../../../components/inputfield';
 import notify from 'notify'
 import { BASE_URL, LOGIN_URL, FORGOT_PASSWORD } from '../../../router/constants';
 import { LoginRequest } from '../../../services/queries';
+import { CheckBox } from 'components';
 
 
 class Login extends Component {
@@ -114,9 +115,9 @@ class Login extends Component {
             const username_password = <div className={``}>
                 <Inputfield
                     id={'email_text_input'}
-                    heading={'Email'}
-                    placeholder={"someone@hello.com"}
-                    input_type={'email'}
+                    heading={'Username'}
+                    placeholder={"Enter your email, phone or MRN"}
+                    input_type={'text'}
                     onChange={this.on_text_field_change}
                     value={this.state.email.value}
                     error={this.state.email.error}
@@ -132,30 +133,20 @@ class Login extends Component {
                 />
 
             </div>
-            const remember_me_reset_password = <div className="form-group d-flex align-items-center">
-                <div className="form-check mb-0">
-                    <label className="form-check-label">
-                        <div className="uniform-checker">
-                            <span className={this.state.remember_me_option ? 'checked' : ''}>
-                                <input type="checkbox"
-                                    name="remember"
-                                    id="remember_me_text_input"
-                                    defaultChecked={this.state.remember_me_option}
-                                    value={this.state.remember_me_option}
-                                    onChange={this.on_text_field_change}
-                                    className="form-input-styled" />
-                            </span>
-                        </div>
-                        Remember
-                    </label>
-                </div>
-
-                <Link to={FORGOT_PASSWORD} className="ml-auto">Forgot password?</Link>
+            const remember_me_reset_password = <div className="d-flex align-items-center">
+                    <CheckBox 
+                        label="Remember me"
+                        name="remember"
+                        id="remember_me_text_input"
+                        defaultChecked={this.state.remember_me_option}
+                        value={this.state.remember_me_option}
+                        onChange={this.on_text_field_change}
+                    />
+                <Link to={FORGOT_PASSWORD} className="ml-auto mb-2 text-teal-400">Forgot password?</Link>
             </div>
 
             view = <div className={``}>
                 {username_password}
-                <hr />
                 {remember_me_reset_password}
             </div>
         }
@@ -173,7 +164,6 @@ class Login extends Component {
                                     </div>
                                     <div className={`card-body px-5`} >
                                         {view}
-                                        <hr />
                                         <div className="form-group ">
                                             <button
                                                 type="submit"

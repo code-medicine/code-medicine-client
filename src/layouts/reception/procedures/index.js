@@ -172,32 +172,13 @@ class Procedures extends Component {
                         </div>
                         <div className="col-md-2 d-flex justify-content-center align-items-end mb-2 pb-2">
 
-                            <Popup
-                                trigger={
-                                    <IconButton
-                                        icon="icon-filter4"
-                                        variant="filled"
-                                        color="black"
-                                        size="lg"
-                                        className={`mx-1`}
-                                    // onClick={this.set_filters}
-                                    />
-                                }
-                                content={
-                                    <div className={`card card-body bg-dark text-white shadow mb-1 py-1`}>
-                                        Filter records
-                                    </div>
-                                }
-                                flowing
-                                // hoverable
-                                position='top center'
-                            />
 
                             <Popup
                                 trigger={
                                     <IconButton
                                         icon="icon-add-to-list"
                                         variant="filled"
+                                        color="black"
                                         size="lg"
                                         className={`mx-1`}
                                         onClick={() => this.setState({ create_procedure_list_modal_visibility: { visibility: true, data: null, type: 0 } })}

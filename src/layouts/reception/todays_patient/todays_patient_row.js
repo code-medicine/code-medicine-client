@@ -338,7 +338,7 @@ class TodaysPatientRow extends Component {
                                 this.render_hidden_elements()
                             }
                         </Collapse>
-                        <UpdateAppointmentModal
+                        {/* <UpdateAppointmentModal
                             id={this.state.row_data._id}
                             visibility={this.state.update_appointment_modal_visibility}
                             close={this.close_update_appointment_modal}
@@ -353,7 +353,7 @@ class TodaysPatientRow extends Component {
                                 time: this.state.row_data.appointment_time,
                                 comments: this.state.row_data.appointment_comments,
                                 referee: this.state.row_data.appointment_referee,
-                            }} />
+                            }} /> */}
                         {
                             this.state.procedure_modal_visibility &&
                             <CreateProcedure

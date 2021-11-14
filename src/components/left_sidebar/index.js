@@ -220,7 +220,7 @@ function LeftSideBar(props) {
                             return <div key={i}>
                                 <ListItem button className={`text-white`} selected={window.location.pathname === elem.url} component={Link} to={elem.url} onClick={() => onItemClick(item)}>
                                     <ListItemIcon className={`text-white`}>{elem.icon_class}</ListItemIcon>
-                                    <ListItemText primary={elem.title} primaryTypographyProps={{ variant: 'body2' }} />
+                                    <ListItemText primary={elem.title} primaryTypographyProps={{ variant: 'caption' }} />
                                     {elem.nested ? (elem.open ? <ExpandLess /> : <ExpandMore />) : ''}
                                 </ListItem>
                                 {
@@ -232,7 +232,7 @@ function LeftSideBar(props) {
                                                     elem.routes.map((nitem, ni) => {
                                                         return <ListItem key={ni * i} button disabled={!nitem.active} selected={window.location.pathname === nitem.url} className={`text-white`} component={Link} to={nitem.url}>
                                                             <ListItemIcon className={`text-white`}>{nitem.icon_class}</ListItemIcon>
-                                                            <ListItemText primary={nitem.title} primaryTypographyProps={{ variant: 'body2' }} />
+                                                            <ListItemText primary={nitem.title} primaryTypographyProps={{ variant: 'caption' }} />
                                                         </ListItem>
                                                     })
                                                 }

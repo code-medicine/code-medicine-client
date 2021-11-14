@@ -145,12 +145,14 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center',
         justifyContent: 'flex-end',
         padding: theme.spacing(0, 1),
+        
         // necessary for content to be below app bar
-        ...theme.mixins.toolbar,
+        // ...theme.mixins.toolbar,
     },
     content: {
         flexGrow: 1,
         padding: theme.spacing(3),
+        marginTop: 50
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
@@ -267,7 +269,7 @@ function Container(props) {
                         position="fixed"
                         className={`${clsx(classes.appBar, { [classes.appBarShift]: open })} bg-dark`}
                     >
-                        <Toolbar>
+                        <Toolbar variant="dense">
                             <IconButton
                                 color="inherit"
                                 aria-label="open drawer"
